@@ -1,0 +1,2037 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telecom Settlement & Invoice Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap');
+
+    :root {
+      --bg1: #f4f8ff;
+      --bg2: #eaf2ff;
+      --card: rgba(255,255,255,0.92);
+      --text: #1d2445;
+      --muted: #5d678d;
+      --line: rgba(104, 119, 184, 0.16);
+      --accent1: #0f766e;
+      --accent2: #0ea5e9;
+      --accent3: #4f46e5;
+      --accent4: #f59e0b;
+      --good: #15803d;
+      --bad: #dc2626;
+      --shadow: 0 18px 40px rgba(58, 78, 155, 0.14);
+      --radius: 24px;
+      --font-body: 'Manrope', 'Segoe UI', Arial, Helvetica, sans-serif;
+      --font-head: 'Lora', Georgia, 'Times New Roman', serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79,70,229,0.10), transparent 26%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 24%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    .container { width: min(1260px, 94%); margin: auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(100,116,180,0.15);
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 14px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      font-size: 1.15rem;
+      background: linear-gradient(135deg, var(--accent1), var(--accent3));
+      box-shadow: 0 12px 28px rgba(15,118,110,0.28);
+    }
+
+    .brand h1 { margin: 0; font-size: 1.18rem; font-family: var(--font-head); }
+    .brand p { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #27305d;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .hero { padding: 28px 0 22px; }
+
+    .hero-box {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 34px;
+      color: white;
+      background: linear-gradient(135deg, rgba(15,118,110,0.98), rgba(14,165,233,0.92), rgba(79,70,229,0.9));
+      box-shadow: 0 24px 60px rgba(63, 80, 165, 0.22);
+    }
+
+    .hero-box::before,
+    .hero-box::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .hero-box::before { width: 250px; height: 250px; right: -90px; top: -80px; }
+    .hero-box::after { width: 220px; height: 220px; left: -70px; bottom: -90px; }
+
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .hero h2 {
+      margin: 14px 0 12px;
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      line-height: 1.08;
+      font-family: var(--font-head);
+      font-weight: 700;
+    }
+
+    .hero p { margin: 0; color: rgba(255,255,255,0.95); }
+
+    .hero-card {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 36px rgba(30, 44, 115, 0.18);
+    }
+
+    .hero-card h3 { margin-top: 0; }
+
+    section { padding: 12px 0 22px; }
+
+    .grid-5, .grid-4, .grid-3, .grid-2 {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-5 { grid-template-columns: repeat(5, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .section-head h3 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      color: #20295b;
+      font-family: var(--font-head);
+    }
+
+    .section-head p {
+      margin: 0 auto;
+      max-width: 820px;
+      color: var(--muted);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .card h4 { margin: 0 0 14px; font-size: 1.16rem; color: #21285a; font-family: var(--font-head); }
+
+    .icon-box {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      box-shadow: 0 12px 26px rgba(71, 86, 166, 0.18);
+    }
+
+    .i1 { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+    .i2 { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+    .i3 { background: linear-gradient(135deg, #16a34a, #14b8a6); }
+    .i4 { background: linear-gradient(135deg, #ef4444, #f97316); }
+    .i5 { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+
+    .value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      margin: 6px 0 4px;
+      color: #22295f;
+    }
+
+    .label-small {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    label {
+      display: block;
+      font-size: 0.93rem;
+      font-weight: 700;
+      color: #313a69;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(108,124,188,0.22);
+      background: rgba(255,255,255,0.96);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(79,70,229,0.42);
+      box-shadow: 0 0 0 4px rgba(79,70,229,0.08);
+    }
+
+    textarea { min-height: 114px; resize: vertical; }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      transition: transform 0.18s ease;
+    }
+
+    button:hover { transform: translateY(-2px); }
+
+    .btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; }
+    .btn-secondary { background: rgba(79,70,229,0.08); color: #3c35a4; border: 1px solid rgba(79,70,229,0.12); }
+    .btn-alert { background: linear-gradient(135deg, var(--accent3), var(--accent4)); color: white; }
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+    .btn-small { padding: 8px 12px; font-size: 0.84rem; border-radius: 10px; }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .pill {
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border: 1px solid rgba(79,70,229,0.12);
+      background: rgba(79,70,229,0.08);
+      color: #3a35a1;
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(79,70,229,0.05);
+      border: 1px solid rgba(79,70,229,0.08);
+      font-weight: 700;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(105,120,184,0.14);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1280px;
+      background: white;
+    }
+
+    thead th {
+      background: #eef2ff;
+      color: #26305f;
+      font-size: 0.92rem;
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(111,126,188,0.16);
+    }
+
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(111,126,188,0.1);
+      font-size: 0.94rem;
+      color: #2b345f;
+      vertical-align: top;
+    }
+
+    tbody tr:hover { background: #f9fbff; }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .paid { background: rgba(22,163,74,0.12); color: #166534; }
+    .unpaid { background: rgba(239,68,68,0.12); color: #b91c1c; }
+    .partial { background: rgba(245,158,11,0.15); color: #9a580a; }
+
+    .mini-note {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(22,163,74,0.08);
+      border: 1px solid rgba(22,163,74,0.12);
+      color: #166534;
+      font-size: 0.93rem;
+      font-weight: 700;
+    }
+
+    .warn-note {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(245,158,11,0.10);
+      border: 1px solid rgba(245,158,11,0.16);
+      color: #9a580a;
+      font-size: 0.93rem;
+      font-weight: 700;
+    }
+
+    .empty-box {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(79,70,229,0.04);
+      border-radius: 18px;
+      border: 1px dashed rgba(79,70,229,0.14);
+    }
+
+    .analysis-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .analysis-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(104,119,184,0.14);
+      font-weight: 700;
+    }
+
+    .invoice-preview {
+      background: white;
+      border: 1px solid rgba(13,42,92,0.16);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 24px 50px rgba(13,42,92,0.16);
+      position: relative;
+    }
+
+    .invoice-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.09;
+    }
+
+    .invoice-watermark img { width: 260px; height: 260px; margin-bottom: 10px; }
+    .invoice-watermark span {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #0d2a5c;
+      letter-spacing: 5px;
+      font-family: var(--font-head);
+    }
+
+    .invoice-header, .invoice-meta-grid, .invoice-body {
+      position: relative;
+      z-index: 1;
+    }
+
+    .invoice-header {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      background: linear-gradient(135deg, #12275a, #0a1a3d);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .invoice-header::after {
+      content: "";
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.22), transparent 70%);
+    }
+
+    .invoice-header > div { padding: 26px; position: relative; z-index: 1; }
+    .invoice-header h3 { margin: 0 0 8px; font-size: 1.9rem; font-family: var(--font-head); letter-spacing: 0.3px; }
+    .invoice-header p { margin: 4px 0; color: rgba(255,255,255,0.82); }
+
+    .invoice-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .invoice-brand-row img {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.28);
+    }
+
+    .invoice-title-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(56,189,248,0.16);
+      border: 1px solid rgba(56,189,248,0.4);
+      color: #7dd3fc;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .invoice-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid rgba(13,42,92,0.12);
+      border-bottom: 1px solid rgba(13,42,92,0.12);
+    }
+
+    .invoice-meta-item {
+      padding: 14px 18px;
+      border-right: 1px solid rgba(13,42,92,0.12);
+      background: #f4f8ff;
+    }
+
+    .invoice-meta-item .label-small { color: #5b6b9c; letter-spacing: 0.4px; text-transform: uppercase; font-size: 0.76rem; }
+    .invoice-meta-item .value { color: #0d2a5c; }
+
+    .invoice-meta-item:last-child { border-right: none; }
+    .invoice-body { padding: 24px; }
+    .invoice-purpose {
+      font-weight: 600;
+      color: #37436b;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: rgba(244,248,255,0.9);
+      border-radius: 8px;
+      font-size: 0.92rem;
+    }
+
+    .invoice-table {
+      width: 100%;
+      min-width: 900px;
+      page-break-inside:auto;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: transparent;
+    }
+
+    .invoice-table th, .invoice-table td {
+      border: 1px solid rgba(13,42,92,0.14);
+      padding: 10px 12px;
+      font-size: 0.92rem;
+    }
+
+    .invoice-table th {
+      background: #0d2a5c;
+      color: white;
+      font-size: 0.82rem;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .invoice-table tbody tr:nth-child(even) td { background: rgba(13,42,92,0.035); }
+
+    .invoice-summary {
+      width: min(420px, 100%);
+      margin-left: auto;
+      margin-top: 18px;
+      border: 1px solid rgba(13,42,92,0.16);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .invoice-summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(13,42,92,0.1);
+      font-weight: 700;
+      background: rgba(251,253,255,0.9);
+      color: #29335c;
+    }
+
+    .invoice-summary-row:last-child { border-bottom: none; }
+    .invoice-summary-row.total {
+      background: linear-gradient(135deg, #0d2a5c, #123a7a);
+      color: white;
+      font-size: 1.05rem;
+    }
+
+    .invoice-notes {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid rgba(13,42,92,0.14);
+      background: rgba(244,248,255,0.9);
+      color: #37436b;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .print-signature-box {
+      text-align: center;
+      font-size: 9pt;
+      color: #0d2a5c;
+    }
+    .print-signature-img {
+      display: block;
+      max-height: 60px;
+      max-width: 160px;
+      margin: 0 auto 4px;
+      object-fit: contain;
+    }
+    .print-signature,
+    .print-footnote { display: none; }
+
+    footer {
+      padding: 26px 0 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 14mm 12mm;
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        font-family: var(--font-body) !important;
+        font-size: 10.5px;
+        color: #1a2036 !important;
+      }
+
+      header, .hero, #overview, .hide-while-printing, footer, .section-head { display: none !important; }
+
+      .container { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+
+      #invoiceSection { display: block !important; padding: 0 !important; }
+      #invoiceSection .section-head { display: none !important; }
+
+      /* Letterhead-style invoice sheet */
+      .invoice-preview {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
+      }
+
+      .invoice-header {
+        display: block !important;
+        background: #ffffff !important;
+        color: #0d2a5c !important;
+        border-bottom: 2.5pt solid #0d2a5c !important;
+        padding-bottom: 10pt !important;
+        margin-bottom: 10pt;
+      }
+
+      .invoice-header::after { display: none !important; }
+      .invoice-watermark {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        opacity: 0.10 !important;
+      }
+      .invoice-watermark img { width: 160pt !important; height: 160pt !important; }
+      .invoice-watermark span { font-size: 22pt !important; }
+      .invoice-header > div { padding: 0 !important; }
+      .invoice-header > div:first-child { margin-bottom: 8pt; }
+
+      .invoice-brand-row img {
+        width: 30pt !important;
+        height: 30pt !important;
+        box-shadow: none !important;
+      }
+
+      .invoice-title-badge {
+        background: transparent !important;
+        border: 0.75pt solid #38bdf8 !important;
+        color: #0a7ba8 !important;
+      }
+
+      .invoice-header h3 {
+        font-family: var(--font-head) !important;
+        font-size: 19pt !important;
+        font-weight: 700 !important;
+        color: #0d2a5c !important;
+        letter-spacing: 0.4pt;
+      }
+
+      .invoice-header p { font-size: 9pt !important; color: #4b5573 !important; }
+
+      .invoice-header > div:last-child p:first-child {
+        font-family: var(--font-head) !important;
+        font-size: 14pt !important;
+        font-weight: 700 !important;
+        color: #0d2a5c !important;
+        letter-spacing: 0.6pt;
+      }
+
+      .invoice-meta-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        border: 0.75pt solid #cfd8ea !important;
+        border-radius: 6pt;
+        overflow: hidden;
+        margin-bottom: 10pt;
+      }
+
+      .invoice-meta-item {
+        background: #f7faf9 !important;
+        border-right: 0.75pt solid #dfe6f2 !important;
+        padding: 8pt 9pt !important;
+      }
+      .invoice-meta-item .label-small { font-size: 7.5pt !important; letter-spacing: 0.3pt; text-transform: uppercase; color: #6b7494 !important; }
+      .invoice-meta-item .value { font-size: 9.5pt !important; font-weight: 700 !important; color: #14213d !important; }
+
+      .invoice-body { padding: 0 !important; }
+      .invoice-purpose { font-size: 8.5pt !important; color: #37436b !important; margin-bottom: 10pt !important; }
+
+      .table-wrap { overflow: visible !important; border: none !important; }
+
+      /* Table tuned to fit A4 portrait width */
+      .invoice-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        font-size: 8pt !important;
+        margin-top: 0 !important;
+      }
+
+      .invoice-table th, .invoice-table td {
+        border: 0.6pt solid #b9c3da !important;
+        padding: 4pt 3pt !important;
+        word-break: break-word;
+        text-align: left;
+      }
+
+      .invoice-table th {
+        background: #0d2a5c !important;
+        color: #ffffff !important;
+        font-size: 7.5pt !important;
+        letter-spacing: 0.2pt;
+        text-transform: uppercase;
+        font-weight: 700 !important;
+      }
+
+      .invoice-table tbody tr:nth-child(even) td { background: #f4f8f7 !important; }
+
+      /* keep header row repeating across pages */
+      .invoice-table thead { display: table-header-group; }
+      .invoice-table tfoot { display: table-footer-group; }
+
+      /* narrower numeric columns so 10 columns fit portrait width */
+      .invoice-table th:nth-child(1), .invoice-table td:nth-child(1) { width: 5%; text-align: center; }
+      .invoice-table th:nth-child(2), .invoice-table td:nth-child(2) { width: 10%; }
+      .invoice-table th:nth-child(3), .invoice-table td:nth-child(3) { width: 13%; }
+      .invoice-table th:nth-child(4), .invoice-table td:nth-child(4) { width: 10%; }
+      .invoice-table th:nth-child(5), .invoice-table td:nth-child(5),
+      .invoice-table th:nth-child(7), .invoice-table td:nth-child(7),
+      .invoice-table th:nth-child(8), .invoice-table td:nth-child(8),
+      .invoice-table th:nth-child(9), .invoice-table td:nth-child(9),
+      .invoice-table th:nth-child(10), .invoice-table td:nth-child(10) { width: 10.4%; text-align: right; }
+      .invoice-table th:nth-child(6), .invoice-table td:nth-child(6) { width: 7%; text-align: right; }
+
+      .invoice-summary {
+        width: min(300px, 62%) !important;
+        margin-top: 12pt !important;
+        border: 0.75pt solid #cfd8ea !important;
+        border-radius: 6pt;
+      }
+
+      .invoice-summary-row {
+        padding: 6pt 9pt !important;
+        font-size: 8.5pt !important;
+        background: #ffffff !important;
+      }
+      .invoice-summary-row.total {
+        background: #eaf2ff !important;
+        color: #0d2a5c !important;
+        font-size: 9.5pt !important;
+      }
+
+      .invoice-notes {
+        margin-top: 12pt !important;
+        padding: 9pt 10pt !important;
+        border: 0.75pt solid #dfe6f2 !important;
+        background: #f8fafc !important;
+        color: #37436b !important;
+        border-radius: 6pt;
+        font-size: 7.8pt !important;
+        font-weight: 500 !important;
+        line-height: 1.55;
+      }
+
+      .print-signature {
+        display: flex !important;
+        justify-content: flex-end;
+        margin-top: 34pt !important;
+      }
+      .print-signature-box {
+        text-align: center;
+        font-size: 9pt;
+        color: #14213d;
+      }
+      .print-signature-img {
+        display: block;
+        max-height: 60pt;
+        max-width: 160pt;
+        margin: 0 auto 2pt;
+        object-fit: contain;
+      }
+      .print-signature-line {
+        margin-top: 26pt;
+        padding-top: 4pt;
+        border-top: 0.75pt solid #14213d;
+        font-size: 7.5pt;
+        color: #6b7494;
+        letter-spacing: 0.3pt;
+        text-transform: uppercase;
+      }
+
+      .print-footnote {
+        display: block !important;
+        margin-top: 16pt;
+        text-align: center;
+        font-size: 7pt;
+        color: #8891ac;
+        font-style: italic;
+      }
+
+      button { display: none !important; }
+      tr, td, th { page-break-inside: avoid; }
+      .invoice-summary, .print-signature { page-break-inside: avoid; }
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid, .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr 1fr; }
+      .invoice-header, .invoice-meta-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .hero-grid, .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .hero-box { padding: 26px; }
+      .nav { justify-content: center; }
+      .nav-links { justify-content: center; }
+      .button-row button { width: 100%; }
+      .invoice-header h3 { font-size: 1.5rem; }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div id="adminLoginOverlay" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0f2a3f,#12403c); display:flex; align-items:center; justify-content:center; font-family:inherit;">
+    <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
+      <div style="font-size:1.4rem; font-weight:800; margin-bottom:6px; color:#0f2a3f;">LAXMAN TELECOM</div>
+      <div style="font-size:0.85rem; color:#64748b; margin-bottom:4px;">Settlement Dashboard</div>
+      <div id="adminAuthStatus" style="font-size:0.9rem; color:#12403c; margin-top:16px;">Checking admin login...</div>
+    </div>
+  </div>
+  <div id="appRoot" style="display:none;">
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" class="brand-mark" style="object-fit:cover;">
+        <div>
+          <h1>Telecom Settlement & Invoice Dashboard</h1>
+          <p>Private local dashboard • Date-wise reports • Operator-wise settlement • Commission tracking</p>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#entry">Add Entry</a>
+        <a href="#records">Records</a>
+        <a href="#invoiceSection">Invoice</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-box">
+        <div class="hero-grid">
+          <div>
+            <span class="badge">Jio • Airtel • BSNL • VI • Any operator</span>
+            <h2 id="dashboardTitle">Laxman Telecom Settlement Dashboard</h2>
+            <p>This polished private dashboard is made for telecom recharge and vendor settlement work. Add date-wise recharge entries, operator details, commission percentage, paid details, and settlement basis. Then generate a styled invoice preview and open WhatsApp with a ready message for sending.</p>
+            <div class="pill-row">
+              <span class="pill">Date-wise report</span>
+              <span class="pill">Commission earned detail</span>
+              <span class="pill">Operator filter</span>
+              <span class="pill">Paid / Due tracking</span>
+              <span class="pill">WhatsApp prefilled message</span>
+            </div>
+          </div>
+          <div class="hero-card">
+            <h3>Profile Setup</h3>
+            <label for="shopName">Shop Name</label>
+            <input id="shopName" type="text" value="LAXMAN TELECOM" placeholder="Enter shop name" />
+            <label for="shopAddress" style="margin-top:12px;">Shop Address</label>
+            <input id="shopAddress" type="text" value="Puneet Nagar, Ludhiana, Punjab 141008" placeholder="Enter address" />
+            <label for="shopPhone" style="margin-top:12px;">Phone</label>
+            <input id="shopPhone" type="text" value="+91 9041880370" placeholder="Enter phone" />
+            <label for="shopEmail" style="margin-top:12px;">Email</label>
+            <input id="shopEmail" type="text" value="laxmantelecom03@gmail.com" placeholder="Enter email" />
+            <div class="button-row">
+              <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
+              <button class="btn-secondary" id="resetDashboardBtn">Reset Dashboard</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="overview" class="hide-while-printing">
+    <div class="container">
+      <div class="section-head">
+        <h3>Overview</h3>
+        <p>Track gross recharge value, total commission earned, vendor payable amount, paid amount, due amount, and total records instantly.</p>
+      </div>
+      <div class="grid-5">
+        <div class="card">
+          <div class="icon-box i1">₹</div>
+          <div class="value" id="grossValue">₹0.00</div>
+          <div class="label-small">Gross recharge value</div>
+        </div>
+        <div class="card">
+          <div class="icon-box i5">%</div>
+          <div class="value" id="commissionValue">₹0.00</div>
+          <div class="label-small">Total commission earned</div>
+        </div>
+        <div class="card">
+          <div class="icon-box i2">=</div>
+          <div class="value" id="payableValue">₹0.00</div>
+          <div class="label-small">Total payable to vendor</div>
+        </div>
+        <div class="card">
+          <div class="icon-box i3">✓</div>
+          <div class="value" id="paidValue">₹0.00</div>
+          <div class="label-small">Total paid amount</div>
+        </div>
+        <div class="card">
+          <div class="icon-box i4">!</div>
+          <div class="value" id="dueValue">₹0.00</div>
+          <div class="label-small">Total due amount</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hide-while-printing">
+    <div class="container">
+      <div class="grid-4">
+        <div class="card">
+          <h4>Operator-wise Count</h4>
+          <div class="summary-list" id="operatorCountSummary"></div>
+        </div>
+        <div class="card">
+          <h4>Operator-wise Gross</h4>
+          <div class="summary-list" id="operatorGrossSummary"></div>
+        </div>
+        <div class="card">
+          <h4>Operator-wise Commission</h4>
+          <div class="summary-list" id="operatorCommissionSummary"></div>
+        </div>
+        <div class="card">
+          <h4>Report Status</h4>
+          <div class="value" id="reportStatusValue">Ready</div>
+          <div class="label-small" id="reportStatusLabel">Filtered records will be used for the invoice and WhatsApp message.</div>
+          <div class="warn-note">WhatsApp send works as a prefilled message opener. PDF/file attachment still needs to be added manually in WhatsApp.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="entry" class="hide-while-printing">
+    <div class="container">
+      <div class="section-head">
+        <h3>Add Recharge / Settlement Entry</h3>
+        <p>Add one recharge line at a time. The dashboard automatically calculates commission earned, vendor payable amount, paid amount, and due amount.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Entry Form</h4>
+          <label for="entryDate">Date</label>
+          <input id="entryDate" type="date" />
+
+          <label for="entryMobile" style="margin-top:12px;">Mobile Number</label>
+          <input id="entryMobile" type="text" placeholder="Enter mobile number" />
+
+          <label for="entryOperator" style="margin-top:12px;">Operator</label>
+          <select id="entryOperator">
+            <option value="Jio">Jio</option>
+            <option value="Airtel">Airtel</option>
+            <option value="BSNL">BSNL</option>
+            <option value="VI">VI</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <label for="entryAmount" style="margin-top:12px;">Recharge Amount (₹)</label>
+          <input id="entryAmount" type="number" min="0" step="0.01" placeholder="Enter amount" />
+
+          <label for="entryVendor" style="margin-top:12px;">Supplier / Vendor</label>
+          <input id="entryVendor" type="text" placeholder="Example: Ankit" />
+
+          <label for="entryCommission" style="margin-top:12px;">Commission %</label>
+          <input id="entryCommission" type="number" min="0" max="100" step="0.01" value="3" placeholder="Enter commission percent" />
+
+          <label for="entryPaymentStatus" style="margin-top:12px;">Payment Status</label>
+          <select id="entryPaymentStatus">
+            <option value="PAID">PAID</option>
+            <option value="UNPAID">UNPAID</option>
+            <option value="PARTIAL">PARTIAL</option>
+          </select>
+
+          <label for="entryPaidAmount" style="margin-top:12px;">Paid Amount (₹)</label>
+          <input id="entryPaidAmount" type="number" min="0" step="0.01" value="0" placeholder="Enter paid amount" />
+
+          <label for="entryPaidDate" style="margin-top:12px;">Paid Date</label>
+          <input id="entryPaidDate" type="date" />
+
+          <label for="entryPaymentMode" style="margin-top:12px;">Payment Mode</label>
+          <select id="entryPaymentMode">
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Mixed">Mixed</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <label for="entryPurpose" style="margin-top:12px;">Description / Work Note</label>
+          <input id="entryPurpose" type="text" placeholder="Example: Recharge procured from vendor" />
+
+          <label for="entryPaymentNote" style="margin-top:12px;">Payment Note</label>
+          <input id="entryPaymentNote" type="text" placeholder="Example: Paid in full by UPI" />
+
+          <div class="button-row">
+            <button class="btn-primary" id="addEntryBtn">Add Entry</button>
+            <button class="btn-secondary" id="clearFormBtn" type="button">Clear Form</button>
+          </div>
+          <div class="mini-note">Formula used: Commission Earned = Amount × Commission%. Vendor Payable = Amount − Commission Earned. Due = Payable − Paid Amount.</div>
+        </div>
+
+        <div class="card">
+          <h4>Report & Invoice Filters</h4>
+          <label for="reportVendor">Vendor Name</label>
+          <input id="reportVendor" type="text" value="Ankit Gupta" placeholder="Enter vendor name for invoice/report" />
+
+          <label for="reportFromDate" style="margin-top:12px;">From Date</label>
+          <input id="reportFromDate" type="date" />
+
+          <label for="reportToDate" style="margin-top:12px;">To Date</label>
+          <input id="reportToDate" type="date" />
+
+          <label for="reportOperator" style="margin-top:12px;">Operator Filter</label>
+          <select id="reportOperator">
+            <option value="All">All Operators</option>
+            <option value="Jio">Jio</option>
+            <option value="Airtel">Airtel</option>
+            <option value="BSNL">BSNL</option>
+            <option value="VI">VI</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <label for="reportPaymentStatus" style="margin-top:12px;">Payment Status</label>
+          <select id="reportPaymentStatus">
+            <option value="ALL">All Status</option>
+            <option value="PAID">PAID</option>
+            <option value="UNPAID">UNPAID</option>
+            <option value="PARTIAL">PARTIAL</option>
+          </select>
+
+          <label for="reportInvoiceNo" style="margin-top:12px;">Invoice Number (auto-generated)</label>
+          <input id="reportInvoiceNo" type="text" placeholder="Auto-filled - edit only if you want a custom number" />
+
+          <label for="reportInvoiceStatus" style="margin-top:12px;">Invoice Status (shown on invoice)</label>
+          <select id="reportInvoiceStatus">
+            <option value="AUTO">Auto (based on Payment Status filter above)</option>
+            <option value="PAID">PAID</option>
+            <option value="UNPAID">UNPAID</option>
+            <option value="PARTIAL">PARTIAL</option>
+          </select>
+
+          <div class="button-row">
+            <button class="btn-primary" id="applyReportBtn">Apply Report Filters</button>
+            <button class="btn-alert" id="generateInvoiceBtn">Refresh Invoice Preview</button>
+          </div>
+          <div class="warn-note">The invoice style below is based on your uploaded recharge purchase invoice pattern, including vendor, operator, settlement basis, totals, and payment status.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="records" class="hide-while-printing">
+    <div class="container">
+      <div class="section-head">
+        <h3>Date-wise Recharge Records</h3>
+        <p>All entries are stored locally in your browser. Search, filter, and delete any row whenever needed.</p>
+      </div>
+      <div class="card">
+        <div class="grid-4">
+          <div>
+            <label for="searchInput">Search</label>
+            <input id="searchInput" type="text" placeholder="Search mobile / vendor / note" />
+          </div>
+          <div>
+            <label for="tableOperatorFilter">Operator Filter</label>
+            <select id="tableOperatorFilter">
+              <option value="All">All Operators</option>
+              <option value="Jio">Jio</option>
+              <option value="Airtel">Airtel</option>
+              <option value="BSNL">BSNL</option>
+              <option value="VI">VI</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="tableFromDate">From Date</label>
+            <input id="tableFromDate" type="date" />
+          </div>
+          <div>
+            <label for="tableToDate">To Date</label>
+            <input id="tableToDate" type="date" />
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="btn-secondary" id="clearTableFiltersBtn" type="button">Clear Table Filters</button>
+          <button class="btn-alert" id="exportJsonBtn" type="button">Export Backup</button>
+          <button class="btn-secondary" id="importJsonBtn" type="button">Import Backup</button>
+          <input type="file" id="importJsonInput" accept="application/json" style="display:none;" />
+          <button class="btn-danger" id="deleteAllBtn" type="button">Delete All Entries</button>
+        </div>
+        <div style="margin-top:18px;" class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Mobile Number</th>
+                <th>Operator</th>
+                <th>Vendor</th>
+                <th>Amount</th>
+                <th>Commission %</th>
+                <th>Commission Earned</th>
+                <th>Vendor Payable</th>
+                <th>Paid Amount</th>
+                <th>Due Amount</th>
+                <th>Status</th>
+                <th>Paid Date</th>
+                <th>Mode</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTableBody"></tbody>
+          </table>
+        </div>
+        <div id="emptyState" class="empty-box" style="margin-top:14px; display:none;">No records found. Add recharge entries to start tracking.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="analysis" class="hide-while-printing">
+    <div class="container">
+      <div class="section-head">
+        <h3>Analysis</h3>
+        <p>Understand which operator is generating more volume, more commission, and how much amount is still due.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h4>Commission by Operator</h4>
+          <div class="analysis-grid" id="commissionAnalysis"></div>
+        </div>
+        <div class="card">
+          <h4>Gross Recharge by Operator</h4>
+          <div class="analysis-grid" id="grossAnalysis"></div>
+        </div>
+        <div class="card">
+          <h4>Due by Operator</h4>
+          <div class="analysis-grid" id="dueAnalysis"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="invoiceSection">
+    <div class="container">
+      <div class="section-head">
+        <h3>Invoice Preview</h3>
+        <p>Generate a printable settlement invoice for the currently selected vendor, date range, operator filter, and payment details.</p>
+      </div>
+      <div class="button-row hide-while-printing" style="justify-content:center; margin-bottom:16px;">
+        <button class="btn-primary" id="printInvoiceBtn">Print / Save as PDF</button>
+        <button class="btn-alert" id="whatsappInvoiceBtn">Save PDF &amp; Send on WhatsApp</button>
+      </div>
+      <div class="invoice-preview" id="invoicePreview">
+        <div class="invoice-watermark">
+          <img src="laxman-telecom-icon-round.png" alt="">
+          <span>LAXMAN TELECOM</span>
+        </div>
+        <div class="invoice-header">
+          <div>
+            <div class="invoice-brand-row">
+              <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+              <h3 id="invoiceShopName" style="margin:0;">LAXMAN TELECOM</h3>
+            </div>
+            <p id="invoiceShopAddress">Puneet Nagar, Ludhiana, Punjab 141008</p>
+            <p><span id="invoiceShopPhone">+91 9041880370</span> | <span id="invoiceShopEmail">laxmantelecom03@gmail.com</span></p>
+          </div>
+          <div>
+            <span class="invoice-title-badge">Recharge Settlement</span>
+            <p style="font-size:1.6rem; font-weight:800; margin:0 0 10px;">PURCHASE INVOICE</p>
+            <p><strong>Invoice No.:</strong> <span id="invoiceNoText">LTX-RPI-2026-0408</span></p>
+            <p><strong>Date Range:</strong> <span id="invoiceIssueDate">--</span></p>
+            <p><strong>Payment Status:</strong> <span id="invoicePaymentStatus">PAID</span></p>
+          </div>
+        </div>
+
+        <div class="invoice-meta-grid">
+          <div class="invoice-meta-item">
+            <div class="label-small">Supplier / Vendor</div>
+            <div class="value" style="font-size:1.2rem; margin-top:8px;" id="invoiceVendor">Ankit Gupta</div>
+          </div>
+          <div class="invoice-meta-item">
+            <div class="label-small">Operator</div>
+            <div class="value" style="font-size:1.2rem; margin-top:8px;" id="invoiceOperator">All Operators</div>
+          </div>
+          <div class="invoice-meta-item">
+            <div class="label-small">Settlement Basis</div>
+            <div class="value" style="font-size:1rem; margin-top:8px;" id="invoiceSettlementBasis">After Commission Deduction</div>
+          </div>
+          <div class="invoice-meta-item">
+            <div class="label-small">Paid Details</div>
+            <div class="value" style="font-size:1rem; margin-top:8px;" id="invoicePaidDetails">Paid Amount / Due Amount</div>
+          </div>
+        </div>
+
+        <div class="invoice-body">
+          <div class="invoice-purpose" id="invoicePurposeText">Statement Purpose: Settlement of recharge entries procured from vendor on behalf of the shop, with commission earned deducted from the gross recharge value.</div>
+          <div class="table-wrap" style="border:none;">
+            <table class="invoice-table">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Date</th>
+                  <th>Mobile Number</th>
+                  <th>Operator</th>
+                  <th>Amount (INR)</th>
+                  <th>Commission %</th>
+                  <th>Commission Earned</th>
+                  <th>Payable</th>
+                  <th>Paid</th>
+                  <th>Due</th>
+                </tr>
+              </thead>
+              <tbody id="invoiceTableBody"></tbody>
+            </table>
+          </div>
+          <div id="invoiceEmptyState" class="empty-box" style="margin-top:14px; display:none;">No invoice data available for the current filters.</div>
+
+          <div class="invoice-summary">
+            <div class="invoice-summary-row"><span>Total Recharge Value</span><strong id="invoiceGross">INR 0.00</strong></div>
+            <div class="invoice-summary-row"><span>Less: Commission Earned</span><strong id="invoiceCommission">- INR 0.00</strong></div>
+            <div class="invoice-summary-row"><span>Amount Payable to Vendor</span><strong id="invoicePayable">INR 0.00</strong></div>
+            <div class="invoice-summary-row"><span>Total Paid Amount</span><strong id="invoicePaid">INR 0.00</strong></div>
+            <div class="invoice-summary-row total"><span>Total Due Amount</span><strong id="invoiceDue">INR 0.00</strong></div>
+          </div>
+
+          <div class="invoice-notes" id="invoiceNotes">
+            - Commission earned is automatically calculated from each line entry.<br>
+            - Final settlement amount is shown after deducting commission from total recharge value.<br>
+            - This document is prepared for vendor settlement and internal accounting reference.
+          </div>
+
+          <div class="print-footnote">This is a computer-generated invoice.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      Telecom Settlement & Invoice Dashboard • Private Local File • Commission, operator, paid, due, and date-wise report tracker
+    </div>
+  </footer>
+
+  <script>
+    const shopName = document.getElementById('shopName');
+    const shopAddress = document.getElementById('shopAddress');
+    const shopPhone = document.getElementById('shopPhone');
+    const shopEmail = document.getElementById('shopEmail');
+
+    const entryDate = document.getElementById('entryDate');
+    const entryMobile = document.getElementById('entryMobile');
+    const entryOperator = document.getElementById('entryOperator');
+    const entryAmount = document.getElementById('entryAmount');
+    const entryVendor = document.getElementById('entryVendor');
+    const entryCommission = document.getElementById('entryCommission');
+    const entryPaymentStatus = document.getElementById('entryPaymentStatus');
+    const entryPaidAmount = document.getElementById('entryPaidAmount');
+    const entryPaidDate = document.getElementById('entryPaidDate');
+    const entryPaymentMode = document.getElementById('entryPaymentMode');
+    const entryPurpose = document.getElementById('entryPurpose');
+    const entryPaymentNote = document.getElementById('entryPaymentNote');
+
+    const reportVendor = document.getElementById('reportVendor');
+    const reportFromDate = document.getElementById('reportFromDate');
+    const reportToDate = document.getElementById('reportToDate');
+    const reportOperator = document.getElementById('reportOperator');
+    const reportPaymentStatus = document.getElementById('reportPaymentStatus');
+    const reportInvoiceStatus = document.getElementById('reportInvoiceStatus');
+    const INVOICE_COUNTER_KEY = 'telecomInvoiceCounter';
+
+    function generateInvoiceNumber() {
+      let seq = parseInt(localStorage.getItem(INVOICE_COUNTER_KEY) || '0', 10);
+      if (isNaN(seq)) seq = 0;
+      seq += 1;
+      localStorage.setItem(INVOICE_COUNTER_KEY, String(seq));
+      const paddedSeq = String(seq).padStart(4, '0');
+      return `LTRPI${paddedSeq}`;
+    }
+
+    function ensureInvoiceNumber() {
+      if (!reportInvoiceNo.value.trim()) {
+        reportInvoiceNo.value = generateInvoiceNumber();
+      }
+    }
+
+    function syncInvoiceCounterFromField() {
+      const match = reportInvoiceNo.value.match(/(\d+)\s*$/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num)) {
+          localStorage.setItem(INVOICE_COUNTER_KEY, String(num));
+        }
+      }
+    }
+
+    const reportInvoiceNo = document.getElementById('reportInvoiceNo');
+
+    const searchInput = document.getElementById('searchInput');
+    const tableOperatorFilter = document.getElementById('tableOperatorFilter');
+    const tableFromDate = document.getElementById('tableFromDate');
+    const tableToDate = document.getElementById('tableToDate');
+
+    const recordsTableBody = document.getElementById('recordsTableBody');
+    const emptyState = document.getElementById('emptyState');
+
+    function formatMoney(value) {
+      return '₹' + Number(value || 0).toFixed(2);
+    }
+
+    function formatMoneyNoSymbol(value) {
+      return Number(value || 0).toFixed(2);
+    }
+
+    function getTodayIso() {
+      const d = new Date();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return d.getFullYear() + '-' + month + '-' + day;
+    }
+
+    const FIREBASE_DATA_PATH = 'telecomSettlement';
+    let cachedRecords = [];
+    let cachedProfile = {};
+
+    function applyProfileToForm(profile) {
+      shopName.value = profile.shopName || 'LAXMAN TELECOM';
+      shopAddress.value = profile.shopAddress || '';
+      shopPhone.value = profile.shopPhone || '';
+      shopEmail.value = profile.shopEmail || '';
+      updateProfileTitle();
+    }
+
+    function saveProfile() {
+      const profile = {
+        shopName: shopName.value.trim(),
+        shopAddress: shopAddress.value.trim(),
+        shopPhone: shopPhone.value.trim(),
+        shopEmail: shopEmail.value.trim()
+      };
+      db.ref(FIREBASE_DATA_PATH + '/profile').set(profile)
+        .then(() => alert('Profile saved to your account (synced to the cloud).'))
+        .catch((err) => alert('Could not save profile: ' + err.message));
+    }
+
+    function updateProfileTitle() {
+      document.getElementById('dashboardTitle').textContent = (shopName.value.trim() || 'Telecom') + ' Settlement Dashboard';
+    }
+
+    function getRecords() {
+      return cachedRecords;
+    }
+
+    function startFirebaseSync() {
+      db.ref(FIREBASE_DATA_PATH + '/records').on('value', (snap) => {
+        const val = snap.val() || {};
+        cachedRecords = Object.keys(val)
+          .map((key) => ({ id: key, ...val[key] }))
+          .sort((a, b) => (b.id > a.id ? 1 : -1));
+        renderAll();
+      });
+
+      db.ref(FIREBASE_DATA_PATH + '/profile').on('value', (snap) => {
+        cachedProfile = snap.val() || {};
+        applyProfileToForm(cachedProfile);
+        refreshInvoicePreview();
+      });
+    }
+
+    function clearForm() {
+      entryDate.value = getTodayIso();
+      entryMobile.value = '';
+      entryOperator.value = 'Jio';
+      entryAmount.value = '';
+      entryVendor.value = reportVendor.value.trim() || 'Ankit Gupta';
+      entryCommission.value = '3';
+      entryPaymentStatus.value = 'PAID';
+      entryPaidAmount.value = '0';
+      entryPaidDate.value = '';
+      entryPaymentMode.value = 'Cash';
+      entryPurpose.value = 'Recharge procured from vendor';
+      entryPaymentNote.value = '';
+    }
+
+    function calculateLine(amount, commissionPercent, paidAmount) {
+      const commissionEarned = Number(amount) * Number(commissionPercent) / 100;
+      const payable = Number(amount) - commissionEarned;
+      const due = Math.max(payable - Number(paidAmount || 0), 0);
+      return { commissionEarned, payable, due };
+    }
+
+    function normalizePaidAmount(paymentStatus, payable, paidAmountInput) {
+      const paid = Number(paidAmountInput || 0);
+      if (paymentStatus === 'PAID') return Number(payable.toFixed(2));
+      if (paymentStatus === 'UNPAID') return 0;
+      return Math.min(Math.max(paid, 0), payable);
+    }
+
+    function addEntry() {
+      const date = entryDate.value;
+      const mobile = entryMobile.value.trim();
+      const operator = entryOperator.value;
+      const amount = parseFloat(entryAmount.value);
+      const vendor = entryVendor.value.trim();
+      const commissionPercent = parseFloat(entryCommission.value);
+      const paymentStatus = entryPaymentStatus.value;
+      const paidDate = entryPaidDate.value;
+      const paymentMode = entryPaymentMode.value;
+      const purpose = entryPurpose.value.trim();
+      const paymentNote = entryPaymentNote.value.trim();
+
+      if (!date || !mobile || !vendor || !purpose || isNaN(amount) || amount <= 0 || isNaN(commissionPercent) || commissionPercent < 0) {
+        alert('Please fill all required fields with valid values.');
+        return;
+      }
+
+      const pre = calculateLine(amount, commissionPercent, 0);
+      const paidAmount = normalizePaidAmount(paymentStatus, pre.payable, parseFloat(entryPaidAmount.value || '0'));
+      const line = calculateLine(amount, commissionPercent, paidAmount);
+
+      const id = Date.now().toString();
+      const recordData = {
+        date,
+        mobile,
+        operator,
+        amount,
+        vendor,
+        commissionPercent,
+        commissionEarned: Number(line.commissionEarned.toFixed(2)),
+        payable: Number(line.payable.toFixed(2)),
+        paidAmount: Number(paidAmount.toFixed(2)),
+        dueAmount: Number(line.due.toFixed(2)),
+        paymentStatus,
+        paidDate,
+        paymentMode,
+        purpose,
+        paymentNote
+      };
+
+      db.ref(FIREBASE_DATA_PATH + '/records/' + id).set(recordData)
+        .catch((err) => alert('Could not save this entry to the cloud: ' + err.message));
+
+      sendEntryToWhatsApp({ mobile, operator, amount });
+      clearForm();
+    }
+
+    function sendEntryToWhatsApp(entry) {
+      const NOTIFY_NUMBER = '919056548781';
+      const text = `Mobile Number: ${entry.mobile}\nOperator: ${entry.operator}\nRecharge Amount: ₹${entry.amount}`;
+      const url = `https://wa.me/${NOTIFY_NUMBER}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    function getFilteredTableRecords() {
+      const search = searchInput.value.trim().toLowerCase();
+      const operator = tableOperatorFilter.value;
+      const fromDate = tableFromDate.value;
+      const toDate = tableToDate.value;
+
+      return getRecords().filter(record => {
+        const hay = [
+          record.mobile,
+          record.vendor,
+          record.purpose,
+          record.paymentNote || '',
+          record.paymentMode || ''
+        ].join(' ').toLowerCase();
+        const matchesSearch = !search || hay.includes(search);
+        const matchesOperator = operator === 'All' || record.operator === operator;
+        const matchesFrom = !fromDate || record.date >= fromDate;
+        const matchesTo = !toDate || record.date <= toDate;
+        return matchesSearch && matchesOperator && matchesFrom && matchesTo;
+      });
+    }
+
+    function getReportRecords() {
+      const vendor = reportVendor.value.trim().toLowerCase();
+      const fromDate = reportFromDate.value;
+      const toDate = reportToDate.value;
+      const operator = reportOperator.value;
+      const paymentStatus = reportPaymentStatus.value;
+
+      return getRecords().filter(record => {
+        const matchesVendor = !vendor || record.vendor.toLowerCase() === vendor;
+        const matchesFrom = !fromDate || record.date >= fromDate;
+        const matchesTo = !toDate || record.date <= toDate;
+        const matchesOperator = operator === 'All' || record.operator === operator;
+        const matchesStatus = paymentStatus === 'ALL' || record.paymentStatus === paymentStatus;
+        return matchesVendor && matchesFrom && matchesTo && matchesOperator && matchesStatus;
+      });
+    }
+
+    function getStatusTag(status) {
+      if (status === 'PAID') return '<span class="tag paid">PAID</span>';
+      if (status === 'PARTIAL') return '<span class="tag partial">PARTIAL</span>';
+      return '<span class="tag unpaid">UNPAID</span>';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function renderTable() {
+      const records = getFilteredTableRecords();
+      recordsTableBody.innerHTML = '';
+      if (!records.length) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      records.forEach(record => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${record.date}</td>
+          <td>${record.mobile}</td>
+          <td>${record.operator}</td>
+          <td>${record.vendor}</td>
+          <td>${formatMoney(record.amount)}</td>
+          <td>${Number(record.commissionPercent).toFixed(2)}%</td>
+          <td>${formatMoney(record.commissionEarned)}</td>
+          <td>${formatMoney(record.payable)}</td>
+          <td>${formatMoney(record.paidAmount)}</td>
+          <td>${formatMoney(record.dueAmount)}</td>
+          <td>${getStatusTag(record.paymentStatus)}</td>
+          <td>${record.paidDate || '-'}</td>
+          <td>${record.paymentMode || '-'}</td>
+          <td>${escapeHtml(record.purpose)}${record.paymentNote ? '<br><span style="color:#6b7280;font-weight:700;">Note: ' + escapeHtml(record.paymentNote) + '</span>' : ''}</td>
+          <td><button class="btn-danger btn-small" onclick="deleteEntry('${record.id}')">Delete</button></td>
+        `;
+        recordsTableBody.appendChild(tr);
+      });
+    }
+
+    function calculateTotals(records) {
+      let gross = 0;
+      let commission = 0;
+      let payable = 0;
+      let paid = 0;
+      let due = 0;
+      records.forEach(record => {
+        gross += Number(record.amount);
+        commission += Number(record.commissionEarned);
+        payable += Number(record.payable);
+        paid += Number(record.paidAmount || 0);
+        due += Number(record.dueAmount || 0);
+      });
+      return { gross, commission, payable, paid, due };
+    }
+
+    function updateToday() {
+      const now = new Date();
+      const todayEl = document.getElementById('todayValue');
+      if (todayEl) {
+        todayEl.textContent = now.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
+      }
+    }
+
+    function renderOverview() {
+      const allRecords = getRecords();
+      const totals = calculateTotals(allRecords);
+      document.getElementById('grossValue').textContent = formatMoney(totals.gross);
+      document.getElementById('commissionValue').textContent = formatMoney(totals.commission);
+      document.getElementById('payableValue').textContent = formatMoney(totals.payable);
+      document.getElementById('paidValue').textContent = formatMoney(totals.paid);
+      document.getElementById('dueValue').textContent = formatMoney(totals.due);
+    }
+
+    function buildOperatorStats(records) {
+      const stats = {};
+      records.forEach(record => {
+        if (!stats[record.operator]) {
+          stats[record.operator] = { count: 0, gross: 0, commission: 0, due: 0 };
+        }
+        stats[record.operator].count += 1;
+        stats[record.operator].gross += Number(record.amount);
+        stats[record.operator].commission += Number(record.commissionEarned);
+        stats[record.operator].due += Number(record.dueAmount || 0);
+      });
+      return stats;
+    }
+
+    function renderSummaryBoxes() {
+      const stats = buildOperatorStats(getRecords());
+      const countBox = document.getElementById('operatorCountSummary');
+      const grossBox = document.getElementById('operatorGrossSummary');
+      const commissionBox = document.getElementById('operatorCommissionSummary');
+      countBox.innerHTML = '';
+      grossBox.innerHTML = '';
+      commissionBox.innerHTML = '';
+
+      const keys = Object.keys(stats);
+      if (!keys.length) {
+        countBox.innerHTML = '<div class="empty-box">No operator records yet.</div>';
+        grossBox.innerHTML = '<div class="empty-box">No operator records yet.</div>';
+        commissionBox.innerHTML = '<div class="empty-box">No operator records yet.</div>';
+        return;
+      }
+
+      keys.sort().forEach(operator => {
+        const s = stats[operator];
+        countBox.innerHTML += `<div class="summary-row"><span>${operator}</span><strong>${s.count}</strong></div>`;
+        grossBox.innerHTML += `<div class="summary-row"><span>${operator}</span><strong>${formatMoney(s.gross)}</strong></div>`;
+        commissionBox.innerHTML += `<div class="summary-row"><span>${operator}</span><strong>${formatMoney(s.commission)}</strong></div>`;
+      });
+    }
+
+    function renderAnalysis() {
+      const stats = buildOperatorStats(getRecords());
+      const commissionAnalysis = document.getElementById('commissionAnalysis');
+      const grossAnalysis = document.getElementById('grossAnalysis');
+      const dueAnalysis = document.getElementById('dueAnalysis');
+      commissionAnalysis.innerHTML = '';
+      grossAnalysis.innerHTML = '';
+      dueAnalysis.innerHTML = '';
+      const items = Object.entries(stats);
+
+      if (!items.length) {
+        commissionAnalysis.innerHTML = '<div class="empty-box">No data yet.</div>';
+        grossAnalysis.innerHTML = '<div class="empty-box">No data yet.</div>';
+        dueAnalysis.innerHTML = '<div class="empty-box">No data yet.</div>';
+        return;
+      }
+
+      [...items].sort((a,b) => b[1].commission - a[1].commission).forEach(([operator, stat]) => {
+        const c1 = document.createElement('div');
+        c1.className = 'analysis-item';
+        c1.innerHTML = `<span>${operator}</span><strong>${formatMoney(stat.commission)}</strong>`;
+        commissionAnalysis.appendChild(c1);
+      });
+
+      [...items].sort((a,b) => b[1].gross - a[1].gross).forEach(([operator, stat]) => {
+        const c2 = document.createElement('div');
+        c2.className = 'analysis-item';
+        c2.innerHTML = `<span>${operator}</span><strong>${formatMoney(stat.gross)}</strong>`;
+        grossAnalysis.appendChild(c2);
+      });
+
+      [...items].sort((a,b) => b[1].due - a[1].due).forEach(([operator, stat]) => {
+        const c3 = document.createElement('div');
+        c3.className = 'analysis-item';
+        c3.innerHTML = `<span>${operator}</span><strong>${formatMoney(stat.due)}</strong>`;
+        dueAnalysis.appendChild(c3);
+      });
+    }
+
+    function averageCommission(records) {
+      if (!records.length) return 0;
+      const total = records.reduce((sum, record) => sum + Number(record.commissionPercent), 0);
+      return total / records.length;
+    }
+
+    function formatDateDDMMYYYY(isoDate) {
+      if (!isoDate) return '';
+      const [year, month, day] = isoDate.split('-');
+      return `${day}-${month}-${year}`;
+    }
+
+    function refreshInvoicePreview() {
+      const records = getReportRecords();
+      const tableBody = document.getElementById('invoiceTableBody');
+      const invoiceEmptyState = document.getElementById('invoiceEmptyState');
+      const totals = calculateTotals(records);
+      const operatorText = reportOperator.value === 'All' ? 'All Operators' : reportOperator.value;
+      const vendorName = reportVendor.value.trim() || 'Vendor';
+      const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
+      const paymentStatusText = reportInvoiceStatus.value !== 'AUTO'
+        ? reportInvoiceStatus.value
+        : (reportPaymentStatus.value === 'ALL' ? 'MIXED' : reportPaymentStatus.value);
+      const invoiceFromDate = reportFromDate.value ? formatDateDDMMYYYY(reportFromDate.value) : 'DD-MM-YYYY';
+      const invoiceToDate = reportToDate.value ? formatDateDDMMYYYY(reportToDate.value) : 'DD-MM-YYYY';
+      const settlementBasis = records.length
+        ? `${(100 - averageCommission(records)).toFixed(2)}% After Commission`
+        : 'After Commission Deduction';
+
+      document.getElementById('invoiceShopName').textContent = shopName.value.trim() || 'LAXMAN TELECOM';
+      document.getElementById('invoiceShopAddress').textContent = shopAddress.value.trim() || '-';
+      document.getElementById('invoiceShopPhone').textContent = shopPhone.value.trim() || '-';
+      document.getElementById('invoiceShopEmail').textContent = shopEmail.value.trim() || '-';
+      document.getElementById('invoiceVendor').textContent = vendorName;
+      document.getElementById('invoiceIssueDate').textContent = `${invoiceFromDate} to ${invoiceToDate}`;
+      document.getElementById('invoiceOperator').textContent = operatorText;
+      document.getElementById('invoiceSettlementBasis').textContent = settlementBasis;
+      document.getElementById('invoicePaidDetails').textContent = `Paid: INR ${formatMoneyNoSymbol(totals.paid)} | Due: INR ${formatMoneyNoSymbol(totals.due)}`;
+      document.getElementById('invoiceNoText').textContent = invoiceNo;
+      document.getElementById('invoicePaymentStatus').textContent = paymentStatusText;
+      document.getElementById('invoicePurposeText').textContent =
+        `Statement Purpose: Settlement of ${operatorText.toLowerCase()} recharge entries procured from ${vendorName} on behalf of ${shopName.value.trim() || 'the shop'}, with commission earned deducted from the gross recharge value.`;
+
+      tableBody.innerHTML = '';
+      if (!records.length) {
+        invoiceEmptyState.style.display = 'block';
+      } else {
+        invoiceEmptyState.style.display = 'none';
+        records.forEach((record, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${formatDateDDMMYYYY(record.date)}</td>
+            <td>${record.mobile}</td>
+            <td>${record.operator}</td>
+            <td>${formatMoneyNoSymbol(record.amount)}</td>
+            <td>${Number(record.commissionPercent).toFixed(2)}%</td>
+            <td>${formatMoneyNoSymbol(record.commissionEarned)}</td>
+            <td>${formatMoneyNoSymbol(record.payable)}</td>
+            <td>${formatMoneyNoSymbol(record.paidAmount)}</td>
+            <td>${formatMoneyNoSymbol(record.dueAmount)}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+
+      document.getElementById('invoiceGross').textContent = 'INR ' + formatMoneyNoSymbol(totals.gross);
+      document.getElementById('invoiceCommission').textContent = '- INR ' + formatMoneyNoSymbol(totals.commission);
+      document.getElementById('invoicePayable').textContent = 'INR ' + formatMoneyNoSymbol(totals.payable);
+      document.getElementById('invoicePaid').textContent = 'INR ' + formatMoneyNoSymbol(totals.paid);
+      document.getElementById('invoiceDue').textContent = 'INR ' + formatMoneyNoSymbol(totals.due);
+
+      document.getElementById('invoiceNotes').innerHTML = `
+        - Commission earned is automatically calculated from each line entry.<br>
+        - Final settlement amount is shown after deducting commission from total recharge value.<br>
+        - Paid and due details are based on the paid amount filled in each entry.<br>
+        - Payment status shown here: ${paymentStatusText}.<br>
+        - This document is prepared for vendor settlement and internal accounting reference.
+      `;
+
+      document.getElementById('reportStatusValue').textContent = records.length ? `${records.length} lines` : 'No Data';
+      document.getElementById('reportStatusLabel').textContent = records.length
+        ? `Invoice currently includes ${records.length} filtered entries for ${vendorName}.`
+        : 'No records match the current report filters.';
+    }
+
+    function exportJson() {
+      const data = {
+        profile: cachedProfile,
+        records: getRecords()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'telecom-settlement-backup.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importJson(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          const importedRecords = Array.isArray(data.records) ? data.records : [];
+          const importedProfile = data.profile && typeof data.profile === 'object' ? data.profile : null;
+
+          if (!importedRecords.length && !importedProfile) {
+            alert('This backup file has no records or profile data.');
+            return;
+          }
+
+          const existingIds = new Set(getRecords().map(r => r.id));
+          const updates = {};
+          let addedCount = 0;
+          importedRecords.forEach((r) => {
+            if (!r.id || existingIds.has(r.id)) return;
+            const { id, ...rest } = r;
+            updates[FIREBASE_DATA_PATH + '/records/' + id] = rest;
+            addedCount += 1;
+          });
+
+          if (importedProfile) {
+            updates[FIREBASE_DATA_PATH + '/profile'] = importedProfile;
+          }
+
+          const writePromise = Object.keys(updates).length ? db.ref().update(updates) : Promise.resolve();
+          writePromise
+            .then(() => alert(`Import complete. ${addedCount} record(s) merged into your cloud data.`))
+            .catch((err) => alert('Could not import this backup: ' + err.message));
+        } catch (err) {
+          alert('Could not read this backup file. Please make sure it is a valid exported JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function buildWhatsAppText() {
+      const vendorName = reportVendor.value.trim() || 'Vendor';
+      const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
+      const fromDate = reportFromDate.value ? formatDateDDMMYYYY(reportFromDate.value) : 'DD-MM-YYYY';
+      const toDate = reportToDate.value ? formatDateDDMMYYYY(reportToDate.value) : 'DD-MM-YYYY';
+
+      const shopNumberDigits = (shopPhone.value || '').replace(/[^0-9]/g, '');
+      const confirmBaseUrl = shopNumberDigits ? `https://wa.me/${shopNumberDigits}` : 'https://wa.me/';
+      const okLink = `${confirmBaseUrl}?text=${encodeURIComponent(`Invoice ${invoiceNo} - Confirmed, everything is correct.`)}`;
+      const wrongLink = `${confirmBaseUrl}?text=${encodeURIComponent(`Invoice ${invoiceNo} - There is a mismatch, please check.`)}`;
+
+      return `Hi ${vendorName}, your recharge settlement invoice ${invoiceNo} for ${fromDate} to ${toDate} is ready. Download to view your invoice.\n\n` +
+        `Kindly verify the details and tap the relevant option below:\n\n` +
+        `✅ Correct - No Issue: ${okLink}\n` +
+        `❌ Incorrect - There's a Mismatch: ${wrongLink}`;
+    }
+
+    function openWhatsAppMessage() {
+      const text = buildWhatsAppText();
+      const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+      window.open(url, '_blank');
+    }
+
+    async function generateInvoicePdfBlob() {
+      const node = document.getElementById('invoicePreview');
+      const canvas = await html2canvas(node, { scale: 1.5, useCORS: true, backgroundColor: '#ffffff' });
+      // PNG (lossless) keeps the subtle watermark visible - JPEG's
+      // compression was washing out the low-opacity watermark. File size
+      // stays reasonable since this is a single dynamically-sized page
+      // (the earlier 20+ MB issue was a duplicate multi-page bug, already
+      // fixed separately).
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+
+      // A4 width in points, and the matching height for this content's
+      // aspect ratio - the PDF page is sized to fit the whole invoice on
+      // a single page instead of splitting it across an A4-height page
+      // break (which was cutting the signature onto a second page).
+      const pageWidthPt = 595.28;
+      const pageHeightPt = (canvas.height * pageWidthPt) / canvas.width;
+
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'pt',
+        format: [pageWidthPt, pageHeightPt],
+        compress: true
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidthPt, pageHeightPt);
+      return pdf.output('blob');
+    }
+
+    async function sendInvoiceOnWhatsApp() {
+      const whatsappBtn = document.getElementById('whatsappInvoiceBtn');
+      const originalLabel = whatsappBtn.textContent;
+      whatsappBtn.disabled = true;
+      whatsappBtn.textContent = 'Preparing PDF...';
+
+      try {
+        const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
+        const fileName = `Invoice-${invoiceNo}.pdf`;
+        const text = buildWhatsAppText();
+        const blob = await generateInvoicePdfBlob();
+        const file = new File([blob], fileName, { type: 'application/pdf' });
+
+        // Web Share API (with file support) lets a mobile browser open the
+        // native share sheet with the PDF already attached and the message
+        // pre-filled - the user just taps the WhatsApp icon there. Full
+        // desktop browsers and older mobile browsers don't support sharing
+        // files this way, so we fall back to a direct PDF download plus the
+        // WhatsApp chat opening with the message ready.
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: fileName,
+            text: text
+          });
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+
+          const isFileProtocol = window.location.protocol === 'file:';
+          const reason = isFileProtocol
+            ? "Yeh file aapke computer se seedha (file://) khuli hai, is wajah se browser ka 'Share' feature is context me kaam nahi karta - yeh sirf https:// par host ki gayi site par kaam karta hai."
+            : "Is browser/device par WhatsApp me file seedha attach nahi ho sakti - yeh WhatsApp/browser ki apni limit hai.";
+          alert(`${reason}\n\nInvoice PDF download ho gaya hai - WhatsApp ab khulega, bas PDF ko attach karke Send kar dein.`);
+          openWhatsAppMessage();
+        }
+      } catch (err) {
+        if (err && err.name === 'AbortError') {
+          // user cancelled the share sheet - nothing else to do
+        } else {
+          alert('PDF taiyar karte waqt error aaya. Print / Save as PDF button se try karein.');
+        }
+      } finally {
+        whatsappBtn.disabled = false;
+        whatsappBtn.textContent = originalLabel;
+      }
+    }
+
+    function renderAll() {
+      renderTable();
+      renderOverview();
+      renderSummaryBoxes();
+      renderAnalysis();
+      updateToday();
+      refreshInvoicePreview();
+    }
+
+    window.deleteEntry = function(id) {
+      db.ref(FIREBASE_DATA_PATH + '/records/' + id).remove()
+        .catch((err) => alert('Could not delete this entry: ' + err.message));
+    };
+
+    document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+    document.getElementById('resetDashboardBtn').addEventListener('click', () => {
+      if (!confirm('Reset profile and all dashboard data? This deletes your cloud data permanently.')) return;
+      db.ref(FIREBASE_DATA_PATH).remove()
+        .then(() => location.reload())
+        .catch((err) => alert('Could not reset: ' + err.message));
+    });
+
+    document.getElementById('addEntryBtn').addEventListener('click', addEntry);
+    document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+    document.getElementById('applyReportBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); });
+    document.getElementById('generateInvoiceBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); });
+    document.getElementById('printInvoiceBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); window.print(); });
+    document.getElementById('whatsappInvoiceBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); sendInvoiceOnWhatsApp(); });
+
+    document.getElementById('exportJsonBtn').addEventListener('click', exportJson);
+    document.getElementById('importJsonBtn').addEventListener('click', () => {
+      document.getElementById('importJsonInput').click();
+    });
+    document.getElementById('importJsonInput').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      importJson(file);
+      event.target.value = '';
+    });
+    document.getElementById('deleteAllBtn').addEventListener('click', () => {
+      if (!confirm('Delete all records? This deletes your cloud data permanently.')) return;
+      db.ref(FIREBASE_DATA_PATH + '/records').remove()
+        .catch((err) => alert('Could not delete records: ' + err.message));
+    });
+
+    document.getElementById('clearTableFiltersBtn').addEventListener('click', () => {
+      searchInput.value = '';
+      tableOperatorFilter.value = 'All';
+      tableFromDate.value = '';
+      tableToDate.value = '';
+      renderTable();
+    });
+
+    searchInput.addEventListener('input', renderTable);
+    tableOperatorFilter.addEventListener('change', renderTable);
+    tableFromDate.addEventListener('change', renderTable);
+    tableToDate.addEventListener('change', renderTable);
+
+    reportVendor.addEventListener('input', refreshInvoicePreview);
+    reportFromDate.addEventListener('change', refreshInvoicePreview);
+    reportToDate.addEventListener('change', refreshInvoicePreview);
+    reportOperator.addEventListener('change', refreshInvoicePreview);
+    reportPaymentStatus.addEventListener('change', refreshInvoicePreview);
+    reportInvoiceStatus.addEventListener('change', refreshInvoicePreview);
+    reportInvoiceNo.addEventListener('input', () => { syncInvoiceCounterFromField(); refreshInvoicePreview(); });
+  </script>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    // --- Admin login gate (real Firebase Authentication) --------------
+    // This uses the same Firebase project and ADMIN_EMAIL check as
+    // admin.html, so logging in once on login.html unlocks both pages.
+    // Only a signed-in Firebase user matching ADMIN_EMAIL can see this
+    // dashboard - anyone else is redirected to login.html.
+    const adminLoginOverlay = document.getElementById('adminLoginOverlay');
+    const adminAuthStatus = document.getElementById('adminAuthStatus');
+    const appRoot = document.getElementById('appRoot');
+
+    function unlockDashboard() {
+      adminLoginOverlay.style.display = 'none';
+      appRoot.style.display = 'block';
+      clearForm();
+      ensureInvoiceNumber();
+      startFirebaseSync();
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (!user || user.email !== ADMIN_EMAIL) {
+        adminAuthStatus.textContent = 'Not logged in - redirecting to login...';
+        window.location.href = 'login.html';
+        return;
+      }
+      unlockDashboard();
+    });
+  </script>
+</body>
+</html>
