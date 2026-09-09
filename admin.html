@@ -29,11 +29,34 @@
     <div class="dash-top">
       <h2>All Service Requests</h2>
       <div style="display:flex; gap:10px; align-items:center;">
-        <a href="telecom_settlement_invoice_dashboard_print_enhanced_29.html" class="logout-btn" style="text-decoration:none; display:inline-block;">Recharge Settlement Dashboard</a>
+        <a href="telecom_settlement_invoice_dashboard_print_enhanced_30.html" class="logout-btn" style="text-decoration:none; display:inline-block;">Recharge Settlement Dashboard</a>
         <button class="logout-btn" onclick="doLogout()">Logout</button>
       </div>
     </div>
     <div id="adminContent"><p>Loading...</p></div>
+  </div>
+
+  <div class="dash-card">
+    <h2>Vendor Accounts</h2>
+    <p style="color:#666; font-size:14px; margin-top:-6px;">Create a login for a vendor (e.g. Ankit Gupta) so they can view their own recharge settlement hisaab at <code>vendor.html</code>. The Vendor Name must exactly match the vendor name used in the Recharge Settlement Dashboard.</p>
+    <div class="error-msg" id="vendorErrorMsg"></div>
+    <div class="success-msg" id="vendorSuccessMsg"></div>
+    <form id="addVendorForm">
+      <div class="form-group">
+        <label>Vendor Name (must match exactly)</label>
+        <input type="text" id="newVendorName" required placeholder="Example: Ankit Gupta">
+      </div>
+      <div class="form-group">
+        <label>Vendor Email (their login)</label>
+        <input type="email" id="newVendorEmail" required placeholder="vendor@example.com">
+      </div>
+      <div class="form-group">
+        <label>Vendor Password</label>
+        <input type="text" id="newVendorPassword" required placeholder="At least 6 characters" minlength="6">
+      </div>
+      <button type="submit" class="auth-btn" id="addVendorBtn">Create Vendor Login</button>
+    </form>
+    <div id="vendorAccountsList" style="margin-top:20px;"><p>Loading vendor accounts...</p></div>
   </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -50,6 +73,7 @@ auth.onAuthStateChanged((user) => {
     return;
   }
   loadAllRequests();
+  loadVendorAccounts();
 });
 function loadAllRequests() {
   Promise.all([
@@ -99,6 +123,87 @@ function loadAllRequests() {
 function updateStatus(uid, reqId, status) {
   db.ref('requests/' + uid + '/' + reqId).update({ status });
 }
+
+// --- Vendor Accounts management --------------------------------------
+function sanitizeVendorKey(vendorName) {
+  return (vendorName || 'vendor')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'vendor';
+}
+
+function showVendorError(msg) {
+  const el = document.getElementById('vendorErrorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('vendorSuccessMsg').style.display = 'none';
+}
+function showVendorSuccess(msg) {
+  const el = document.getElementById('vendorSuccessMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('vendorErrorMsg').style.display = 'none';
+}
+
+function loadVendorAccounts() {
+  db.ref('vendorAccounts').on('value', (snap) => {
+    const val = snap.val() || {};
+    const container = document.getElementById('vendorAccountsList');
+    const entries = Object.entries(val);
+    if (!entries.length) {
+      container.innerHTML = '<p>No vendor accounts yet.</p>';
+      return;
+    }
+    let table = `<table class="admin-table">
+      <tr><th>Vendor Name</th><th>Email</th><th>Action</th></tr>`;
+    entries.forEach(([uid, v]) => {
+      table += `<tr>
+        <td>${v.name || ''}</td>
+        <td>${v.email || ''}</td>
+        <td><button class="logout-btn" onclick="removeVendorAccount('${uid}')">Remove Access</button></td>
+      </tr>`;
+    });
+    table += `</table>`;
+    container.innerHTML = table;
+  });
+}
+
+window.removeVendorAccount = function (uid) {
+  if (!confirm('Remove this vendor\'s access? They will no longer be able to log in to view their hisaab (their login itself is not deleted, only their access).')) return;
+  db.ref('vendorAccounts/' + uid).remove()
+    .then(() => showVendorSuccess('Vendor access removed.'))
+    .catch((err) => showVendorError(err.message));
+};
+
+document.getElementById('addVendorForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const name = document.getElementById('newVendorName').value.trim();
+  const email = document.getElementById('newVendorEmail').value.trim();
+  const password = document.getElementById('newVendorPassword').value;
+  const addBtn = document.getElementById('addVendorBtn');
+  addBtn.disabled = true;
+
+  // Use a secondary Firebase app instance to create the vendor's login,
+  // so this does NOT sign the admin out of their own session (a normal
+  // createUserWithEmailAndPassword call on the main app would otherwise
+  // switch the current session to the newly created user).
+  const secondaryApp = firebase.apps.find(a => a.name === 'Secondary') || firebase.initializeApp(firebaseConfig, 'Secondary');
+  const secondaryAuth = secondaryApp.auth();
+
+  secondaryAuth.createUserWithEmailAndPassword(email, password)
+    .then((cred) => {
+      const vendorKey = sanitizeVendorKey(name);
+      return db.ref('vendorAccounts/' + cred.user.uid).set({ name, email, vendorKey })
+        .then(() => secondaryAuth.signOut());
+    })
+    .then(() => {
+      showVendorSuccess('Vendor login created for ' + name + '. Share this email/password with them along with the vendor.html link.');
+      document.getElementById('addVendorForm').reset();
+    })
+    .catch((err) => showVendorError(err.message))
+    .finally(() => { addBtn.disabled = false; });
+});
 </script>
 </body>
 </html>
