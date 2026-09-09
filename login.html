@@ -50,7 +50,10 @@
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" id="loginPassword" required placeholder="Your password">
+      <div style="position:relative;">
+        <input type="password" id="loginPassword" required placeholder="Your password" style="width:100%; box-sizing:border-box; padding-right:44px;">
+        <span id="toggleLoginPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; user-select:none;">👁️</span>
+      </div>
     </div>
     <button type="submit" class="auth-btn">Login</button>
   </form>
@@ -85,6 +88,17 @@ function showTab(tab) {
   document.getElementById('emailLoginForm').classList.toggle('hidden', tab !== 'email');
   document.getElementById('phoneLoginForm').classList.toggle('hidden', tab !== 'phone');
 }
+
+document.getElementById('toggleLoginPassword').addEventListener('click', function () {
+  const pwd = document.getElementById('loginPassword');
+  if (pwd.type === 'password') {
+    pwd.type = 'text';
+    this.textContent = '🙈';
+  } else {
+    pwd.type = 'password';
+    this.textContent = '👁️';
+  }
+});
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');

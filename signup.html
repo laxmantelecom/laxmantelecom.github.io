@@ -51,7 +51,10 @@
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" id="signupPassword" required placeholder="At least 6 characters" minlength="6">
+      <div style="position:relative;">
+        <input type="password" id="signupPassword" required placeholder="At least 6 characters" minlength="6" style="width:100%; box-sizing:border-box; padding-right:44px;">
+        <span id="toggleSignupPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; user-select:none;">👁️</span>
+      </div>
     </div>
     <button type="submit" class="auth-btn">Sign Up</button>
   </form>
@@ -90,6 +93,17 @@ function showTab(tab) {
   document.getElementById('emailSignupForm').classList.toggle('hidden', tab !== 'email');
   document.getElementById('phoneSignupForm').classList.toggle('hidden', tab !== 'phone');
 }
+
+document.getElementById('toggleSignupPassword').addEventListener('click', function () {
+  const pwd = document.getElementById('signupPassword');
+  if (pwd.type === 'password') {
+    pwd.type = 'text';
+    this.textContent = '🙈';
+  } else {
+    pwd.type = 'password';
+    this.textContent = '👁️';
+  }
+});
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
