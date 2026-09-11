@@ -108,6 +108,7 @@
             <th>Paid</th>
             <th>Due</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody id="vendorTableBody"></tbody>
@@ -160,13 +161,35 @@ function formatDateDDMMYYYY(isoDate) {
   return `${day}-${month}-${year}`;
 }
 
+function getTodayIso() {
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return d.getFullYear() + '-' + month + '-' + day;
+}
+
 function getStatusTag(status) {
   const map = { PAID: '#166534', UNPAID: '#b91c1c', PARTIAL: '#9a580a' };
   const color = map[status] || '#6b7494';
   return `<span style="font-weight:800; color:${color};">${status || 'UNPAID'}</span>`;
 }
 
+let currentVendorKey = null;
+
+function markEntryAsPaid(id) {
+  if (!confirm('Confirm that you have received full payment for this entry?')) return;
+  const record = window.__vendorRecords.find(r => r.id === id);
+  if (!record) return;
+  db.ref('telecomSettlement/vendorView/' + currentVendorKey + '/' + id).update({
+    paymentStatus: 'PAID',
+    paidAmount: record.payable,
+    dueAmount: 0,
+    paidDate: getTodayIso()
+  }).catch((err) => alert('Could not update payment status: ' + err.message));
+}
+
 function renderVendorRecords(records) {
+  window.__vendorRecords = records;
   const tbody = document.getElementById('vendorTableBody');
   const emptyState = document.getElementById('vendorEmptyState');
   tbody.innerHTML = '';
@@ -180,6 +203,9 @@ function renderVendorRecords(records) {
       .sort((a, b) => (b.id > a.id ? 1 : -1))
       .forEach((r) => {
         const tr = document.createElement('tr');
+        const actionCell = r.paymentStatus === 'PAID'
+          ? '<span style="color:#166534; font-weight:700;">✓ Paid</span>'
+          : `<button class="logout-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
         tr.innerHTML = `
           <td>${formatDateDDMMYYYY(r.date)}</td>
           <td>${r.mobile || ''}</td>
@@ -191,6 +217,7 @@ function renderVendorRecords(records) {
           <td>${formatMoney(r.paidAmount)}</td>
           <td>${formatMoney(r.dueAmount)}</td>
           <td>${getStatusTag(r.paymentStatus)}</td>
+          <td>${actionCell}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -211,8 +238,18 @@ function renderVendorRecords(records) {
   document.getElementById('vDue').textContent = formatMoney(due);
 }
 
+function getGreeting(vendorName) {
+  const hour = new Date().getHours();
+  let timeGreeting;
+  if (hour < 12) timeGreeting = 'Good Morning';
+  else if (hour < 17) timeGreeting = 'Good Afternoon';
+  else timeGreeting = 'Good Evening';
+  return `Welcome Back, ${vendorName}! ${timeGreeting}`;
+}
+
 function loadVendorData(vendorKey, vendorName) {
-  document.getElementById('vendorNameHeading').textContent = vendorName + ' - My Account';
+  currentVendorKey = vendorKey;
+  document.getElementById('vendorNameHeading').textContent = getGreeting(vendorName);
   db.ref('telecomSettlement/vendorView/' + vendorKey).on('value', (snap) => {
     const val = snap.val() || {};
     const records = Object.keys(val).map((key) => ({ id: key, ...val[key] }));
