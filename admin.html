@@ -184,26 +184,54 @@ document.getElementById('addVendorForm').addEventListener('submit', function (e)
   const addBtn = document.getElementById('addVendorBtn');
   addBtn.disabled = true;
 
-  // Use a secondary Firebase app instance to create the vendor's login,
-  // so this does NOT sign the admin out of their own session (a normal
-  // createUserWithEmailAndPassword call on the main app would otherwise
-  // switch the current session to the newly created user).
+  // Use a secondary Firebase app instance so this does NOT sign the admin
+  // out of their own session (a normal createUserWithEmailAndPassword /
+  // signInWithEmailAndPassword call on the main app would otherwise switch
+  // the current session over to the vendor's account).
   const secondaryApp = firebase.apps.find(a => a.name === 'Secondary') || firebase.initializeApp(firebaseConfig, 'Secondary');
   const secondaryAuth = secondaryApp.auth();
+  const vendorKey = sanitizeVendorKey(name);
+
+  function grantAccess(uid) {
+    return db.ref('vendorAccounts/' + uid).set({ name, email, vendorKey })
+      .then(() => secondaryAuth.signOut());
+  }
 
   secondaryAuth.createUserWithEmailAndPassword(email, password)
-    .then((cred) => {
-      const vendorKey = sanitizeVendorKey(name);
-      return db.ref('vendorAccounts/' + cred.user.uid).set({ name, email, vendorKey })
-        .then(() => secondaryAuth.signOut());
-    })
+    .then((cred) => grantAccess(cred.user.uid))
     .then(() => {
       showVendorSuccess('Vendor login created for ' + name + '. Share this email/password with them along with the vendor.html link.');
       document.getElementById('addVendorForm').reset();
+      addBtn.disabled = false;
     })
-    .catch((err) => showVendorError(err.message))
-    .finally(() => { addBtn.disabled = false; });
+    .catch((err) => {
+      if (err.code === 'auth/email-already-in-use') {
+        // This email already has a Firebase login (e.g. access was removed
+        // earlier but the underlying account still exists) - re-grant
+        // access to that same account instead of failing, as long as the
+        // password entered here matches their existing password.
+        secondaryAuth.signInWithEmailAndPassword(email, password)
+          .then((cred) => grantAccess(cred.user.uid))
+          .then(() => {
+            showVendorSuccess('Access restored for ' + name + ' using their existing login.');
+            document.getElementById('addVendorForm').reset();
+          })
+          .catch((signInErr) => {
+            if (signInErr.code === 'auth/wrong-password' || signInErr.code === 'auth/invalid-credential') {
+              showVendorError('This email already has a login, but the password entered here does not match their original password. Enter their original password to restore access, or use a different email.');
+            } else {
+              showVendorError(signInErr.message);
+            }
+          })
+          .finally(() => { addBtn.disabled = false; });
+      } else {
+        showVendorError(err.message);
+        addBtn.disabled = false;
+      }
+    });
 });
 </script>
+
+
 </body>
 </html>
