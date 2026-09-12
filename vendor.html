@@ -175,6 +175,8 @@ function getStatusTag(status) {
 }
 
 let currentVendorKey = null;
+let currentVendorName = null;
+let disputesByRecordId = {};
 
 function markEntryAsPaid(id) {
   if (!confirm('Confirm that you have received full payment for this entry?')) return;
@@ -186,6 +188,28 @@ function markEntryAsPaid(id) {
     dueAmount: 0,
     paidDate: getTodayIso()
   }).catch((err) => alert('Could not update payment status: ' + err.message));
+}
+
+function raiseConcern(id) {
+  const record = window.__vendorRecords.find(r => r.id === id);
+  if (!record) return;
+  const reason = prompt('Briefly describe the issue (e.g. "Marked paid by mistake, payment not received yet"):');
+  if (reason === null) return;
+  if (!reason.trim()) { alert('Please describe the issue before submitting.'); return; }
+
+  const disputeId = Date.now().toString();
+  db.ref('telecomSettlement/paymentDisputes/' + currentVendorKey + '/' + disputeId).set({
+    recordId: id,
+    vendorName: currentVendorName,
+    mobile: record.mobile || '',
+    date: record.date || '',
+    amount: record.amount || 0,
+    reason: reason.trim(),
+    status: 'Pending',
+    createdAt: Date.now()
+  }).then(() => {
+    alert('Your concern has been sent to Laxman Telecom for review.');
+  }).catch((err) => alert('Could not submit your concern: ' + err.message));
 }
 
 function renderVendorRecords(records) {
@@ -203,9 +227,15 @@ function renderVendorRecords(records) {
       .sort((a, b) => (b.id > a.id ? 1 : -1))
       .forEach((r) => {
         const tr = document.createElement('tr');
-        const actionCell = r.paymentStatus === 'PAID'
-          ? '<span style="color:#166534; font-weight:700;">✓ Paid</span>'
-          : `<button class="logout-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
+        const pendingDispute = disputesByRecordId[r.id];
+        let actionCell;
+        if (r.paymentStatus !== 'PAID') {
+          actionCell = `<button class="logout-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
+        } else if (pendingDispute) {
+          actionCell = '<span style="color:#9a580a; font-weight:700;">⏳ Concern pending review</span>';
+        } else {
+          actionCell = `<span style="color:#166534; font-weight:700;">✓ Paid</span> <button class="logout-btn" style="margin-left:6px;" onclick="raiseConcern('${r.id}')">Raise Concern</button>`;
+        }
         tr.innerHTML = `
           <td>${formatDateDDMMYYYY(r.date)}</td>
           <td>${r.mobile || ''}</td>
@@ -249,7 +279,18 @@ function getGreeting(vendorName) {
 
 function loadVendorData(vendorKey, vendorName) {
   currentVendorKey = vendorKey;
+  currentVendorName = vendorName;
   document.getElementById('vendorNameHeading').textContent = getGreeting(vendorName);
+
+  db.ref('telecomSettlement/paymentDisputes/' + vendorKey).on('value', (snap) => {
+    const val = snap.val() || {};
+    disputesByRecordId = {};
+    Object.values(val).forEach((d) => {
+      if (d.status === 'Pending') disputesByRecordId[d.recordId] = d;
+    });
+    renderVendorRecords(window.__vendorRecords || []);
+  });
+
   db.ref('telecomSettlement/vendorView/' + vendorKey).on('value', (snap) => {
     const val = snap.val() || {};
     const records = Object.keys(val).map((key) => ({ id: key, ...val[key] }));

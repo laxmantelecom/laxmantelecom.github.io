@@ -58,6 +58,12 @@
     </form>
     <div id="vendorAccountsList" style="margin-top:20px;"><p>Loading vendor accounts...</p></div>
   </div>
+
+  <div class="dash-card">
+    <h2>Payment Concerns</h2>
+    <p style="color:#666; font-size:14px; margin-top:-6px;">When a vendor raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
+    <div id="paymentConcernsList"><p>Loading...</p></div>
+  </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -74,6 +80,7 @@ auth.onAuthStateChanged((user) => {
   }
   loadAllRequests();
   loadVendorAccounts();
+  loadPaymentConcerns();
 });
 function loadAllRequests() {
   Promise.all([
@@ -123,6 +130,70 @@ function loadAllRequests() {
 function updateStatus(uid, reqId, status) {
   db.ref('requests/' + uid + '/' + reqId).update({ status });
 }
+
+// --- Payment Concerns (vendor-raised) ---------------------------------
+function loadPaymentConcerns() {
+  db.ref('telecomSettlement/paymentDisputes').on('value', (snap) => {
+    const val = snap.val() || {};
+    const container = document.getElementById('paymentConcernsList');
+    const rows = [];
+    Object.keys(val).forEach((vendorKey) => {
+      const disputes = val[vendorKey] || {};
+      Object.keys(disputes).forEach((disputeId) => {
+        const d = disputes[disputeId];
+        if (d.status === 'Pending') rows.push({ vendorKey, disputeId, ...d });
+      });
+    });
+    if (!rows.length) {
+      container.innerHTML = '<p>No pending concerns.</p>';
+      return;
+    }
+    rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    let table = `<table class="admin-table">
+      <tr><th>Vendor</th><th>Mobile</th><th>Date</th><th>Amount</th><th>Reason</th><th>Action</th></tr>`;
+    rows.forEach((r) => {
+      let dateText = '';
+      if (r.date) {
+        const [y, m, d] = r.date.split('-');
+        dateText = `${d}-${m}-${y}`;
+      }
+      table += `<tr>
+        <td>${r.vendorName || ''}</td>
+        <td>${r.mobile || ''}</td>
+        <td>${dateText}</td>
+        <td>₹${Number(r.amount || 0).toFixed(2)}</td>
+        <td>${r.reason || ''}</td>
+        <td style="white-space:nowrap;">
+          <button class="logout-btn" onclick="resolveConcern('${r.vendorKey}','${r.disputeId}','${r.recordId}',true)">Mark Unpaid</button>
+          <button class="logout-btn" style="margin-left:6px;" onclick="resolveConcern('${r.vendorKey}','${r.disputeId}','${r.recordId}',false)">Reject</button>
+        </td>
+      </tr>`;
+    });
+    table += `</table>`;
+    container.innerHTML = table;
+  });
+}
+
+window.resolveConcern = function (vendorKey, disputeId, recordId, approve) {
+  if (approve) {
+    if (!confirm('Mark this entry as Unpaid? This will update the vendor\'s account.')) return;
+    db.ref('telecomSettlement/vendorView/' + vendorKey + '/' + recordId).once('value').then((snap) => {
+      const record = snap.val();
+      if (!record) { alert('This entry no longer exists.'); return; }
+      const updates = {};
+      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paymentStatus'] = 'UNPAID';
+      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidAmount'] = 0;
+      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/dueAmount'] = record.payable;
+      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidDate'] = '';
+      updates['telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId + '/status'] = 'Resolved-Unpaid';
+      db.ref().update(updates).catch((err) => alert('Could not update: ' + err.message));
+    });
+  } else {
+    if (!confirm('Reject this concern and keep the entry as Paid?')) return;
+    db.ref('telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId + '/status').set('Rejected')
+      .catch((err) => alert('Could not update: ' + err.message));
+  }
+};
 
 // --- Vendor Accounts management --------------------------------------
 function sanitizeVendorKey(vendorName) {
