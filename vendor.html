@@ -168,6 +168,23 @@ function getTodayIso() {
   return d.getFullYear() + '-' + month + '-' + day;
 }
 
+function formatDateTime(ms) {
+  if (!ms) return '';
+  const d = new Date(ms);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${day}-${month}-${year}, ${hours}:${minutes} ${ampm}`;
+}
+
+function shortId(ms) {
+  return 'CN-' + String(ms).slice(-6);
+}
+
 function getStatusTag(status) {
   const map = { PAID: '#166534', UNPAID: '#b91c1c', PARTIAL: '#9a580a' };
   const color = map[status] || '#6b7494';
@@ -182,11 +199,13 @@ function markEntryAsPaid(id) {
   if (!confirm('Confirm that you have received full payment for this entry?')) return;
   const record = window.__vendorRecords.find(r => r.id === id);
   if (!record) return;
+  const now = Date.now();
   db.ref('telecomSettlement/vendorView/' + currentVendorKey + '/' + id).update({
     paymentStatus: 'PAID',
     paidAmount: record.payable,
     dueAmount: 0,
-    paidDate: getTodayIso()
+    paidDate: getTodayIso(),
+    paidAt: now
   }).catch((err) => alert('Could not update payment status: ' + err.message));
 }
 
@@ -197,7 +216,8 @@ function raiseConcern(id) {
   if (reason === null) return;
   if (!reason.trim()) { alert('Please describe the issue before submitting.'); return; }
 
-  const disputeId = Date.now().toString();
+  const now = Date.now();
+  const disputeId = now.toString();
   db.ref('telecomSettlement/paymentDisputes/' + currentVendorKey + '/' + disputeId).set({
     recordId: id,
     vendorName: currentVendorName,
@@ -206,9 +226,9 @@ function raiseConcern(id) {
     amount: record.amount || 0,
     reason: reason.trim(),
     status: 'Pending',
-    createdAt: Date.now()
+    createdAt: now
   }).then(() => {
-    alert('Your concern has been sent to Laxman Telecom for review.');
+    alert(`Your concern (${shortId(now)}) has been sent to Laxman Telecom for review.\nRaised on: ${formatDateTime(now)}`);
   }).catch((err) => alert('Could not submit your concern: ' + err.message));
 }
 
@@ -232,9 +252,10 @@ function renderVendorRecords(records) {
         if (r.paymentStatus !== 'PAID') {
           actionCell = `<button class="logout-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
         } else if (pendingDispute) {
-          actionCell = '<span style="color:#9a580a; font-weight:700;">⏳ Concern pending review</span>';
+          actionCell = `<span style="color:#9a580a; font-weight:700;">⏳ ${shortId(Number(pendingDispute.createdAt))} pending review</span><br><span style="font-size:11px; color:#888;">Raised: ${formatDateTime(pendingDispute.createdAt)}</span>`;
         } else {
-          actionCell = `<span style="color:#166534; font-weight:700;">✓ Paid</span> <button class="logout-btn" style="margin-left:6px;" onclick="raiseConcern('${r.id}')">Raise Concern</button>`;
+          const paidWhen = r.paidAt ? formatDateTime(r.paidAt) : formatDateDDMMYYYY(r.paidDate);
+          actionCell = `<span style="color:#166534; font-weight:700;">✓ Paid</span><br><span style="font-size:11px; color:#888;">${paidWhen}</span><br><button class="logout-btn" style="margin-top:4px;" onclick="raiseConcern('${r.id}')">Raise Concern</button>`;
         }
         tr.innerHTML = `
           <td>${formatDateDDMMYYYY(r.date)}</td>

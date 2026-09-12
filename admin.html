@@ -132,6 +132,19 @@ function updateStatus(uid, reqId, status) {
 }
 
 // --- Payment Concerns (vendor-raised) ---------------------------------
+function formatDateTimeAdmin(ms) {
+  if (!ms) return '';
+  const d = new Date(ms);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${day}-${month}-${year}, ${hours}:${minutes} ${ampm}`;
+}
+
 function loadPaymentConcerns() {
   db.ref('telecomSettlement/paymentDisputes').on('value', (snap) => {
     const val = snap.val() || {};
@@ -150,19 +163,22 @@ function loadPaymentConcerns() {
     }
     rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     let table = `<table class="admin-table">
-      <tr><th>Vendor</th><th>Mobile</th><th>Date</th><th>Amount</th><th>Reason</th><th>Action</th></tr>`;
+      <tr><th>Concern ID</th><th>Vendor</th><th>Mobile</th><th>Entry Date</th><th>Amount</th><th>Reason</th><th>Raised On</th><th>Action</th></tr>`;
     rows.forEach((r) => {
       let dateText = '';
       if (r.date) {
         const [y, m, d] = r.date.split('-');
         dateText = `${d}-${m}-${y}`;
       }
+      const concernId = 'CN-' + String(r.disputeId).slice(-6);
       table += `<tr>
+        <td>${concernId}</td>
         <td>${r.vendorName || ''}</td>
         <td>${r.mobile || ''}</td>
         <td>${dateText}</td>
         <td>₹${Number(r.amount || 0).toFixed(2)}</td>
         <td>${r.reason || ''}</td>
+        <td>${formatDateTimeAdmin(r.createdAt)}</td>
         <td style="white-space:nowrap;">
           <button class="logout-btn" onclick="resolveConcern('${r.vendorKey}','${r.disputeId}','${r.recordId}',true)">Mark Unpaid</button>
           <button class="logout-btn" style="margin-left:6px;" onclick="resolveConcern('${r.vendorKey}','${r.disputeId}','${r.recordId}',false)">Reject</button>
@@ -185,13 +201,17 @@ window.resolveConcern = function (vendorKey, disputeId, recordId, approve) {
       updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidAmount'] = 0;
       updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/dueAmount'] = record.payable;
       updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidDate'] = '';
+      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidAt'] = null;
       updates['telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId + '/status'] = 'Resolved-Unpaid';
+      updates['telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId + '/resolvedAt'] = Date.now();
       db.ref().update(updates).catch((err) => alert('Could not update: ' + err.message));
     });
   } else {
     if (!confirm('Reject this concern and keep the entry as Paid?')) return;
-    db.ref('telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId + '/status').set('Rejected')
-      .catch((err) => alert('Could not update: ' + err.message));
+    db.ref('telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId).update({
+      status: 'Rejected',
+      resolvedAt: Date.now()
+    }).catch((err) => alert('Could not update: ' + err.message));
   }
 };
 
