@@ -41,6 +41,7 @@
 <!-- LOGIN FORM (shown before vendor logs in) -->
 <div class="auth-wrapper" id="vendorLoginWrapper">
   <h2>Vendor Login</h2>
+  <p class="sub">View your recharge settlement account</p>
 
   <div class="error-msg" id="errorMsg"></div>
   <div class="success-msg" id="successMsg"></div>
@@ -90,6 +91,21 @@
       <div class="vendor-summary-card">
         <div class="label">Due Amount</div>
         <div class="value" id="vDue">₹0.00</div>
+      </div>
+    </div>
+
+    <div style="background:#f4f8ff; border:1px solid #dfe6f5; border-radius:14px; padding:16px; margin-bottom:18px;">
+      <div style="font-weight:800; color:#0d2a5c; margin-bottom:10px;">Mark All as Paid (Date Range)</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <label style="display:block; font-size:0.82rem; margin-bottom:4px;">From Date</label>
+          <input type="date" id="bulkFromDate" style="padding:8px;">
+        </div>
+        <div>
+          <label style="display:block; font-size:0.82rem; margin-bottom:4px;">To Date</label>
+          <input type="date" id="bulkToDate" style="padding:8px;">
+        </div>
+        <button class="logout-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
       </div>
     </div>
 
@@ -193,6 +209,52 @@ function getStatusTag(status) {
 let currentVendorKey = null;
 let currentVendorName = null;
 let disputesByRecordId = {};
+
+function markRangeAsPaid() {
+  const fromDate = document.getElementById('bulkFromDate').value;
+  const toDate = document.getElementById('bulkToDate').value;
+  if (!fromDate || !toDate) {
+    alert('Please select both From Date and To Date.');
+    return;
+  }
+  if (fromDate > toDate) {
+    alert('From Date cannot be after To Date.');
+    return;
+  }
+
+  const records = window.__vendorRecords || [];
+  const toMark = records.filter((r) =>
+    r.paymentStatus !== 'PAID' &&
+    r.date >= fromDate &&
+    r.date <= toDate
+  );
+
+  if (!toMark.length) {
+    alert('No unpaid entries found in this date range.');
+    return;
+  }
+
+  const totalAmount = toMark.reduce((sum, r) => sum + Number(r.payable || 0), 0);
+  const confirmMsg = `Mark ${toMark.length} entr${toMark.length === 1 ? 'y' : 'ies'} as Paid ` +
+    `(₹${totalAmount.toFixed(2)} total) for ${formatDateDDMMYYYY(fromDate)} to ${formatDateDDMMYYYY(toDate)}?`;
+  if (!confirm(confirmMsg)) return;
+
+  const now = Date.now();
+  const today = getTodayIso();
+  const updates = {};
+  toMark.forEach((r) => {
+    const base = 'telecomSettlement/vendorView/' + currentVendorKey + '/' + r.id;
+    updates[base + '/paymentStatus'] = 'PAID';
+    updates[base + '/paidAmount'] = r.payable;
+    updates[base + '/dueAmount'] = 0;
+    updates[base + '/paidDate'] = today;
+    updates[base + '/paidAt'] = now;
+  });
+
+  db.ref().update(updates)
+    .then(() => alert(`${toMark.length} entries marked as Paid.`))
+    .catch((err) => alert('Could not update: ' + err.message));
+}
 
 function markEntryAsPaid(id) {
   if (!confirm('Confirm that you have received full payment for this entry?')) return;
