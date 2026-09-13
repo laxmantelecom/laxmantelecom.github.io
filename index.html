@@ -12,6 +12,8 @@
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 <link rel="shortcut icon" href="favicon.ico">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d2a5c">
 </head>
 <body>
 
@@ -186,5 +188,14 @@ target="_blank">
 </footer>
 
 <script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch((err) => {
+      console.log('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
 </body>
 </html>
