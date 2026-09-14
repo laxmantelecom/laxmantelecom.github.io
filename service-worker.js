@@ -4,7 +4,7 @@
 // live connection to actually load data - this only speeds up/caches the
 // static shell (HTML, CSS, images).
 
-const CACHE_NAME = 'laxman-telecom-cache-v1';
+const CACHE_NAME = 'laxman-telecom-cache-v2';
 const PRECACHE_URLS = [
   '/index.html',
   '/style.css',
