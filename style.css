@@ -45,6 +45,10 @@ nav a:hover{
     color:#ffd700;
 }
 
+.nav-toggle{
+    display:none;
+}
+
 .hero{
     text-align:center;
     padding:80px 10%;
@@ -141,10 +145,34 @@ nav a:hover{
 
 .header{
     text-align:center;
+    justify-content:center;
+    position:relative;
+}
+
+.nav-toggle{
+    display:block;
+    position:absolute;
+    top:20px;
+    right:6%;
+    background:rgba(255,255,255,0.12);
+    border:2px solid white;
+    border-radius:8px;
+    color:white;
+    font-size:24px;
+    line-height:1;
+    padding:6px 14px;
+    cursor:pointer;
 }
 
 nav{
+    display:none;
+    flex-direction:column;
+    width:100%;
     margin-top:20px;
+}
+
+nav.nav-open{
+    display:flex;
 }
 
 nav a{
