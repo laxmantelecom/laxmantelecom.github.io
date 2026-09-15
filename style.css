@@ -141,6 +141,10 @@ nav a:hover{
     margin-bottom:15px;
 }
 
+.nav-backdrop{
+    display:none;
+}
+
 @media(max-width:768px){
 
 .header{
@@ -153,7 +157,7 @@ nav a:hover{
     position:fixed;
     top:16px;
     right:16px;
-    z-index:1100;
+    z-index:1250;
     background:rgba(0,0,0,0.35);
     border:2px solid white;
     border-radius:8px;
@@ -164,20 +168,56 @@ nav a:hover{
     cursor:pointer;
 }
 
+.nav-backdrop{
+    display:block;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    z-index:1150;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+}
+
+.nav-backdrop.nav-open{
+    opacity:1;
+    pointer-events:auto;
+}
+
 nav{
-    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:78%;
+    max-width:320px;
+    background:#ffffff;
+    display:flex;
     flex-direction:column;
-    width:100%;
-    margin-top:20px;
+    margin:0;
+    padding:90px 0 30px;
+    transform:translateX(-100%);
+    transition:transform .3s ease;
+    z-index:1200;
+    box-shadow:6px 0 24px rgba(0,0,0,.25);
+    overflow-y:auto;
 }
 
 nav.nav-open{
-    display:flex;
+    transform:translateX(0);
 }
 
 nav a{
     display:block;
-    margin:10px 0;
+    color:#222;
+    margin:0;
+    padding:16px 24px;
+    border-bottom:1px solid #eee;
+}
+
+nav a:hover{
+    background:#f5f7fb;
+    color:#0056b3;
 }
 
 .hero h2{

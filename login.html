@@ -21,7 +21,8 @@
       <p>Your Trusted Digital Service Center</p>
     </div>
   </div>
-  <button class="nav-toggle" onclick="document.querySelector('nav').classList.toggle('nav-open')" aria-label="Toggle menu">☰</button>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">☰</button>
+  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
   <nav>
     <a href="index.html#home">Home</a>
     <a href="index.html#services">Services</a>
@@ -30,6 +31,17 @@
     <a href="login.html">Login</a>
   </nav>
 </header>
+
+<script>
+function toggleNav() {
+  document.querySelector('nav').classList.toggle('nav-open');
+  document.getElementById('navBackdrop').classList.toggle('nav-open');
+}
+function closeNav() {
+  document.querySelector('nav').classList.remove('nav-open');
+  document.getElementById('navBackdrop').classList.remove('nav-open');
+}
+</script>
 
 <div class="auth-wrapper">
   <h2>Login</h2>
