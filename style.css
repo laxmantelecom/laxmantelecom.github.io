@@ -156,7 +156,8 @@ nav a:hover{
     display:block;
     position:fixed;
     top:16px;
-    left:16px;
+    left:16px !important;
+    right:auto !important;
     z-index:1250;
     background:rgba(0,0,0,0.35);
     border:2px solid white;
