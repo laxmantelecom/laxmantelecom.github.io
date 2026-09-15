@@ -146,21 +146,21 @@ nav a:hover{
 .header{
     text-align:center;
     justify-content:center;
-    position:relative;
 }
 
 .nav-toggle{
     display:block;
-    position:absolute;
-    top:20px;
-    right:6%;
-    background:rgba(255,255,255,0.12);
+    position:fixed;
+    top:16px;
+    right:16px;
+    z-index:1100;
+    background:rgba(0,0,0,0.35);
     border:2px solid white;
     border-radius:8px;
     color:white;
     font-size:24px;
     line-height:1;
-    padding:6px 14px;
+    padding:4px 12px;
     cursor:pointer;
 }
 
