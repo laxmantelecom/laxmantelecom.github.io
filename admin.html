@@ -12,6 +12,18 @@
 <link rel="shortcut icon" href="favicon.ico">
 </head>
 <body>
+
+<div id="mpinLockOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0d2a5c,#123a7a); align-items:center; justify-content:center; font-family:inherit;">
+  <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
+    <div style="font-size:1.3rem; font-weight:800; margin-bottom:6px; color:#0d2a5c;">Enter MPIN</div>
+    <div style="font-size:0.85rem; color:#64748b; margin-bottom:20px;">Quick unlock for LAXMAN TELECOM Admin</div>
+    <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN" style="width:100%; padding:12px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:1.3rem; text-align:center; letter-spacing:8px; margin-bottom:12px; box-sizing:border-box;">
+    <button id="mpinUnlockBtn" style="width:100%; padding:12px; border:none; border-radius:8px; background:#0d2a5c; color:#fff; font-weight:700; font-size:1rem; cursor:pointer;">Unlock</button>
+    <div id="mpinError" style="color:#dc2626; font-size:0.85rem; margin-top:10px; min-height:18px;"></div>
+    <div style="margin-top:14px;"><a href="#" id="mpinForgotLink" style="font-size:0.82rem; color:#64748b;">Forgot MPIN? Logout and login again</a></div>
+  </div>
+</div>
+<div id="adminAppRoot" style="display:none;">
 <header class="header">
   <div class="logo" style="display:flex; align-items:center; gap:14px;">
     <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:52px; width:52px;">
@@ -64,6 +76,45 @@
     <p style="color:#666; font-size:14px; margin-top:-6px;">When a vendor raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
     <div id="paymentConcernsList"><p>Loading...</p></div>
   </div>
+
+  <div class="dash-card">
+    <h2>Account Settings</h2>
+    <div class="error-msg" id="settingsErrorMsg"></div>
+    <div class="success-msg" id="settingsSuccessMsg"></div>
+
+    <h3 style="margin-top:6px; font-size:16px;">Change Password</h3>
+    <form id="changePasswordForm">
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" id="currentPasswordInput" required>
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="newPasswordInput" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="confirmPasswordInput" required minlength="6">
+      </div>
+      <button type="submit" class="auth-btn">Update Password</button>
+    </form>
+
+    <h3 style="margin-top:26px; font-size:16px;">App MPIN (Quick Unlock)</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the admin panel on this device.</p>
+    <form id="setMpinForm">
+      <div class="form-group">
+        <label>New MPIN</label>
+        <input type="password" inputmode="numeric" id="newMpinInput" maxlength="6" minlength="4" required>
+      </div>
+      <div class="form-group">
+        <label>Confirm MPIN</label>
+        <input type="password" inputmode="numeric" id="confirmMpinInput" maxlength="6" minlength="4" required>
+      </div>
+      <button type="submit" class="auth-btn">Save MPIN</button>
+    </form>
+    <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:10px;">Remove MPIN from this device</button>
+  </div>
+</div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -73,14 +124,122 @@
 function doLogout() {
   auth.signOut().then(() => { window.location.href = 'login.html'; });
 }
+
+// --- MPIN quick-unlock ---------------------------------------------
+async function sha256Hex(text) {
+  const enc = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getMpinKey(uid) {
+  return 'mpinHash_' + uid;
+}
+
+function showMpinLock(uid, onUnlock) {
+  const overlay = document.getElementById('mpinLockOverlay');
+  overlay.style.display = 'flex';
+  const input = document.getElementById('mpinInput');
+  const errorEl = document.getElementById('mpinError');
+  input.value = '';
+  errorEl.textContent = '';
+  setTimeout(() => input.focus(), 100);
+
+  async function attemptUnlock() {
+    const entered = input.value.trim();
+    if (!entered) return;
+    const hash = await sha256Hex(entered);
+    if (hash === localStorage.getItem(getMpinKey(uid))) {
+      overlay.style.display = 'none';
+      onUnlock();
+    } else {
+      errorEl.textContent = 'Incorrect MPIN. Please try again.';
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  document.getElementById('mpinUnlockBtn').onclick = attemptUnlock;
+  input.onkeydown = (e) => { if (e.key === 'Enter') attemptUnlock(); };
+  document.getElementById('mpinForgotLink').onclick = (e) => {
+    e.preventDefault();
+    if (confirm('Logout and login again with your password?')) {
+      auth.signOut().then(() => location.reload());
+    }
+  };
+}
+
+function showSettingsError(msg) {
+  const el = document.getElementById('settingsErrorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('settingsSuccessMsg').style.display = 'none';
+}
+function showSettingsSuccess(msg) {
+  const el = document.getElementById('settingsSuccessMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('settingsErrorMsg').style.display = 'none';
+}
+
+function startAdminPanel() {
+  document.getElementById('adminAppRoot').style.display = 'block';
+  loadAllRequests();
+  loadVendorAccounts();
+  loadPaymentConcerns();
+}
+
 auth.onAuthStateChanged((user) => {
   if (!user || user.email !== ADMIN_EMAIL) {
     window.location.href = 'login.html';
     return;
   }
-  loadAllRequests();
-  loadVendorAccounts();
-  loadPaymentConcerns();
+  const mpinHash = localStorage.getItem(getMpinKey(user.uid));
+  if (mpinHash) {
+    showMpinLock(user.uid, startAdminPanel);
+  } else {
+    startAdminPanel();
+  }
+});
+
+document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const current = document.getElementById('currentPasswordInput').value;
+  const newPass = document.getElementById('newPasswordInput').value;
+  const confirmPass = document.getElementById('confirmPasswordInput').value;
+  if (newPass !== confirmPass) { showSettingsError('New passwords do not match.'); return; }
+
+  const user = auth.currentUser;
+  const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
+  user.reauthenticateWithCredential(cred)
+    .then(() => user.updatePassword(newPass))
+    .then(() => {
+      showSettingsSuccess('Password updated successfully.');
+      document.getElementById('changePasswordForm').reset();
+    })
+    .catch((err) => showSettingsError(err.message));
+});
+
+document.getElementById('setMpinForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const pin = document.getElementById('newMpinInput').value.trim();
+  const confirmPin = document.getElementById('confirmMpinInput').value.trim();
+  if (!/^\d{4,6}$/.test(pin)) { showSettingsError('MPIN must be 4-6 digits.'); return; }
+  if (pin !== confirmPin) { showSettingsError('MPIN entries do not match.'); return; }
+  const hash = await sha256Hex(pin);
+  localStorage.setItem(getMpinKey(auth.currentUser.uid), hash);
+  showSettingsSuccess('MPIN saved. You can use it to unlock the admin panel next time on this device.');
+  document.getElementById('setMpinForm').reset();
+});
+
+document.getElementById('removeMpinBtn').addEventListener('click', function () {
+  if (!localStorage.getItem(getMpinKey(auth.currentUser.uid))) {
+    showSettingsSuccess('No MPIN is set on this device.');
+    return;
+  }
+  if (!confirm('Remove MPIN from this device? You will need your password to login next time.')) return;
+  localStorage.removeItem(getMpinKey(auth.currentUser.uid));
+  showSettingsSuccess('MPIN removed from this device.');
 });
 function loadAllRequests() {
   Promise.all([
