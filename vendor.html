@@ -49,8 +49,13 @@
   </nav>
 </header>
 
-<!-- LOGIN FORM (shown before vendor logs in) -->
-<div class="auth-wrapper" id="vendorLoginWrapper">
+<!-- LOADING (shown first, while we check if you're already logged in) -->
+<div class="auth-wrapper" id="vendorLoadingWrapper">
+  <p style="text-align:center; color:#666;">Loading...</p>
+</div>
+
+<!-- LOGIN FORM (shown only if not already logged in) -->
+<div class="auth-wrapper" id="vendorLoginWrapper" style="display:none;">
   <h2>Vendor Login</h2>
   <p class="sub">View your recharge settlement account</p>
 
