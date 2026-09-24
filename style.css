@@ -11,10 +11,11 @@ body{
     line-height:1.6;
 }
 
+/* 🛠️ हेडर को स्लिम और छोटा किया गया है */
 .header{
     background:linear-gradient(135deg,#0056b3,#0099ff);
     color:white;
-    padding:20px 8%;
+    padding:10px 8%; /* ऊपर-नीचे की पैडिंग 20px से घटाकर 10px की गई */
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -24,13 +25,14 @@ body{
     z-index:1000;
 }
 
+/* 🛠️ लोगो नाम को थोड़ा छोटा और सेट किया गया है */
 .logo h1{
-    font-size:32px;
+    font-size:24px; /* फ़ॉन्ट साइज 32px से घटाकर 24px किया */
 }
 
 .logo p{
-    font-size:15px;
-    margin-top:5px;
+    font-size:13px; /* स्लोगन को 15px से 13px किया */
+    margin-top:2px;
 }
 
 nav a{
@@ -78,6 +80,7 @@ nav a:hover{
     margin-top:40px;
 }
 
+/* 🛠️ बटन्स को प्रीमियम होवर लुक दिया गया है */
 .btn{
     display:inline-block;
     padding:14px 28px;
@@ -87,12 +90,13 @@ nav a:hover{
     background:#0056b3;
     color:#fff;
     font-weight:bold;
-    transition:.3s;
+    transition:.3s ease;
 }
 
 .btn:hover{
     transform:translateY(-3px);
     background:#003f8a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* बटन पर शैडो इफेक्ट */
 }
 
 .whatsapp{
@@ -124,16 +128,19 @@ nav a:hover{
     gap:25px;
 }
 
+/* 🛠️ सर्विस कार्ड्स को सुंदर बॉर्डर और इफेक्ट दिया गया है */
 .card{
     background:white;
     padding:25px;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    transition:.3s;
+    border-radius:12px; /* कोनों को 15px से 12px किया जो ज्यादा प्रोफेशनल है */
+    border: 1px solid #e2e8f0; /* हल्की बॉर्डर दी गई है */
+    box-shadow:0 4px 10px rgba(0,0,0,.04); /* शैडो को हल्का और स्मूथ किया */
+    transition:.3s ease;
 }
 
 .card:hover{
-    transform:translateY(-8px);
+    transform:translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* छूने पर कार्ड का उभार बढ़ेगा */
 }
 
 .card h3{
@@ -147,9 +154,11 @@ nav a:hover{
 
 @media(max-width:768px){
 
+/* 🛠️ मोबाइल व्यू में भी हेडर को थोड़ा सुधारा गया है */
 .header{
     text-align:center;
     justify-content:center;
+    padding: 15px 5%;
 }
 
 .nav-toggle{
