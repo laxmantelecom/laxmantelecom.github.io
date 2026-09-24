@@ -1,1 +1,8 @@
-[{ "relation": ["delegate_permission/common.handle_all_urls"], "target": { "namespace": "android_app", "package_name": "io.github.laxmantelecom03.twa", "sha256_cert_fingerprints": ["4D:05:C3:87:37:A9:FE:A6:E9:E3:70:AD:4A:D5:DC:84:6E:9F:40:9E:13:D2:61:D1:60:D3:23:72:87:B3:88:C2"] } }]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.laxmantelecom.twa",
+        "sha256_cert_fingerprints": ["D2:50:F1:E0:03:70:A5:EB:16:D0:65:57:FC:91:92:41:53:BB:25:5D:AB:41:38:10:83:B8:3A:9A:2E:AE:42:7B"]
+      }
+    }]
