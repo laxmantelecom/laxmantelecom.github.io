@@ -18,4 +18,4 @@ const db = firebase.database();
 
 // This email is the ADMIN account. Whoever logs in with this email
 // gets redirected to the admin dashboard instead of the normal user dashboard.
-const ADMIN_EMAIL = "laxmantelecom03@gmail.com";
+const ADMIN_EMAIL = "laxmantelecom.help@gmail.com";
