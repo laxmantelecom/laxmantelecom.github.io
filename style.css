@@ -15,7 +15,7 @@ body{
 .header{
     background:linear-gradient(135deg,#0056b3,#0099ff);
     color:white;
-    padding:10px 8%; /* ऊपर-नेचे की पैडिंग 20px से घटाकर 10px की गई */
+    padding:10px 8%; 
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -27,11 +27,11 @@ body{
 
 /* 🛠️ लोगो नाम को थोड़ा छोटा और सेट किया गया है */
 .logo h1{
-    font-size:24px; /* फ़ॉन्ट साइज 32px से घटाकर 24px किया */
+    font-size:24px; 
 }
 
 .logo p{
-    font-size:13px; /* स्लोगन को 15px से 13px किया */
+    font-size:13px; 
     margin-top:2px;
 }
 
@@ -96,7 +96,7 @@ nav a:hover{
 .btn:hover{
     transform:translateY(-3px);
     background:#003f8a;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* बटन पर शैडो इफेक्ट */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
 }
 
 .whatsapp{
@@ -132,15 +132,15 @@ nav a:hover{
 .card{
     background:white;
     padding:25px;
-    border-radius:12px; /* कोनों को 15px से 12px किया जो ज्यादा प्रोफेशनल है */
-    border: 1px solid #e2e8f0; /* हल्की बॉर्डर दी गई है */
-    box-shadow:0 4px 10px rgba(0,0,0,.04); /* शैडो को हल्का और स्मूथ किया */
+    border-radius:12px; 
+    border: 1px solid #e2e8f0; 
+    box-shadow:0 4px 10px rgba(0,0,0,.04); 
     transition:.3s ease;
 }
 
 .card:hover{
     transform:translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* छूने पर कार्ड का उभार बढ़ेगा */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); 
 }
 
 .card h3{
@@ -152,17 +152,32 @@ nav a:hover{
     display:none;
 }
 
+/* 🚪 पुराने पेज लेआउट से अलग-थलग पड़े Logout बटन को हाइड करने के लिए */
+.dash-card .dash-top .logout-btn {
+    display: none !important;
+}
+
+/* 🔴 हैमबर्गर मेनू के अंदर दिखने वाले स्पेशल लॉगआउट लिंक की स्टाइलिंग */
+nav a.menu-logout-link {
+    color: #dc2626 !important; /* लाल रंग ताकि अलग दिखे */
+    font-weight: bold;
+    border-top: 2px dashed #f1f5f9; /* मेनू के अंत में एक बॉर्डर लाइन */
+    margin-top: auto; /* इसे मोबाइल स्लाइडर में सबसे नीचे धकेल देगा */
+}
+nav a.menu-logout-link:hover {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+}
+
 @media(max-width:768px){
 
-/* 🛠️ मोबाइल व्यू में भी हेडर को थोड़ा सुधारा गया है */
 .header{
     text-align:center;
     justify-content:center;
     padding: 15px 5%;
 }
 
-/* 💎 नया पूरी तरह से प्रोफेशनल और बॉर्डरलेस मेनू बटन स्टाइल 💎 */
-/* यह नियम आपके सभी पेजों (index, dashboard, admin, vendor) के पुराने चौकोर डिब्बों को एक साथ साफ़ कर देगा */
+/* 💎 बॉर्डरलेस मेनू बटन स्टाइल 💎 */
 .nav-toggle, 
 .header .nav-toggle, 
 .header button.nav-toggle {
@@ -173,20 +188,19 @@ nav a:hover{
     top:16px !important;
     left:16px !important;
     z-index:1250 !important;
-    background:transparent !important; /* पुराना डार्क डिब्बा हर पेज से साफ */
-    border:none !important;            /* पुराना सफ़ेद बॉर्डर हर पेज से बिल्कुल खत्म */
-    border-radius:50% !important;     /* टच इफेक्ट को एकदम गोल (Circular) बनाने के लिए */
+    background:transparent !important; 
+    border:none !important;            
+    border-radius:50% !important;     
     color:white !important;
-    font-size:26px !important;         /* आइकॉन का परफेक्ट साइज */
+    font-size:26px !important;         
     line-height:1 !important;
-    padding:10px !important;           /* बटन का साइज टच-फ्रैंडली रखने के लिए */
+    padding:10px !important;           
     cursor:pointer !important;
     outline:none !important;
-    box-shadow:none !important;        /* किसी भी तरह का पुराना शैडो हटाने के लिए */
+    box-shadow:none !important;        
     transition:background-color 0.25s ease, transform 0.1s ease !important;
 }
 
-/* सभी पेजों पर यूज़र जब बटन पर टच करेगा तो हल्का ग्लो सर्कल बनेगा */
 .nav-toggle:hover,
 .nav-toggle:active,
 .header .nav-toggle:hover,
@@ -194,7 +208,6 @@ nav a:hover{
     background-color: rgba(255, 255, 255, 0.18) !important;
 }
 
-/* क्लिक करते समय मोबाइल ऐप जैसा रियल वाइब देने के लिए थोड़ा सा दबेगा */
 .nav-toggle:active,
 .header .nav-toggle:active {
     transform: scale(0.92) !important;
