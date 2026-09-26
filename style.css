@@ -152,17 +152,21 @@ nav a:hover{
     display:none;
 }
 
-/* 🚪 पुराने पेज लेआउट से अलग-थलग पड़े Logout बटन को हाइड करने के लिए */
-.dash-card .dash-top .logout-btn {
+/* 🛑 जादुई नियम: पेज पर मौजूद किसी भी पुराने Logout बटन को तुरंत गायब करने के लिए */
+.logout-btn,
+button.logout-btn,
+.dash-card button,
+.dash-top button,
+header + div button {
     display: none !important;
 }
 
-/* 🔴 हैमबर्गर मेनू के अंदर दिखने वाले स्पेशल लॉगआउट लिंक की स्टाइलिंग */
+/* 🔴 हैमबर्गर मेनू के अंदर दिखने वाले लॉगआउट लिंक की स्टाइलिंग */
 nav a.menu-logout-link {
-    color: #dc2626 !important; /* लाल रंग ताकि अलग दिखे */
+    color: #dc2626 !important;
     font-weight: bold;
-    border-top: 2px dashed #f1f5f9; /* मेनू के अंत में एक बॉर्डर लाइन */
-    margin-top: auto; /* इसे मोबाइल स्लाइडर में सबसे नीचे धकेल देगा */
+    border-top: 2px dashed #f1f5f9;
+    margin-top: auto;
 }
 nav a.menu-logout-link:hover {
     background: #fef2f2 !important;
