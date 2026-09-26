@@ -1,8 +1,8 @@
 // Firebase configuration for LAXMAN TELECOM website
-// This is safe to be public — your data is protected by Firebase Security Rules, not by hiding this file.
+// SAFE TO PUBLIC: This key is secured using Google Cloud website restrictions.
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC2bhnG8gKF1bVfgtSWOimc3h-SR7bvIHw",
+  apiKey: "AIzaSyC_usX7bipM4WqLk6m-_XFWkoHyHYLbV3E",
   authDomain: "laxman-telecom.firebaseapp.com",
   databaseURL: "https://laxman-telecom-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "laxman-telecom",
