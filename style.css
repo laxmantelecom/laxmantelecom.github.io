@@ -15,7 +15,7 @@ body{
 .header{
     background:linear-gradient(135deg,#0056b3,#0099ff);
     color:white;
-    padding:10px 8%; /* ऊपर-नीचे की पैडिंग 20px से घटाकर 10px की गई */
+    padding:10px 8%; /* ऊपर-नेचे की पैडिंग 20px से घटाकर 10px की गई */
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -162,35 +162,42 @@ nav a:hover{
 }
 
 /* 💎 नया पूरी तरह से प्रोफेशनल और बॉर्डरलेस मेनू बटन स्टाइल 💎 */
-.nav-toggle{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    position:fixed;
-    top:16px;
-    left:16px;
-    z-index:1250;
-    background:transparent !important; /* पुराना डार्क डिब्बा पूरी तरह हटाया */
-    border:none !important;            /* पुराना सफ़ेद बॉर्डर/आउटलाइन बिल्कुल खत्म */
+/* यह नियम आपके सभी पेजों (index, dashboard, admin, vendor) के पुराने चौकोर डिब्बों को एक साथ साफ़ कर देगा */
+.nav-toggle, 
+.header .nav-toggle, 
+.header button.nav-toggle {
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    position:fixed !important;
+    top:16px !important;
+    left:16px !important;
+    z-index:1250 !important;
+    background:transparent !important; /* पुराना डार्क डिब्बा हर पेज से साफ */
+    border:none !important;            /* पुराना सफ़ेद बॉर्डर हर पेज से बिल्कुल खत्म */
     border-radius:50% !important;     /* टच इफेक्ट को एकदम गोल (Circular) बनाने के लिए */
-    color:white;
-    font-size:26px;                    /* आइकॉन का साइज थोड़ा सा बढ़ाया ताकि स्पष्ट दिखे */
-    line-height:1;
+    color:white !important;
+    font-size:26px !important;         /* आइकॉन का परफेक्ट साइज */
+    line-height:1 !important;
     padding:10px !important;           /* बटन का साइज टच-फ्रैंडली रखने के लिए */
-    cursor:pointer;
-    outline:none;
-    transition:background-color 0.25s ease, transform 0.1s ease;
+    cursor:pointer !important;
+    outline:none !important;
+    box-shadow:none !important;        /* किसी भी तरह का पुराना शैडो हटाने के लिए */
+    transition:background-color 0.25s ease, transform 0.1s ease !important;
 }
 
-/* यूज़र जब बटन पर टच करेगा या उंगली रखेगा तो हल्का ग्लो सर्कल बनेगा */
+/* सभी पेजों पर यूज़र जब बटन पर टच करेगा तो हल्का ग्लो सर्कल बनेगा */
 .nav-toggle:hover,
-.nav-toggle:active {
+.nav-toggle:active,
+.header .nav-toggle:hover,
+.header .nav-toggle:active {
     background-color: rgba(255, 255, 255, 0.18) !important;
 }
 
 /* क्लिक करते समय मोबाइल ऐप जैसा रियल वाइब देने के लिए थोड़ा सा दबेगा */
-.nav-toggle:active {
-    transform: scale(0.92);
+.nav-toggle:active,
+.header .nav-toggle:active {
+    transform: scale(0.92) !important;
 }
 
 .nav-backdrop{
