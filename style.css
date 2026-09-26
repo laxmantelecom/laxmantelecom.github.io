@@ -161,20 +161,36 @@ nav a:hover{
     padding: 15px 5%;
 }
 
+/* 💎 नया पूरी तरह से प्रोफेशनल और बॉर्डरलेस मेनू बटन स्टाइल 💎 */
 .nav-toggle{
-    display:block;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
     position:fixed;
     top:16px;
     left:16px;
     z-index:1250;
-    background:rgba(0,0,0,0.35);
-    border:2px solid white;
-    border-radius:8px;
+    background:transparent !important; /* पुराना डार्क डिब्बा पूरी तरह हटाया */
+    border:none !important;            /* पुराना सफ़ेद बॉर्डर/आउटलाइन बिल्कुल खत्म */
+    border-radius:50% !important;     /* टच इफेक्ट को एकदम गोल (Circular) बनाने के लिए */
     color:white;
-    font-size:24px;
+    font-size:26px;                    /* आइकॉन का साइज थोड़ा सा बढ़ाया ताकि स्पष्ट दिखे */
     line-height:1;
-    padding:4px 12px;
+    padding:10px !important;           /* बटन का साइज टच-फ्रैंडली रखने के लिए */
     cursor:pointer;
+    outline:none;
+    transition:background-color 0.25s ease, transform 0.1s ease;
+}
+
+/* यूज़र जब बटन पर टच करेगा या उंगली रखेगा तो हल्का ग्लो सर्कल बनेगा */
+.nav-toggle:hover,
+.nav-toggle:active {
+    background-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* क्लिक करते समय मोबाइल ऐप जैसा रियल वाइब देने के लिए थोड़ा सा दबेगा */
+.nav-toggle:active {
+    transform: scale(0.92);
 }
 
 .nav-backdrop{
