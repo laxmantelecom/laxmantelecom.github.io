@@ -44,30 +44,10 @@
       <p>Vendor Portal</p>
     </div>
   </div>
-  
-  <!-- 💎 यहाँ नया यूनिवर्सल रेस्पॉन्सिव मेनू बटन फिट कर दिया गया है 💎 -->
-  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-      <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-
-  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
   <nav>
     <a href="index.html#home">Home</a>
   </nav>
 </header>
-
-<script>
-function toggleNav() {
-  document.querySelector('nav').classList.toggle('nav-open');
-  document.getElementById('navBackdrop').classList.toggle('nav-open');
-}
-function closeNav() {
-  document.querySelector('nav').classList.remove('nav-open');
-  document.getElementById('navBackdrop').classList.remove('nav-open');
-}
-</script>
 
 <!-- LOGIN FORM (shown before vendor logs in) -->
 <div class="auth-wrapper" id="vendorLoginWrapper">
@@ -118,7 +98,6 @@ function closeNav() {
         <div class="label">Paid Amount</div>
         <div class="value" id="vPaid">₹0.00</div>
       </div>
-      
       <div class="vendor-summary-card">
         <div class="label">Due Amount</div>
         <div class="value" id="vDue">₹0.00</div>
