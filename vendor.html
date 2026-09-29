@@ -11,6 +11,26 @@
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 <link rel="shortcut icon" href="favicon.ico">
 <style>
+  /* मोबाइल स्क्रीन पर लॉगिन बॉक्स और बटन दिखने के लिए विशेष फिक्स */
+  .auth-wrapper {
+    box-sizing: border-box !important;
+    width: 92% !important;
+    max-width: 420px !important;
+    margin: 30px auto !important;
+    padding: 24px !important;
+    background: #fff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+  }
+  .auth-btn {
+    width: 100% !important;
+    padding: 14px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
   .vendor-table-wrap { overflow-x: auto; margin-top: 16px; }
   .vendor-table { width: 100%; border-collapse: collapse; min-width: 820px; background: #fff; }
   .vendor-table th, .vendor-table td { border: 1px solid #e2e6ef; padding: 10px 12px; font-size: 0.9rem; text-align: left; }
@@ -24,6 +44,7 @@
 </style>
 </head>
 <body>
+
 
 <div id="mpinLockOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0d2a5c,#123a7a); align-items:center; justify-content:center; font-family:inherit;">
   <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
