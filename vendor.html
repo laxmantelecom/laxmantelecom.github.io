@@ -478,6 +478,36 @@ function renderVendorRecords(records) {
   document.getElementById('vPayable').textContent = formatMoney(payable);
   document.getElementById('vPaid').textContent = formatMoney(paid);
   document.getElementById('vDue').textContent = formatMoney(due);
+  forceButtonStyles();
+}
+
+function forceButtonStyles() {
+  document.querySelectorAll('.pay-btn').forEach((b) => {
+    const concern = b.classList.contains('concern');
+    const rules = {
+      'display': 'inline-block',
+      'visibility': 'visible',
+      'opacity': '1',
+      'position': 'static',
+      'width': 'auto',
+      'height': 'auto',
+      'max-height': 'none',
+      'min-width': '110px',
+      'padding': '8px 14px',
+      'font-size': '14px',
+      'font-weight': '700',
+      'background': concern ? '#9a580a' : '#166534',
+      'color': '#ffffff',
+      'border': 'none',
+      'border-radius': '6px',
+      'cursor': 'pointer',
+      'white-space': 'nowrap',
+      'transform': 'none',
+      'clip-path': 'none',
+      'overflow': 'visible'
+    };
+    Object.keys(rules).forEach((k) => b.style.setProperty(k, rules[k], 'important'));
+  });
 }
 
 function getGreeting(vendorName) {
@@ -649,6 +679,10 @@ auth.onAuthStateChanged((user) => {
     }
   });
 });
+
+// Buttons ko hamesha visible rakho (table ya page badalne par bhi)
+forceButtonStyles();
+new MutationObserver(forceButtonStyles).observe(document.body, { childList: true, subtree: true });
 </script>
 
 </body>
