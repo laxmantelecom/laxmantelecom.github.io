@@ -30,28 +30,71 @@
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    background: #0d2a5c !important; /* FIXED: Added visible background */
-    color: #ffffff !important;    /* FIXED: Added clear readable text color */
+    background: #0d2a5c !important;
+    color: #ffffff !important;
     border: none !important;
     border-radius: 8px !important;
     cursor: pointer !important;
   }
+
+  /* Logout button (sirf logout ke liye) */
   .logout-btn {
     padding: 8px 16px !important;
     font-size: 0.9rem !important;
     font-weight: 700 !important;
-    background: #be123c !important; /* FIXED: Styled layout button properly */
+    background: #be123c !important;
     color: #ffffff !important;
     border: none !important;
     border-radius: 6px !important;
     cursor: pointer !important;
     display: inline-block !important;
   }
+
+  /* NAYI CLASS: Mark as Paid / Raise Concern / Mark All as Paid buttons ke liye.
+     Isko purani style.css / auth-style.css touch nahi karti. */
+  .pay-btn {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 8px 14px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    font-family: inherit !important;
+    background: #166534 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    text-indent: 0 !important;
+    line-height: 1.2 !important;
+  }
+  .pay-btn.concern { background: #9a580a !important; }
+
+  /* Card/wrapper table ko clip na kare */
+  .dash-card, .dash-wrapper { overflow: visible !important; }
+
   .vendor-table-wrap { overflow-x: auto; margin-top: 16px; }
-  .vendor-table { width: 100%; border-collapse: collapse; min-width: 820px; background: #fff; }
+  .vendor-table { width: 100%; border-collapse: collapse; min-width: 900px; background: #fff; }
   .vendor-table th, .vendor-table td { border: 1px solid #e2e6ef; padding: 10px 12px; font-size: 0.9rem; text-align: left; }
   .vendor-table th { background: #0d2a5c; color: #fff; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.4px; }
   .vendor-table tbody tr:nth-child(even) td { background: #f6f9ff; }
+  .vendor-table td.action-cell { min-width: 150px; }
+
+  /* Action column hamesha screen par dikhe (sticky right) */
+  .vendor-table th:last-child,
+  .vendor-table td:last-child {
+    position: sticky;
+    right: 0;
+    background: #fff;
+    box-shadow: -2px 0 6px rgba(0,0,0,0.08);
+  }
+  .vendor-table th:last-child { background: #0d2a5c; }
+  .vendor-table tbody tr:nth-child(even) td:last-child { background: #f6f9ff; }
+
   .vendor-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 20px 0; }
   .vendor-summary-card { background: #f4f8ff; border: 1px solid #dfe6f5; border-radius: 14px; padding: 16px; }
   .vendor-summary-card .label { font-size: 0.78rem; color: #5b6b9c; text-transform: uppercase; letter-spacing: 0.4px; }
@@ -152,7 +195,7 @@
           <label style="display:block; font-size:0.82rem; margin-bottom:4px;">To Date</label>
           <input type="date" id="bulkToDate" style="padding:8px;">
         </div>
-        <button class="logout-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
+        <button type="button" class="pay-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
       </div>
     </div>
 
@@ -394,14 +437,16 @@ function renderVendorRecords(records) {
       .forEach((r) => {
         const tr = document.createElement('tr');
         const pendingDispute = disputesByRecordId[r.id];
+        // paymentStatus missing/empty ko bhi UNPAID maano
+        const isPaid = String(r.paymentStatus || '').toUpperCase() === 'PAID';
         let actionCell;
-        if (r.paymentStatus !== 'PAID') {
-          actionCell = `<button class="logout-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
+        if (!isPaid) {
+          actionCell = `<button type="button" class="pay-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
         } else if (pendingDispute) {
           actionCell = `<span style="color:#9a580a; font-weight:700;">⏳ ${shortId(Number(pendingDispute.createdAt))} pending review</span><br><span style="font-size:11px; color:#888;">Raised: ${formatDateTime(pendingDispute.createdAt)}</span>`;
         } else {
           const paidWhen = r.paidAt ? formatDateTime(r.paidAt) : formatDateDDMMYYYY(r.paidDate);
-          actionCell = `<span style="color:#166534; font-weight:700;">✓ Paid</span><br><span style="font-size:11px; color:#888;">${paidWhen}</span><br><button class="logout-btn" style="margin-top:4px;" onclick="raiseConcern('${r.id}')">Raise Concern</button>`;
+          actionCell = `<span style="color:#166534; font-weight:700;">✓ Paid</span><br><span style="font-size:11px; color:#888;">${paidWhen}</span><br><button type="button" class="pay-btn concern" style="margin-top:4px;" onclick="raiseConcern('${r.id}')">Raise Concern</button>`;
         }
         tr.innerHTML = `
           <td>${formatDateDDMMYYYY(r.date)}</td>
@@ -414,7 +459,7 @@ function renderVendorRecords(records) {
           <td>${formatMoney(r.paidAmount)}</td>
           <td>${formatMoney(r.dueAmount)}</td>
           <td>${getStatusTag(r.paymentStatus)}</td>
-          <td>${actionCell}</td>
+          <td class="action-cell">${actionCell}</td>
         `;
         tbody.appendChild(tr);
       });
