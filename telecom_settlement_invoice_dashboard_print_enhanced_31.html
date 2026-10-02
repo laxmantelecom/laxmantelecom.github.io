@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1395,7 +1394,16 @@
     }
 
     function startFirebaseSync() {
-      migrateLegacyRecordsIfNeeded();
+      // NOTE: the one-time legacy migration (telecomSettlement/records ->
+      // telecomSettlement/vendorView) used to run on every page load here.
+      // That caused a bug: once you deleted an entry from vendorView, the
+      // same entry still existed under the old /records path, so on the
+      // next refresh the migration saw it "missing" from vendorView and
+      // copied it right back in - deleted entries kept reappearing.
+      // The migration is no longer called automatically. If you ever need
+      // to recover old data from before vendor-scoped storage existed,
+      // call migrateLegacyRecordsIfNeeded() manually from the browser
+      // console - just don't leave it running on every load.
 
       db.ref(FIREBASE_DATA_PATH + '/vendorView').on('value', (snap) => {
         const val = snap.val() || {};
@@ -1417,9 +1425,10 @@
       });
     }
 
-    // One-time self-healing migration: older entries were stored only under
-    // telecomSettlement/records before vendor-scoped storage existed. Copy
-    // any of those not yet present under vendorView, so nothing is lost.
+    // One-time self-healing migration (kept for manual/console use only -
+    // see the note in startFirebaseSync above for why it's not called
+    // automatically anymore). Copies any legacy telecomSettlement/records
+    // entries into vendorView that aren't already there.
     function migrateLegacyRecordsIfNeeded() {
       db.ref(FIREBASE_DATA_PATH + '/records').once('value').then((legacySnap) => {
         const legacyVal = legacySnap.val();
@@ -1899,18 +1908,9 @@
     async function generateInvoicePdfBlob() {
       const node = document.getElementById('invoicePreview');
       const canvas = await html2canvas(node, { scale: 1.5, useCORS: true, backgroundColor: '#ffffff' });
-      // PNG (lossless) keeps the subtle watermark visible - JPEG's
-      // compression was washing out the low-opacity watermark. File size
-      // stays reasonable since this is a single dynamically-sized page
-      // (the earlier 20+ MB issue was a duplicate multi-page bug, already
-      // fixed separately).
       const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
 
-      // A4 width in points, and the matching height for this content's
-      // aspect ratio - the PDF page is sized to fit the whole invoice on
-      // a single page instead of splitting it across an A4-height page
-      // break (which was cutting the signature onto a second page).
       const pageWidthPt = 595.28;
       const pageHeightPt = (canvas.height * pageWidthPt) / canvas.width;
 
@@ -1937,12 +1937,6 @@
         const blob = await generateInvoicePdfBlob();
         const file = new File([blob], fileName, { type: 'application/pdf' });
 
-        // Web Share API (with file support) lets a mobile browser open the
-        // native share sheet with the PDF already attached and the message
-        // pre-filled - the user just taps the WhatsApp icon there. Full
-        // desktop browsers and older mobile browsers don't support sharing
-        // files this way, so we fall back to a direct PDF download plus the
-        // WhatsApp chat opening with the message ready.
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
@@ -1991,8 +1985,13 @@
       const record = cachedRecords.find(r => r.id === id);
       if (!record) return;
       const vendorKey = sanitizeVendorKey(record.vendor);
+      // Delete from the new location, and also from the old legacy
+      // location (if it happens to exist there too) so it can never
+      // get resurrected even if migrateLegacyRecordsIfNeeded() is ever
+      // run again manually in future.
       db.ref(FIREBASE_DATA_PATH + '/vendorView/' + vendorKey + '/' + id).remove()
         .catch((err) => alert('Could not delete this entry: ' + err.message));
+      db.ref(FIREBASE_DATA_PATH + '/records/' + id).remove().catch(() => {});
     };
 
     document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
@@ -2053,11 +2052,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="firebase-config.js"></script>
   <script>
-    // --- Admin login gate (real Firebase Authentication) --------------
-    // This uses the same Firebase project and ADMIN_EMAIL check as
-    // admin.html, so logging in once on login.html unlocks both pages.
-    // Only a signed-in Firebase user matching ADMIN_EMAIL can see this
-    // dashboard - anyone else is redirected to login.html.
     const adminLoginOverlay = document.getElementById('adminLoginOverlay');
     const adminAuthStatus = document.getElementById('adminAuthStatus');
     const appRoot = document.getElementById('appRoot');
