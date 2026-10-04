@@ -34,10 +34,5 @@
       "purpose": "maskable"
     }
   ],
-  "scope_extensions": [
-    { "origin": "*.whatsapp.com" },
-    { "origin": "*.google.com" }
-  ],
-  "handle_links": "auto",
-  "display_override": ["window-controls-overlay"]
+  "capture_links": "none"
 }
