@@ -2,7 +2,7 @@
   "name": "Laxman Telecom",
   "short_name": "Laxman Telecom",
   "description": "Your Trusted Digital Service Center - Mobile Repair, Recharge, Aadhaar, PAN Card and more.",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -33,5 +33,11 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "scope_extensions": [
+    { "origin": "*.whatsapp.com" },
+    { "origin": "*.google.com" }
+  ],
+  "handle_links": "auto",
+  "display_override": ["window-controls-overlay"]
 }
