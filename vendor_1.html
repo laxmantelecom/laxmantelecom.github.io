@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendor Login | LAXMAN TELECOM</title>
+<link rel="stylesheet" href="style.css?v=1.4">
+<link rel="stylesheet" href="auth-style.css?v=1.4">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link rel="shortcut icon" href="favicon.ico">
+<style>
+  /* मोबाइल स्क्रीन पर लॉगिन बॉक्स और बटन दिखने के लिए विशेष फिक्स */
+  .auth-wrapper {
+    box-sizing: border-box !important;
+    width: 92% !important;
+    max-width: 420px !important;
+    margin: 30px auto !important;
+    padding: 24px !important;
+    background: #fff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+  }
+  .auth-btn {
+    width: 100% !important;
+    padding: 14px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: #0d2a5c !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+  }
+
+  /* Logout button (sirf logout ke liye) */
+  .logout-btn {
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    background: #be123c !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+  }
+
+  /* NAYI CLASS: Mark as Paid / Raise Concern / Mark All as Paid buttons ke liye.
+     Isko purani style.css / auth-style.css touch nahi karti. */
+  .pay-btn {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 8px 14px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    font-family: inherit !important;
+    background: #166534 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    text-indent: 0 !important;
+    line-height: 1.2 !important;
+  }
+  .pay-btn.concern { background: #9a580a !important; }
+
+  /* Card/wrapper table ko clip na kare */
+  .dash-card, .dash-wrapper { overflow: visible !important; }
+  .dash-wrapper > * { min-width: 0; }
+
+  .vendor-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 16px; }
+  .vendor-table { width: 100%; border-collapse: collapse; min-width: 900px; background: #fff; }
+  .vendor-table th, .vendor-table td { border: 1px solid #e2e6ef; padding: 10px 12px; font-size: 0.9rem; text-align: left; }
+  .vendor-table th { background: #0d2a5c; color: #fff; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.4px; }
+  .vendor-table tbody tr:nth-child(even) td { background: #f6f9ff; }
+  .vendor-table td.action-cell { min-width: 150px; }
+
+  .vendor-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 20px 0; }
+  .vendor-summary-card { background: #f4f8ff; border: 1px solid #dfe6f5; border-radius: 14px; padding: 16px; }
+  .vendor-summary-card .label { font-size: 0.78rem; color: #5b6b9c; text-transform: uppercase; letter-spacing: 0.4px; }
+  .vendor-summary-card .value { font-size: 1.35rem; font-weight: 800; color: #0d2a5c; margin-top: 4px; }
+  .vendor-empty { padding: 30px; text-align: center; color: #6b7494; }
+</style>
+</head>
+<body>
+
+
+<div id="mpinLockOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0d2a5c,#123a7a); align-items:center; justify-content:center; font-family:inherit;">
+  <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
+    <div style="font-size:1.3rem; font-weight:800; margin-bottom:6px; color:#0d2a5c;">Enter MPIN</div>
+    <div style="font-size:0.85rem; color:#64748b; margin-bottom:20px;">Quick unlock for LAXMAN TELECOM</div>
+    <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN" style="width:100%; padding:12px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:1.3rem; text-align:center; letter-spacing:8px; margin-bottom:12px; box-sizing:border-box;">
+    <button id="mpinUnlockBtn" style="width:100%; padding:12px; border:none; border-radius:8px; background:#0d2a5c; color:#fff; font-weight:700; font-size:1rem; cursor:pointer;">Unlock</button>
+    <div id="mpinError" style="color:#dc2626; font-size:0.85rem; margin-top:10px; min-height:18px;"></div>
+    <div style="margin-top:14px;"><a href="#" id="mpinForgotLink" style="font-size:0.82rem; color:#64748b;">Forgot MPIN? Logout and login again</a></div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="logo" style="display:flex; align-items:center; gap:14px;">
+    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px;">
+    <div>
+      <h1>LAXMAN TELECOM</h1>
+      <p>Vendor Portal</p>
+    </div>
+  </div>
+
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+  <nav>
+    <a href="index.html#home" onclick="closeNav()">Home</a>
+    <a href="index.html#contact" onclick="closeNav()">Contact</a>
+    <a href="#" id="menuLogoutLink" class="menu-logout-link" style="display:none;" onclick="closeNav(); doLogout(); return false;">Logout</a>
+  </nav>
+</header>
+
+<!-- LOGIN FORM (shown before vendor logs in) -->
+<div class="auth-wrapper" id="vendorLoginWrapper">
+  <h2>Vendor Login</h2>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"></div>
+
+  <form id="vendorLoginForm">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="vendorEmail" required placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div style="position:relative;">
+        <input type="password" id="vendorPassword" required placeholder="Your password" style="width:100%; box-sizing:border-box; padding-right:44px;">
+        <span id="toggleVendorPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; user-select:none;">👁️</span>
+      </div>
+    </div>
+    <button type="submit" class="auth-btn">Login</button>
+  </form>
+  <p class="auth-link">This login is only for approved vendors. Contact Laxman Telecom if you need access.</p>
+</div>
+
+<!-- VENDOR DASHBOARD (shown after login) -->
+<div class="dash-wrapper" id="vendorDashWrapper" style="display:none;">
+  <div class="dash-card">
+    <div class="dash-top">
+      <h2 id="vendorNameHeading">My Account</h2>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+
+    <div class="vendor-summary">
+      <div class="vendor-summary-card">
+        <div class="label">Total Recharge Value</div>
+        <div class="value" id="vGross">₹0.00</div>
+      </div>
+      <div class="vendor-summary-card">
+        <div class="label">Commission Earned</div>
+        <div class="value" id="vCommission">₹0.00</div>
+      </div>
+      <div class="vendor-summary-card">
+        <div class="label">Amount Payable</div>
+        <div class="value" id="vPayable">₹0.00</div>
+      </div>
+      <div class="vendor-summary-card">
+        <div class="label">Paid Amount</div>
+        <div class="value" id="vPaid">₹0.00</div>
+      </div>
+      <div class="vendor-summary-card">
+        <div class="label">Due Amount</div>
+        <div class="value" id="vDue">₹0.00</div>
+      </div>
+    </div>
+
+    <div style="background:#f4f8ff; border:1px solid #dfe6f5; border-radius:14px; padding:16px; margin-bottom:18px;">
+      <div style="font-weight:800; color:#0d2a5c; margin-bottom:10px;">Mark All as Paid (Date Range)</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <label style="display:block; font-size:0.82rem; margin-bottom:4px;">From Date</label>
+          <input type="date" id="bulkFromDate" style="padding:8px;">
+        </div>
+        <div>
+          <label style="display:block; font-size:0.82rem; margin-bottom:4px;">To Date</label>
+          <input type="date" id="bulkToDate" style="padding:8px;">
+        </div>
+        <button type="button" class="pay-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
+      </div>
+    </div>
+
+    <div class="vendor-table-wrap">
+      <table class="vendor-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Mobile Number</th>
+            <th>Operator</th>
+            <th>Amount</th>
+            <th>Commission %</th>
+            <th>Commission Earned</th>
+            <th>Payable</th>
+            <th>Paid</th>
+            <th>Due</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="vendorTableBody"></tbody>
+      </table>
+      <div class="vendor-empty" id="vendorEmptyState" style="display:none;">No recharge entries yet.</div>
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <h2>Account Settings</h2>
+    <div class="error-msg" id="settingsErrorMsg"></div>
+    <div class="success-msg" id="settingsSuccessMsg"></div>
+
+    <h3 style="margin-top:6px; font-size:16px;">Change Password</h3>
+    <form id="changePasswordForm">
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" id="currentPasswordInput" required>
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="newPasswordInput" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="confirmPasswordInput" required minlength="6">
+      </div>
+      <button type="submit" class="auth-btn">Update Password</button>
+    </form>
+
+    <h3 style="margin-top:26px; font-size:16px;">App MPIN (Quick Unlock)</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
+    <form id="setMpinForm">
+      <div class="form-group">
+        <label>New MPIN</label>
+        <input type="password" inputmode="numeric" id="newMpinInput" maxlength="6" minlength="4" required>
+      </div>
+      <div class="form-group">
+        <label>Confirm MPIN</label>
+        <input type="password" inputmode="numeric" id="confirmMpinInput" maxlength="6" minlength="4" required>
+      </div>
+      <button type="submit" class="auth-btn">Save MPIN</button>
+    </form>
+    <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:10px;">Remove MPIN from this device</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+function toggleNav() {
+  document.querySelector('nav').classList.toggle('nav-open');
+  document.getElementById('navBackdrop').classList.toggle('nav-open');
+}
+function closeNav() {
+  document.querySelector('nav').classList.remove('nav-open');
+  document.getElementById('navBackdrop').classList.remove('nav-open');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+}
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+document.getElementById('toggleVendorPassword').addEventListener('click', function () {
+  const pwd = document.getElementById('vendorPassword');
+  if (pwd.type === 'password') {
+    pwd.type = 'text';
+    this.textContent = '🙈';
+  } else {
+    pwd.type = 'password';
+    this.textContent = '👁️';
+  }
+});
+
+function doLogout() {
+  auth.signOut().then(() => { location.reload(); });
+}
+
+function formatMoney(value) {
+  return '₹' + Number(value || 0).toFixed(2);
+}
+
+function formatDateDDMMYYYY(isoDate) {
+  if (!isoDate) return '';
+  const [year, month, day] = isoDate.split('-');
+  return `${day}-${month}-${year}`;
+}
+
+function getTodayIso() {
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return d.getFullYear() + '-' + month + '-' + day;
+}
+
+function formatDateTime(ms) {
+  if (!ms) return '';
+  const d = new Date(ms);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${day}-${month}-${year}, ${hours}:${minutes} ${ampm}`;
+}
+
+function shortId(ms) {
+  return 'CN-' + String(ms).slice(-6);
+}
+
+function getStatusTag(status) {
+  const map = { PAID: '#166534', UNPAID: '#b91c1c', PARTIAL: '#9a580a' };
+  const color = map[status] || '#6b7494';
+  return `<span style="font-weight:800; color:${color};">${status || 'UNPAID'}</span>`;
+}
+
+let currentVendorKey = null;
+let currentVendorName = null;
+let disputesByRecordId = {};
+
+function markRangeAsPaid() {
+  const fromDate = document.getElementById('bulkFromDate').value;
+  const toDate = document.getElementById('bulkToDate').value;
+  if (!fromDate || !toDate) {
+    alert('Please select both From Date and To Date.');
+    return;
+  }
+  if (fromDate > toDate) {
+    alert('From Date cannot be after To Date.');
+    return;
+  }
+
+  const records = window.__vendorRecords || [];
+  const toMark = records.filter((r) =>
+    r.paymentStatus !== 'PAID' &&
+    r.date >= fromDate &&
+    r.date <= toDate
+  );
+
+  if (!toMark.length) {
+    alert('No unpaid entries found in this date range.');
+    return;
+  }
+
+  const totalAmount = toMark.reduce((sum, r) => sum + Number(r.payable || 0), 0);
+  const confirmMsg = `Mark ${toMark.length} entr${toMark.length === 1 ? 'y' : 'ies'} as Paid ` +
+    `(₹${totalAmount.toFixed(2)} total) for ${formatDateDDMMYYYY(fromDate)} to ${formatDateDDMMYYYY(toDate)}?`;
+  if (!confirm(confirmMsg)) return;
+
+  const now = Date.now();
+  const today = getTodayIso();
+  const updates = {};
+  toMark.forEach((r) => {
+    const base = 'telecomSettlement/vendorView/' + currentVendorKey + '/' + r.id;
+    updates[base + '/paymentStatus'] = 'PAID';
+    updates[base + '/paidAmount'] = r.payable;
+    updates[base + '/dueAmount'] = 0;
+    updates[base + '/paidDate'] = today;
+    updates[base + '/paidAt'] = now;
+  });
+
+  db.ref().update(updates)
+    .then(() => alert(`${toMark.length} entries marked as Paid.`))
+    .catch((err) => alert('Could not update: ' + err.message));
+}
+
+function markEntryAsPaid(id) {
+  if (!confirm('Confirm that you have received full payment for this entry?')) return;
+  const record = window.__vendorRecords.find(r => r.id === id);
+  if (!record) return;
+  const now = Date.now();
+  db.ref('telecomSettlement/vendorView/' + currentVendorKey + '/' + id).update({
+    paymentStatus: 'PAID',
+    paidAmount: record.payable,
+    dueAmount: 0,
+    paidDate: getTodayIso(),
+    paidAt: now
+  }).catch((err) => alert('Could not update payment status: ' + err.message));
+}
+
+function raiseConcern(id) {
+  const record = window.__vendorRecords.find(r => r.id === id);
+  if (!record) return;
+  const reason = prompt('Briefly describe the issue (e.g. "Marked paid by mistake, payment not received yet"):');
+  if (reason === null) return;
+  if (!reason.trim()) { alert('Please describe the issue before submitting.'); return; }
+
+  const now = Date.now();
+  const disputeId = now.toString();
+  db.ref('telecomSettlement/paymentDisputes/' + currentVendorKey + '/' + disputeId).set({
+    recordId: id,
+    vendorName: currentVendorName,
+    mobile: record.mobile || '',
+    date: record.date || '',
+    amount: record.amount || 0,
+    reason: reason.trim(),
+    status: 'Pending',
+    createdAt: now
+  }).then(() => {
+    alert(`Your concern (${shortId(now)}) has been sent to Laxman Telecom for review.\nRaised on: ${formatDateTime(now)}`);
+  }).catch((err) => alert('Could not submit your concern: ' + err.message));
+}
+
+function renderVendorRecords(records) {
+  window.__vendorRecords = records;
+  const tbody = document.getElementById('vendorTableBody');
+  const emptyState = document.getElementById('vendorEmptyState');
+  tbody.innerHTML = '';
+
+  if (!records.length) {
+    emptyState.style.display = 'block';
+  } else {
+    emptyState.style.display = 'none';
+    records
+      .slice()
+      .sort((a, b) => (b.id > a.id ? 1 : -1))
+      .forEach((r) => {
+        const tr = document.createElement('tr');
+        const pendingDispute = disputesByRecordId[r.id];
+        // paymentStatus missing/empty ko bhi UNPAID maano
+        const isPaid = String(r.paymentStatus || '').toUpperCase() === 'PAID';
+        let actionCell;
+        if (!isPaid) {
+          actionCell = `<button type="button" class="pay-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
+        } else if (pendingDispute) {
+          actionCell = `<span style="color:#9a580a; font-weight:700;">⏳ ${shortId(Number(pendingDispute.createdAt))} pending review</span><br><span style="font-size:11px; color:#888;">Raised: ${formatDateTime(pendingDispute.createdAt)}</span>`;
+        } else {
+          const paidWhen = r.paidAt ? formatDateTime(r.paidAt) : formatDateDDMMYYYY(r.paidDate);
+          actionCell = `<span style="color:#166534; font-weight:700;">✓ Paid</span><br><span style="font-size:11px; color:#888;">${paidWhen}</span><br><button type="button" class="pay-btn concern" style="margin-top:4px;" onclick="raiseConcern('${r.id}')">Raise Concern</button>`;
+        }
+        tr.innerHTML = `
+          <td>${formatDateDDMMYYYY(r.date)}</td>
+          <td>${r.mobile || ''}</td>
+          <td>${r.operator || ''}</td>
+          <td>${formatMoney(r.amount)}</td>
+          <td>${Number(r.commissionPercent || 0).toFixed(2)}%</td>
+          <td>${formatMoney(r.commissionEarned)}</td>
+          <td>${formatMoney(r.payable)}</td>
+          <td>${formatMoney(r.paidAmount)}</td>
+          <td>${formatMoney(r.dueAmount)}</td>
+          <td>${getStatusTag(r.paymentStatus)}</td>
+          <td class="action-cell">${actionCell}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+
+  let gross = 0, commission = 0, payable = 0, paid = 0, due = 0;
+  records.forEach((r) => {
+    gross += Number(r.amount || 0);
+    commission += Number(r.commissionEarned || 0);
+    payable += Number(r.payable || 0);
+    paid += Number(r.paidAmount || 0);
+    due += Number(r.dueAmount || 0);
+  });
+  document.getElementById('vGross').textContent = formatMoney(gross);
+  document.getElementById('vCommission').textContent = formatMoney(commission);
+  document.getElementById('vPayable').textContent = formatMoney(payable);
+  document.getElementById('vPaid').textContent = formatMoney(paid);
+  document.getElementById('vDue').textContent = formatMoney(due);
+  forceButtonStyles();
+}
+
+function forceButtonStyles() {
+  document.querySelectorAll('.pay-btn').forEach((b) => {
+    const concern = b.classList.contains('concern');
+    const rules = {
+      'display': 'inline-block',
+      'visibility': 'visible',
+      'opacity': '1',
+      'position': 'static',
+      'width': 'auto',
+      'height': 'auto',
+      'max-height': 'none',
+      'min-width': '110px',
+      'padding': '8px 14px',
+      'font-size': '14px',
+      'font-weight': '700',
+      'background': concern ? '#9a580a' : '#166534',
+      'color': '#ffffff',
+      'border': 'none',
+      'border-radius': '6px',
+      'cursor': 'pointer',
+      'white-space': 'nowrap',
+      'transform': 'none',
+      'clip-path': 'none',
+      'overflow': 'visible'
+    };
+    Object.keys(rules).forEach((k) => b.style.setProperty(k, rules[k], 'important'));
+  });
+}
+
+function getGreeting(vendorName) {
+  const hour = new Date().getHours();
+  let timeGreeting;
+  if (hour < 12) timeGreeting = 'Good Morning';
+  else if (hour < 17) timeGreeting = 'Good Afternoon';
+  else timeGreeting = 'Good Evening';
+  return `${timeGreeting}, ${vendorName}`;
+}
+
+function loadVendorData(vendorKey, vendorName) {
+  currentVendorKey = vendorKey;
+  currentVendorName = vendorName;
+  document.getElementById('vendorNameHeading').textContent = getGreeting(vendorName);
+
+  db.ref('telecomSettlement/paymentDisputes/' + vendorKey).on('value', (snap) => {
+    const val = snap.val() || {};
+    disputesByRecordId = {};
+    Object.values(val).forEach((d) => {
+      if (d.status === 'Pending') disputesByRecordId[d.recordId] = d;
+    });
+    renderVendorRecords(window.__vendorRecords || []);
+  });
+
+  db.ref('telecomSettlement/vendorView/' + vendorKey).on('value', (snap) => {
+    const val = snap.val() || {};
+    const records = Object.keys(val).map((key) => ({ id: key, ...val[key] }));
+    renderVendorRecords(records);
+  });
+}
+
+function revealVendorDashboard(vendorAccount) {
+  document.getElementById('vendorLoginWrapper').style.display = 'none';
+  document.getElementById('vendorDashWrapper').style.display = 'block';
+  document.getElementById('menuLogoutLink').style.display = '';
+  loadVendorData(vendorAccount.vendorKey, vendorAccount.name);
+}
+
+document.getElementById('vendorLoginForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const email = document.getElementById('vendorEmail').value.trim();
+  const password = document.getElementById('vendorPassword').value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((cred) => {
+      return db.ref('vendorAccounts/' + cred.user.uid).once('value');
+    })
+    .then((snap) => {
+      const vendorAccount = snap.val();
+      if (!vendorAccount) {
+        showError('This login is not registered as a vendor account. Please contact Laxman Telecom.');
+        auth.signOut();
+        return;
+      }
+      // Just typed the full password, so no need for the MPIN gate this time.
+      revealVendorDashboard(vendorAccount);
+    })
+    .catch((err) => showError(err.message));
+});
+
+// --- MPIN quick-unlock ---------------------------------------------
+async function sha256Hex(text) {
+  const enc = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getMpinKey(uid) {
+  return 'mpinHash_' + uid;
+}
+
+function showMpinLock(uid, onUnlock) {
+  const overlay = document.getElementById('mpinLockOverlay');
+  overlay.style.display = 'flex';
+  const input = document.getElementById('mpinInput');
+  const errorEl = document.getElementById('mpinError');
+  input.value = '';
+  errorEl.textContent = '';
+  setTimeout(() => input.focus(), 100);
+
+  async function attemptUnlock() {
+    const entered = input.value.trim();
+    if (!entered) return;
+    const hash = await sha256Hex(entered);
+    if (hash === localStorage.getItem(getMpinKey(uid))) {
+      overlay.style.display = 'none';
+      onUnlock();
+    } else {
+      errorEl.textContent = 'Incorrect MPIN. Please try again.';
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  document.getElementById('mpinUnlockBtn').onclick = attemptUnlock;
+  input.onkeydown = (e) => { if (e.key === 'Enter') attemptUnlock(); };
+  document.getElementById('mpinForgotLink').onclick = (e) => {
+    e.preventDefault();
+    if (confirm('Logout and login again with your password?')) {
+      auth.signOut().then(() => location.reload());
+    }
+  };
+}
+
+function showSettingsError(msg) {
+  const el = document.getElementById('settingsErrorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('settingsSuccessMsg').style.display = 'none';
+}
+function showSettingsSuccess(msg) {
+  const el = document.getElementById('settingsSuccessMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('settingsErrorMsg').style.display = 'none';
+}
+
+document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const current = document.getElementById('currentPasswordInput').value;
+  const newPass = document.getElementById('newPasswordInput').value;
+  const confirmPass = document.getElementById('confirmPasswordInput').value;
+  if (newPass !== confirmPass) { showSettingsError('New passwords do not match.'); return; }
+
+  const user = auth.currentUser;
+  const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
+  user.reauthenticateWithCredential(cred)
+    .then(() => user.updatePassword(newPass))
+    .then(() => {
+      showSettingsSuccess('Password updated successfully.');
+      document.getElementById('changePasswordForm').reset();
+    })
+    .catch((err) => showSettingsError(err.message));
+});
+
+document.getElementById('setMpinForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const pin = document.getElementById('newMpinInput').value.trim();
+  const confirmPin = document.getElementById('confirmMpinInput').value.trim();
+  if (!/^\d{4,6}$/.test(pin)) { showSettingsError('MPIN must be 4-6 digits.'); return; }
+  if (pin !== confirmPin) { showSettingsError('MPIN entries do not match.'); return; }
+  const hash = await sha256Hex(pin);
+  localStorage.setItem(getMpinKey(auth.currentUser.uid), hash);
+  showSettingsSuccess('MPIN saved. You can use it to unlock the app next time on this device.');
+  document.getElementById('setMpinForm').reset();
+});
+
+document.getElementById('removeMpinBtn').addEventListener('click', function () {
+  if (!localStorage.getItem(getMpinKey(auth.currentUser.uid))) {
+    showSettingsSuccess('No MPIN is set on this device.');
+    return;
+  }
+  if (!confirm('Remove MPIN from this device? You will need your password to login next time.')) return;
+  localStorage.removeItem(getMpinKey(auth.currentUser.uid));
+  showSettingsSuccess('MPIN removed from this device.');
+});
+
+// If a vendor is already logged in (returning visit), gate behind MPIN if set.
+auth.onAuthStateChanged((user) => {
+  if (!user) return;
+  db.ref('vendorAccounts/' + user.uid).once('value').then((snap) => {
+    const vendorAccount = snap.val();
+    if (!vendorAccount) return;
+    const mpinHash = localStorage.getItem(getMpinKey(user.uid));
+    if (mpinHash) {
+      showMpinLock(user.uid, () => revealVendorDashboard(vendorAccount));
+    } else {
+      revealVendorDashboard(vendorAccount);
+    }
+  });
+});
+
+// Buttons ko hamesha visible rakho (table ya page badalne par bhi)
+forceButtonStyles();
+new MutationObserver(forceButtonStyles).observe(document.body, { childList: true, subtree: true });
+</script>
+
+</body>
+</html>

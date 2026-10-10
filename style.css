@@ -155,11 +155,11 @@ nav a:hover{
 /* 🛑 जादुई नियम: पेज पर मौजूद किसी भी पुराने Logout बटन को तुरंत गायब करने के लिए */
 /* ✅ FIX: यह नियम अब admin पेज पर लागू नहीं होता (body.admin-page), वरना admin के
    सारे बटन (Create Vendor Login, Save MPIN, Mark Unpaid आदि) भी छुप जाते थे */
-body:not(.admin-page) .logout-btn,
-body:not(.admin-page) button.logout-btn,
-body:not(.admin-page) .dash-card button,
-body:not(.admin-page) .dash-top button,
-body:not(.admin-page) header + div button {
+:where(body:not(.admin-page)) .logout-btn,
+:where(body:not(.admin-page)) button.logout-btn,
+:where(body:not(.admin-page)) .dash-card button,
+:where(body:not(.admin-page)) .dash-top button,
+:where(body:not(.admin-page)) header + div button {
     display: none !important;
 }
 
