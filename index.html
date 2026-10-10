@@ -9,32 +9,33 @@
 <meta name="description" content="LAXMAN TELECOM is a digital service center providing mobile repair, recharge, Aadhaar, PAN card, ration card, online forms, printing and other digital services.">
 <meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Aadhaar Service, PAN Card, Ration Card, Ludhiana">
 <script src="theme-loader.js"></script>
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
-<link rel="shortcut icon" href="favicon.ico">
+<link class="fav-icon" rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link class="fav-icon" rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link class="fav-icon" rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link class="fav-icon" rel="shortcut icon" href="favicon.ico">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d2a5c">
 
 <style>
-  /* पुराने सभी CSS क्लैश को पूरी तरह रोकने के लिए नया क्लीन हेडर लेआउट */
-  .custom-header {
+  /* ओरिजिनल हेडर की री-डिज़ाइनिंग */
+  header.header {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
+    flex-direction: row-reverse !important; /* लोगो को दाईं तरफ और मेनू को बाईं तरफ करने के लिए */
     padding: 10px 16px !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    background: linear-gradient(to right, #0052D4, #4364F7, #6FB1FC); /* पुराना बैकग्राउंड कलर बना रहे */
-    position: relative !important;
   }
-  .custom-logo-box {
+  
+  .logo-fixed-box {
     display: flex !important;
     align-items: center !important;
     gap: 14px !important;
+    text-align: right !important; /* टेक्स्ट अलाइनमेंट राइट करने के लिए */
   }
-  /* नई क्लास ताकि style.css की पुरानी प्रॉपर्टीज इस बटन को डिस्टर्ब न करें */
-  .custom-menu-btn {
+
+  .menu-btn-fixed {
     background: transparent !important;
     border: none !important;
     padding: 8px !important;
@@ -42,11 +43,11 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transform: none !important; /* रोटेशन को रोकने के लिए */
-    position: static !important;
+    transform: none !important;
     margin: 0 !important;
   }
-  .custom-menu-btn svg {
+
+  .menu-btn-fixed svg {
     transform: none !important;
     display: block !important;
   }
@@ -54,18 +55,18 @@
 </head>
 <body>
 
-<header class="custom-header">
-  <!-- लोगो और ब्रांड नेम लेफ्ट साइड में सुरक्षित -->
-  <div class="custom-logo-box">
-    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px; flex-shrink: 0;">
+<header class="header">
+  <!-- लोगो और टेक्स्ट अब राइट साइड में सेट रहेंगे -->
+  <div class="logo-fixed-box">
     <div>
-      <h1 style="margin: 0; font-size: 20px; color: white; font-family: sans-serif;">LAXMAN TELECOM</h1>
-      <p style="margin: 0; font-size: 12px; color: white; opacity: 0.9; font-family: sans-serif;">Your Trusted Digital Service Center</p>
+      <h1 style="margin: 0; font-size: 20px; color: white;">LAXMAN TELECOM</h1>
+      <p style="margin: 0; font-size: 12px; color: white; opacity: 0.9;">Your Trusted Digital Service Center</p>
     </div>
+    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px; flex-shrink: 0;">
   </div>
 
-  <!-- हैमबर्गर मेनू बिना किसी रोटेशन या क्लैश के राइट साइड में रहेगा -->
-  <button class="custom-menu-btn" onclick="toggleNav()" aria-label="Toggle menu">
+  <!-- हैमबर्गर मेनू बिना किसी रोटेशन के लेफ्ट साइड में रहेगा -->
+  <button class="menu-btn-fixed" onclick="toggleNav()" aria-label="Toggle menu">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
       <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -87,7 +88,7 @@ function toggleNav() {
   document.getElementById('navBackdrop').classList.toggle('nav-open');
 }
 function closeNav() {
-  document.querySelector('nav').classList.remove('nav-open');
+  document.querySelector('nav').classList.remove('nav-remove');
   document.getElementById('navBackdrop').classList.remove('nav-open');
 }
 </script>
@@ -149,6 +150,7 @@ We provide premium mobile solutions, instant banking services, and complete onli
 </footer>
 </body>
 </html>
+
 
 
 
