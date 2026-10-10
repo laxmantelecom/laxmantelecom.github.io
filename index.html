@@ -16,46 +16,56 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d2a5c">
 
-<!-- पुराने CSS क्लैश को रोकने के लिए नीचे इनलाइन स्टाइल दिया गया है -->
 <style>
-  header.header {
+  /* पुराने सभी CSS क्लैश को पूरी तरह रोकने के लिए नया क्लीन हेडर लेआउट */
+  .custom-header {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     padding: 10px 16px !important;
     box-sizing: border-box !important;
     width: 100% !important;
+    background: linear-gradient(to right, #0052D4, #4364F7, #6FB1FC); /* पुराना बैकग्राउंड कलर बना रहे */
+    position: relative !important;
   }
-  .logo-container {
+  .custom-logo-box {
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 14px !important;
   }
-  .nav-toggle-fixed {
-    background: none !important;
+  /* नई क्लास ताकि style.css की पुरानी प्रॉपर्टीज इस बटन को डिस्टर्ब न करें */
+  .custom-menu-btn {
+    background: transparent !important;
     border: none !important;
     padding: 8px !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    transform: none !important; /* रोटेशन को रोकने के लिए */
+    position: static !important;
+    margin: 0 !important;
+  }
+  .custom-menu-btn svg {
+    transform: none !important;
+    display: block !important;
   }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <!-- लोगो और टेक्स्ट एक साथ लेफ्ट साइड में रहेंगे -->
-  <div class="logo-container">
+<header class="custom-header">
+  <!-- लोगो और ब्रांड नेम लेफ्ट साइड में सुरक्षित -->
+  <div class="custom-logo-box">
     <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px; flex-shrink: 0;">
     <div>
-      <h1 style="margin: 0; font-size: 20px; color: white;">LAXMAN TELECOM</h1>
-      <p style="margin: 0; font-size: 12px; color: white; opacity: 0.9;">Your Trusted Digital Service Center</p>
+      <h1 style="margin: 0; font-size: 20px; color: white; font-family: sans-serif;">LAXMAN TELECOM</h1>
+      <p style="margin: 0; font-size: 12px; color: white; opacity: 0.9; font-family: sans-serif;">Your Trusted Digital Service Center</p>
     </div>
   </div>
 
-  <!-- हैमबर्गर मेनू राइट साइड में पूरी तरह सुरक्षित रहेगा -->
-  <button class="nav-toggle nav-toggle-fixed" onclick="toggleNav()" aria-label="Toggle menu">
+  <!-- हैमबर्गर मेनू बिना किसी रोटेशन या क्लैश के राइट साइड में रहेगा -->
+  <button class="custom-menu-btn" onclick="toggleNav()" aria-label="Toggle menu">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
       <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -139,6 +149,7 @@ We provide premium mobile solutions, instant banking services, and complete onli
 </footer>
 </body>
 </html>
+
 
 
 
