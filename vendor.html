@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vendor Login | LAXMAN TELECOM</title>
-<link rel="stylesheet" href="style.css?v=1.3">
-<link rel="stylesheet" href="auth-style.css?v=1.3">
+<link rel="stylesheet" href="style.css?v=1.4">
+<link rel="stylesheet" href="auth-style.css?v=1.4">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
@@ -78,6 +78,11 @@
   .dash-card, .dash-wrapper { overflow: visible !important; }
   .dash-wrapper > * { min-width: 0; }
 
+  /* Account Settings ke buttons (Update Password / Save MPIN / Remove MPIN) ko dikhane ke liye.
+     style.css ka purana "chhupane wala" rule .dash-card ke andar ke sab buttons ko hide kar deta tha. */
+  .dash-card .auth-btn { display: block !important; visibility: visible !important; }
+  .dash-card #removeMpinBtn { display: inline-block !important; visibility: visible !important; }
+
   .vendor-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 16px; }
   .vendor-table { width: 100%; border-collapse: collapse; min-width: 900px; background: #fff; }
   .vendor-table th, .vendor-table td { border: 1px solid #e2e6ef; padding: 10px 12px; font-size: 0.9rem; text-align: left; }
@@ -124,7 +129,6 @@
   <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
   <nav>
     <a href="index.html#home" onclick="closeNav()">Home</a>
-    <a href="login-select.html" onclick="closeNav()">Login Options</a>
     <a href="index.html#contact" onclick="closeNav()">Contact</a>
     <a href="#" id="menuLogoutLink" class="menu-logout-link" style="display:none;" onclick="closeNav(); doLogout(); return false;">Logout</a>
   </nav>
