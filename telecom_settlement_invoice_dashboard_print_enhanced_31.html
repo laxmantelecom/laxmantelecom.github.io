@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d2a5c" />
   <title>Telecom Settlement & Invoice Dashboard</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap');
@@ -14,9 +15,9 @@
       --text: #1d2445;
       --muted: #5d678d;
       --line: rgba(104, 119, 184, 0.16);
-      --accent1: #0f766e;
-      --accent2: #0ea5e9;
-      --accent3: #4f46e5;
+      --accent1: #0056b3;
+      --accent2: #0099ff;
+      --accent3: #0d2a5c;
       --accent4: #f59e0b;
       --good: #15803d;
       --bad: #dc2626;
@@ -27,7 +28,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
 
     body {
       margin: 0;
@@ -41,59 +42,97 @@
 
     .container { width: min(1260px, 94%); margin: auto; }
 
+    /* ===== Header (main website जैसा नीला header + hamburger menu) ===== */
     header {
       position: sticky;
       top: 0;
       z-index: 40;
-      background: rgba(255,255,255,0.78);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(100,116,180,0.15);
+      background: linear-gradient(135deg, #0056b3, #0099ff);
+      color: white;
+      box-shadow: 0 4px 16px rgba(0, 60, 140, 0.25);
     }
 
     .nav {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      padding: 14px 0;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
+      min-width: 0;
     }
 
     .brand-mark {
-      width: 56px;
-      height: 56px;
-      border-radius: 18px;
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 800;
-      font-size: 1.15rem;
-      background: linear-gradient(135deg, var(--accent1), var(--accent3));
-      box-shadow: 0 12px 28px rgba(15,118,110,0.28);
+      width: 50px;
+      height: 50px;
+      flex: 0 0 auto;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 6px 16px rgba(0, 20, 70, 0.30);
     }
 
-    .brand h1 { margin: 0; font-size: 1.18rem; font-family: var(--font-head); }
-    .brand p { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+    .brand h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-family: var(--font-body);
+      font-weight: 800;
+      line-height: 1.2;
+      color: white;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.82rem;
+    }
+
+    .nav-toggle {
+      display: none;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      padding: 9px;
+      border-radius: 50%;
+      background: transparent;
+      color: white;
+      border: none;
+    }
+
+    .nav-toggle:hover { background: rgba(255,255,255,0.18); transform: none; }
+    .nav-toggle:active { transform: scale(0.92); }
+
+    .nav-backdrop { display: none; }
 
     .nav-links {
       display: flex;
-      gap: 16px;
+      gap: 6px;
       flex-wrap: wrap;
       align-items: center;
     }
 
     .nav-links a {
       text-decoration: none;
-      color: #27305d;
+      color: white;
       font-weight: 700;
       font-size: 0.95rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: 0.25s ease;
     }
+
+    .nav-links a:hover { color: #ffd700; }
+
+    .nav-links a.back-link {
+      border: 1px solid rgba(255,255,255,0.55);
+      margin-left: 6px;
+    }
+
+    .nav-links a.back-link:hover { background: rgba(255,255,255,0.15); }
 
     .hero { padding: 28px 0 22px; }
 
@@ -103,8 +142,8 @@
       border-radius: 34px;
       padding: 34px;
       color: white;
-      background: linear-gradient(135deg, rgba(15,118,110,0.98), rgba(14,165,233,0.92), rgba(79,70,229,0.9));
-      box-shadow: 0 24px 60px rgba(63, 80, 165, 0.22);
+      background: linear-gradient(135deg, #0d2a5c, #0056b3 55%, #0099ff);
+      box-shadow: 0 24px 60px rgba(13, 42, 92, 0.28);
     }
 
     .hero-box::before,
@@ -164,6 +203,8 @@
       gap: 18px;
     }
 
+    .grid-5 > *, .grid-4 > *, .grid-3 > *, .grid-2 > *, .hero-grid > * { min-width: 0; }
+
     .grid-5 { grid-template-columns: repeat(5, 1fr); }
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
@@ -177,7 +218,7 @@
     .section-head h3 {
       margin: 0 0 8px;
       font-size: 2rem;
-      color: #20295b;
+      color: #0d2a5c;
       font-family: var(--font-head);
     }
 
@@ -195,7 +236,7 @@
       padding: 22px;
     }
 
-    .card h4 { margin: 0 0 14px; font-size: 1.16rem; color: #21285a; font-family: var(--font-head); }
+    .card h4 { margin: 0 0 14px; font-size: 1.16rem; color: #0d2a5c; font-family: var(--font-head); }
 
     .icon-box {
       width: 50px;
@@ -250,8 +291,8 @@
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: rgba(79,70,229,0.42);
-      box-shadow: 0 0 0 4px rgba(79,70,229,0.08);
+      border-color: rgba(0,86,179,0.5);
+      box-shadow: 0 0 0 4px rgba(0,86,179,0.10);
     }
 
     textarea { min-height: 114px; resize: vertical; }
@@ -276,8 +317,8 @@
     button:hover { transform: translateY(-2px); }
 
     .btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; }
-    .btn-secondary { background: rgba(79,70,229,0.08); color: #3c35a4; border: 1px solid rgba(79,70,229,0.12); }
-    .btn-alert { background: linear-gradient(135deg, var(--accent3), var(--accent4)); color: white; }
+    .btn-secondary { background: rgba(0,86,179,0.08); color: #0d2a5c; border: 1px solid rgba(0,86,179,0.16); }
+    .btn-alert { background: linear-gradient(135deg, #0d2a5c, #0056b3); color: white; }
     .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
     .btn-small { padding: 8px 12px; font-size: 0.84rem; border-radius: 10px; }
 
@@ -296,6 +337,12 @@
       border: 1px solid rgba(79,70,229,0.12);
       background: rgba(79,70,229,0.08);
       color: #3a35a1;
+    }
+
+    .hero .pill {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: white;
     }
 
     .summary-list {
@@ -317,6 +364,7 @@
 
     .table-wrap {
       overflow: auto;
+      -webkit-overflow-scrolling: touch;
       border-radius: 18px;
       border: 1px solid rgba(105,120,184,0.14);
     }
@@ -838,13 +886,79 @@
       .invoice-header, .invoice-meta-grid { grid-template-columns: 1fr; }
     }
 
+    /* ===== Mobile / tablet: hamburger menu ===== */
+    @media (max-width: 900px) {
+      .nav { justify-content: flex-start; }
+      .nav-toggle { display: inline-flex; }
+
+      .nav-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 50;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s ease;
+      }
+      .nav-backdrop.nav-open { opacity: 1; pointer-events: auto; }
+
+      .nav-links {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 78%;
+        max-width: 320px;
+        background: #ffffff;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 0;
+        padding: 90px 0 30px;
+        transform: translateX(-100%);
+        transition: transform .3s ease;
+        z-index: 60;
+        box-shadow: 6px 0 24px rgba(0,0,0,.25);
+        overflow-y: auto;
+      }
+      .nav-links.nav-open { transform: translateX(0); }
+
+      .nav-links a {
+        display: block;
+        color: #222;
+        padding: 16px 24px;
+        border-radius: 0;
+        border-bottom: 1px solid #eee;
+      }
+      .nav-links a:hover { background: #f5f7fb; color: #0056b3; }
+
+      .nav-links a.back-link {
+        margin: 14px 18px 0;
+        text-align: center;
+        border: 1px solid #0056b3;
+        border-radius: 10px;
+        color: #0056b3;
+      }
+    }
+
     @media (max-width: 720px) {
       .hero-grid, .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
-      .hero-box { padding: 26px; }
-      .nav { justify-content: center; }
-      .nav-links { justify-content: center; }
+      .hero { padding: 18px 0 14px; }
+      .hero-box { padding: 22px 18px; border-radius: 26px; }
+      .hero h2 { font-size: 1.9rem; }
+      .badge { font-size: 0.82rem; }
+      .pill { font-size: 0.82rem; padding: 7px 11px; }
+      .brand h1 { font-size: 1.05rem; }
+      .brand p { font-size: 0.74rem; }
+      .brand-mark { width: 44px; height: 44px; }
+      .section-head h3 { font-size: 1.5rem; }
+      .card { padding: 18px 16px; border-radius: 20px; }
+      .value { font-size: 1.55rem; }
       .button-row button { width: 100%; }
       .invoice-header h3 { font-size: 1.5rem; }
+      .invoice-header > div { padding: 20px; }
+      .invoice-body { padding: 16px; }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -861,19 +975,26 @@
   <div id="appRoot" style="display:none;">
   <header>
     <div class="container nav">
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
       <div class="brand">
-        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" class="brand-mark" style="object-fit:cover;">
+        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" class="brand-mark">
         <div>
-          <h1>Telecom Settlement & Invoice Dashboard</h1>
-          <p>Private local dashboard • Date-wise reports • Operator-wise settlement • Commission tracking</p>
+          <h1>LAXMAN TELECOM</h1>
+          <p>Settlement &amp; Invoice Dashboard</p>
         </div>
       </div>
-      <div class="nav-links">
-        <a href="#overview">Overview</a>
-        <a href="#entry">Add Entry</a>
-        <a href="#records">Records</a>
-        <a href="#invoiceSection">Invoice</a>
-      </div>
+      <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+      <nav class="nav-links" id="navLinks">
+        <a href="#overview" onclick="closeNav()">Overview</a>
+        <a href="#entry" onclick="closeNav()">Add Entry</a>
+        <a href="#records" onclick="closeNav()">Records</a>
+        <a href="#invoiceSection" onclick="closeNav()">Invoice</a>
+        <a href="admin.html" class="back-link">&larr; Admin Dashboard</a>
+      </nav>
     </div>
   </header>
 
@@ -1285,6 +1406,15 @@
   </footer>
 
   <script>
+    function toggleNav() {
+      document.getElementById('navLinks').classList.toggle('nav-open');
+      document.getElementById('navBackdrop').classList.toggle('nav-open');
+    }
+    function closeNav() {
+      document.getElementById('navLinks').classList.remove('nav-open');
+      document.getElementById('navBackdrop').classList.remove('nav-open');
+    }
+
     const shopName = document.getElementById('shopName');
     const shopAddress = document.getElementById('shopAddress');
     const shopPhone = document.getElementById('shopPhone');
