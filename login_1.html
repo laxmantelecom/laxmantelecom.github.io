@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | LAXMAN TELECOM</title>
+<script src="theme-loader.js"></script>
+<script src="app-autologin.js"></script>
+<link rel="stylesheet" href="auth-style.css">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo" style="display:flex; align-items:center; gap:14px;">
+    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px;">
+    <div>
+      <h1>LAXMAN TELECOM</h1>
+      <p>Your Trusted Digital Service Center</p>
+    </div>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">☰</button>
+  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+  <nav>
+    <a href="index.html#home">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<script>
+function toggleNav() {
+  document.querySelector('nav').classList.toggle('nav-open');
+  document.getElementById('navBackdrop').classList.toggle('nav-open');
+}
+function closeNav() {
+  document.querySelector('nav').classList.remove('nav-open');
+  document.getElementById('navBackdrop').classList.remove('nav-open');
+}
+</script>
+
+<div class="auth-wrapper">
+  <h2>Login</h2>
+  <p class="sub">Access your account</p>
+
+  <div class="tab-switch">
+    <button id="tabEmailBtn" class="active" onclick="showTab('email')">Email</button>
+    <button id="tabPhoneBtn" onclick="showTab('phone')">Mobile OTP</button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"></div>
+
+  <!-- EMAIL LOGIN -->
+  <form id="emailLoginForm">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="loginEmail" required placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div style="position:relative;">
+        <input type="password" id="loginPassword" required placeholder="Your password" style="width:100%; box-sizing:border-box; padding-right:44px;">
+        <span id="toggleLoginPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; user-select:none;">👁️</span>
+      </div>
+    </div>
+    <button type="submit" class="auth-btn">Login</button>
+  </form>
+
+  <!-- PHONE LOGIN -->
+  <form id="phoneLoginForm" class="hidden">
+    <div class="form-group">
+      <label>Mobile Number (with country code)</label>
+      <input type="tel" id="phoneNumberInput" required placeholder="+919041880370">
+    </div>
+    <div id="recaptcha-container"></div>
+    <button type="button" class="auth-btn" id="sendOtpBtn">Send OTP</button>
+
+    <div class="form-group hidden" id="otpGroup" style="margin-top:15px;">
+      <label>Enter OTP</label>
+      <input type="text" id="otpInput" placeholder="6-digit code">
+      <button type="button" class="auth-btn" id="verifyOtpBtn" style="margin-top:10px;">Verify & Login</button>
+    </div>
+  </form>
+
+  <p class="auth-link">Don't have an account? <a href="signup.html">Sign up here</a></p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+function showTab(tab) {
+  document.getElementById('tabEmailBtn').classList.toggle('active', tab === 'email');
+  document.getElementById('tabPhoneBtn').classList.toggle('active', tab === 'phone');
+  document.getElementById('emailLoginForm').classList.toggle('hidden', tab !== 'email');
+  document.getElementById('phoneLoginForm').classList.toggle('hidden', tab !== 'phone');
+}
+
+document.getElementById('toggleLoginPassword').addEventListener('click', function () {
+  const pwd = document.getElementById('loginPassword');
+  if (pwd.type === 'password') {
+    pwd.type = 'text';
+    this.textContent = '🙈';
+  } else {
+    pwd.type = 'password';
+    this.textContent = '👁️';
+  }
+});
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+}
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+function redirectAfterLogin(user) {
+  if (user.email === ADMIN_EMAIL) {
+    window.location.href = 'admin.html';
+  } else {
+    window.location.href = 'dashboard.html';
+  }
+}
+
+// ---- EMAIL LOGIN ----
+document.getElementById('emailLoginForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((cred) => {
+      showSuccess('Login successful! Redirecting...');
+      setTimeout(() => redirectAfterLogin(cred.user), 500);
+    })
+    .catch((err) => showError(err.message));
+});
+
+// ---- PHONE LOGIN ----
+window.recaptchaVerifier = null;
+
+document.getElementById('sendOtpBtn').addEventListener('click', function () {
+  const phoneNumber = document.getElementById('phoneNumberInput').value.trim();
+  if (!phoneNumber.startsWith('+')) { showError('Include country code, e.g. +91...'); return; }
+
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
+  }
+
+  auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+    .then((confirmationResult) => {
+      window.confirmationResult = confirmationResult;
+      document.getElementById('otpGroup').classList.remove('hidden');
+      showSuccess('OTP sent! Please check your SMS.');
+    })
+    .catch((err) => showError(err.message));
+});
+
+document.getElementById('verifyOtpBtn').addEventListener('click', function () {
+  const code = document.getElementById('otpInput').value.trim();
+  const phoneNumber = document.getElementById('phoneNumberInput').value.trim();
+
+  window.confirmationResult.confirm(code)
+    .then((result) => {
+      // If this phone number never signed up before, create a basic profile
+      return db.ref('users/' + result.user.uid).once('value').then((snap) => {
+        if (!snap.exists()) {
+          return db.ref('users/' + result.user.uid).set({
+            name: '',
+            phone: phoneNumber,
+            email: '',
+            createdAt: firebase.database.ServerValue.TIMESTAMP
+          });
+        }
+      }).then(() => result.user);
+    })
+    .then((user) => {
+      showSuccess('Login successful! Redirecting...');
+      setTimeout(() => redirectAfterLogin(user), 500);
+    })
+    .catch((err) => showError(err.message));
+});
+</script>
+
+</body>
+</html>

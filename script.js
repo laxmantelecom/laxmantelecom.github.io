@@ -4,6 +4,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("LAXMAN TELECOM Website Loaded Successfully");
 
+    // App ke liye: yaad rakho user last baar kis dashboard par tha (vendor ya customer)
+    try {
+        var page = location.pathname.split('/').pop();
+        if (page === 'dashboard.html' || page === 'vendor.html') {
+            localStorage.setItem('lt_home', page);
+        }
+    } catch (e) {}
+
     // 🚪 सभी पेजों के साइड हैमबर्गर मेनू में ऑटोमैटिक Logout बटन जोड़ने के लिए
     const sidebarNav = document.querySelector('nav');
     
@@ -17,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // जब यूज़र इस पर क्लिक करे तो आपका मूल लॉगआउट फ़ंक्शन रन हो
         logoutLink.onclick = function(e) {
             e.preventDefault();
+            try { localStorage.removeItem('lt_home'); } catch (err) {}
             if (typeof doLogout === "function") {
                 doLogout();
             } else if (typeof auth !== "undefined") {
