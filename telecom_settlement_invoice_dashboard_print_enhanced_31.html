@@ -196,6 +196,36 @@
 
     .hero-card h3 { margin-top: 0; }
 
+    /* ===== Compact premium hero ===== */
+    .hero-wrap { position: relative; display: flex; flex-direction: column; align-items: flex-start; }
+    .hero .hero-wrap h2 {
+      margin: 14px 0 6px;
+      font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+      line-height: 1.15;
+    }
+    .hero .hero-sub { margin-top: 0; font-size: 0.98rem; opacity: 0.92; }
+
+    .profile-details { width: 100%; margin-top: 20px; }
+    .profile-details summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    .profile-details summary::-webkit-details-marker { display: none; }
+    .profile-details[open] summary { margin-bottom: 14px; }
+    .profile-details .hero-card { max-width: 560px; }
+    .profile-details .hero-card h3 { display: none; }
+    .profile-details label { color: rgba(255,255,255,0.92); }
+
     section { padding: 12px 0 22px; }
 
     .grid-5, .grid-4, .grid-3, .grid-2 {
@@ -1001,20 +1031,13 @@
   <section class="hero">
     <div class="container">
       <div class="hero-box">
-        <div class="hero-grid">
-          <div>
-            <span class="badge">Jio • Airtel • BSNL • VI • Any operator</span>
-            <h2 id="dashboardTitle">Laxman Telecom Settlement Dashboard</h2>
-            <p>This polished private dashboard is made for telecom recharge and vendor settlement work. Add date-wise recharge entries, operator details, commission percentage, paid details, and settlement basis. Then generate a styled invoice preview and open WhatsApp with a ready message for sending.</p>
-            <div class="pill-row">
-              <span class="pill">Date-wise report</span>
-              <span class="pill">Commission earned detail</span>
-              <span class="pill">Operator filter</span>
-              <span class="pill">Paid / Due tracking</span>
-              <span class="pill">WhatsApp prefilled message</span>
-            </div>
-          </div>
-          <div class="hero-card">
+        <div class="hero-wrap">
+          <span class="badge">Jio • Airtel • BSNL • VI</span>
+          <h2 id="dashboardTitle">Laxman Telecom Settlement Dashboard</h2>
+          <p class="hero-sub">Recharge settlement, commission &amp; invoice tracker</p>
+          <details class="profile-details">
+            <summary>⚙️ Shop Profile — tap to edit</summary>
+            <div class="hero-card">
             <h3>Profile Setup</h3>
             <label for="shopName">Shop Name</label>
             <input id="shopName" type="text" value="LAXMAN TELECOM" placeholder="Enter shop name" />
@@ -1028,7 +1051,8 @@
               <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
               <button class="btn-secondary" id="resetDashboardBtn">Reset Dashboard</button>
             </div>
-          </div>
+            </div>
+          </details>
         </div>
       </div>
     </div>
@@ -1038,7 +1062,6 @@
     <div class="container">
       <div class="section-head">
         <h3>Overview</h3>
-        <p>Track gross recharge value, total commission earned, vendor payable amount, paid amount, due amount, and total records instantly.</p>
       </div>
       <div class="grid-5">
         <div class="card">
@@ -1099,7 +1122,6 @@
     <div class="container">
       <div class="section-head">
         <h3>Add Recharge / Settlement Entry</h3>
-        <p>Add one recharge line at a time. The dashboard automatically calculates commission earned, vendor payable amount, paid amount, and due amount.</p>
       </div>
       <div class="grid-2">
         <div class="card">
@@ -1207,7 +1229,6 @@
             <button class="btn-primary" id="applyReportBtn">Apply Report Filters</button>
             <button class="btn-alert" id="generateInvoiceBtn">Refresh Invoice Preview</button>
           </div>
-          <div class="warn-note">The invoice style below is based on your uploaded recharge purchase invoice pattern, including vendor, operator, settlement basis, totals, and payment status.</div>
         </div>
       </div>
     </div>
@@ -1217,7 +1238,6 @@
     <div class="container">
       <div class="section-head">
         <h3>Date-wise Recharge Records</h3>
-        <p>All entries are stored locally in your browser. Search, filter, and delete any row whenever needed.</p>
       </div>
       <div class="card">
         <div class="grid-4">
@@ -1285,7 +1305,6 @@
     <div class="container">
       <div class="section-head">
         <h3>Analysis</h3>
-        <p>Understand which operator is generating more volume, more commission, and how much amount is still due.</p>
       </div>
       <div class="grid-3">
         <div class="card">
@@ -1308,7 +1327,6 @@
     <div class="container">
       <div class="section-head">
         <h3>Invoice Preview</h3>
-        <p>Generate a printable settlement invoice for the currently selected vendor, date range, operator filter, and payment details.</p>
       </div>
       <div class="button-row hide-while-printing" style="justify-content:center; margin-bottom:16px;">
         <button class="btn-primary" id="printInvoiceBtn">Print / Save as PDF</button>
@@ -1401,7 +1419,7 @@
 
   <footer>
     <div class="container">
-      Telecom Settlement & Invoice Dashboard • Private Local File • Commission, operator, paid, due, and date-wise report tracker
+      © LAXMAN TELECOM • Settlement &amp; Invoice Dashboard
     </div>
   </footer>
 
