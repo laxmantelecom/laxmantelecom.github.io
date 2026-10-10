@@ -1,11 +1,10 @@
-// Minimal service worker for Laxman Telecom - caches the core pages so the
-// site opens instantly and works even with a weak/offline connection.
-// Firebase-dependent pages (login, dashboard, admin, vendor) still need a
-// live connection to actually load data - this only speeds up/caches the
-// static shell (HTML, CSS, images).
+/* Laxman Telecom - Service Worker (v4)
+   Pehle ye JS/CSS files ko "cache-first" deta tha, isliye app purani file chalata rehta tha.
+   Ab: website ki apni files hamesha pehle network se (taaza), net na ho tabhi cache se. */
 
-const CACHE_NAME = 'laxman-telecom-cache-v3';
-const PRECACHE_URLS = [
+const CACHE_NAME = 'laxman-telecom-cache-v4';
+
+const PRECACHE = [
   '/index.html',
   '/style.css',
   '/script.js',
@@ -16,32 +15,47 @@ const PRECACHE_URLS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS))
+    caches.open(CACHE_NAME)
+      .then((cache) => Promise.all(
+        PRECACHE.map((url) => cache.add(url).catch(() => {}))
+      ))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
-    )
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+      ))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network-first for navigation requests (so users always get the latest
-  // page when online), falling back to cache when offline.
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request).then((r) => r || caches.match('/index.html')))
-    );
-    return;
-  }
+  const req = event.request;
 
-  // Cache-first for static assets already precached.
+  // Sirf apni site ki GET requests. Firebase / Google ki requests ko haath nahi lagate.
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(req, { cache: 'no-cache' })
+      .then((res) => {
+        if (res && res.ok && res.type === 'basic') {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy)).catch(() => {});
+        }
+        return res;
+      })
+      .catch(() =>
+        caches.match(req).then((cached) => {
+          if (cached) return cached;
+          if (req.mode === 'navigate') return caches.match('/index.html');
+          return Response.error();
+        })
+      )
   );
 });
