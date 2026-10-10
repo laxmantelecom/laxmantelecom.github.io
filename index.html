@@ -9,77 +9,38 @@
 <meta name="description" content="LAXMAN TELECOM is a digital service center providing mobile repair, recharge, Aadhaar, PAN card, ration card, online forms, printing and other digital services.">
 <meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Aadhaar Service, PAN Card, Ration Card, Ludhiana">
 <script src="theme-loader.js"></script>
-<link class="fav-icon" rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link class="fav-icon" rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link class="fav-icon" rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
-<link class="fav-icon" rel="shortcut icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link rel="shortcut icon" href="favicon.ico">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d2a5c">
-
-<style>
-  /* ओरिजिनल हेडर की री-डिज़ाइनिंग */
-  header.header {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    flex-direction: row-reverse !important; /* लोगो को दाईं तरफ और मेनू को बाईं तरफ करने के लिए */
-    padding: 10px 16px !important;
-    box-sizing: border-box !important;
-    width: 100% !important;
-  }
-  
-  .logo-fixed-box {
-    display: flex !important;
-    align-items: center !important;
-    gap: 14px !important;
-    text-align: right !important; /* टेक्स्ट अलाइनमेंट राइट करने के लिए */
-  }
-
-  .menu-btn-fixed {
-    background: transparent !important;
-    border: none !important;
-    padding: 8px !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transform: none !important;
-    margin: 0 !important;
-  }
-
-  .menu-btn-fixed svg {
-    transform: none !important;
-    display: block !important;
-  }
-</style>
 </head>
 <body>
 
 <header class="header">
-  <!-- लोगो और टेक्स्ट अब राइट साइड में सेट रहेंगे -->
-  <div class="logo-fixed-box">
-    <div>
-      <h1 style="margin: 0; font-size: 20px; color: white;">LAXMAN TELECOM</h1>
-      <p style="margin: 0; font-size: 12px; color: white; opacity: 0.9;">Your Trusted Digital Service Center</p>
-    </div>
-    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px; flex-shrink: 0;">
-  </div>
+<div class="logo" style="display:flex; align-items:center; gap:14px;">
+<img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px;">
+<div>
+<h1>LAXMAN TELECOM</h1>
+<p>Your Trusted Digital Service Center</p>
+</div>
+</div>
 
-  <!-- हैमबर्गर मेनू बिना किसी रोटेशन के लेफ्ट साइड में रहेगा -->
-  <button class="menu-btn-fixed" onclick="toggleNav()" aria-label="Toggle menu">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-      <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
+<button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
+    <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
 
-  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#services">Services</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <a href="login-select.html">Login</a>
-  </nav>
+<div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+<nav>
+<a href="#home">Home</a>
+<a href="#services">Services</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+<a href="login-select.html">Login</a>
+</nav>
 </header>
 
 <script>
@@ -88,11 +49,12 @@ function toggleNav() {
   document.getElementById('navBackdrop').classList.toggle('nav-open');
 }
 function closeNav() {
-  document.querySelector('nav').classList.remove('nav-remove');
+  document.querySelector('nav').classList.remove('nav-open');
   document.getElementById('navBackdrop').classList.remove('nav-open');
 }
 </script>
 
+<!-- 🌟 Hero Section (Fixed Native Deep Links) -->
 <section id="home" class="hero">
 <h2>Welcome to LAXMAN TELECOM</h2>
 <h3>One Stop Digital Service Center</h3>
@@ -100,60 +62,187 @@ function closeNav() {
 We provide premium mobile solutions, instant banking services, and complete online government assistance under one roof. Scroll down to explore our complete list of specialized services.
 </p>
 <div class="hero-buttons">
-<a class="btn" href="tel:+919041880370">📞 Call Now</a>
-<a class="btn whatsapp" href="whatsapp://send?phone=919041880370" target="_blank">💬 WhatsApp</a>
-<a class="btn" href="geo:0,0?q=LAXMAN+TELECOM+Puneet+Nagar+Ludhiana" target="_blank">📍 Get Directions</a>
+<a class="btn" href="tel:+919041880370">
+📞 Call Now
+</a>
+<a class="btn whatsapp" href="whatsapp://send?phone=919041880370" target="_blank">
+💬 WhatsApp
+</a>
+<a class="btn" href="geo:0,0?q=LAXMAN+TELECOM+Puneet+Nagar+Ludhiana" target="_blank">
+📍 Get Directions
+</a>
 </div>
 </section>
 
+<!-- About Section -->
 <section id="about" class="about" style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
 <div class="container">
 <h2>About LAXMAN TELECOM</h2>
-<p>LAXMAN TELECOM is a trusted and fully equipped Digital Service Center located in Puneet Nagar, Ludhiana, Punjab.</p>
-<p>Our mission is to bridge the digital gap by providing fast, reliable, and transparent digital solutions to every customer.</p>
+<p>
+LAXMAN TELECOM is a trusted and fully equipped Digital Service Center located in Puneet Nagar, Ludhiana, Punjab.
+</p>
+<p>
+Our mission is to bridge the digital gap by providing fast, reliable, and transparent digital solutions to every customer. From complex mobile hardware troubleshooting to official government registrations, we ensure high-quality service with utmost precision.
+</p>
 </div>
 </section>
 
+<!-- Services Section -->
 <section id="services" class="services">
 <div class="container">
 <h2>Our Services</h2>
 <p class="subtitle">All Digital Services Under One Roof</p>
 <div class="service-grid">
-<div class="card"><h3>🛠️ Mobile Repair</h3><p>Hardware Repair, Display Replacement, Software Flashing & Unlocking.</p></div>
-<div class="card"><h3>🏦 Bank Account Opening</h3><p>Open new bank accounts instantly for Airtel Payments Bank, Kotak, and more.</p></div>
-<div class="card"><h3>📱 New SIM Activation</h3><p>New SIM Activation with fast biometric verification.</p></div>
-<div class="card"><h3>💳 Banking & ATM Services</h3><p>Aadhar cash withdrawal, balance enquiry, and instant money transfer.</p></div>
-<div class="card"><h3>⚡ Mobile & WiFi Recharge</h3><p>Instant prepaid/postpaid recharges and broadband setups.</p></div>
-<div class="card"><h3>🆔 Aadhaar & PAN Services</h3><p>Aadhaar Update, PAN Card Apply, Correction & Download.</p></div>
-<div class="card"><h3>🖨 Printing Services</h3><p>Printout, Photocopy, Lamination, Passport Photo & Online Forms.</p></div>
-<div class="card"><h3>🌾 Government & Online Services</h3><p>Smart Ration Card, Voter ID, Ayushman Bharat, PM-KISAN, and MSME registrations.</p></div>
+
+<div class="card">
+<h3>🛠️ Mobile Repair</h3>
+<p>Hardware Repair, Display Replacement, Software Flashing & Unlocking.</p>
+</div>
+
+<div class="card">
+<h3>🏦 Bank Account Opening</h3>
+<p>Open new bank accounts instantly for Airtel Payments Bank, Kotak Mahindra Bank, Indian Overseas Bank, and more. Get instant Bank Passbook and ATM Card with Indian Overseas Bank accounts.</p>
+</div>
+
+<div class="card">
+<h3>📱 New SIM Activation</h3>
+<p>New SIM Activation for Airtel, Jio, and Vi with fast biometric verification.</p>
+</div>
+
+<div class="card">
+<h3>🔄 SIM Porting (MNP)</h3>
+<p>Port your current number to Airtel, Jio, or Vi easily without changing your number.</p>
+</div>
+
+<div class="card">
+<h3>⚠️ Lost SIM Swap</h3>
+<p>Recover your lost or damaged SIM card quickly for Airtel, Jio, and Vi networks.</p>
+</div>
+
+<div class="card">
+<h3>💳 Banking & ATM Services</h3>
+<p>Aadhar card cash withdrawal (AEPS), ATM card cash withdrawal, Balance Enquiry, Mini Statement, and Instant Money Transfer to any bank.</p>
+</div>
+
+<div class="card">
+<h3>⚡ Mobile & WiFi Recharge</h3>
+<p>Instant prepaid and postpaid recharges for Airtel, Jio, Vi, BSNL, and all major Broadband/WiFi networks.</p>
+</div>
+
+<div class="card">
+<h3>🌐 New WiFi Connection</h3>
+<p>Get high-speed internet with a new WiFi broadband connection setup at your home or shop.</p>
+</div>
+
+<div class="card">
+<h3>📺 WiFi + TV Connection</h3>
+<p>Enjoy smart entertainment packages with combined High-Speed WiFi and Digital Smart TV connection.</p>
+</div>
+
+<div class="card">
+<h3>🆔 Aadhaar & PAN Services</h3>
+<p>Aadhaar Update, PAN Card Apply, Correction & Download.</p>
+</div>
+
+<div class="card">
+<h3>📧 Gmail & Account Services</h3>
+<p>New Gmail account creation, blocked account recovery, and registration for various online applications.</p>
+</div>
+
+<div class="card">
+<h3>🖨 Printing Services</h3>
+<p>Printout, Photocopy, Lamination, Passport Photo & Online Forms.</p>
+</div>
+
+<div class="card">
+<h3>📲 Mobile Accessories</h3>
+<p>Chargers, Data Cables, Earbuds, Neckbands, Bluetooth Speakers & More.</p>
+</div>
+
+<div class="card">
+<h3>🎫 Travel Booking</h3>
+<p>Railway Ticket, Tatkal Ticket & Flight Booking.</p>
+</div>
+
+<div class="card">
+<h3>💾 Songs & Movies Downloading</h3>
+<p>Get high-quality HD movies, videos, and latest MP3 songs downloaded directly into your memory card or phone.</p>
+</div>
+
+<div class="card">
+<h3>🍚 Punjab Smart Ration Card</h3>
+<p>New Card, Member Add/Remove, Correction & Online Services.</p>
+</div>
+
+<div class="card">
+<h3>🗳️ Voter ID Services</h3>
+<p>New Registration, Correction, Name Search & Download.</p>
+</div>
+
+<div class="card">
+<h3>🏥 Ayushman Bharat</h3>
+<p>Golden Card Registration & Download.</p>
+</div>
+
+<div class="card">
+<h3>🌾 PM-KISAN</h3>
+<p>Registration, e-KYC & Payment Status.</p>
+</div>
+
+<div class="card">
+<h3>👷 e-Shram & Labour</h3>
+<p>e-Shram Card, Labour Card & Pension Schemes.</p>
+</div>
+
+<div class="card">
+<h3>🏢 MSME (Udyam)</h3>
+<p>New Udyam Registration, Certificate Download & Update.</p>
+</div>
+
 </div>
 </div>
 </section>
 
+<!-- Contact Section (Fixed Native Deep Links) -->
 <section id="contact" class="contact" style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
 <div class="container">
 <h2>Contact Us</h2>
 <div class="contact-box" style="text-align: left; box-sizing: border-box;">
 <h3>LAXMAN TELECOM</h3>
-<p>📍 7, Street No. 1, Puneet Nagar, Ludhiana, Punjab - 141008</p>
-<p>📞 +91 90418-80370</p>
-<p>📧 laxmantelecom.help@gmail.com</p>
-<a class="btn" href="geo:0,0?q=LAXMAN+TELECOM+Puneet+Nagar+Ludhiana" target="_blank" style="margin-bottom: 10px; display: inline-block;">📍 Open Google Map</a>
-<a class="btn whatsapp" href="whatsapp://send?phone=919041880370" target="_blank" style="margin-bottom: 10px; display: inline-block;">💬 WhatsApp Us</a>
+<p>
+📍 7, Street No. 1, Puneet Nagar,
+Ludhiana, Punjab - 141008
+</p>
+<p>
+📞 +91 90418-80370
+</p>
+<p>
+📧 laxmantelecom.help@gmail.com
+</p>
+<p>
+⏰ Mon - Sat: 03:00 PM - 10:00 PM
+<br>
+Sunday: 08:00 AM - 01:00 PM
+<br>
+Break: 01:00 PM - 03:00 PM
+<br>
+Evening: 03:00 PM - 10:00 PM
+</p>
+<a class="btn" href="geo:0,0?q=LAXMAN+TELECOM+Puneet+Nagar+Ludhiana" target="_blank" style="margin-bottom: 10px; display: inline-block;">
+📍 Open Google Map
+</a>
+<a class="btn whatsapp" href="whatsapp://send?phone=919041880370" target="_blank" style="margin-bottom: 10px; display: inline-block;">
+💬 WhatsApp Us
+</a>
 </div>
 </div>
 </section>
 
 <footer style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
-<p style="margin: 0; padding: 10px 0;">© 2026 LAXMAN TELECOM | All Rights Reserved</p>
+<p style="margin: 0; padding: 10px 0;">
+© 2026 LAXMAN TELECOM | All Rights Reserved
+</p>
 </footer>
-</body>
-</html>
-
-
-
-
 
 <script src="script.js"></script>
 <script>
