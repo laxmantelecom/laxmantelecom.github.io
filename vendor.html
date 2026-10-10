@@ -130,7 +130,12 @@
   <nav>
     <a href="index.html#home" onclick="closeNav()">Home</a>
     <a href="index.html#contact" onclick="closeNav()">Contact</a>
-    <a href="#" id="menuLogoutLink" class="menu-logout-link" style="display:none;" onclick="closeNav(); doLogout(); return false;">Logout</a>
+    <a href="#vendorAccountSection" class="vendor-only" style="display:none;" onclick="closeNav()">My Account</a>
+    <a href="#vendorRecordsSection" class="vendor-only" style="display:none;" onclick="closeNav()">Payment Records</a>
+    <a href="#bulkPaidSection" class="vendor-only" style="display:none;" onclick="closeNav()">Mark All as Paid</a>
+    <a href="#changePasswordSection" class="vendor-only" style="display:none;" onclick="closeNav()">Change Password</a>
+    <a href="#mpinSection" class="vendor-only" style="display:none;" onclick="closeNav()">App MPIN</a>
+    <a href="#" id="menuLogoutLink" class="menu-logout-link vendor-only" style="display:none;" onclick="closeNav(); doLogout(); return false;">Logout</a>
   </nav>
 </header>
 
@@ -160,7 +165,7 @@
 
 <!-- VENDOR DASHBOARD (shown after login) -->
 <div class="dash-wrapper" id="vendorDashWrapper" style="display:none;">
-  <div class="dash-card">
+  <div class="dash-card" id="vendorAccountSection" style="scroll-margin-top:100px;">
     <div class="dash-top">
       <h2 id="vendorNameHeading">My Account</h2>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
@@ -189,7 +194,7 @@
       </div>
     </div>
 
-    <div style="background:#f4f8ff; border:1px solid #dfe6f5; border-radius:14px; padding:16px; margin-bottom:18px;">
+    <div id="bulkPaidSection" style="background:#f4f8ff; border:1px solid #dfe6f5; border-radius:14px; padding:16px; margin-bottom:18px; scroll-margin-top:100px;">
       <div style="font-weight:800; color:#0d2a5c; margin-bottom:10px;">Mark All as Paid (Date Range)</div>
       <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
         <div>
@@ -204,7 +209,7 @@
       </div>
     </div>
 
-    <div class="vendor-table-wrap">
+    <div class="vendor-table-wrap" id="vendorRecordsSection" style="scroll-margin-top:100px;">
       <table class="vendor-table">
         <thead>
           <tr>
@@ -232,7 +237,7 @@
     <div class="error-msg" id="settingsErrorMsg"></div>
     <div class="success-msg" id="settingsSuccessMsg"></div>
 
-    <h3 style="margin-top:6px; font-size:16px;">Change Password</h3>
+    <h3 id="changePasswordSection" style="margin-top:6px; font-size:16px; scroll-margin-top:100px;">Change Password</h3>
     <form id="changePasswordForm">
       <div class="form-group">
         <label>Current Password</label>
@@ -249,7 +254,7 @@
       <button type="submit" class="auth-btn">Update Password</button>
     </form>
 
-    <h3 style="margin-top:26px; font-size:16px;">App MPIN (Quick Unlock)</h3>
+    <h3 id="mpinSection" style="margin-top:26px; font-size:16px; scroll-margin-top:100px;">App MPIN (Quick Unlock)</h3>
     <p style="font-size:13px; color:#666; margin-bottom:12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
     <form id="setMpinForm">
       <div class="form-group">
@@ -557,7 +562,7 @@ function loadVendorData(vendorKey, vendorName) {
 function revealVendorDashboard(vendorAccount) {
   document.getElementById('vendorLoginWrapper').style.display = 'none';
   document.getElementById('vendorDashWrapper').style.display = 'block';
-  document.getElementById('menuLogoutLink').style.display = '';
+  document.querySelectorAll('.vendor-only').forEach((el) => { el.style.display = ''; });
   loadVendorData(vendorAccount.vendorKey, vendorAccount.name);
 }
 
