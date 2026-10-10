@@ -175,10 +175,29 @@ nav a.menu-logout-link:hover {
 
 @media(max-width:768px){
 
+/* ✅ FIX: बाईं तरफ 68px जगह छोड़ी गई है ताकि हैमबर्गर लोगो के ऊपर न आए */
 .header{
     text-align:center;
     justify-content:center;
-    padding: 15px 5%;
+    padding: 15px 16px 15px 68px;
+}
+
+/* ✅ FIX: मोबाइल पर लोगो, गैप और टेक्स्ट थोड़ा छोटा ताकि सब आराम से fit हो */
+.header .logo{
+    gap:10px !important;
+}
+
+.header .logo img{
+    height:48px !important;
+    width:48px !important;
+}
+
+.logo h1{
+    font-size:21px;
+}
+
+.logo p{
+    font-size:12px;
 }
 
 /* 💎 बॉर्डरलेस मेनू बटन स्टाइल 💎 */
@@ -189,8 +208,8 @@ nav a.menu-logout-link:hover {
     align-items:center !important;
     justify-content:center !important;
     position:fixed !important;
-    top:16px !important;
-    left:16px !important;
+    top:20px !important;
+    left:12px !important;
     z-index:1250 !important;
     background:transparent !important; 
     border:none !important;            
