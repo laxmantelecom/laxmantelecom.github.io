@@ -10,6 +10,16 @@
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 <link rel="shortcut icon" href="favicon.ico">
+<style>
+/* ✅ चौड़ी tables card के अंदर ही left-right scroll होंगी, पूरा page चौड़ा नहीं होगा */
+.dash-wrapper { max-width: 100%; }
+.dash-wrapper > * { min-width: 0; }
+.dash-card {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+</style>
 </head>
 <body class="admin-page">
 
