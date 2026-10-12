@@ -704,6 +704,104 @@ auth.onAuthStateChanged((user) => {
 forceButtonStyles();
 new MutationObserver(forceButtonStyles).observe(document.body, { childList: true, subtree: true });
 </script>
+<!-- 1. लाइव सेलिब्रेशन (Confetti) की स्क्रिप्ट लाइब्रेरी -->
+<script src="https://jsdelivr.net"></script>
+
+<!-- 2. बर्थडे विश पॉप-अप के लिए CSS स्टाइलिंग -->
+<style>
+  .birthday-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center;
+    align-items: center; z-index: 99999; backdrop-filter: blur(8px);
+  }
+  .birthday-card {
+    background: white; padding: 35px 25px; border-radius: 20px; text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5); max-width: 420px; width: 90%;
+    border: 3px solid #ff4757;
+    animation: popUpEffect 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popUpEffect { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .birthday-card h2 { color: #ff4757; font-size: 26px; margin-bottom: 12px; font-family: sans-serif; }
+  .birthday-card p { color: #2f3542; font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
+  .birthday-btn {
+    background: #ff4757; color: white; border: none; padding: 12px 30px;
+    border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); transition: 0.3s;
+  }
+  .birthday-btn:hover { background: #e84118; transform: scale(1.05); }
+</style>
+
+<!-- 3. हर साल 12 अक्टूबर को केवल इसी वेंडर के लिए चलने वाला जावास्क्रिप्ट लॉजिक -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    
+    // टारगेट वेंडर प्रोफाइल सेटिंग्स
+    const targetVendorEmail = "laxmantelecom@gmail.com"; 
+    const vendorName = "लक्ष्मण जी"; // आप चाहें तो यहाँ वेंडर का सही नाम बदल सकते हैं
+
+    // करंट वेंडर का ईमेल ढूँढने का ऑटोमैटिक लॉजिक
+    let loggedInUserEmail = "";
+    
+    // Firebase या LocalStorage से ईमेल आईडी फेच करना
+    if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+      loggedInUserEmail = firebase.auth().currentUser.email;
+    } else {
+      loggedInUserEmail = localStorage.getItem('userEmail') || localStorage.getItem('email') || ""; 
+    }
+
+    // तारीख और समय का लॉजिक (हर साल 12 अक्टूबर के लिए)
+    const today = new Date();
+    const currentDay = today.getDate(); 
+    const currentMonth = today.getMonth() + 1; // अक्टूबर = 10
+
+    const birthdayDay = 12;   
+    const birthdayMonth = 10; 
+
+    // कंडीशन चेक: वेंडर ईमेल मैच होना चाहिए और आज 12 अक्टूबर होना चाहिए
+    if (loggedInUserEmail.toLowerCase() === targetVendorEmail.toLowerCase() && currentDay === birthdayDay && currentMonth === birthdayMonth) {
+      
+      // आज के दिन सिर्फ पहली बार लॉगिन पर दिखाने के लिए चेक
+      const hasSeenToday = localStorage.getItem('bday_wish_seen_' + today.getFullYear());
+      
+      if (!hasSeenToday) {
+        // पॉप-अप इंटरफेस रेंडर करना
+        const overlay = document.createElement('div');
+        overlay.className = 'birthday-overlay';
+        overlay.innerHTML = `
+          <div class="birthday-card">
+            <h2>🎂 जन्मदिन मुबारक हो! 🎉</h2>
+            <p><strong>लक्ष्मण टेलीकॉम</strong> परिवार की तरफ से आपको जन्मदिन की ढेरों शुभकामनाएं। हमारे साथ जुड़े रहने और बेहतरीन काम करने के लिए आपका धन्यवाद। आपका आज का दिन और यह पूरा साल शानदार रहे!</p>
+            <button class="birthday-btn" onclick="closeBirthdayWish()">शुक्रिया (डैशबोर्ड पर जाएं)</button>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // लाइव सेलिब्रेशन पटाखे (Confetti) शुरू करना
+        startLiveCelebration();
+      }
+    }
+  });
+
+  // लाइव स्क्रीन ब्लास्ट / कन्फ़ेट्टी एनीमेशन
+  function startLiveCelebration() {
+    var duration = 4 * 1000; // 4 सेकंड तक लगातार लाइव सेलिब्रेशन चलेगा
+    var end = Date.now() + duration;
+
+    (function frame() {
+      confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.8 } });
+      confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.8 } });
+      if (Date.now() < end) { requestAnimationFrame(frame); }
+    }());
+  }
+
+  // पॉप-अप बंद करने का फंक्शन
+  function closeBirthdayWish() {
+    const overlay = document.querySelector('.birthday-overlay');
+    if (overlay) overlay.remove();
+    // लोकल स्टोरेज में मार्क करना ताकि बार-बार डिस्टर्ब न करे
+    localStorage.setItem('bday_wish_seen_' + new Date().getFullYear(), 'true');
+  }
+</script>
 
 </body>
 </html>
