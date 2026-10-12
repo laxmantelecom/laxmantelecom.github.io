@@ -78,8 +78,7 @@
   .dash-card, .dash-wrapper { overflow: visible !important; }
   .dash-wrapper > * { min-width: 0; }
 
-  /* Account Settings ke buttons (Update Password / Save MPIN / Remove MPIN) ko dikhane ke liye.
-     style.css ka purana "chhupane wala" rule .dash-card ke andar ke sab buttons ko hide kar deta tha. */
+  /* Account Settings ke buttons (Update Password / Save MPIN / Remove MPIN) ko dikhane ke liye. */
   .dash-card .auth-btn { display: block !important; visibility: visible !important; }
   .dash-card #removeMpinBtn { display: inline-block !important; visibility: visible !important; }
 
@@ -95,6 +94,28 @@
   .vendor-summary-card .label { font-size: 0.78rem; color: #5b6b9c; text-transform: uppercase; letter-spacing: 0.4px; }
   .vendor-summary-card .value { font-size: 1.35rem; font-weight: 800; color: #0d2a5c; margin-top: 4px; }
   .vendor-empty { padding: 30px; text-align: center; color: #6b7494; }
+
+  /* Birthday wish pop-up */
+  .birthday-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center;
+    align-items: center; z-index: 99999; backdrop-filter: blur(8px);
+  }
+  .birthday-card {
+    background: white; padding: 35px 25px; border-radius: 20px; text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5); max-width: 420px; width: 90%;
+    border: 3px solid #ff4757;
+    animation: popUpEffect 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popUpEffect { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .birthday-card h2 { color: #ff4757; font-size: 26px; margin-bottom: 12px; font-family: sans-serif; }
+  .birthday-card p { color: #2f3542; font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
+  .birthday-btn {
+    background: #ff4757; color: white; border: none; padding: 12px 30px;
+    border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); transition: 0.3s;
+  }
+  .birthday-btn:hover { background: #e84118; transform: scale(1.05); }
 </style>
 </head>
 <body>
@@ -270,6 +291,9 @@
     <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:10px;">Remove MPIN from this device</button>
   </div>
 </div>
+
+<!-- Confetti library (सही CDN लिंक) - defer नहीं, ताकि मुख्य स्क्रिप्ट से पहले लोड हो -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -564,6 +588,9 @@ function revealVendorDashboard(vendorAccount) {
   document.getElementById('vendorDashWrapper').style.display = 'block';
   document.querySelectorAll('.vendor-only').forEach((el) => { el.style.display = ''; });
   loadVendorData(vendorAccount.vendorKey, vendorAccount.name);
+
+  // Birthday wish: dashboard खुलते ही तुरंत चेक करो
+  showBirthdayWishIfNeeded(auth.currentUser ? auth.currentUser.email : '', vendorAccount.name);
 }
 
 document.getElementById('vendorLoginForm').addEventListener('submit', function (e) {
@@ -697,128 +724,73 @@ auth.onAuthStateChanged((user) => {
     } else {
       revealVendorDashboard(vendorAccount);
     }
-});
+  });
 });
 
 // Buttons ko hamesha visible rakho (table ya page badalne par bhi)
 forceButtonStyles();
 new MutationObserver(forceButtonStyles).observe(document.body, { childList: true, subtree: true });
-</script>
-<!-- 1. लाइव सेलिब्रेशन (Confetti) की स्क्रिप्ट लाइब्रेरी - फिक्स्ड फ़ास्ट CDN लिंक -->
-<script src="https://jsdelivr.net"></script>
 
-<!-- 2. बर्थडे विश पॉप-अप के लिए CSS स्टाइलिंग -->
-<style>
-  .birthday-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center;
-    align-items: center; z-index: 99999; backdrop-filter: blur(8px);
-  }
-  .birthday-card {
-    background: white; padding: 35px 25px; border-radius: 20px; text-align: center;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5); max-width: 420px; width: 90%;
-    border: 3px solid #ff4757;
-    animation: popUpEffect 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  @keyframes popUpEffect { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-  .birthday-card h2 { color: #ff4757; font-size: 26px; margin-bottom: 12px; font-family: sans-serif; }
-  .birthday-card p { color: #2f3542; font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
-  .birthday-btn {
-    background: #ff4757; color: white; border: none; padding: 12px 30px;
-    border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold;
-    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); transition: 0.3s;
-  }
-  .birthday-btn:hover { background: #e84118; transform: scale(1.05); }
-</style>
+// ======================= BIRTHDAY WISH =======================
+const BDAY_VENDOR_EMAIL = "laxmantelecom@gmail.com";
+const BDAY_DAY = 12;     // तारीख
+const BDAY_MONTH = 10;   // अक्टूबर
 
-<!-- 3. हर साल 12 अक्टूबर को केवल इसी वेंडर के लिए चलने वाला जावास्क्रिप्ट लॉजिक -->
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    
-    // टारगेट वेंडर प्रोफाइल सेटिंग्स
-    const targetVendorEmail = "laxmantelecom@gmail.com"; 
+function showBirthdayWishIfNeeded(email, name) {
+  const today = new Date();
 
-    // करंट वेंडर का ईमेल ढूँढने का ऑटोमैटिक लॉजिक
-    let loggedInUserEmail = "";
-    
-    // Firebase या LocalStorage से ईमेल आईडी फेच करना
-    if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
-      loggedInUserEmail = firebase.auth().currentUser.email;
-    } else {
-      loggedInUserEmail = localStorage.getItem('userEmail') || localStorage.getItem('email') || ""; 
-    }
+  // आज बर्थडे नहीं है तो कुछ नहीं
+  if (today.getDate() !== BDAY_DAY || (today.getMonth() + 1) !== BDAY_MONTH) return;
+  // यह वेंडर नहीं है तो कुछ नहीं
+  if ((email || '').toLowerCase() !== BDAY_VENDOR_EMAIL.toLowerCase()) return;
+  // आज पहले ही देख चुका है तो दोबारा नहीं
+  if (localStorage.getItem('bday_wish_seen_' + today.getFullYear())) return;
+  // पहले से खुला है तो दोबारा नहीं बनाओ
+  if (document.querySelector('.birthday-overlay')) return;
 
-    // 🔍 वेंडर का असली नाम ऑटो-डिटेक्ट करने का एडवांस लॉजिक
-    let vendorRealName = localStorage.getItem('userName') || localStorage.getItem('name') || localStorage.getItem('vendorName');
-    
-    if (!vendorRealName) {
-      // अगर लोकल स्टोरेज में नाम नहीं है, तो पेज पर जहाँ नाम लिखा है वहाँ से उठाएगा
-      const nameSelectors = document.querySelectorAll('.user-name, #user-name, .profile-name, .vendor-name, h4, span');
-      for (let el of nameSelectors) {
-        if (el.textContent && el.textContent.trim().length > 2 && el.textContent.trim().length < 30 && !el.textContent.includes('@')) {
-          vendorRealName = el.textContent.trim();
-          break; 
-        }
-      }
-    }
-    
-    // अगर कोई नाम नहीं मिलता है, तो बैकअप के तौर पर 'लक्ष्मण जी' रख देगा
-    if (!vendorRealName) {
-      vendorRealName = "लक्ष्मण जी";
-    }
+  const displayName = name || 'लक्ष्मण जी';
 
-    // तारीख और समय का लॉजिक (हर साल 12 अक्टूबर के लिए)
-    const today = new Date();
-    const currentDay = today.getDate(); 
-    const currentMonth = today.getMonth() + 1; // अक्टूबर = 10
+  const overlay = document.createElement('div');
+  overlay.className = 'birthday-overlay';
 
-    const birthdayDay = 12;   
-    const birthdayMonth = 10; 
+  const card = document.createElement('div');
+  card.className = 'birthday-card';
 
-    // कंडीशन चेक: वेंडर ईमेल मैच होना चाहिए और आज 12 अक्टूबर होना चाहिए
-    if (loggedInUserEmail.toLowerCase() === targetVendorEmail.toLowerCase() && currentDay === birthdayDay && currentMonth === birthdayMonth) {
-      
-      // आज के दिन सिर्फ पहली बार लॉगिन पर दिखाने के लिए चेक
-      const hasSeenToday = localStorage.getItem('bday_wish_seen_' + today.getFullYear());
-      
-      if (!hasSeenToday) {
-        // पॉप-अप इंटरफेस रेंडर करना (यहाँ नाम वेरिएबल का उपयोग किया गया है)
-        const overlay = document.createElement('div');
-        overlay.className = 'birthday-overlay';
-        overlay.innerHTML = `
-          <div class="birthday-card">
-            <h2>🎂 जन्मदिन मुबारक हो, ${vendorRealName}! 🎉</h2>
-            <p><strong>लक्ष्मण टेलीकॉम</strong> परिवार की तरफ से आपको जन्मदिन की ढेरों शुभकामनाएं। हमारे साथ जुड़े रहने और बेहतरीन काम करने के लिए आपका धन्यवाद। आपका आज का दिन और यह पूरा साल शानदार रहे!</p>
-            <button class="birthday-btn" onclick="closeBirthdayWish()">शुक्रिया (डैशबोर्ड पर जाएं)</button>
-          </div>
-        `;
-        document.body.appendChild(overlay);
+  const h2 = document.createElement('h2');
+  h2.textContent = '🎂 जन्मदिन मुबारक हो, ' + displayName + '! 🎉';
 
-        // लाइव सेलिब्रेशन पटाखे (Confetti) शुरू करना
-        startLiveCelebration();
-      }
-    }
-  });
+  const p = document.createElement('p');
+  p.innerHTML = '<strong>लक्ष्मण टेलीकॉम</strong> परिवार की तरफ से आपको जन्मदिन की ढेरों शुभकामनाएं। हमारे साथ जुड़े रहने और बेहतरीन काम करने के लिए आपका धन्यवाद। आपका आज का दिन और यह पूरा साल शानदार रहे!';
 
-  // लाइव स्क्रीन ब्लास्ट / कन्फ़ेट्टी एनीमेशन
-  function startLiveCelebration() {
-    var duration = 4 * 1000; // 4 सेकंड तक लगातार लाइव सेलिब्रेशन चलेगा
-    var end = Date.now() + duration;
+  const btn = document.createElement('button');
+  btn.className = 'birthday-btn';
+  btn.textContent = 'शुक्रिया (डैशबोर्ड पर जाएं)';
+  btn.onclick = closeBirthdayWish;
 
-    (function frame() {
-      confetti({ particleCount: 5, angle: 60, spread:Spread = 60, origin: { x: 0, y: 0.8 } });
-      confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.8 } });
-      if (Date.now() < end) { requestAnimationFrame(frame); }
-    }());
-  }
+  card.appendChild(h2);
+  card.appendChild(p);
+  card.appendChild(btn);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
 
-  // पॉप-अप बंद करने का फंक्शन
-  function closeBirthdayWish() {
-    const overlay = document.querySelector('.birthday-overlay');
-    if (overlay) overlay.remove();
-    // लोकल स्टोरेज में मार्क करना ताकि बार-बार डिस्टर्ब न करे
-    localStorage.setItem('bday_wish_seen_' + new Date().getFullYear(), 'true');
-  }
+  startLiveCelebration();
+}
+
+function startLiveCelebration() {
+  if (typeof confetti === 'undefined') return; // लाइब्रेरी न चले तो भी wish दिखे
+  const end = Date.now() + 4000;
+  (function frame() {
+    confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.8 } });
+    confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.8 } });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+function closeBirthdayWish() {
+  const overlay = document.querySelector('.birthday-overlay');
+  if (overlay) overlay.remove();
+  localStorage.setItem('bday_wish_seen_' + new Date().getFullYear(), 'true');
+}
 </script>
 
 </body>
