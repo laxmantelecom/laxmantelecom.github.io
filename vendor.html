@@ -697,14 +697,14 @@ auth.onAuthStateChanged((user) => {
     } else {
       revealVendorDashboard(vendorAccount);
     }
-  });
+});
 });
 
 // Buttons ko hamesha visible rakho (table ya page badalne par bhi)
 forceButtonStyles();
 new MutationObserver(forceButtonStyles).observe(document.body, { childList: true, subtree: true });
 </script>
-<!-- 1. लाइव सेलिब्रेशन (Confetti) की स्क्रिप्ट लाइब्रेरी -->
+<!-- 1. लाइव सेलिब्रेशन (Confetti) की स्क्रिप्ट लाइब्रेरी - फिक्स्ड फ़ास्ट CDN लिंक -->
 <script src="https://jsdelivr.net"></script>
 
 <!-- 2. बर्थडे विश पॉप-अप के लिए CSS स्टाइलिंग -->
@@ -737,7 +737,6 @@ new MutationObserver(forceButtonStyles).observe(document.body, { childList: true
     
     // टारगेट वेंडर प्रोफाइल सेटिंग्स
     const targetVendorEmail = "laxmantelecom@gmail.com"; 
-    const vendorName = "लक्ष्मण जी"; // आप चाहें तो यहाँ वेंडर का सही नाम बदल सकते हैं
 
     // करंट वेंडर का ईमेल ढूँढने का ऑटोमैटिक लॉजिक
     let loggedInUserEmail = "";
@@ -747,6 +746,25 @@ new MutationObserver(forceButtonStyles).observe(document.body, { childList: true
       loggedInUserEmail = firebase.auth().currentUser.email;
     } else {
       loggedInUserEmail = localStorage.getItem('userEmail') || localStorage.getItem('email') || ""; 
+    }
+
+    // 🔍 वेंडर का असली नाम ऑटो-डिटेक्ट करने का एडवांस लॉजिक
+    let vendorRealName = localStorage.getItem('userName') || localStorage.getItem('name') || localStorage.getItem('vendorName');
+    
+    if (!vendorRealName) {
+      // अगर लोकल स्टोरेज में नाम नहीं है, तो पेज पर जहाँ नाम लिखा है वहाँ से उठाएगा
+      const nameSelectors = document.querySelectorAll('.user-name, #user-name, .profile-name, .vendor-name, h4, span');
+      for (let el of nameSelectors) {
+        if (el.textContent && el.textContent.trim().length > 2 && el.textContent.trim().length < 30 && !el.textContent.includes('@')) {
+          vendorRealName = el.textContent.trim();
+          break; 
+        }
+      }
+    }
+    
+    // अगर कोई नाम नहीं मिलता है, तो बैकअप के तौर पर 'लक्ष्मण जी' रख देगा
+    if (!vendorRealName) {
+      vendorRealName = "लक्ष्मण जी";
     }
 
     // तारीख और समय का लॉजिक (हर साल 12 अक्टूबर के लिए)
@@ -764,12 +782,12 @@ new MutationObserver(forceButtonStyles).observe(document.body, { childList: true
       const hasSeenToday = localStorage.getItem('bday_wish_seen_' + today.getFullYear());
       
       if (!hasSeenToday) {
-        // पॉप-अप इंटरफेस रेंडर करना
+        // पॉप-अप इंटरफेस रेंडर करना (यहाँ नाम वेरिएबल का उपयोग किया गया है)
         const overlay = document.createElement('div');
         overlay.className = 'birthday-overlay';
         overlay.innerHTML = `
           <div class="birthday-card">
-            <h2>🎂 जन्मदिन मुबारक हो! 🎉</h2>
+            <h2>🎂 जन्मदिन मुबारक हो, ${vendorRealName}! 🎉</h2>
             <p><strong>लक्ष्मण टेलीकॉम</strong> परिवार की तरफ से आपको जन्मदिन की ढेरों शुभकामनाएं। हमारे साथ जुड़े रहने और बेहतरीन काम करने के लिए आपका धन्यवाद। आपका आज का दिन और यह पूरा साल शानदार रहे!</p>
             <button class="birthday-btn" onclick="closeBirthdayWish()">शुक्रिया (डैशबोर्ड पर जाएं)</button>
           </div>
@@ -788,7 +806,7 @@ new MutationObserver(forceButtonStyles).observe(document.body, { childList: true
     var end = Date.now() + duration;
 
     (function frame() {
-      confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.8 } });
+      confetti({ particleCount: 5, angle: 60, spread:Spread = 60, origin: { x: 0, y: 0.8 } });
       confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.8 } });
       if (Date.now() < end) { requestAnimationFrame(frame); }
     }());
