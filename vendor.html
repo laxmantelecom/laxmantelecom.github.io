@@ -743,8 +743,7 @@ function showBirthdayWishIfNeeded(email, name) {
   if (today.getDate() !== BDAY_DAY || (today.getMonth() + 1) !== BDAY_MONTH) return;
   // यह वेंडर नहीं है तो कुछ नहीं
   if ((email || '').toLowerCase() !== BDAY_VENDOR_EMAIL.toLowerCase()) return;
-  // आज पहले ही देख चुका है तो दोबारा नहीं
-  if (localStorage.getItem('bday_wish_seen_' + today.getFullYear())) return;
+  // (अब हर बार खोलने / रिफ्रेश करने पर wish दिखेगी, इसलिए "पहले देख चुका" वाला चेक हटा दिया है)
   // पहले से खुला है तो दोबारा नहीं बनाओ
   if (document.querySelector('.birthday-overlay')) return;
 
@@ -820,7 +819,6 @@ function startLiveCelebration() {
 function closeBirthdayWish() {
   const overlay = document.querySelector('.birthday-overlay');
   if (overlay) overlay.remove();
-  localStorage.setItem('bday_wish_seen_' + new Date().getFullYear(), 'true');
 }
 </script>
 
