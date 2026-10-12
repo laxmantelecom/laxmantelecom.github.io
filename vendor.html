@@ -778,12 +778,43 @@ function showBirthdayWishIfNeeded(email, name) {
 
 function startLiveCelebration() {
   if (typeof confetti === 'undefined') return; // लाइब्रेरी न चले तो भी wish दिखे
-  const end = Date.now() + 4000;
+
+  // zIndex बहुत ज़रूरी है: पॉप-अप का z-index 99999 है, इसलिए confetti उससे ऊपर रखा है
+  const Z = 100001;
+  const colors = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#ffd700', '#ff6b81', '#a55eea'];
+  const base = { zIndex: Z, colors: colors, disableForReducedMotion: false, scalar: 1.2 };
+
+  // 1) शुरुआत में बीच से बड़ा धमाका
+  confetti({ ...base, particleCount: 160, spread: 100, startVelocity: 55, origin: { x: 0.5, y: 0.6 } });
+  confetti({ ...base, particleCount: 90, spread: 140, startVelocity: 35, decay: 0.92, origin: { x: 0.5, y: 0.5 } });
+
+  // 2) दोनों कोनों से लगातार फव्वारे (6 सेकंड)
+  const end = Date.now() + 6000;
   (function frame() {
-    confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.8 } });
-    confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.8 } });
+    confetti({ ...base, particleCount: 6, angle: 60, spread: 70, startVelocity: 60, origin: { x: 0, y: 0.9 } });
+    confetti({ ...base, particleCount: 6, angle: 120, spread: 70, startVelocity: 60, origin: { x: 1, y: 0.9 } });
     if (Date.now() < end) requestAnimationFrame(frame);
   })();
+
+  // 3) ऊपर आसमान में पटाखे (fireworks) जैसे फूटते गोले
+  const fireworks = setInterval(() => {
+    if (Date.now() > end) { clearInterval(fireworks); return; }
+    confetti({
+      ...base,
+      particleCount: 60,
+      spread: 360,
+      startVelocity: 30,
+      ticks: 70,
+      gravity: 0.6,
+      origin: { x: 0.1 + Math.random() * 0.8, y: 0.1 + Math.random() * 0.35 }
+    });
+  }, 450);
+
+  // 4) आख़िर में सुनहरी बारिश
+  setTimeout(() => {
+    confetti({ ...base, particleCount: 120, spread: 160, startVelocity: 25, gravity: 0.7,
+               colors: ['#ffd700', '#ffec99', '#ffa502'], origin: { x: 0.5, y: 0 } });
+  }, 3000);
 }
 
 function closeBirthdayWish() {
