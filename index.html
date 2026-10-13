@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="EYWQr52o6yABIfyxjNi2FscWFNsEl9q9DkJrLQV-NUA" />
 <title>LAXMAN TELECOM | Digital Service Center</title>
-<meta name="description" content="LAXMAN TELECOM is a digital service center providing mobile repair, recharge, Aadhaar, PAN card, ration card, online forms, printing and other digital services.">
-<meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Aadhaar Service, PAN Card, Ration Card, Ludhiana">
+<meta name="description" content="LAXMAN TELECOM is a digital service center in Ludhiana providing mobile repair, recharge, electricity bill payment, Aadhaar, PAN card, passport, birth, caste and residence certificates, ration card, online forms, printing and other digital services.">
+<meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Electricity Bill, Aadhaar Service, PAN Card, PAN Aadhaar Link, Passport, Birth Certificate, Caste Certificate, Residence Certificate, Ration Card, Ludhiana">
 <script src="theme-loader.js"></script>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
@@ -16,6 +16,35 @@
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d2a5c">
+<style>
+/* Services section + trust strip (own class names, no clash with theme) */
+.lt-strip{display:grid;grid-template-columns:repeat(4,1fr);background:#091d42;color:#fff;box-sizing:border-box;width:100%}
+.lt-strip div{padding:18px 12px;text-align:center;border-right:1px solid rgba(255,255,255,.12);font-size:14px;line-height:1.4}
+.lt-strip div:last-child{border-right:0}
+.lt-strip b{display:block;font-size:20px;color:#ffc94d;margin-bottom:2px}
+.lt-svc{background:#f3f6fb;padding:56px 20px;box-sizing:border-box;width:100%;color:#14223d}
+.lt-wrap{max-width:1180px;margin:0 auto}
+.lt-svc h2{margin:0 0 6px;font-size:30px;color:#0d2a5c;text-align:left}
+.lt-sub{margin:0 0 22px;color:#51607a;text-align:left}
+.lt-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:24px}
+.lt-search{flex:1 1 240px;max-width:340px;padding:11px 14px;border:1px solid #c5d0e3;border-radius:8px;font-size:15px;background:#fff;color:#14223d}
+.lt-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.lt-tabs button{padding:9px 15px;border:1px solid #c5d0e3;border-radius:8px;background:#fff;color:#0d2a5c;font-size:14px;font-weight:600;cursor:pointer}
+.lt-tabs button.on{background:#0d2a5c;border-color:#0d2a5c;color:#fff}
+.lt-tabs button:focus-visible,.lt-search:focus-visible,.lt-card a:focus-visible{outline:3px solid #ffc94d;outline-offset:2px}
+.lt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.lt-card{background:#fff;border:1px solid #dde4f0;border-top:4px solid #0d2a5c;border-radius:6px;padding:20px;display:flex;flex-direction:column;box-sizing:border-box;text-align:left}
+.lt-card.new{border-top-color:#f5a623}
+.lt-card i{font-style:normal;font-size:30px;line-height:1;margin-bottom:12px}
+.lt-card h3{margin:0 0 8px;font-size:18px;color:#0d2a5c}
+.lt-card p{margin:0 0 16px;font-size:14.5px;line-height:1.55;color:#3d4b66;flex:1}
+.lt-card a{align-self:flex-start;font-size:14px;font-weight:700;color:#0d2a5c;text-decoration:none;border-bottom:2px solid #ffc94d;padding-bottom:1px}
+.lt-badge{display:inline-block;align-self:flex-start;background:#fff3d6;color:#8a5a00;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:10px}
+.lt-empty{display:none;padding:30px 0;color:#51607a}
+.lt-note{margin-top:28px;font-size:13px;color:#51607a;text-align:left}
+.lt-wa{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:#25d366;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:50}
+@media(max-width:700px){.lt-strip{grid-template-columns:repeat(2,1fr)}.lt-strip div:nth-child(2){border-right:0}.lt-strip div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.12)}.lt-svc{padding:40px 16px}.lt-svc h2{font-size:25px}.lt-tabs{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px}.lt-tabs button{white-space:nowrap}}
+</style>
 </head>
 <body>
 
@@ -55,7 +84,7 @@ function closeNav() {
 }
 </script>
 
-<!-- 🌟 Hero Section (Fixed Native Deep Links) -->
+<!-- Hero Section -->
 <section id="home" class="hero">
 <h2>Welcome to LAXMAN TELECOM</h2>
 <h3>One Stop Digital Service Center</h3>
@@ -75,6 +104,14 @@ We provide premium mobile solutions, instant banking services, and complete onli
 </div>
 </section>
 
+<!-- Trust strip -->
+<div class="lt-strip">
+<div><b>27+</b>Digital Services</div>
+<div><b>Fast</b>Quick &amp; Transparent</div>
+<div><b>Genuine</b>Safe &amp; Secure</div>
+<div><b>Ludhiana</b>Puneet Nagar</div>
+</div>
+
 <!-- About Section -->
 <section id="about" class="about" style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
 <div class="container">
@@ -89,122 +126,69 @@ Our mission is to bridge the digital gap by providing fast, reliable, and transp
 </section>
 
 <!-- Services Section -->
-<section id="services" class="services">
-<div class="container">
+<section id="services" class="lt-svc">
+<div class="lt-wrap">
 <h2>Our Services</h2>
-<p class="subtitle">All Digital Services Under One Roof</p>
-<div class="service-grid">
+<p class="lt-sub">All digital services under one roof. Tap Enquire on any service to message us on WhatsApp.</p>
 
-<div class="card">
-<h3>🛠️ Mobile Repair</h3>
-<p>Hardware Repair, Display Replacement, Software Flashing & Unlocking.</p>
+<div class="lt-tools">
+<input class="lt-search" id="ltSearch" type="search" placeholder="Search a service (PAN, passport, bill...)" aria-label="Search services">
+<div class="lt-tabs" id="ltTabs">
+<button class="on" data-f="all">All</button>
+<button data-f="telecom">Mobile &amp; Telecom</button>
+<button data-f="bank">Banking &amp; Bills</button>
+<button data-f="docs">Documents &amp; Certificates</button>
+<button data-f="scheme">Govt Schemes</button>
+<button data-f="other">Other Services</button>
+</div>
 </div>
 
-<div class="card">
-<h3>🏦 Bank Account Opening</h3>
-<p>Open new bank accounts instantly for Airtel Payments Bank, Kotak Mahindra Bank, Indian Overseas Bank, and more. Get instant Bank Passbook and ATM Card with Indian Overseas Bank accounts.</p>
-</div>
+<div class="lt-grid" id="ltGrid">
 
-<div class="card">
-<h3>📱 New SIM Activation</h3>
-<p>New SIM Activation for Airtel, Jio, and Vi with fast biometric verification.</p>
-</div>
+<!-- Mobile & Telecom -->
+<div class="lt-card" data-c="telecom"><i>🛠️</i><h3>Mobile Repair</h3><p>Hardware Repair, Display Replacement, Software Flashing &amp; Unlocking.</p></div>
+<div class="lt-card" data-c="telecom"><i>📱</i><h3>New SIM Activation</h3><p>New SIM Activation for Airtel, Jio, and Vi with fast biometric verification.</p></div>
+<div class="lt-card" data-c="telecom"><i>🔄</i><h3>SIM Porting (MNP)</h3><p>Port your current number to Airtel, Jio, or Vi easily without changing your number.</p></div>
+<div class="lt-card" data-c="telecom"><i>⚠️</i><h3>Lost SIM Swap</h3><p>Recover your lost or damaged SIM card quickly for Airtel, Jio, and Vi networks.</p></div>
+<div class="lt-card" data-c="telecom"><i>⚡</i><h3>Mobile &amp; WiFi Recharge</h3><p>Instant prepaid and postpaid recharges for Airtel, Jio, Vi, BSNL, and all major Broadband/WiFi networks.</p></div>
+<div class="lt-card" data-c="telecom"><i>🌐</i><h3>New WiFi Connection</h3><p>Get high-speed internet with a new WiFi broadband connection setup at your home or shop.</p></div>
+<div class="lt-card" data-c="telecom"><i>📺</i><h3>WiFi + TV Connection</h3><p>Enjoy smart entertainment packages with combined High-Speed WiFi and Digital Smart TV connection.</p></div>
+<div class="lt-card" data-c="telecom"><i>📲</i><h3>Mobile Accessories</h3><p>Chargers, Data Cables, Earbuds, Neckbands, Bluetooth Speakers &amp; More.</p></div>
 
-<div class="card">
-<h3>🔄 SIM Porting (MNP)</h3>
-<p>Port your current number to Airtel, Jio, or Vi easily without changing your number.</p>
-</div>
+<!-- Banking & Bills -->
+<div class="lt-card" data-c="bank"><i>🏦</i><h3>Bank Account Opening</h3><p>Open new bank accounts instantly for Airtel Payments Bank, Kotak Mahindra Bank, Indian Overseas Bank, and more. Get instant Bank Passbook and ATM Card with Indian Overseas Bank accounts.</p></div>
+<div class="lt-card" data-c="bank"><i>💳</i><h3>Banking &amp; ATM Services</h3><p>Aadhar card cash withdrawal (AEPS), ATM card cash withdrawal, Balance Enquiry, Mini Statement, and Instant Money Transfer to any bank.</p></div>
+<div class="lt-card new" data-c="bank"><span class="lt-badge">New</span><i>💡</i><h3>Electricity Bill</h3><p>Pay your electricity bill online and download the bill copy or payment receipt.</p></div>
 
-<div class="card">
-<h3>⚠️ Lost SIM Swap</h3>
-<p>Recover your lost or damaged SIM card quickly for Airtel, Jio, and Vi networks.</p>
-</div>
+<!-- Documents & Certificates -->
+<div class="lt-card" data-c="docs"><i>🆔</i><h3>Aadhaar &amp; PAN Services</h3><p>Aadhaar Update, New PAN Card Apply, Reprint / Duplicate PAN, Correction &amp; Download.</p></div>
+<div class="lt-card new" data-c="docs"><span class="lt-badge">New</span><i>🔗</i><h3>PAN-Aadhaar Link</h3><p>Link your PAN card with your Aadhaar card quickly and avoid penalties.</p></div>
+<div class="lt-card new" data-c="docs"><span class="lt-badge">New</span><i>🛂</i><h3>Passport Services</h3><p>New Passport Application, Reissue / Renewal, Replacement &amp; Application Status Tracking.</p></div>
+<div class="lt-card" data-c="docs"><i>🗳️</i><h3>Voter ID Services</h3><p>New Registration, Correction, Name Search &amp; Download.</p></div>
+<div class="lt-card" data-c="docs"><i>🍚</i><h3>Punjab Smart Ration Card</h3><p>New Card, Member Add/Remove, Correction &amp; Online Services.</p></div>
+<div class="lt-card new" data-c="docs"><span class="lt-badge">New</span><i>👶</i><h3>Birth Certificate</h3><p>Apply online and download your digital birth certificate (PDF) without visiting an office.</p></div>
+<div class="lt-card new" data-c="docs"><span class="lt-badge">New</span><i>🏠</i><h3>Residence Certificate</h3><p>Apply online for your residence (domicile) certificate.</p></div>
+<div class="lt-card new" data-c="docs"><span class="lt-badge">New</span><i>📜</i><h3>Caste Certificate</h3><p>Apply online for your caste certificate.</p></div>
 
-<div class="card">
-<h3>💳 Banking & ATM Services</h3>
-<p>Aadhar card cash withdrawal (AEPS), ATM card cash withdrawal, Balance Enquiry, Mini Statement, and Instant Money Transfer to any bank.</p>
-</div>
+<!-- Govt Schemes -->
+<div class="lt-card" data-c="scheme"><i>🏥</i><h3>Ayushman Bharat</h3><p>Golden Card Apply, Registration &amp; Download. Free health cover up to ₹5 lakh for eligible families. Keep Aadhaar, Ration Card / Family ID and mobile number ready.</p></div>
+<div class="lt-card" data-c="scheme"><i>🌾</i><h3>PM-KISAN</h3><p>Registration, e-KYC &amp; Payment Status.</p></div>
+<div class="lt-card" data-c="scheme"><i>👷</i><h3>e-Shram &amp; Labour</h3><p>e-Shram Card, Labour Card &amp; Pension Schemes.</p></div>
+<div class="lt-card" data-c="scheme"><i>🏢</i><h3>MSME (Udyam)</h3><p>New Udyam Registration, Certificate Download &amp; Update.</p></div>
 
-<div class="card">
-<h3>⚡ Mobile & WiFi Recharge</h3>
-<p>Instant prepaid and postpaid recharges for Airtel, Jio, Vi, BSNL, and all major Broadband/WiFi networks.</p>
-</div>
-
-<div class="card">
-<h3>🌐 New WiFi Connection</h3>
-<p>Get high-speed internet with a new WiFi broadband connection setup at your home or shop.</p>
-</div>
-
-<div class="card">
-<h3>📺 WiFi + TV Connection</h3>
-<p>Enjoy smart entertainment packages with combined High-Speed WiFi and Digital Smart TV connection.</p>
-</div>
-
-<div class="card">
-<h3>🆔 Aadhaar & PAN Services</h3>
-<p>Aadhaar Update, PAN Card Apply, Correction & Download.</p>
-</div>
-
-<div class="card">
-<h3>📧 Gmail & Account Services</h3>
-<p>New Gmail account creation, blocked account recovery, and registration for various online applications.</p>
-</div>
-
-<div class="card">
-<h3>🖨 Printing Services</h3>
-<p>Printout, Photocopy, Lamination, Passport Photo & Online Forms.</p>
-</div>
-
-<div class="card">
-<h3>📲 Mobile Accessories</h3>
-<p>Chargers, Data Cables, Earbuds, Neckbands, Bluetooth Speakers & More.</p>
-</div>
-
-<div class="card">
-<h3>🎫 Travel Booking</h3>
-<p>Railway Ticket, Tatkal Ticket & Flight Booking.</p>
-</div>
-
-<div class="card">
-<h3>💾 Songs & Movies Downloading</h3>
-<p>Get high-quality HD movies, videos, and latest MP3 songs downloaded directly into your memory card or phone.</p>
-</div>
-
-<div class="card">
-<h3>🍚 Punjab Smart Ration Card</h3>
-<p>New Card, Member Add/Remove, Correction & Online Services.</p>
-</div>
-
-<div class="card">
-<h3>🗳️ Voter ID Services</h3>
-<p>New Registration, Correction, Name Search & Download.</p>
-</div>
-
-<div class="card">
-<h3>🏥 Ayushman Bharat</h3>
-<p>Golden Card Registration & Download.</p>
-</div>
-
-<div class="card">
-<h3>🌾 PM-KISAN</h3>
-<p>Registration, e-KYC & Payment Status.</p>
-</div>
-
-<div class="card">
-<h3>👷 e-Shram & Labour</h3>
-<p>e-Shram Card, Labour Card & Pension Schemes.</p>
-</div>
-
-<div class="card">
-<h3>🏢 MSME (Udyam)</h3>
-<p>New Udyam Registration, Certificate Download & Update.</p>
-</div>
+<!-- Other -->
+<div class="lt-card" data-c="other"><i>📧</i><h3>Gmail &amp; Account Services</h3><p>New Gmail account creation, blocked account recovery, and registration for various online applications.</p></div>
+<div class="lt-card" data-c="other"><i>🖨</i><h3>Printing Services</h3><p>Printout, Photocopy, Lamination, Passport Photo &amp; Online Forms.</p></div>
+<div class="lt-card" data-c="other"><i>🎫</i><h3>Travel Booking</h3><p>Railway Ticket, Tatkal Ticket &amp; Flight Booking.</p></div>
+<div class="lt-card" data-c="other"><i>💾</i><h3>Songs &amp; Movies Downloading</h3><p>Get high-quality HD movies, videos, and latest MP3 songs downloaded directly into your memory card or phone.</p></div>
 
 </div>
+<p class="lt-empty" id="ltEmpty">No service found. Message us on WhatsApp and we will help you.</p>
+<p class="lt-note">LAXMAN TELECOM is a private digital service center and is not a government office. Government services are applied for on the official portals on your behalf.</p>
 </div>
 </section>
 
-<!-- Contact Section (Fixed Native Deep Links) -->
+<!-- Contact Section -->
 <section id="contact" class="contact" style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
 <div class="container">
 <h2>Contact Us</h2>
@@ -244,6 +228,35 @@ Evening: 03:00 PM - 10:00 PM
 © 2026 LAXMAN TELECOM | All Rights Reserved
 </p>
 </footer>
+
+<a class="lt-wa" href="https://wa.me/919041880370" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
+
+<script>
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.lt-card')),
+      tabs=[].slice.call(document.querySelectorAll('#ltTabs button')),
+      box=document.getElementById('ltSearch'),empty=document.getElementById('ltEmpty'),f='all';
+  cards.forEach(function(c){
+    var a=document.createElement('a'),t=c.querySelector('h3').textContent;
+    a.href='https://wa.me/919041880370?text='+encodeURIComponent('Hello Laxman Telecom, I want to know about: '+t);
+    a.target='_blank';a.rel='noopener';a.textContent='Enquire on WhatsApp';
+    c.appendChild(a);
+  });
+  function run(){
+    var q=box.value.toLowerCase().trim(),n=0;
+    cards.forEach(function(c){
+      var ok=(f==='all'||c.getAttribute('data-c')===f)&&(!q||c.textContent.toLowerCase().indexOf(q)>-1);
+      c.style.display=ok?'':'none';if(ok)n++;
+    });
+    empty.style.display=n?'none':'block';
+  }
+  tabs.forEach(function(b){b.onclick=function(){
+    tabs.forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');f=b.getAttribute('data-f');run();
+  }});
+  box.oninput=run;
+})();
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
