@@ -2,269 +2,255 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script src="app-splash.js"></script>
-<script src="app-autologin.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google-site-verification" content="EYWQr52o6yABIfyxjNi2FscWFNsEl9q9DkJrLQV-NUA" />
 <title>LAXMAN TELECOM | Digital Service Center</title>
 <meta name="description" content="LAXMAN TELECOM is a digital service center in Ludhiana providing mobile repair, recharge, electricity bill payment, Aadhaar, PAN card, passport, birth, caste and residence certificates, ration card, online forms, printing and other digital services.">
 <meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Electricity Bill, Aadhaar Service, PAN Card, PAN Aadhaar Link, Passport, Birth Certificate, Caste Certificate, Residence Certificate, Ration Card, Ludhiana">
-<script src="theme-loader.js"></script>
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
-<link rel="shortcut icon" href="favicon.ico">
-<link rel="manifest" href="manifest.json">
+<meta name="google-site-verification" content="EYWQr52o6yABIfyxjNi2FscWFNsEl9q9DkJrLQV-NUA">
 <meta name="theme-color" content="#0d2a5c">
+<link rel="icon" href="laxman-telecom-icon-round.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Services section + trust strip (own class names, no clash with theme) */
-.lt-strip{display:grid;grid-template-columns:repeat(4,1fr);background:#091d42;color:#fff;box-sizing:border-box;width:100%}
-.lt-strip div{padding:18px 12px;text-align:center;border-right:1px solid rgba(255,255,255,.12);font-size:14px;line-height:1.4}
-.lt-strip div:last-child{border-right:0}
-.lt-strip b{display:block;font-size:20px;color:#ffc94d;margin-bottom:2px}
-.lt-svc{background:#f3f6fb;padding:56px 20px;box-sizing:border-box;width:100%;color:#14223d}
-.lt-wrap{max-width:1180px;margin:0 auto}
-.lt-svc h2{margin:0 0 6px;font-size:30px;color:#0d2a5c;text-align:left}
-.lt-sub{margin:0 0 22px;color:#51607a;text-align:left}
-.lt-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:24px}
-.lt-search{flex:1 1 240px;max-width:340px;padding:11px 14px;border:1px solid #c5d0e3;border-radius:8px;font-size:15px;background:#fff;color:#14223d}
-.lt-tabs{display:flex;flex-wrap:wrap;gap:8px}
-.lt-tabs button{padding:9px 15px;border:1px solid #c5d0e3;border-radius:8px;background:#fff;color:#0d2a5c;font-size:14px;font-weight:600;cursor:pointer}
-.lt-tabs button.on{background:#0d2a5c;border-color:#0d2a5c;color:#fff}
-.lt-tabs button:focus-visible,.lt-search:focus-visible,.lt-card a:focus-visible{outline:3px solid #ffc94d;outline-offset:2px}
-.lt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
-.lt-card{background:#fff;border:1px solid #dde4f0;border-top:4px solid #0d2a5c;border-radius:6px;padding:20px;display:flex;flex-direction:column;box-sizing:border-box;text-align:left}
-.lt-card.new{border-top-color:#f5a623}
-.lt-card i{font-style:normal;font-size:30px;line-height:1;margin-bottom:12px}
-.lt-card h3{margin:0 0 8px;font-size:18px;color:#0d2a5c}
-.lt-card p{margin:0 0 16px;font-size:14.5px;line-height:1.55;color:#3d4b66;flex:1}
-.lt-card a{align-self:flex-start;font-size:14px;font-weight:700;color:#0d2a5c;text-decoration:none;border-bottom:2px solid #ffc94d;padding-bottom:1px}
-.lt-badge{display:inline-block;align-self:flex-start;background:#fff3d6;color:#8a5a00;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:10px}
-.lt-empty{display:none;padding:30px 0;color:#51607a}
-.lt-note{margin-top:28px;font-size:13px;color:#51607a;text-align:left}
-.lt-wa{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:#25d366;color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:50}
-@media(max-width:700px){.lt-strip{grid-template-columns:repeat(2,1fr)}.lt-strip div:nth-child(2){border-right:0}.lt-strip div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.12)}.lt-svc{padding:40px 16px}.lt-svc h2{font-size:25px}.lt-tabs{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px}.lt-tabs button{white-space:nowrap}}
+:root{--navy:#0d2a5c;--ink:#07173a;--cyan:#19c3e6;--paper:#f2f6fb;--line:#d9e2ef;--text:#26344f;--mute:#5d6c88;--wa:#1fa855}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.brand b{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.1}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:38px;height:38px;border-radius:50%}
+.brand b{font-size:1.15rem;letter-spacing:.01em}
+.brand small{display:block;font-size:.68rem;color:var(--mute);margin-top:2px}
+nav{display:flex;align-items:center;gap:26px;font-weight:500;font-size:.95rem}
+nav a:hover{color:var(--navy)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:600;font-size:.95rem;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.pri{background:var(--cyan);color:var(--ink)}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.ghost{border:1.5px solid rgba(255,255,255,.35);color:#fff}
+.login{background:var(--navy);color:#fff;padding:9px 20px;border-radius:999px}
+.login:hover{background:var(--ink);color:#fff}
+
+/* hero */
+.hero{background:var(--ink);color:#cfe0ff;position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center;padding-top:76px;padding-bottom:84px}
+.hero h1{color:#fff;font-size:clamp(2.3rem,5.4vw,4rem);font-weight:800;letter-spacing:-.02em}
+.hero p.lead{margin:20px 0 28px;font-size:1.08rem;max-width:520px}
+.search{display:flex;background:#fff;border-radius:16px;padding:6px;max-width:540px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.search input{flex:1;border:0;padding:14px 16px;font:inherit;font-size:1rem;color:var(--ink);background:transparent;min-width:0}
+.search input:focus{outline:none}
+.search a{background:var(--navy);color:#fff;border-radius:12px;padding:0 20px;display:flex;align-items:center;font-weight:600;font-size:.92rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;max-width:540px}
+.chips button{font:inherit;font-size:.85rem;color:#cfe0ff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chips button:hover{background:rgba(25,195,230,.22);border-color:var(--cyan)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+
+/* signal bars: the brand mark, drawn once on load */
+.bars{display:flex;align-items:flex-end;gap:14px;height:260px;justify-content:center}
+.bars i{width:34px;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--cyan),#1f5fd6);transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
+.bars i:nth-child(1){height:22%}.bars i:nth-child(2){height:42%;animation-delay:.12s}
+.bars i:nth-child(3){height:64%;animation-delay:.24s}.bars i:nth-child(4){height:86%;animation-delay:.36s}
+.bars i:nth-child(5){height:100%;animation-delay:.48s}
+.bars-cap{text-align:center;margin-top:18px;font-size:.9rem;color:#8fa6d4}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* facts strip */
+.facts{background:#fff;border-bottom:1px solid var(--line)}
+.facts .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.facts div{padding:22px 16px;border-right:1px solid var(--line)}
+.facts div:last-child{border:0}
+.facts b{display:block;font-family:'Bricolage Grotesque';font-size:1.45rem;color:var(--navy)}
+.facts span{font-size:.86rem;color:var(--mute)}
+
+/* sections */
+section{padding:84px 0}
+h2{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800;letter-spacing:-.015em}
+.sub{margin-top:12px;color:var(--mute);max-width:600px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 26px}
+.tabs button{font:inherit;font-weight:500;font-size:.92rem;background:#fff;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:9px 18px;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.list{display:grid;grid-template-columns:repeat(2,1fr);gap:0 36px}
+.svc{display:grid;grid-template-columns:48px 1fr auto;gap:16px;align-items:start;padding:22px 0;border-top:1px solid var(--line)}
+.svc .ic{width:48px;height:48px;border-radius:14px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:1.4rem}
+.svc h3{font-size:1.08rem;font-weight:700;margin-bottom:4px}
+.svc p{font-size:.9rem;color:var(--mute)}
+.svc a{font-size:.85rem;font-weight:600;color:var(--wa);border:1.5px solid var(--wa);border-radius:999px;padding:6px 14px;white-space:nowrap}
+.svc a:hover{background:var(--wa);color:#fff}
+.empty{display:none;padding:30px 0;border-top:1px solid var(--line)}
+.note{margin-top:28px;font-size:.84rem;color:var(--mute);border-left:3px solid var(--cyan);padding-left:14px;max-width:700px}
+
+/* about + contact */
+.about{background:#fff}
+.about .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:56px}
+.about p{margin-bottom:16px}
+.contact{background:var(--navy);color:#cfe0ff}
+.contact h2{color:#fff}
+.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.rows{margin-top:26px;display:grid;gap:18px}
+.rows div{display:grid;grid-template-columns:26px 1fr;gap:10px}
+.rows a:hover{color:#fff;text-decoration:underline}
+.hours{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:26px;align-self:start}
+.hours h3{color:#fff;font-size:1.2rem;margin-bottom:14px}
+.hours p{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid rgba(255,255,255,.12);font-size:.95rem}
+.hours p b{color:#fff;font-weight:600}
+.hours .cta{margin-top:20px}
+footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-size:.85rem}
+.fab{position:fixed;right:18px;bottom:18px;z-index:30;width:56px;height:56px;border-radius:50%;background:var(--wa);display:grid;place-items:center;font-size:1.6rem;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+
+@media(max-width:860px){
+  nav a:not(.login){display:none}
+  .hero .wrap,.about .wrap,.contact .wrap{grid-template-columns:1fr;gap:36px}
+  .hero .wrap{padding-top:48px;padding-bottom:56px}
+  .bars{height:150px}.bars i{width:26px}
+  .facts .wrap{grid-template-columns:1fr 1fr}
+  .facts div:nth-child(2){border-right:0}.facts div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .list{grid-template-columns:1fr}
+  section{padding:60px 0}
+}
+@media(max-width:420px){.svc{grid-template-columns:44px 1fr}.svc a{grid-column:2;justify-self:start}.brand small{display:none}}
+@media(prefers-reduced-motion:reduce){.bars i{animation:none}html{scroll-behavior:auto}.btn:hover{transform:none}}
 </style>
 </head>
 <body>
 
-<header class="header">
-<div class="logo" style="display:flex; align-items:center; gap:14px;">
-<img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px;">
-<div>
-<h1>LAXMAN TELECOM</h1>
-<p>Your Trusted Digital Service Center</p>
-</div>
-</div>
-
-<button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-    <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-</button>
-
-<div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
-<nav>
-<a href="#home">Home</a>
-<a href="#services">Services</a>
-<a href="#about">About</a>
-<a href="#contact">Contact</a>
-<a href="login-select.html">Login</a>
-</nav>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#home"><img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo"><span><b>LAXMAN TELECOM</b><small>Your Trusted Digital Service Center</small></span></a>
+    <nav><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a><a class="login" href="login-select.html">Login</a></nav>
+  </div>
 </header>
 
-<script>
-function toggleNav() {
-  document.querySelector('nav').classList.toggle('nav-open');
-  document.getElementById('navBackdrop').classList.toggle('nav-open');
-}
-function closeNav() {
-  document.querySelector('nav').classList.remove('nav-open');
-  document.getElementById('navBackdrop').classList.remove('nav-open');
-}
-</script>
+<main id="home">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>One stop digital service center in Ludhiana</h1>
+        <p class="lead">Mobile repair, recharge, banking, Aadhaar, PAN, passport and government forms. All under one roof at Puneet Nagar.</p>
+        <div class="search">
+          <input id="q" type="search" placeholder="Search a service, e.g. PAN card" aria-label="Search services">
+          <a href="#services">Search</a>
+        </div>
+        <div class="chips" id="chips"></div>
+        <div class="cta">
+          <a class="btn pri" href="tel:+919041880370">📞 Call Now</a>
+          <a class="btn wa" href="https://wa.me/919041880370" target="_blank" rel="noopener">💬 WhatsApp</a>
+          <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=Laxman+Telecom+7+Street+No+1+Puneet+Nagar+Ludhiana+141008" target="_blank" rel="noopener">📍 Get Directions</a>
+        </div>
+      </div>
+      <div aria-hidden="true"><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><p class="bars-cap">Full signal, every service</p></div>
+    </div>
+  </div>
 
-<!-- Hero Section -->
-<section id="home" class="hero">
-<h2>Welcome to LAXMAN TELECOM</h2>
-<h3>One Stop Digital Service Center</h3>
-<p>
-We provide premium mobile solutions, instant banking services, and complete online government assistance under one roof. Scroll down to explore our complete list of specialized services.
-</p>
-<div class="hero-buttons">
-<a class="btn" href="tel:+919041880370">
-📞 Call Now
-</a>
-<a class="btn whatsapp" href="whatsapp://send?phone=919041880370" target="_blank">
-💬 WhatsApp
-</a>
-<a class="btn" href="geo:0,0?q=LAXMAN+TELECOM+Puneet+Nagar+Ludhiana" target="_blank">
-📍 Get Directions
-</a>
-</div>
-</section>
+  <div class="facts"><div class="wrap">
+    <div><b>27+</b><span>Digital Services</span></div>
+    <div><b>Instant</b><span>WhatsApp Replies</span></div>
+    <div><b>Genuine</b><span>Safe &amp; Secure</span></div>
+    <div><b>Ludhiana</b><span>Puneet Nagar</span></div>
+  </div></div>
 
-<!-- Trust strip -->
-<div class="lt-strip">
-<div><b>27+</b>Digital Services</div>
-<div><b>Instant</b>WhatsApp Replies</div>
-<div><b>Genuine</b>Safe &amp; Secure</div>
-<div><b>Ludhiana</b>Puneet Nagar</div>
-</div>
+  <section id="services">
+    <div class="wrap">
+      <h2>Our Services</h2>
+      <p class="sub">Tap Enquire on any service and get an instant reply on WhatsApp from our AI assistant, anytime.</p>
+      <div class="tabs" id="tabs"></div>
+      <div class="list" id="list"></div>
+      <div class="empty" id="empty">No service found. <a href="https://wa.me/919041880370" style="color:var(--wa);font-weight:600" target="_blank" rel="noopener">Message us on WhatsApp</a> and we will help you.</div>
+      <p class="note">LAXMAN TELECOM is a private digital service center and is not a government office. Government services are applied for on the official portals on your behalf.</p>
+    </div>
+  </section>
 
-<!-- About Section -->
-<section id="about" class="about" style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
-<div class="container">
-<h2>About LAXMAN TELECOM</h2>
-<p>
-LAXMAN TELECOM is a trusted and fully equipped Digital Service Center located in Puneet Nagar, Ludhiana, Punjab.
-</p>
-<p>
-Our mission is to bridge the digital gap by providing fast, reliable, and transparent digital solutions to every customer. From complex mobile hardware troubleshooting to official government registrations, we ensure high-quality service with utmost precision.
-</p>
-</div>
-</section>
+  <section class="about" id="about">
+    <div class="wrap">
+      <h2>About LAXMAN TELECOM</h2>
+      <div>
+        <p>LAXMAN TELECOM is a trusted and fully equipped Digital Service Center located in Puneet Nagar, Ludhiana, Punjab.</p>
+        <p>Our mission is to bridge the digital gap by providing fast, reliable, and transparent digital solutions to every customer. From complex mobile hardware troubleshooting to official government registrations, we ensure high-quality service with utmost precision.</p>
+      </div>
+    </div>
+  </section>
 
-<!-- Services Section -->
-<section id="services" class="lt-svc">
-<div class="lt-wrap">
-<h2>Our Services</h2>
-<p class="lt-sub">All digital services under one roof. Tap Enquire on any service and get an instant reply on WhatsApp from our AI assistant, anytime.</p>
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div>
+        <h2>Contact Us</h2>
+        <div class="rows">
+          <div><span>📍</span><span>7, Street No. 1, Puneet Nagar, Ludhiana, Punjab - 141008</span></div>
+          <div><span>📞</span><a href="tel:+919041880370">+91 90418-80370</a></div>
+          <div><span>📧</span><a href="mailto:laxmantelecom.help@gmail.com">laxmantelecom.help@gmail.com</a></div>
+          <div><span>💬</span><span>Message us on WhatsApp anytime and get an instant reply from our AI assistant.</span></div>
+        </div>
+      </div>
+      <div class="hours">
+        <h3>Opening hours</h3>
+        <p><span>Mon - Sat</span><b>3:00 PM - 10:00 PM</b></p>
+        <p><span>Sunday</span><b>8:00 AM - 1:00 PM</b></p>
+        <p><span>Break (daily)</span><b>1:00 PM - 3:00 PM</b></p>
+        <div class="cta">
+          <a class="btn pri" href="https://www.google.com/maps/search/?api=1&query=Laxman+Telecom+7+Street+No+1+Puneet+Nagar+Ludhiana+141008" target="_blank" rel="noopener">📍 Open Google Map</a>
+          <a class="btn wa" href="https://wa.me/919041880370" target="_blank" rel="noopener">💬 WhatsApp Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
-<div class="lt-tools">
-<input class="lt-search" id="ltSearch" type="search" placeholder="Search a service (PAN, passport, bill...)" aria-label="Search services">
-<div class="lt-tabs" id="ltTabs">
-<button class="on" data-f="all">All</button>
-<button data-f="telecom">Mobile &amp; Telecom</button>
-<button data-f="bank">Banking &amp; Bills</button>
-<button data-f="docs">Documents &amp; Certificates</button>
-<button data-f="scheme">Govt Schemes</button>
-<button data-f="other">Other Services</button>
-</div>
-</div>
-
-<div class="lt-grid" id="ltGrid">
-
-<div class="lt-card" data-c="telecom"><i>🛠️</i><h3>Mobile Repair</h3><p>Hardware Repair, Display Replacement, Software Flashing &amp; Unlocking.</p></div>
-<div class="lt-card" data-c="telecom"><i>⚡</i><h3>Mobile &amp; WiFi Recharge</h3><p>Instant prepaid and postpaid recharges for Airtel, Jio, Vi, BSNL, and all major Broadband/WiFi networks.</p></div>
-<div class="lt-card" data-c="bank"><i>💳</i><h3>Banking &amp; ATM Services</h3><p>Aadhar card cash withdrawal (AEPS), ATM card cash withdrawal, Balance Enquiry, Mini Statement, and Instant Money Transfer to any bank.</p></div>
-<div class="lt-card" data-c="docs"><i>🆔</i><h3>Aadhaar &amp; PAN Services</h3><p>Aadhaar Update, New PAN Card Apply, Reprint / Duplicate PAN, Correction &amp; Download.</p></div>
-<div class="lt-card" data-c="bank"><i>💡</i><h3>Electricity Bill</h3><p>Pay your electricity bill online and download the bill copy or payment receipt.</p></div>
-<div class="lt-card" data-c="bank"><i>🏦</i><h3>Bank Account Opening</h3><p>Open new bank accounts instantly for Airtel Payments Bank, Kotak Mahindra Bank, Indian Overseas Bank, and more. Get instant Bank Passbook and ATM Card with Indian Overseas Bank accounts.</p></div>
-<div class="lt-card" data-c="telecom"><i>📱</i><h3>New SIM Activation</h3><p>New SIM Activation for Airtel, Jio, and Vi with fast biometric verification.</p></div>
-<div class="lt-card" data-c="other"><i>🖨</i><h3>Printing Services</h3><p>Printout, Photocopy, Lamination, Passport Photo &amp; Online Forms.</p></div>
-<div class="lt-card" data-c="docs"><i>🔗</i><h3>PAN-Aadhaar Link</h3><p>Link your PAN card with your Aadhaar card quickly and avoid penalties.</p></div>
-<div class="lt-card" data-c="docs"><i>🛂</i><h3>Passport Services</h3><p>New Passport Application, Reissue / Renewal, Replacement &amp; Application Status Tracking.</p></div>
-<div class="lt-card" data-c="docs"><i>🗳️</i><h3>Voter ID Services</h3><p>New Registration, Correction, Name Search &amp; Download.</p></div>
-<div class="lt-card" data-c="docs"><i>🍚</i><h3>Punjab Smart Ration Card</h3><p>New Card, Member Add/Remove, Correction &amp; Online Services.</p></div>
-<div class="lt-card" data-c="docs"><i>👶</i><h3>Birth Certificate</h3><p>Apply online and download your digital birth certificate (PDF) without visiting an office.</p></div>
-<div class="lt-card" data-c="docs"><i>🏠</i><h3>Residence Certificate</h3><p>Apply online for your residence (domicile) certificate.</p></div>
-<div class="lt-card" data-c="docs"><i>📜</i><h3>Caste Certificate</h3><p>Apply online for your caste certificate.</p></div>
-<div class="lt-card" data-c="scheme"><i>🏥</i><h3>Ayushman Bharat</h3><p>Golden Card Apply, Registration &amp; Download. Free health cover up to ₹5 lakh for eligible families. Keep Aadhaar, Ration Card / Family ID and mobile number ready.</p></div>
-<div class="lt-card" data-c="scheme"><i>🌾</i><h3>PM-KISAN</h3><p>Registration, e-KYC &amp; Payment Status.</p></div>
-<div class="lt-card" data-c="scheme"><i>👷</i><h3>e-Shram &amp; Labour</h3><p>e-Shram Card, Labour Card &amp; Pension Schemes.</p></div>
-<div class="lt-card" data-c="scheme"><i>🏢</i><h3>MSME (Udyam)</h3><p>New Udyam Registration, Certificate Download &amp; Update.</p></div>
-<div class="lt-card" data-c="telecom"><i>🔄</i><h3>SIM Porting (MNP)</h3><p>Port your current number to Airtel, Jio, or Vi easily without changing your number.</p></div>
-<div class="lt-card" data-c="telecom"><i>⚠️</i><h3>Lost SIM Swap</h3><p>Recover your lost or damaged SIM card quickly for Airtel, Jio, and Vi networks.</p></div>
-<div class="lt-card" data-c="telecom"><i>🌐</i><h3>New WiFi Connection</h3><p>Get high-speed internet with a new WiFi broadband connection setup at your home or shop.</p></div>
-<div class="lt-card" data-c="telecom"><i>📺</i><h3>WiFi + TV Connection</h3><p>Enjoy smart entertainment packages with combined High-Speed WiFi and Digital Smart TV connection.</p></div>
-<div class="lt-card" data-c="telecom"><i>📲</i><h3>Mobile Accessories</h3><p>Chargers, Data Cables, Earbuds, Neckbands, Bluetooth Speakers &amp; More.</p></div>
-<div class="lt-card" data-c="other"><i>🎫</i><h3>Travel Booking</h3><p>Railway Ticket, Tatkal Ticket &amp; Flight Booking.</p></div>
-<div class="lt-card" data-c="other"><i>📧</i><h3>Gmail &amp; Account Services</h3><p>New Gmail account creation, blocked account recovery, and registration for various online applications.</p></div>
-<div class="lt-card" data-c="other"><i>💾</i><h3>Songs &amp; Movies Downloading</h3><p>Get high-quality HD movies, videos, and latest MP3 songs downloaded directly into your memory card or phone.</p></div>
-
-</div>
-<p class="lt-empty" id="ltEmpty">No service found. Message us on WhatsApp and we will help you.</p>
-<p class="lt-note">LAXMAN TELECOM is a private digital service center and is not a government office. Government services are applied for on the official portals on your behalf.</p>
-</div>
-</section>
-
-<!-- Contact Section -->
-<section id="contact" class="contact" style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
-<div class="container">
-<h2>Contact Us</h2>
-<div class="contact-box" style="text-align: left; box-sizing: border-box;">
-<h3>LAXMAN TELECOM</h3>
-<p>
-📍 7, Street No. 1, Puneet Nagar,
-Ludhiana, Punjab - 141008
-</p>
-<p>
-📞 +91 90418-80370
-</p>
-<p>
-📧 laxmantelecom.help@gmail.com
-</p>
-<p>
-⏰ Mon - Sat: 03:00 PM - 10:00 PM
-<br>
-Sunday: 08:00 AM - 01:00 PM
-<br>
-Break: 01:00 PM - 03:00 PM
-<br>
-Evening: 03:00 PM - 10:00 PM
-</p>
-<p>
-💬 Message us on WhatsApp anytime and get an instant reply from our AI assistant.
-</p>
-<a class="btn" href="geo:0,0?q=LAXMAN+TELECOM+Puneet+Nagar+Ludhiana" target="_blank" style="margin-bottom: 10px; display: inline-block;">
-📍 Open Google Map
-</a>
-<a class="btn whatsapp" href="whatsapp://send?phone=919041880370" target="_blank" style="margin-bottom: 10px; display: inline-block;">
-💬 WhatsApp Us
-</a>
-</div>
-</div>
-</section>
-
-<footer style="padding-left: 20px; padding-right: 20px; text-align: left; box-sizing: border-box; width: 100%;">
-<p style="margin: 0; padding: 10px 0;">
-© 2026 LAXMAN TELECOM | All Rights Reserved
-</p>
-</footer>
-
-<a class="lt-wa" href="https://wa.me/919041880370" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
+<footer>© 2026 LAXMAN TELECOM | All Rights Reserved</footer>
+<a class="fab" href="https://wa.me/919041880370" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
 <script>
-(function(){
-  var cards=[].slice.call(document.querySelectorAll('.lt-card')),
-      tabs=[].slice.call(document.querySelectorAll('#ltTabs button')),
-      box=document.getElementById('ltSearch'),empty=document.getElementById('ltEmpty'),f='all';
-  cards.forEach(function(c){
-    var a=document.createElement('a'),t=c.querySelector('h3').textContent;
-    a.href='https://wa.me/919041880370?text='+encodeURIComponent('Hello Laxman Telecom, I want to know about: '+t);
-    a.target='_blank';a.rel='noopener';a.textContent='Enquire on WhatsApp';
-    c.appendChild(a);
-  });
-  function run(){
-    var q=box.value.toLowerCase().trim(),n=0;
-    cards.forEach(function(c){
-      var ok=(f==='all'||c.getAttribute('data-c')===f)&&(!q||c.textContent.toLowerCase().indexOf(q)>-1);
-      c.style.display=ok?'':'none';if(ok)n++;
-    });
-    empty.style.display=n?'none':'block';
-  }
-  tabs.forEach(function(b){b.onclick=function(){
-    tabs.forEach(function(x){x.classList.remove('on')});
-    b.classList.add('on');f=b.getAttribute('data-f');run();
-  }});
-  box.oninput=run;
-})();
-</script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="script.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch((err) => {
-      console.log('Service worker registration failed:', err);
-    });
-  });
+const CATS=["All","Mobile & Telecom","Banking & Bills","Documents & Certificates","Govt Schemes","Other Services"];
+const S=[
+["🛠️","Mobile Repair","Hardware Repair, Display Replacement, Software Flashing & Unlocking.",1],
+["⚡","Mobile & WiFi Recharge","Instant prepaid and postpaid recharges for Airtel, Jio, Vi, BSNL, and all major Broadband/WiFi networks.",1],
+["📱","New SIM Activation","New SIM Activation for Airtel, Jio, and Vi with fast biometric verification.",1],
+["🔄","SIM Porting (MNP)","Port your current number to Airtel, Jio, or Vi easily without changing your number.",1],
+["⚠️","Lost SIM Swap","Recover your lost or damaged SIM card quickly for Airtel, Jio, and Vi networks.",1],
+["🌐","New WiFi Connection","Get high-speed internet with a new WiFi broadband connection setup at your home or shop.",1],
+["📺","WiFi + TV Connection","Enjoy smart entertainment packages with combined High-Speed WiFi and Digital Smart TV connection.",1],
+["📲","Mobile Accessories","Chargers, Data Cables, Earbuds, Neckbands, Bluetooth Speakers & More.",1],
+["💳","Banking & ATM Services","Aadhar card cash withdrawal (AEPS), ATM card cash withdrawal, Balance Enquiry, Mini Statement, and Instant Money Transfer to any bank.",2],
+["💡","Electricity Bill","Pay your electricity bill online and download the bill copy or payment receipt.",2],
+["🏦","Bank Account Opening","Open new bank accounts instantly for Airtel Payments Bank, Kotak Mahindra Bank, Indian Overseas Bank, and more. Get instant Bank Passbook and ATM Card with Indian Overseas Bank accounts.",2],
+["🆔","Aadhaar & PAN Services","Aadhaar Update, New PAN Card Apply, Reprint / Duplicate PAN, Correction & Download.",3],
+["🔗","PAN-Aadhaar Link","Link your PAN card with your Aadhaar card quickly and avoid penalties.",3],
+["🛂","Passport Services","New Passport Application, Reissue / Renewal, Replacement & Application Status Tracking.",3],
+["🗳️","Voter ID Services","New Registration, Correction, Name Search & Download.",3],
+["🍚","Punjab Smart Ration Card","New Card, Member Add/Remove, Correction & Online Services.",3],
+["👶","Birth Certificate","Apply online and download your digital birth certificate (PDF) without visiting an office.",3],
+["🏠","Residence Certificate","Apply online for your residence (domicile) certificate.",3],
+["📜","Caste Certificate","Apply online for your caste certificate.",3],
+["🏥","Ayushman Bharat","Golden Card Apply, Registration & Download. Free health cover up to ₹5 lakh for eligible families. Keep Aadhaar, Ration Card / Family ID and mobile number ready.",4],
+["🌾","PM-KISAN","Registration, e-KYC & Payment Status.",4],
+["👷","e-Shram & Labour","e-Shram Card, Labour Card & Pension Schemes.",4],
+["🏢","MSME (Udyam)","New Udyam Registration, Certificate Download & Update.",4],
+["🖨️","Printing Services","Printout, Photocopy, Lamination, Passport Photo & Online Forms.",5],
+["🎫","Travel Booking","Railway Ticket, Tatkal Ticket & Flight Booking.",5],
+["📧","Gmail & Account Services","New Gmail account creation, blocked account recovery, and registration for various online applications.",5],
+["💾","Songs & Movies Downloading","Get high-quality HD movies, videos, and latest MP3 songs downloaded directly into your memory card or phone.",5]
+];
+const $=id=>document.getElementById(id);
+let cat=0;
+function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function render(){
+  const q=$("q").value.trim().toLowerCase();
+  const r=S.filter(s=>(!cat||s[3]===cat)&&(!q||(s[1]+" "+s[2]).toLowerCase().includes(q)));
+  $("list").innerHTML=r.map(s=>`<div class="svc"><div class="ic">${s[0]}</div><div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p></div><a href="https://wa.me/919041880370?text=${encodeURIComponent("Hello, I want to enquire about: "+s[1])}" target="_blank" rel="noopener">Enquire</a></div>`).join("");
+  $("empty").style.display=r.length?"none":"block";
 }
+$("tabs").innerHTML=CATS.map((c,i)=>`<button aria-pressed="${i===0}" data-i="${i}">${esc(c)}</button>`).join("");
+$("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;cat=+b.dataset.i;[...$("tabs").children].forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
+$("q").oninput=render;
+$("chips").innerHTML=["Recharge","PAN card","Passport","Mobile repair","Electricity bill"].map(c=>`<button>${c}</button>`).join("");
+$("chips").onclick=e=>{if(e.target.tagName!=="BUTTON")return;$("q").value=e.target.textContent;render();$("services").scrollIntoView()};
+render();
 </script>
 </body>
 </html>
