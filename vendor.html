@@ -486,7 +486,7 @@ function renderVendorRecords(records) {
       .forEach((r) => {
         const tr = document.createElement('tr');
         const pendingDispute = disputesByRecordId[r.id];
-        // paymentStatus missing/empty ko bhi UNPAID maano
+        // A missing or empty paymentStatus is treated as UNPAID
         const isPaid = String(r.paymentStatus || '').toUpperCase() === 'PAID';
         let actionCell;
         if (!isPaid) {
@@ -595,7 +595,7 @@ function revealVendorDashboard(vendorAccount) {
   document.querySelectorAll('.vendor-only').forEach((el) => { el.style.display = ''; });
   loadVendorData(vendorAccount.vendorKey, vendorAccount.name);
 
-  // Birthday wish: dashboard खुलते ही तुरंत चेक करो
+  // Show the birthday wish right away if today qualifies
   showBirthdayWishIfNeeded(auth.currentUser ? auth.currentUser.email : '', vendorAccount.name);
 }
 
@@ -733,23 +733,23 @@ auth.onAuthStateChanged((user) => {
   });
 });
 
-// Buttons ko hamesha visible rakho (table ya page badalne par bhi)
+// Keep the buttons visible, even when the table or page changes
 forceButtonStyles();
 new MutationObserver(forceButtonStyles).observe(document.body, { childList: true, subtree: true });
 
 // ======================= BIRTHDAY WISH =======================
 const BDAY_VENDOR_EMAIL = "laxmantelecom@gmail.com";
-const BDAY_DAY = 12;     // तारीख
-const BDAY_MONTH = 10;   // अक्टूबर
+const BDAY_DAY = 12;     // day of month
+const BDAY_MONTH = 10;   // month (10 = October)
 
 function showBirthdayWishIfNeeded(email, name) {
   const today = new Date();
 
-  // आज बर्थडे नहीं है तो कुछ नहीं
+  // Not the birthday today: do nothing
   if (today.getDate() !== BDAY_DAY || (today.getMonth() + 1) !== BDAY_MONTH) return;
-  // यह वेंडर नहीं है तो कुछ नहीं
+  // Not this vendor: do nothing
   if ((email || '').toLowerCase() !== BDAY_VENDOR_EMAIL.toLowerCase()) return;
-  // पहले से खुला है तो दोबारा नहीं बनाओ
+  // Already open: do not create it twice
   if (document.querySelector('.birthday-overlay')) return;
 
   const displayName = name || 'लक्ष्मण जी';
@@ -781,17 +781,17 @@ function showBirthdayWishIfNeeded(email, name) {
 }
 
 function startLiveCelebration() {
-  if (typeof confetti === 'undefined') return; // लाइब्रेरी न चले तो भी wish दिखे
+  if (typeof confetti === 'undefined') return; // If the confetti library fails to load, the wish still shows
 
   const Z = 100001;
   const colors = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#ffd700', '#ff6b81', '#a55eea'];
   const base = { zIndex: Z, colors: colors, disableForReducedMotion: false, scalar: 1.2 };
 
-  // 1) शुरुआत में बीच से बड़ा धमाका
+  // 1) Big burst from the centre at the start
   confetti({ ...base, particleCount: 160, spread: 100, startVelocity: 55, origin: { x: 0.5, y: 0.6 } });
   confetti({ ...base, particleCount: 90, spread: 140, startVelocity: 35, decay: 0.92, origin: { x: 0.5, y: 0.5 } });
 
-  // 2) दोनों कोनों से लगातार फव्वारे (6 सेकंड)
+  // 2) Continuous fountains from both corners (6 seconds)
   const end = Date.now() + 6000;
   (function frame() {
     confetti({ ...base, particleCount: 6, angle: 60, spread: 70, startVelocity: 60, origin: { x: 0, y: 0.9 } });
@@ -799,7 +799,7 @@ function startLiveCelebration() {
     if (Date.now() < end) requestAnimationFrame(frame);
   })();
 
-  // 3) ऊपर आसमान में पटाखे (fireworks) जैसे फूटते गोले
+  // 3) Fireworks-style bursts in the upper part of the screen
   const fireworks = setInterval(() => {
     if (Date.now() > end) { clearInterval(fireworks); return; }
     confetti({
@@ -813,7 +813,7 @@ function startLiveCelebration() {
     });
   }, 450);
 
-  // 4) आख़िर में सुनहरी बारिश
+  // 4) Golden rain at the end
   setTimeout(() => {
     confetti({ ...base, particleCount: 120, spread: 160, startVelocity: 25, gravity: 0.7,
                colors: ['#ffd700', '#ffec99', '#ffa502'], origin: { x: 0.5, y: 0 } });
