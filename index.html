@@ -205,7 +205,7 @@ footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;paddin
 <div id="bar"></div>
 <div class="topbar"><div class="wrap">
   <span>📞 <a href="tel:+919041880370">+91 90418-80370</a> &nbsp;|&nbsp; 📍 Puneet Nagar, Ludhiana</span>
-  <span class="r">Mon - Sat: 3 PM - 10 PM &nbsp;|&nbsp; Sunday: 8 AM - 1 PM</span>
+  <span class="r">Mon - Sat: 3 PM - 10 PM &nbsp;|&nbsp; Sunday: 8 AM - 1 PM, 3 PM - 10 PM</span>
 </div></div>
 <header id="hd">
   <div class="wrap">
@@ -301,7 +301,7 @@ footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;paddin
       <div class="hours rv" style="--d:.15s">
         <h3>Opening hours</h3>
         <p><span>Mon - Sat</span><b>3:00 PM - 10:00 PM</b></p>
-        <p><span>Sunday</span><b>8:00 AM - 1:00 PM</b></p>
+        <p><span>Sunday</span><b>8 AM - 1 PM, 3 PM - 10 PM</b></p>
         <p><span>Break (daily)</span><b>1:00 PM - 3:00 PM</b></p>
         <div class="cta">
           <a class="btn pri" href="https://www.google.com/maps/search/?api=1&query=Laxman+Telecom+7+Street+No+1+Puneet+Nagar+Ludhiana+141008" target="_blank" rel="noopener">📍 Open Google Map</a>
@@ -381,15 +381,25 @@ $("mq").innerHTML=[...names,...names].map(n=>`<span>${esc(n)}</span>`).join("");
 const W=["Recharge","Mobile Repair","PAN Card","Passport","Aadhaar Update","Electricity Bill","Ration Card"];let wi=0;
 setInterval(()=>{const b=$("rot");b.classList.add("out");setTimeout(()=>{wi=(wi+1)%W.length;b.textContent=W[wi];b.classList.remove("out")},350)},2200);
 
-/* open / closed (India time) */
+/* open / closed (India time). Timings in minutes: 480 = 8:00 AM, 900 = 3:00 PM */
+const HRS={Sun:[[480,780],[900,1320]],wk:[[900,1320]]};
+const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const slots=d=>d==="Sun"?HRS.Sun:HRS.wk;
+const fmt=m=>{const h=Math.floor(m/60),mm=m%60,ap=h>=12?"PM":"AM",h12=h%12||12;return h12+(mm?":"+String(mm).padStart(2,"0"):"")+" "+ap};
 function shop(){
   const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Kolkata",weekday:"short",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
   const g=t=>p.find(x=>x.type===t).value,d=g("weekday"),m=(+g("hour")%24)*60+(+g("minute"));
-  const sun=d==="Sun",o=sun?480:900,c=sun?780:1320,open=m>=o&&m<c;
-  const st=$("st");st.classList.toggle("open",open);
-  $("stt").textContent=open?`Open now · closes ${sun?"1 PM":"10 PM"}`:"Closed now · see opening hours below";
+  const cur=slots(d).find(s=>m>=s[0]&&m<s[1]);
+  let txt;
+  if(cur)txt="Open now · closes "+fmt(cur[1]);
+  else{
+    const nx=slots(d).find(s=>s[0]>m);
+    if(nx)txt="Closed now · opens today at "+fmt(nx[0]);
+    else txt="Closed now · opens tomorrow at "+fmt(slots(DAYS[(DAYS.indexOf(d)+1)%7])[0][0]);
+  }
+  $("st").classList.toggle("open",!!cur);$("stt").textContent=txt;
 }
-shop();setInterval(shop,60000);
+shop();setInterval(shop,30000);
 
 /* counters */
 const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);
