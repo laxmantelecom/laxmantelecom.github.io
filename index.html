@@ -3,166 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <script src="app-splash.js"></script>
+<script>document.documentElement.className="js"</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LAXMAN TELECOM | Digital Service Center</title>
 <meta name="description" content="LAXMAN TELECOM is a digital service center in Ludhiana providing mobile repair, recharge, electricity bill payment, Aadhaar, PAN card, passport, birth, caste and residence certificates, ration card, online forms, printing and other digital services.">
 <meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Electricity Bill, Aadhaar Service, PAN Card, PAN Aadhaar Link, Passport, Birth Certificate, Caste Certificate, Residence Certificate, Ration Card, Ludhiana">
 <meta name="google-site-verification" content="EYWQr52o6yABIfyxjNi2FscWFNsEl9q9DkJrLQV-NUA">
-<meta name="theme-color" content="#0d2a5c">
+<meta name="theme-color" content="#111318">
 <link rel="icon" href="laxman-telecom-icon-round.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#0d2a5c;--ink:#07173a;--cyan:#19c3e6;--paper:#f2f6fb;--line:#d9e2ef;--text:#26344f;--mute:#5d6c88;--wa:#1fa855}
+:root{--ink:#111318;--ink2:#1b1e27;--acc:#ff8a00;--acc2:#ffb347;--cream:#fbf7f0;--line:#e9e1d3;--text:#2c2f38;--mute:#6b6f7b;--wa:#1fa855;--logo:#3bbdfa}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
-body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
-h1,h2,h3,.brand b{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.1}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4,.brand b{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.1}
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));z-index:60}
 
-/* header */
-header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:38px;height:38px;border-radius:50%}
-.brand b{font-size:1.15rem;letter-spacing:.01em}
-.brand small{display:block;font-size:.68rem;color:var(--mute);margin-top:2px}
-nav{display:flex;align-items:center;gap:26px;font-weight:500;font-size:.95rem}
-nav a:hover{color:var(--navy)}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:600;font-size:.95rem;transition:transform .15s,background .15s}
-.btn:hover{transform:translateY(-2px)}
-.btn.pri{background:var(--cyan);color:var(--ink)}
-.btn.wa{background:var(--wa);color:#fff}
-.btn.ghost{border:1.5px solid rgba(255,255,255,.35);color:#fff}
-.login{background:var(--navy);color:#fff;padding:9px 20px;border-radius:999px}
-.login:hover{background:var(--ink);color:#fff}
+/* reveal */
+.js .rv{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d,0s)}
+.js .rv.in{opacity:1;transform:none}
 
-/* topbar + menu */
-.topbar{background:var(--ink);color:#a9bde6;font-size:.82rem}
+/* top + header */
+.topbar{background:var(--ink);color:#aab0bf;font-size:.82rem}
 .topbar .wrap{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
-.topbar a:hover{color:#fff}
-nav a.on{color:var(--navy);font-weight:600}
-.burger{display:none;background:none;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;font-size:1.3rem;color:var(--navy);cursor:pointer}
-/* quick tiles */
-.quick{padding:64px 0 0}
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
-.tile{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 18px;transition:transform .15s,box-shadow .15s,border-color .15s}
-.tile:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(13,42,92,.12);border-color:var(--cyan)}
-.tile span{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--paper);font-size:1.6rem;margin-bottom:14px}
-.tile b{font-family:'Bricolage Grotesque';font-size:1.05rem;color:var(--ink);display:block}
-.tile small{color:var(--mute);font-size:.84rem}
-/* why */
-.why{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.why div{background:var(--paper);border-radius:16px;padding:20px}
-.why b{font-family:'Bricolage Grotesque';color:var(--ink);display:block;margin-bottom:4px}
-.why span{font-size:.9rem;color:var(--mute)}
-/* footer */
-footer{text-align:left;padding:0}
-footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:40px;padding:48px 20px 32px}
-footer h4{font-family:'Bricolage Grotesque';color:#fff;margin-bottom:12px;font-size:1.05rem}
-footer a,footer p{display:block;margin-bottom:8px;font-size:.9rem}
-footer a:hover{color:#fff}
-footer .copy{border-top:1px solid rgba(255,255,255,.1);text-align:center;padding:16px;font-size:.82rem}
+.topbar a:hover{color:var(--acc)}
+header{position:sticky;top:0;z-index:50;background:rgba(251,247,240,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);transition:box-shadow .3s}
+header.sc{box-shadow:0 8px 28px rgba(17,19,24,.1)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:70px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:40px;height:40px;border-radius:50%}
+.brand b{font-size:1.15rem}
+.brand small{display:block;font-size:.68rem;color:var(--mute);margin-top:2px}
+nav{display:flex;align-items:center;gap:6px;font-weight:500;font-size:.95rem}
+nav a{padding:8px 14px;border-radius:999px;transition:background .2s,color .2s}
+nav a:hover{background:rgba(255,138,0,.12)}
+nav a.on{color:#b35f00;font-weight:600}
+nav .login{background:var(--ink);color:#fff;margin-left:8px;padding:9px 22px}
+nav .login:hover{background:var(--acc);color:var(--ink)}
+.burger{display:none;background:none;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;font-size:1.3rem;color:var(--ink);cursor:pointer}
+
+/* buttons */
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;font-weight:600;font-size:.95rem;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-3px)}
+.btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s}
+.btn:hover::after{left:150%}
+.btn.pri{background:var(--acc);color:var(--ink);box-shadow:0 10px 24px rgba(255,138,0,.35)}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.ghost{border:1.5px solid rgba(255,255,255,.3);color:#fff}
 
 /* hero */
-.hero{background:var(--ink);color:#cfe0ff;position:relative;overflow:hidden}
-.hero .wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center;padding-top:76px;padding-bottom:84px}
-.hero h1{color:#fff;font-size:clamp(2.3rem,5.4vw,4rem);font-weight:800;letter-spacing:-.02em}
-.hero p.lead{margin:20px 0 28px;font-size:1.08rem;max-width:520px}
-.search{display:flex;background:#fff;border-radius:16px;padding:6px;max-width:540px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.hero{background:var(--ink);color:#c5cad6;position:relative;overflow:hidden;isolation:isolate}
+.hero::before{content:'';position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse at 70% 40%,#000,transparent 75%)}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);z-index:-1;animation:drift 12s ease-in-out infinite alternate}
+.blob.a{width:380px;height:380px;background:rgba(255,138,0,.28);left:-100px;top:-80px}
+.blob.b{width:340px;height:340px;background:rgba(59,189,250,.2);right:-60px;bottom:-100px;animation-delay:-5s}
+@keyframes drift{to{transform:translate(60px,40px) scale(1.15)}}
+.hero .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;padding-top:80px;padding-bottom:90px}
+.status{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 14px;font-size:.85rem;color:#fff;margin-bottom:22px}
+.status i{width:9px;height:9px;border-radius:50%;background:#888;display:block}
+.status.open i{background:#2ee26b;animation:ping 1.8s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(46,226,107,.7)}100%{box-shadow:0 0 0 10px rgba(46,226,107,0)}}
+.hero h1{color:#fff;font-size:clamp(2.3rem,5.4vw,4.1rem);font-weight:800;letter-spacing:-.02em}
+.hero h1 span{display:block;opacity:0;transform:translateY(40px);animation:up .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d)}
+.hero h1 em{font-style:normal;color:var(--acc)}
+@keyframes up{to{opacity:1;transform:none}}
+.rot{margin:22px 0 8px;font-size:1.15rem;color:#fff;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rot b{display:inline-block;color:var(--acc);font-family:'Bricolage Grotesque';font-size:1.3rem;min-width:140px;transition:opacity .35s,transform .35s}
+.rot b.out{opacity:0;transform:translateY(-12px)}
+.lead{max-width:520px;margin-bottom:26px}
+.search{display:flex;background:#fff;border-radius:16px;padding:6px;max-width:540px;box-shadow:0 20px 44px rgba(0,0,0,.35)}
 .search input{flex:1;border:0;padding:14px 16px;font:inherit;font-size:1rem;color:var(--ink);background:transparent;min-width:0}
 .search input:focus{outline:none}
-.search a{background:var(--navy);color:#fff;border-radius:12px;padding:0 20px;display:flex;align-items:center;font-weight:600;font-size:.92rem}
+.search a{background:var(--ink);color:#fff;border-radius:12px;padding:0 22px;display:flex;align-items:center;font-weight:600;font-size:.92rem;transition:background .2s}
+.search a:hover{background:var(--acc);color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;max-width:540px}
-.chips button{font:inherit;font-size:.85rem;color:#cfe0ff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:6px 14px;cursor:pointer}
-.chips button:hover{background:rgba(25,195,230,.22);border-color:var(--cyan)}
+.chips button{font:inherit;font-size:.85rem;color:#c5cad6;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:6px 14px;cursor:pointer;transition:all .2s}
+.chips button:hover{background:var(--acc);border-color:var(--acc);color:var(--ink);transform:translateY(-2px)}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-
-/* signal bars: the brand mark, drawn once on load */
-.logo-anim{display:block;width:min(72%,300px);height:auto;margin:0 auto;overflow:visible}
+.stage{position:relative;text-align:center}
+.stage::before{content:'';position:absolute;inset:-12%;background:radial-gradient(circle,rgba(59,189,250,.28),transparent 62%);animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.18);opacity:.65}}
+.logo-anim{position:relative;display:block;width:min(72%,300px);height:auto;margin:0 auto;overflow:visible;animation:float 6s ease-in-out 2.6s infinite}
+@keyframes float{50%{transform:translateY(-12px)}}
 .logo-anim .b{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);animation:ltGrow .6s cubic-bezier(.34,1.56,.64,1) forwards}
 .logo-anim .b1{animation-delay:.3s}.logo-anim .b2{animation-delay:.52s}.logo-anim .b3{animation-delay:.74s}.logo-anim .b4{animation-delay:.96s}
 .logo-anim .d{opacity:0;animation:ltDrop .7s cubic-bezier(.34,1.56,.64,1) 1.25s forwards}
 .logo-anim .ring{fill:none;stroke:#3bbdfa;stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center;animation:ltRing .9s ease-out 1.7s forwards}
-.bars-cap{text-align:center;margin-top:18px;font-size:.9rem;color:#8fa6d4}
+.cap{position:relative;margin-top:22px;font-size:.9rem;color:#8d94a6}
 @keyframes ltGrow{to{transform:scaleY(1)}}
 @keyframes ltDrop{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
 @keyframes ltRing{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(7)}}
 
-/* facts strip */
+/* marquee */
+.mq{background:var(--acc);color:var(--ink);overflow:hidden;white-space:nowrap;padding:14px 0;font-family:'Bricolage Grotesque';font-weight:700;font-size:1.05rem}
+.mq div{display:inline-flex;animation:mq 38s linear infinite}
+.mq:hover div{animation-play-state:paused}
+.mq span{padding:0 18px}.mq span::after{content:'✦';margin-left:36px;opacity:.55}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* facts */
 .facts{background:#fff;border-bottom:1px solid var(--line)}
 .facts .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
-.facts div{padding:22px 16px;border-right:1px solid var(--line)}
+.facts div{padding:26px 16px;border-right:1px solid var(--line)}
 .facts div:last-child{border:0}
-.facts b{display:block;font-family:'Bricolage Grotesque';font-size:1.45rem;color:var(--navy)}
+.facts b{display:block;font-family:'Bricolage Grotesque';font-size:2rem;color:var(--ink)}
+.facts b sup{color:var(--acc);font-size:1.2rem}
 .facts span{font-size:.86rem;color:var(--mute)}
 
 /* sections */
-section{padding:84px 0}
-h2{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800;letter-spacing:-.015em}
-.sub{margin-top:12px;color:var(--mute);max-width:600px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 26px}
-.tabs button{font:inherit;font-weight:500;font-size:.92rem;background:#fff;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:9px 18px;cursor:pointer}
-.tabs button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
-.list{display:grid;grid-template-columns:repeat(2,1fr);gap:0 36px}
-.svc{display:grid;grid-template-columns:48px 1fr auto;gap:16px;align-items:start;padding:22px 0;border-top:1px solid var(--line)}
-.svc .ic{width:48px;height:48px;border-radius:14px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:1.4rem}
-.svc h3{font-size:1.08rem;font-weight:700;margin-bottom:4px}
-.svc p{font-size:.9rem;color:var(--mute)}
-.svc a{font-size:.85rem;font-weight:600;color:var(--wa);border:1.5px solid var(--wa);border-radius:999px;padding:6px 14px;white-space:nowrap}
-.svc a:hover{background:var(--wa);color:#fff}
-.empty{display:none;padding:30px 0;border-top:1px solid var(--line)}
-.note{margin-top:28px;font-size:.84rem;color:var(--mute);border-left:3px solid var(--cyan);padding-left:14px;max-width:700px}
+section{padding:90px 0}
+.eye{display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#b35f00;margin-bottom:10px}
+h2{font-size:clamp(1.9rem,3.8vw,2.7rem);font-weight:800;letter-spacing:-.015em}
+h2::after{content:'';display:block;width:0;height:4px;border-radius:4px;background:var(--acc);margin-top:14px;transition:width .8s .3s cubic-bezier(.2,.8,.2,1)}
+.in h2::after,h2.in::after{width:64px}
+.sub{margin-top:14px;color:var(--mute);max-width:620px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 28px}
+.tabs button{font:inherit;font-weight:500;font-size:.92rem;background:#fff;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:9px 18px;cursor:pointer;transition:all .2s}
+.tabs button:hover{border-color:var(--acc)}
+.tabs button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;transition:transform .3s,box-shadow .3s,border-color .3s}
+.card::before{content:'';position:absolute;left:24px;right:24px;top:-1px;height:3px;border-radius:0 0 4px 4px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(17,19,24,.1);border-color:#f0cf9f}
+.card:hover::before{transform:scaleX(1)}
+.card .ic{width:54px;height:54px;border-radius:16px;background:var(--cream);display:grid;place-items:center;font-size:1.6rem;margin-bottom:16px;transition:transform .35s,background .35s}
+.card:hover .ic{background:var(--acc2);transform:rotate(-8deg) scale(1.1)}
+.card h3{font-size:1.12rem;font-weight:700;margin-bottom:6px}
+.card p{font-size:.9rem;color:var(--mute);flex:1}
+.card a{align-self:flex-start;margin-top:18px;font-size:.86rem;font-weight:600;color:var(--wa);border:1.5px solid var(--wa);border-radius:999px;padding:7px 16px;transition:all .2s}
+.card a:hover{background:var(--wa);color:#fff;padding-right:22px}
+.empty{display:none;padding:30px 0}
+.note{margin-top:30px;font-size:.84rem;color:var(--mute);border-left:3px solid var(--acc);padding-left:14px;max-width:700px}
 
-/* about + contact */
+/* about */
 .about{background:#fff}
 .about .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:56px}
 .about p{margin-bottom:16px}
-.contact{background:var(--navy);color:#cfe0ff}
+.why{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+.why div{background:var(--cream);border-radius:16px;padding:20px;transition:transform .3s,box-shadow .3s}
+.why div:hover{transform:translateY(-4px);box-shadow:0 14px 26px rgba(17,19,24,.08)}
+.why b{font-family:'Bricolage Grotesque';color:var(--ink);display:block;margin-bottom:4px}
+.why span{font-size:.9rem;color:var(--mute)}
+
+/* contact */
+.contact{background:var(--ink);color:#aab0bf;position:relative;overflow:hidden}
+.contact::before{content:'';position:absolute;width:420px;height:420px;border-radius:50%;right:-120px;top:-140px;background:rgba(255,138,0,.16);filter:blur(90px)}
 .contact h2{color:#fff}
-.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.contact .wrap{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:56px}
 .rows{margin-top:26px;display:grid;gap:18px}
-.rows div{display:grid;grid-template-columns:26px 1fr;gap:10px}
-.rows a:hover{color:#fff;text-decoration:underline}
-.hours{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:26px;align-self:start}
-.hours h3{color:#fff;font-size:1.2rem;margin-bottom:14px}
-.hours p{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid rgba(255,255,255,.12);font-size:.95rem}
+.rows div{display:grid;grid-template-columns:28px 1fr;gap:10px}
+.rows a:hover{color:var(--acc)}
+.hours{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:28px;align-self:start}
+.hours h3{color:#fff;font-size:1.25rem;margin-bottom:14px}
+.hours p{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid rgba(255,255,255,.1);font-size:.95rem}
 .hours p b{color:#fff;font-weight:600}
 .hours .cta{margin-top:20px}
-footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-size:.85rem}
-.fab{position:fixed;right:18px;bottom:18px;z-index:30;width:56px;height:56px;border-radius:50%;background:var(--wa);display:grid;place-items:center;font-size:1.6rem;box-shadow:0 10px 24px rgba(0,0,0,.3)}
 
-@media(max-width:860px){
+/* footer */
+footer{background:#0b0c10;color:#8d94a6}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:40px;padding:50px 20px 32px}
+footer h4{color:#fff;margin-bottom:12px;font-size:1.05rem}
+footer a,footer p{display:block;margin-bottom:8px;font-size:.9rem}
+footer a:hover{color:var(--acc)}
+footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;padding:16px;font-size:.82rem}
+
+.fab{position:fixed;right:18px;bottom:18px;z-index:40;width:58px;height:58px;border-radius:50%;background:var(--wa);display:grid;place-items:center;font-size:1.6rem;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.fab::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--wa);animation:fab 2.2s infinite}
+@keyframes fab{to{transform:scale(1.7);opacity:0}}
+
+@media(max-width:900px){
   .burger{display:block}
-  nav{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:#fff;border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(13,42,92,.1)}
+  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(17,19,24,.1)}
   nav.open{display:flex}
-  nav a{padding:13px 0;border-bottom:1px solid var(--line)}
-  nav .login{margin-top:14px;text-align:center;border:0}
+  nav a{padding:13px 8px;border-radius:0;border-bottom:1px solid var(--line)}
+  nav .login{margin:14px 0 0;text-align:center;border-radius:999px;border:0}
   .topbar .r{display:none}
-  .tiles{grid-template-columns:1fr 1fr}.why{grid-template-columns:1fr}
-  footer .cols{grid-template-columns:1fr;gap:26px}
   .hero .wrap,.about .wrap,.contact .wrap{grid-template-columns:1fr;gap:36px}
-  .hero .wrap{padding-top:48px;padding-bottom:56px}
+  .hero .wrap{padding-top:48px;padding-bottom:60px}
   .logo-anim{width:min(48%,190px)}
   .facts .wrap{grid-template-columns:1fr 1fr}
   .facts div:nth-child(2){border-right:0}.facts div:nth-child(-n+2){border-bottom:1px solid var(--line)}
-  .list{grid-template-columns:1fr}
-  section{padding:60px 0}
+  .grid{grid-template-columns:1fr 1fr}.why{grid-template-columns:1fr}
+  footer .cols{grid-template-columns:1fr;gap:26px}
+  section{padding:64px 0}
 }
-@media(max-width:420px){.svc{grid-template-columns:44px 1fr}.svc a{grid-column:2;justify-self:start}.brand small{display:none}}
-@media(prefers-reduced-motion:reduce){.logo-anim .b{animation:none;transform:none}.logo-anim .d{animation:none;opacity:1}html{scroll-behavior:auto}.btn:hover{transform:none}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.brand small{display:none}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .rv{opacity:1;transform:none}.hero h1 span{opacity:1;transform:none}
+  .logo-anim .b{transform:none}.logo-anim .d{opacity:1}h2::after{width:64px}
+}
 </style>
 </head>
 <body>
-
+<div id="bar"></div>
 <div class="topbar"><div class="wrap">
   <span>📞 <a href="tel:+919041880370">+91 90418-80370</a> &nbsp;|&nbsp; 📍 Puneet Nagar, Ludhiana</span>
   <span class="r">Mon - Sat: 3 PM - 10 PM &nbsp;|&nbsp; Sunday: 8 AM - 1 PM</span>
 </div></div>
-<header>
+<header id="hd">
   <div class="wrap">
     <a class="brand" href="#home"><img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo"><span><b>LAXMAN TELECOM</b><small>Your Trusted Digital Service Center</small></span></a>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">☰</button>
@@ -172,9 +217,12 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
 
 <main id="home">
   <div class="hero">
+    <div class="blob a"></div><div class="blob b"></div>
     <div class="wrap">
       <div>
-        <h1>One stop digital service center in Ludhiana</h1>
+        <div class="status" id="st"><i></i><span id="stt">Checking shop status...</span></div>
+        <h1><span style="--d:.1s">One stop</span><span style="--d:.25s"><em>digital service</em> center</span><span style="--d:.4s">in Ludhiana</span></h1>
+        <div class="rot">Get your <b id="rot">Recharge</b> done today</div>
         <p class="lead">Mobile repair, recharge, banking, Aadhaar, PAN, passport and government forms. All under one roof at Puneet Nagar.</p>
         <div class="search">
           <input id="q" type="search" placeholder="Search a service, e.g. PAN card" aria-label="Search services">
@@ -187,47 +235,45 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
           <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=Laxman+Telecom+7+Street+No+1+Puneet+Nagar+Ludhiana+141008" target="_blank" rel="noopener">📍 Get Directions</a>
         </div>
       </div>
-      <div aria-hidden="true"><svg class="logo-anim" viewBox="380 340 270 320" xmlns="http://www.w3.org/2000/svg">
-<rect class="b b1" x="391" y="565" width="45" height="80" rx="22.5" fill="#fff"/>
-<rect class="b b2" x="457" y="516" width="45" height="129" rx="22.5" fill="#fff"/>
-<rect class="b b3" x="523" y="467" width="45" height="178" rx="22.5" fill="#fff"/>
-<rect class="b b4" x="589" y="420" width="45" height="225" rx="22.5" fill="#3bbdfa"/>
-<circle class="ring" cx="611.5" cy="376" r="18"/>
-<circle class="d" cx="611.5" cy="376" r="18" fill="#3bbdfa"/>
-</svg><p class="bars-cap">Your Trusted Digital Service Center</p></div>
+      <div class="stage" aria-hidden="true">
+        <svg class="logo-anim" viewBox="380 340 270 320" xmlns="http://www.w3.org/2000/svg">
+          <rect class="b b1" x="391" y="565" width="45" height="80" rx="22.5" fill="#fff"/>
+          <rect class="b b2" x="457" y="516" width="45" height="129" rx="22.5" fill="#fff"/>
+          <rect class="b b3" x="523" y="467" width="45" height="178" rx="22.5" fill="#fff"/>
+          <rect class="b b4" x="589" y="420" width="45" height="225" rx="22.5" fill="#3bbdfa"/>
+          <circle class="ring" cx="611.5" cy="376" r="18"/>
+          <circle class="d" cx="611.5" cy="376" r="18" fill="#3bbdfa"/>
+        </svg>
+        <p class="cap">Your Trusted Digital Service Center</p>
+      </div>
     </div>
   </div>
 
-  <div class="facts"><div class="wrap">
-    <div><b>27+</b><span>Digital Services</span></div>
-    <div><b>Instant</b><span>WhatsApp Replies</span></div>
-    <div><b>Genuine</b><span>Safe &amp; Secure</span></div>
-    <div><b>Ludhiana</b><span>Puneet Nagar</span></div>
-  </div></div>
+  <div class="mq" aria-hidden="true"><div id="mq"></div></div>
 
-  <section class="quick" id="quick">
-    <div class="wrap">
-      <h2>Most Used Services</h2>
-      <p class="sub">Sabse zyada use hone wali services, ek tap mein WhatsApp par enquiry.</p>
-      <div class="tiles" id="tiles"></div>
-    </div>
-  </section>
+  <div class="facts"><div class="wrap">
+    <div class="rv"><b><span data-n="27">0</span><sup>+</sup></b><span>Digital Services</span></div>
+    <div class="rv" style="--d:.1s"><b><span data-n="3">0</span></b><span>Networks: Airtel, Jio, Vi</span></div>
+    <div class="rv" style="--d:.2s"><b><span data-n="7">0</span></b><span>Days open every week</span></div>
+    <div class="rv" style="--d:.3s"><b>Instant</b><span>WhatsApp replies</span></div>
+  </div></div>
 
   <section id="services">
     <div class="wrap">
-      <h2>Our Services</h2>
-      <p class="sub">Tap Enquire on any service and get an instant reply on WhatsApp from our AI assistant, anytime.</p>
-      <div class="tabs" id="tabs"></div>
-      <div class="list" id="list"></div>
+      <span class="eye rv">What we do</span>
+      <h2 class="rv">Our Services</h2>
+      <p class="sub rv">Tap Enquire on any service and get an instant reply on WhatsApp from our AI assistant, anytime.</p>
+      <div class="tabs rv" id="tabs"></div>
+      <div class="grid" id="list"></div>
       <div class="empty" id="empty">No service found. <a href="https://wa.me/919041880370" style="color:var(--wa);font-weight:600" target="_blank" rel="noopener">Message us on WhatsApp</a> and we will help you.</div>
-      <p class="note">LAXMAN TELECOM is a private digital service center and is not a government office. Government services are applied for on the official portals on your behalf.</p>
+      <p class="note rv">LAXMAN TELECOM is a private digital service center and is not a government office. Government services are applied for on the official portals on your behalf.</p>
     </div>
   </section>
 
   <section class="about" id="about">
     <div class="wrap">
-      <h2>About LAXMAN TELECOM</h2>
-      <div>
+      <div><span class="eye rv">Who we are</span><h2 class="rv">About LAXMAN TELECOM</h2></div>
+      <div class="rv">
         <p>LAXMAN TELECOM is a trusted and fully equipped Digital Service Center located in Puneet Nagar, Ludhiana, Punjab.</p>
         <p>Our mission is to bridge the digital gap by providing fast, reliable, and transparent digital solutions to every customer. From complex mobile hardware troubleshooting to official government registrations, we ensure high-quality service with utmost precision.</p>
         <div class="why">
@@ -243,15 +289,16 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
   <section class="contact" id="contact">
     <div class="wrap">
       <div>
-        <h2>Contact Us</h2>
-        <div class="rows">
+        <span class="eye rv" style="color:var(--acc2)">Visit us</span>
+        <h2 class="rv">Contact Us</h2>
+        <div class="rows rv">
           <div><span>📍</span><span>7, Street No. 1, Puneet Nagar, Ludhiana, Punjab - 141008</span></div>
           <div><span>📞</span><a href="tel:+919041880370">+91 90418-80370</a></div>
           <div><span>📧</span><a href="mailto:laxmantelecom.help@gmail.com">laxmantelecom.help@gmail.com</a></div>
           <div><span>💬</span><span>Message us on WhatsApp anytime and get an instant reply from our AI assistant.</span></div>
         </div>
       </div>
-      <div class="hours">
+      <div class="hours rv" style="--d:.15s">
         <h3>Opening hours</h3>
         <p><span>Mon - Sat</span><b>3:00 PM - 10:00 PM</b></p>
         <p><span>Sunday</span><b>8:00 AM - 1:00 PM</b></p>
@@ -307,25 +354,59 @@ const S=[
 ["💾","Songs & Movies Downloading","Get high-quality HD movies, videos, and latest MP3 songs downloaded directly into your memory card or phone.",5]
 ];
 const $=id=>document.getElementById(id);
+const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+const watch=()=>document.querySelectorAll(".rv:not(.in)").forEach(el=>io.observe(el));
+
+/* services */
 let cat=0;
-function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 function render(){
   const q=$("q").value.trim().toLowerCase();
   const r=S.filter(s=>(!cat||s[3]===cat)&&(!q||(s[1]+" "+s[2]).toLowerCase().includes(q)));
-  $("list").innerHTML=r.map(s=>`<div class="svc"><div class="ic">${s[0]}</div><div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p></div><a href="https://wa.me/919041880370?text=${encodeURIComponent("Hello, I want to enquire about: "+s[1])}" target="_blank" rel="noopener">Enquire</a></div>`).join("");
+  $("list").innerHTML=r.map((s,i)=>`<div class="card rv" style="--d:${(i%3)*.08}s"><div class="ic">${s[0]}</div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p><a href="https://wa.me/919041880370?text=${encodeURIComponent("Hello, I want to enquire about: "+s[1])}" target="_blank" rel="noopener">Enquire →</a></div>`).join("");
   $("empty").style.display=r.length?"none":"block";
+  watch();
 }
 $("tabs").innerHTML=CATS.map((c,i)=>`<button aria-pressed="${i===0}" data-i="${i}">${esc(c)}</button>`).join("");
 $("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;cat=+b.dataset.i;[...$("tabs").children].forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
 $("q").oninput=render;
 $("chips").innerHTML=["Recharge","PAN card","Passport","Mobile repair","Electricity bill"].map(c=>`<button>${c}</button>`).join("");
 $("chips").onclick=e=>{if(e.target.tagName!=="BUTTON")return;$("q").value=e.target.textContent;render();$("services").scrollIntoView()};
-render();
-const T=[["⚡","Recharge","Mobile & WiFi"],["🛠️","Mobile Repair","Hardware & software"],["🆔","Aadhaar & PAN","Apply, update, link"],["💳","Banking & ATM","AEPS, transfer"],["💡","Electricity Bill","Pay online"],["🛂","Passport","New & renewal"],["📱","New SIM / Porting","Airtel, Jio, Vi"],["🖨️","Printing & Forms","Print, copy, online forms"]];
-$("tiles").innerHTML=T.map(t=>`<a class="tile" href="https://wa.me/919041880370?text=${encodeURIComponent("Hello, I want to enquire about: "+t[1])}" target="_blank" rel="noopener"><span>${t[0]}</span><b>${t[1]}</b><small>${t[2]}</small></a>`).join("");
-const nav=$("nav"),bg=$("burger");
+
+/* marquee */
+const names=S.map(s=>s[1]);
+$("mq").innerHTML=[...names,...names].map(n=>`<span>${esc(n)}</span>`).join("");
+
+/* rotating word */
+const W=["Recharge","Mobile Repair","PAN Card","Passport","Aadhaar Update","Electricity Bill","Ration Card"];let wi=0;
+setInterval(()=>{const b=$("rot");b.classList.add("out");setTimeout(()=>{wi=(wi+1)%W.length;b.textContent=W[wi];b.classList.remove("out")},350)},2200);
+
+/* open / closed (India time) */
+function shop(){
+  const p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Kolkata",weekday:"short",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
+  const g=t=>p.find(x=>x.type===t).value,d=g("weekday"),m=(+g("hour")%24)*60+(+g("minute"));
+  const sun=d==="Sun",o=sun?480:900,c=sun?780:1320,open=m>=o&&m<c;
+  const st=$("st");st.classList.toggle("open",open);
+  $("stt").textContent=open?`Open now · closes ${sun?"1 PM":"10 PM"}`:"Closed now · see opening hours below";
+}
+shop();setInterval(shop,60000);
+
+/* counters */
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);
+  const el=e.target,n=+el.dataset.n,t0=performance.now();
+  (function f(t){const k=Math.min((t-t0)/1200,1);el.textContent=Math.round(n*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0);
+}),{threshold:.6});
+document.querySelectorAll("[data-n]").forEach(el=>co.observe(el));
+
+/* header, progress, menu */
+const hd=$("hd"),bar=$("bar"),nav=$("nav"),bg=$("burger");
+addEventListener("scroll",()=>{hd.classList.toggle("sc",scrollY>10);const h=document.documentElement;bar.style.width=(scrollY/(h.scrollHeight-h.clientHeight)*100)+"%"},{passive:true});
 bg.onclick=()=>{const o=nav.classList.toggle("open");bg.setAttribute("aria-expanded",o);bg.textContent=o?"✕":"☰"};
-nav.onclick=e=>{if(e.target.tagName==="A"){nav.classList.remove("open");bg.textContent="☰";[...nav.querySelectorAll("a:not(.login)")].forEach(a=>a.classList.toggle("on",a===e.target))}};
+const links=[...nav.querySelectorAll("a:not(.login)")];
+nav.onclick=e=>{if(e.target.tagName==="A"){nav.classList.remove("open");bg.textContent="☰"}};
+const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const id=e.target.classList.contains("hero")?"#home":"#"+e.target.id;links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")===id))}}),{rootMargin:"-45% 0px -50% 0px"});
+["home","services","about","contact"].forEach(id=>{const el=$(id);if(el)spy.observe(id==="home"?document.querySelector(".hero"):el)});
+render();watch();
 </script>
 </body>
 </html>
