@@ -129,10 +129,10 @@ h2::after{content:'';display:block;width:0;height:4px;border-radius:4px;backgrou
 .tabs button[aria-pressed=true]{background:linear-gradient(135deg,var(--c1),var(--c2));border-color:transparent;color:#fff;box-shadow:0 8px 18px -6px var(--c1)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .card{position:relative;overflow:hidden;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px 24px 24px;transition:transform .3s,box-shadow .3s}
-.card::before{content:'';position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,var(--c1),var(--c2));transition:height .3s}
+.card::before{content:'';position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,var(--c1),var(--c2));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .card::after{content:'';position:absolute;right:-56px;top:-56px;width:170px;height:170px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.09;transition:transform .5s,opacity .3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 22px 44px -10px rgba(17,19,24,.18)}
-.card:hover::before{height:9px}
+.card:hover::before{transform:scaleX(1)}
 .card:hover::after{transform:scale(1.35);opacity:.14}
 .card .num{position:absolute;right:16px;bottom:2px;font-family:'Bricolage Grotesque';font-style:normal;font-weight:800;font-size:4.6rem;line-height:1;color:var(--c1);opacity:.09;pointer-events:none;transition:opacity .3s,transform .4s}
 .card:hover .num{opacity:.16;transform:translateY(-4px)}
