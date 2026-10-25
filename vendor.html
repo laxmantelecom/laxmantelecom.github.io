@@ -4,131 +4,137 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vendor Login | LAXMAN TELECOM</title>
-<link rel="stylesheet" href="style.css?v=1.4">
-<link rel="stylesheet" href="auth-style.css?v=1.4">
+<meta name="theme-color" content="#111318">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 <link rel="shortcut icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* मोबाइल स्क्रीन पर लॉगिन बॉक्स और बटन दिखने के लिए विशेष फिक्स */
-  .auth-wrapper {
-    box-sizing: border-box !important;
-    width: 92% !important;
-    max-width: 420px !important;
-    margin: 30px auto !important;
-    padding: 24px !important;
-    background: #fff !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
-  }
-  .auth-btn {
-    width: 100% !important;
-    padding: 14px !important;
-    font-size: 1rem !important;
-    font-weight: 700 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    background: #0d2a5c !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-  }
+:root{--ink:#111318;--acc:#ff8a00;--acc2:#ffb347;--cream:#fbf7f0;--line:#e9e1d3;--text:#2c2f38;--mute:#6b6f7b}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:330px;background:radial-gradient(circle at 12% 10%,rgba(255,138,0,.32),transparent 38%),radial-gradient(circle at 92% 90%,rgba(124,58,237,.28),transparent 40%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,var(--ink)}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.15}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+@keyframes up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
 
-  /* Logout button (sirf logout ke liye) */
-  .logout-btn {
-    padding: 8px 16px !important;
-    font-size: 0.9rem !important;
-    font-weight: 700 !important;
-    background: #be123c !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 6px !important;
-    cursor: pointer !important;
-    display: inline-block !important;
-  }
+/* header */
+.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:70px;padding:0 max(20px,calc((100% - 1140px)/2));background:rgba(251,247,240,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo img{border-radius:50%;height:40px!important;width:40px!important}
+.logo{gap:10px!important}
+.logo h1{font-size:1.15rem}
+.logo p{font-size:.68rem;color:var(--mute);margin-top:2px}
+nav{display:flex;align-items:center;gap:2px;font-weight:500;font-size:.9rem}
+nav a{padding:8px 12px;border-radius:999px;transition:background .2s}
+nav a:hover{background:rgba(255,138,0,.13)}
+nav a.menu-logout-link{background:#be123c;color:#fff;margin-left:6px}
+nav a.menu-logout-link:hover{background:#9f1239}
+.nav-toggle{display:none;place-items:center;background:none;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;color:var(--ink);cursor:pointer}
+.nav-backdrop{display:none;position:fixed;inset:0;background:rgba(17,19,24,.45);z-index:40}
+.nav-backdrop.nav-open{display:block}
+@media(max-width:1100px){
+  .nav-toggle{display:grid}
+  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(17,19,24,.12)}
+  nav.nav-open{display:flex}
+  nav a{border-radius:0;border-bottom:1px solid var(--line);padding:13px 8px}
+  nav a.menu-logout-link{margin:14px 0 0;text-align:center;border-radius:999px;border:0}
+}
 
-  /* NAYI CLASS: Mark as Paid / Raise Concern / Mark All as Paid buttons ke liye.
-     Isko purani style.css / auth-style.css touch nahi karti. */
-  .pay-btn {
-    display: inline-block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    padding: 8px 14px !important;
-    font-size: 0.85rem !important;
-    font-weight: 700 !important;
-    font-family: inherit !important;
-    background: #166534 !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 6px !important;
-    cursor: pointer !important;
-    white-space: nowrap !important;
-    text-indent: 0 !important;
-    line-height: 1.2 !important;
-  }
-  .pay-btn.concern { background: #9a580a !important; }
+/* login card */
+.auth-wrapper{width:92%;max-width:440px;margin:56px auto 70px;padding:34px 30px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px -16px rgba(17,19,24,.35);animation:up .8s cubic-bezier(.2,.8,.2,1) both}
+#vendorLoginWrapper h2{text-align:center;font-size:1.8rem;margin-bottom:20px}
+#vendorLoginWrapper h2::before{content:'🤝';display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:50%;font-size:1.8rem;background:linear-gradient(135deg,#0f766e,#14b8a6);box-shadow:0 14px 26px -6px #0f766e}
+.auth-link{text-align:center;font-size:.84rem;color:var(--mute);margin-top:16px}
 
-  /* Card/wrapper table ko clip na kare */
-  .dash-card, .dash-wrapper { overflow: visible !important; }
-  .dash-wrapper > * { min-width: 0; }
+/* forms */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
+input[type=text],input[type=email],input[type=password],input[type=date]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s}
+input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,138,0,.15)}
+.error-msg,.success-msg{display:none;border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:.9rem}
+.error-msg{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
+.success-msg{background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
+.auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.35);transition:transform .2s}
+.auth-btn:hover{transform:translateY(-3px)}
+.auth-btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s}
+.auth-btn:hover::after{left:150%}
+.logout-btn{padding:9px 20px;font:inherit;font-weight:700;font-size:.9rem;color:#fff;background:linear-gradient(135deg,#be123c,#f43f5e);border:0;border-radius:999px;cursor:pointer;transition:transform .2s}
+.logout-btn:hover{transform:translateY(-2px)}
 
-  /* Account Settings ke buttons (Update Password / Save MPIN / Remove MPIN) ko dikhane ke liye. */
-  .dash-card .auth-btn { display: block !important; visibility: visible !important; }
-  .dash-card #removeMpinBtn { display: inline-block !important; visibility: visible !important; }
+/* dashboard */
+.dash-wrapper{max-width:1100px;margin:40px auto 70px;padding:0 16px;display:grid;gap:22px}
+.dash-wrapper>*{min-width:0}
+.dash-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:0 24px 50px -20px rgba(17,19,24,.3);animation:up .8s cubic-bezier(.2,.8,.2,1) both}
+.dash-card+.dash-card{animation-delay:.15s}
+.dash-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dash-card h2{font-size:1.6rem}
+.dash-card h3{font-size:1.05rem}
+.dash-card form{max-width:420px}
+.vendor-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:22px 0}
+.vendor-summary-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;transition:transform .3s,box-shadow .3s}
+.vendor-summary-card:nth-child(1){--c1:#7c3aed;--c2:#c026d3}
+.vendor-summary-card:nth-child(2){--c1:#0f766e;--c2:#14b8a6}
+.vendor-summary-card:nth-child(3){--c1:#ea580c;--c2:#fb923c}
+.vendor-summary-card:nth-child(4){--c1:#15803d;--c2:#4ade80}
+.vendor-summary-card:nth-child(5){--c1:#be123c;--c2:#f43f5e}
+.vendor-summary-card::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--c1),var(--c2));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.vendor-summary-card::after{content:'';position:absolute;right:-34px;top:-34px;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.12}
+.vendor-summary-card:hover{transform:translateY(-4px);box-shadow:0 16px 30px -10px rgba(17,19,24,.2)}
+.vendor-summary-card:hover::before{transform:scaleX(1)}
+.vendor-summary-card .label{position:relative;z-index:1;font-size:.74rem;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
+.vendor-summary-card .value{position:relative;z-index:1;font-family:'Bricolage Grotesque';font-size:1.5rem;font-weight:800;color:var(--ink);margin-top:4px}
+.bulk{background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:20px;scroll-margin-top:100px}
+.bulk-t{font-family:'Bricolage Grotesque';font-weight:700;font-size:1.05rem;color:var(--ink);margin-bottom:12px}
+.bulk label{display:block;font-size:.82rem;font-weight:600;margin-bottom:4px}
+.pay-btn{font:inherit;font-weight:700;color:#fff;background:#166534;border:0;border-radius:999px;cursor:pointer}
+.vendor-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:16px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.vendor-table{width:100%;border-collapse:collapse;min-width:900px}
+.vendor-table th,.vendor-table td{padding:12px;font-size:.9rem;text-align:left;border-bottom:1px solid var(--line)}
+.vendor-table th{background:var(--ink);color:#fff;font-size:.74rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:3px solid var(--acc)}
+.vendor-table tbody tr:nth-child(even) td{background:#fdfaf4}
+.vendor-table tbody tr:hover td{background:rgba(255,138,0,.08)}
+.vendor-table td.action-cell{min-width:150px}
+.vendor-empty{padding:30px;text-align:center;color:var(--mute)}
 
-  .vendor-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 16px; }
-  .vendor-table { width: 100%; border-collapse: collapse; min-width: 900px; background: #fff; }
-  .vendor-table th, .vendor-table td { border: 1px solid #e2e6ef; padding: 10px 12px; font-size: 0.9rem; text-align: left; }
-  .vendor-table th { background: #0d2a5c; color: #fff; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.4px; }
-  .vendor-table tbody tr:nth-child(even) td { background: #f6f9ff; }
-  .vendor-table td.action-cell { min-width: 150px; }
+/* MPIN lock */
+#mpinLockOverlay{position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 15% 15%,rgba(255,138,0,.3),transparent 40%),radial-gradient(circle at 90% 90%,rgba(124,58,237,.3),transparent 40%),var(--ink)}
+.mp-card{background:#fff;border-radius:24px;padding:36px 30px;width:100%;max-width:350px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.45);animation:up .6s both}
+.mp-title{font-family:'Bricolage Grotesque';font-size:1.45rem;font-weight:800;color:var(--ink);margin-bottom:4px}
+.mp-sub{font-size:.85rem;color:var(--mute);margin-bottom:20px}
+#mpinInput{text-align:center;font-size:1.3rem;letter-spacing:8px;margin-bottom:12px}
+#mpinUnlockBtn{width:100%;padding:13px;border:0;border-radius:999px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--ink);font:inherit;font-weight:700;font-size:1rem;cursor:pointer}
+#mpinError{color:#be123c;font-size:.85rem;margin-top:10px;min-height:18px}
+#mpinForgotLink{font-size:.82rem;color:var(--mute)}
+#mpinForgotLink:hover{color:var(--acc)}
 
-  .vendor-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 20px 0; }
-  .vendor-summary-card { background: #f4f8ff; border: 1px solid #dfe6f5; border-radius: 14px; padding: 16px; }
-  .vendor-summary-card .label { font-size: 0.78rem; color: #5b6b9c; text-transform: uppercase; letter-spacing: 0.4px; }
-  .vendor-summary-card .value { font-size: 1.35rem; font-weight: 800; color: #0d2a5c; margin-top: 4px; }
-  .vendor-empty { padding: 30px; text-align: center; color: #6b7494; }
+/* Birthday wish pop-up */
+.birthday-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:center;z-index:99999;backdrop-filter:blur(8px)}
+.birthday-card{background:#fff;padding:35px 25px;border-radius:20px;text-align:center;box-shadow:0 15px 35px rgba(0,0,0,.5);max-width:420px;width:90%;border:3px solid #ff4757;animation:popUpEffect .6s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popUpEffect{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
+.birthday-card h2{color:#ff4757;font-size:26px;margin-bottom:12px;font-family:sans-serif}
+.birthday-card p{color:#2f3542;font-size:16px;line-height:1.6;margin-bottom:20px}
+.birthday-btn{background:#ff4757;color:#fff;border:0;padding:12px 30px;border-radius:25px;font-size:16px;cursor:pointer;font-weight:bold;box-shadow:0 5px 15px rgba(255,71,87,.4);transition:.3s}
+.birthday-btn:hover{background:#e84118;transform:scale(1.05)}
 
-  /* Birthday wish pop-up */
-  .birthday-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center;
-    align-items: center; z-index: 99999; backdrop-filter: blur(8px);
-  }
-  .birthday-card {
-    background: white; padding: 35px 25px; border-radius: 20px; text-align: center;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5); max-width: 420px; width: 90%;
-    border: 3px solid #ff4757;
-    animation: popUpEffect 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  @keyframes popUpEffect { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-  .birthday-card h2 { color: #ff4757; font-size: 26px; margin-bottom: 12px; font-family: sans-serif; }
-  .birthday-card p { color: #2f3542; font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
-  .birthday-btn {
-    background: #ff4757; color: white; border: none; padding: 12px 30px;
-    border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold;
-    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); transition: 0.3s;
-  }
-  .birthday-btn:hover { background: #e84118; transform: scale(1.05); }
+@media(max-width:520px){.logo p{display:none}.auth-wrapper{padding:28px 20px}.dash-card{padding:20px 16px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-
-<div id="mpinLockOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0d2a5c,#123a7a); align-items:center; justify-content:center; font-family:inherit;">
-  <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
-    <div style="font-size:1.3rem; font-weight:800; margin-bottom:6px; color:#0d2a5c;">Enter MPIN</div>
-    <div style="font-size:0.85rem; color:#64748b; margin-bottom:20px;">Quick unlock for LAXMAN TELECOM</div>
-    <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN" style="width:100%; padding:12px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:1.3rem; text-align:center; letter-spacing:8px; margin-bottom:12px; box-sizing:border-box;">
-    <button id="mpinUnlockBtn" style="width:100%; padding:12px; border:none; border-radius:8px; background:#0d2a5c; color:#fff; font-weight:700; font-size:1rem; cursor:pointer;">Unlock</button>
-    <div id="mpinError" style="color:#dc2626; font-size:0.85rem; margin-top:10px; min-height:18px;"></div>
-    <div style="margin-top:14px;"><a href="#" id="mpinForgotLink" style="font-size:0.82rem; color:#64748b;">Forgot MPIN? Logout and login again</a></div>
+<div id="mpinLockOverlay" style="display:none;">
+  <div class="mp-card">
+    <div class="mp-title">Enter MPIN</div>
+    <div class="mp-sub">Quick unlock for LAXMAN TELECOM</div>
+    <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN">
+    <button id="mpinUnlockBtn">Unlock</button>
+    <div id="mpinError"></div>
+    <div style="margin-top:14px;"><a href="#" id="mpinForgotLink">Forgot MPIN? Logout and login again</a></div>
   </div>
 </div>
 
@@ -143,7 +149,7 @@
 
   <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </button>
 
@@ -215,16 +221,16 @@
       </div>
     </div>
 
-    <div id="bulkPaidSection" style="background:#f4f8ff; border:1px solid #dfe6f5; border-radius:14px; padding:16px; margin-bottom:18px; scroll-margin-top:100px;">
-      <div style="font-weight:800; color:#0d2a5c; margin-bottom:10px;">Mark All as Paid (Date Range)</div>
+    <div id="bulkPaidSection" class="bulk">
+      <div class="bulk-t">Mark All as Paid (Date Range)</div>
       <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
         <div>
-          <label style="display:block; font-size:0.82rem; margin-bottom:4px;">From Date</label>
-          <input type="date" id="bulkFromDate" style="padding:8px;">
+          <label>From Date</label>
+          <input type="date" id="bulkFromDate">
         </div>
         <div>
-          <label style="display:block; font-size:0.82rem; margin-bottom:4px;">To Date</label>
-          <input type="date" id="bulkToDate" style="padding:8px;">
+          <label>To Date</label>
+          <input type="date" id="bulkToDate">
         </div>
         <button type="button" class="pay-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
       </div>
@@ -258,8 +264,8 @@
     <div class="error-msg" id="settingsErrorMsg"></div>
     <div class="success-msg" id="settingsSuccessMsg"></div>
 
-    <h3 id="changePasswordSection" style="margin-top:6px; font-size:16px; scroll-margin-top:100px;">Change Password</h3>
-    <form id="changePasswordForm">
+    <h3 id="changePasswordSection" style="margin-top:6px; scroll-margin-top:100px;">Change Password</h3>
+    <form id="changePasswordForm" style="margin-top:12px;">
       <div class="form-group">
         <label>Current Password</label>
         <input type="password" id="currentPasswordInput" required>
@@ -275,8 +281,8 @@
       <button type="submit" class="auth-btn">Update Password</button>
     </form>
 
-    <h3 id="mpinSection" style="margin-top:26px; font-size:16px; scroll-margin-top:100px;">App MPIN (Quick Unlock)</h3>
-    <p style="font-size:13px; color:#666; margin-bottom:12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
+    <h3 id="mpinSection" style="margin-top:30px; scroll-margin-top:100px;">App MPIN (Quick Unlock)</h3>
+    <p style="font-size:13px; color:#666; margin:6px 0 12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
     <form id="setMpinForm">
       <div class="form-group">
         <label>New MPIN</label>
@@ -288,11 +294,11 @@
       </div>
       <button type="submit" class="auth-btn">Save MPIN</button>
     </form>
-    <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:10px;">Remove MPIN from this device</button>
+    <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:14px;">Remove MPIN from this device</button>
   </div>
 </div>
 
-<!-- Confetti library (सही CDN लिंक) - defer नहीं, ताकि मुख्य स्क्रिप्ट से पहले लोड हो -->
+<!-- Confetti library -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -542,7 +548,7 @@ function forceButtonStyles() {
       'background': concern ? '#9a580a' : '#166534',
       'color': '#ffffff',
       'border': 'none',
-      'border-radius': '6px',
+      'border-radius': '999px',
       'cursor': 'pointer',
       'white-space': 'nowrap',
       'transform': 'none',
@@ -743,7 +749,6 @@ function showBirthdayWishIfNeeded(email, name) {
   if (today.getDate() !== BDAY_DAY || (today.getMonth() + 1) !== BDAY_MONTH) return;
   // यह वेंडर नहीं है तो कुछ नहीं
   if ((email || '').toLowerCase() !== BDAY_VENDOR_EMAIL.toLowerCase()) return;
-  // (अब हर बार खोलने / रिफ्रेश करने पर wish दिखेगी, इसलिए "पहले देख चुका" वाला चेक हटा दिया है)
   // पहले से खुला है तो दोबारा नहीं बनाओ
   if (document.querySelector('.birthday-overlay')) return;
 
@@ -778,7 +783,6 @@ function showBirthdayWishIfNeeded(email, name) {
 function startLiveCelebration() {
   if (typeof confetti === 'undefined') return; // लाइब्रेरी न चले तो भी wish दिखे
 
-  // zIndex बहुत ज़रूरी है: पॉप-अप का z-index 99999 है, इसलिए confetti उससे ऊपर रखा है
   const Z = 100001;
   const colors = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#ffd700', '#ff6b81', '#a55eea'];
   const base = { zIndex: Z, colors: colors, disableForReducedMotion: false, scalar: 1.2 };
