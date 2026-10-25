@@ -1,410 +1,955 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Account | LAXMAN TELECOM</title>
-<script src="theme-loader.js"></script>
-<link rel="stylesheet" href="auth-style.css">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
-<link rel="shortcut icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account | LAXMAN TELECOM</title>
+  <meta name="theme-color" content="#111318">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================
+       Design tokens
+       ========================================================== */
+    :root {
+      --ink: #111318;
+      --accent: #ff8a00;
+      --accent-light: #ffb347;
+      --cream: #fbf7f0;
+      --line: #e9e1d3;
+      --text: #2c2f38;
+      --muted: #6b6f7b;
+    }
+
+    /* ==========================================================
+       Base
+       ========================================================== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: Figtree, system-ui, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--cream);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Dark banner behind the top of the page */
+    body::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 360px;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255, 138, 0, .32), transparent 38%),
+        radial-gradient(circle at 92% 90%, rgba(124, 58, 237, .28), transparent 40%),
+        linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px) 0 0 / 56px 56px,
+        var(--ink);
+    }
+
+    h1, h2, h3 { font-family: 'Bricolage Grotesque', system-ui, sans-serif; line-height: 1.15; color: var(--ink); }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(34px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ==========================================================
+       Header and navigation
+       ========================================================== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      padding: 0 max(20px, calc((100% - 1140px) / 2));
+      background: rgba(251, 247, 240, .92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { width: 40px; height: 40px; border-radius: 50%; }
+    .brand h1 { font-size: 1.15rem; }
+    .brand p { margin-top: 2px; font-size: .68rem; color: var(--muted); }
+
+    nav { display: flex; align-items: center; gap: 2px; font-size: .9rem; font-weight: 500; }
+    nav a { padding: 8px 14px; border-radius: 999px; transition: background .2s; }
+    nav a:hover { background: rgba(255, 138, 0, .13); }
+    nav a.menu-logout-link { margin-left: 6px; color: #fff; background: #be123c; }
+    nav a.menu-logout-link:hover { background: #9f1239; }
+
+    .nav-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      font-size: 1.3rem;
+      color: var(--ink);
+      background: none;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .nav-backdrop { display: none; position: fixed; inset: 0; z-index: 40; background: rgba(17, 19, 24, .45); }
+    .nav-backdrop.nav-open { display: block; }
+
+    /* ==========================================================
+       Page layout
+       ========================================================== */
+    .page { max-width: 1140px; margin: 0 auto; padding: 0 16px 70px; }
+
+    .welcome { padding: 44px 0 28px; color: #c5cad6; }
+    .welcome .eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-light); }
+    .welcome h2 { margin: 8px 0; font-size: clamp(1.9rem, 4.5vw, 3rem); font-weight: 800; letter-spacing: -.02em; color: #fff; animation: rise .8s cubic-bezier(.2, .8, .2, 1) both; }
+    .welcome p.lead { max-width: 520px; animation: rise .8s .12s cubic-bezier(.2, .8, .2, 1) both; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+
+    .layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 22px; align-items: start; }
+    .layout > * { min-width: 0; }
+    .full { grid-column: 1 / -1; }
+
+    /* ==========================================================
+       Cards
+       ========================================================== */
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 24px 50px -20px rgba(17, 19, 24, .3);
+      scroll-margin-top: 90px;
+      animation: rise .8s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    /* Each card has its own colour pair, used by the top bar and the icon chip */
+    .violet { --c1: #7c3aed; --c2: #c026d3; }
+    .teal   { --c1: #0f766e; --c2: #14b8a6; }
+    .orange { --c1: #ea580c; --c2: #fb923c; }
+    .indigo { --c1: #2563eb; --c2: #6366f1; }
+    .green  { --c1: #15803d; --c2: #4ade80; }
+    .rose   { --c1: #be123c; --c2: #f43f5e; }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--c1), var(--c2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-title { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .card-title h2 { font-size: 1.5rem; }
+
+    .chip {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 48px;
+      height: 48px;
+      font-size: 1.3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      box-shadow: 0 12px 22px -6px var(--c1);
+    }
+
+    .section-heading { margin: 8px 0 12px; font-size: 1.05rem; }
+    .note { font-size: .86rem; color: var(--muted); }
+
+    /* Statistic cards */
+    .stat { padding: 20px; border-radius: 20px; transition: transform .3s, box-shadow .3s; }
+    .stat:hover { transform: translateY(-5px); box-shadow: 0 24px 44px -18px rgba(17, 19, 24, .35); }
+    .stat:nth-child(2) { animation-delay: .08s; }
+    .stat:nth-child(3) { animation-delay: .16s; }
+    .stat:nth-child(4) { animation-delay: .24s; }
+    .stat .chip { width: 42px; height: 42px; margin-bottom: 12px; font-size: 1.1rem; }
+    .stat .number { font-family: 'Bricolage Grotesque', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; color: var(--ink); }
+    .stat .name { margin-top: 4px; font-size: .84rem; color: var(--muted); }
+
+    /* ==========================================================
+       Profile
+       ========================================================== */
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 84px;
+      height: 84px;
+      margin-bottom: 18px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      box-shadow: 0 16px 30px -8px var(--c1);
+    }
+
+    .profile-row { padding: 12px 0; border-top: 1px solid var(--line); }
+    .profile-row span { display: block; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .profile-row strong { font-weight: 600; word-break: break-word; color: var(--ink); }
+
+    /* ==========================================================
+       Forms and buttons
+       ========================================================== */
+    form { max-width: 460px; }
+    .layout .card form { max-width: none; }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: .88rem; font-weight: 600; }
+
+    input[type=text],
+    input[type=email],
+    input[type=password],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    textarea { resize: vertical; }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255, 138, 0, .15);
+    }
+
+    input[type=file] {
+      width: 100%;
+      padding: 10px;
+      font: inherit;
+      font-size: .9rem;
+      color: var(--muted);
+      background: var(--cream);
+      border: 1.5px dashed var(--line);
+      border-radius: 12px;
+    }
+
+    input[type=file]::file-selector-button {
+      margin-right: 12px;
+      padding: 8px 16px;
+      font: inherit;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .upload-progress { display: none; margin-bottom: 10px; font-size: .86rem; color: var(--muted); }
+
+    .error-msg, .success-msg { display: none; margin-bottom: 14px; padding: 11px 14px; font-size: .9rem; border-radius: 12px; }
+    .error-msg   { color: #be123c; background: #fff1f2; border: 1px solid #fecdd3; }
+    .success-msg { color: #166534; background: #ecfdf3; border: 1px solid #bbf7d0; }
+
+    .auth-btn, .btn {
+      position: relative;
+      overflow: hidden;
+      border: 0;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+
+    .auth-btn:hover, .btn:hover { transform: translateY(-2px); }
+
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      box-shadow: 0 10px 24px rgba(255, 138, 0, .35);
+    }
+
+    .auth-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .5), transparent);
+      transform: skewX(-20deg);
+      transition: left .6s;
+    }
+
+    .auth-btn:hover::after { left: 150%; }
+    .auth-btn:disabled { opacity: .6; cursor: wait; transform: none; }
+
+    .btn { padding: 9px 20px; font-size: .9rem; color: #fff; background: linear-gradient(135deg, #be123c, #f43f5e); }
+
+    .help-link { display: inline-block; margin-top: 14px; font-size: .9rem; font-weight: 600; color: #b35f00; }
+    .help-link:hover { text-decoration: underline; }
+
+    /* ==========================================================
+       Request list
+       ========================================================== */
+    .request-item {
+      position: relative;
+      margin-bottom: 12px;
+      padding: 16px 18px 16px 22px;
+      background: var(--cream);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      animation: rise .6s cubic-bezier(.2, .8, .2, 1) both;
+      animation-delay: calc(var(--i) * .07s);
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .request-item::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      bottom: 14px;
+      left: 8px;
+      width: 4px;
+      border-radius: 4px;
+      background: var(--status, var(--accent));
+    }
+
+    .request-item:hover { transform: translateX(4px); box-shadow: 0 12px 24px -14px rgba(17, 19, 24, .3); }
+    .request-item.st-pending { --status: #f59e0b; }
+    .request-item.st-progress { --status: #7c3aed; }
+    .request-item.st-done { --status: #16a34a; }
+
+    .request-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+    .request-top strong { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.05rem; color: var(--ink); }
+    .request-message { margin-top: 6px; font-size: .92rem; color: var(--text); word-break: break-word; }
+    .request-meta { margin-top: 6px; font-size: .8rem; color: var(--muted); }
+    .request-doc { display: inline-block; margin-top: 6px; font-size: .86rem; font-weight: 600; color: #b35f00; }
+    .request-doc:hover { text-decoration: underline; }
+
+    .status-pill { padding: 4px 12px; font-size: .78rem; font-weight: 700; border-radius: 999px; }
+    .st-pending .status-pill { color: #9a580a; background: #fff3dc; }
+    .st-progress .status-pill { color: #6d28d9; background: #f1e8ff; }
+    .st-done .status-pill { color: #166534; background: #e6f8ec; }
+
+    .empty { padding: 28px 10px; text-align: center; color: var(--muted); }
+    .empty span { display: block; margin-bottom: 6px; font-size: 2rem; }
+
+    /* ==========================================================
+       MPIN lock screen
+       ========================================================== */
+    #mpinLockOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 138, 0, .3), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(124, 58, 237, .3), transparent 40%),
+        var(--ink);
+    }
+
+    .mpin-card {
+      width: 100%;
+      max-width: 350px;
+      padding: 36px 30px;
+      text-align: center;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+      animation: rise .6s both;
+    }
+
+    .mpin-title { margin-bottom: 4px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.45rem; font-weight: 800; color: var(--ink); }
+    .mpin-subtitle { margin-bottom: 20px; font-size: .85rem; color: var(--muted); }
+    #mpinInput { margin-bottom: 12px; font-size: 1.3rem; text-align: center; letter-spacing: 8px; }
+    #mpinError { min-height: 18px; margin-top: 10px; font-size: .85rem; color: #be123c; }
+    #mpinForgotLink { font-size: .82rem; color: var(--muted); }
+    #mpinForgotLink:hover { color: var(--accent); }
+
+    /* ==========================================================
+       Responsive
+       ========================================================== */
+    @media (max-width: 960px) {
+      .nav-toggle { display: block; }
+
+      nav {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 8px 20px 18px;
+        background: var(--cream);
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 14px 24px rgba(17, 19, 24, .12);
+      }
+
+      nav.nav-open { display: flex; }
+      nav a { padding: 13px 8px; border-bottom: 1px solid var(--line); border-radius: 0; }
+      nav a.menu-logout-link { margin: 14px 0 0; text-align: center; border: 0; border-radius: 999px; }
+
+      .stats { grid-template-columns: 1fr 1fr; }
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .brand p { display: none; }
+      .card { padding: 22px 18px; }
+      .welcome { padding: 32px 0 22px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="mpinLockOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0d2a5c,#123a7a); align-items:center; justify-content:center; font-family:inherit;">
-  <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
-    <div style="font-size:1.3rem; font-weight:800; margin-bottom:6px; color:#0d2a5c;">Enter MPIN</div>
-    <div style="font-size:0.85rem; color:#64748b; margin-bottom:20px;">Quick unlock for LAXMAN TELECOM</div>
-    <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN" style="width:100%; padding:12px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:1.3rem; text-align:center; letter-spacing:8px; margin-bottom:12px; box-sizing:border-box;">
-    <button id="mpinUnlockBtn" style="width:100%; padding:12px; border:none; border-radius:8px; background:#0d2a5c; color:#fff; font-weight:700; font-size:1rem; cursor:pointer;">Unlock</button>
-    <div id="mpinError" style="color:#dc2626; font-size:0.85rem; margin-top:10px; min-height:18px;"></div>
-    <div style="margin-top:14px;"><a href="#" id="mpinForgotLink" style="font-size:0.82rem; color:#64748b;">Forgot MPIN? Logout and login again</a></div>
-  </div>
-</div>
-
-<header class="header">
-  <div class="logo" style="display:flex; align-items:center; gap:14px;">
-    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px;">
-    <div>
-      <h1>LAXMAN TELECOM</h1>
-      <p>Your Trusted Digital Service Center</p>
-    </div>
-  </div>
-  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">☰</button>
-  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
-  <nav>
-    <a href="index.html#home">Home</a>
-    <a href="index.html#services">Services</a>
-    <a href="index.html#about">About</a>
-    <a href="index.html#contact">Contact</a>
-  </nav>
-</header>
-
-<script>
-function toggleNav() {
-  document.querySelector('nav').classList.toggle('nav-open');
-  document.getElementById('navBackdrop').classList.toggle('nav-open');
-}
-function closeNav() {
-  document.querySelector('nav').classList.remove('nav-open');
-  document.getElementById('navBackdrop').classList.remove('nav-open');
-}
-</script>
-
-<div class="dash-wrapper">
-
-  <div class="dash-card">
-    <div class="dash-top">
-      <h2>My Profile</h2>
-      <button class="logout-btn" onclick="doLogout()">Logout</button>
-    </div>
-    <p><strong>Name:</strong> <span id="pName">-</span></p>
-    <p><strong>Email:</strong> <span id="pEmail">-</span></p>
-    <p><strong>Phone:</strong> <span id="pPhone">-</span></p>
-  </div>
-
-  <div class="dash-card">
-    <h2>New Service Request</h2>
-    <div class="error-msg" id="errorMsg"></div>
-    <div class="success-msg" id="successMsg"></div>
-    <form id="requestForm">
-      <div class="form-group">
-        <label>Service Needed</label>
-        <select id="reqService" required>
-          <option value="">-- Select a service --</option>
-          <option>Mobile Repair</option>
-          <option>Aadhaar & PAN Services</option>
-          <option>Punjab Smart Ration Card</option>
-          <option>Voter ID Services</option>
-          <option>Ayushman Bharat</option>
-          <option>PM-KISAN</option>
-          <option>e-Shram & Labour</option>
-          <option>MSME (Udyam)</option>
-          <option>Banking Services</option>
-          <option>Travel Booking</option>
-          <option>Printing Services</option>
-          <option>Other</option>
-        </select>
+  <!-- MPIN lock screen (shown only when an MPIN is set on this device) -->
+  <div id="mpinLockOverlay" style="display: none;">
+    <div class="mpin-card">
+      <div class="mpin-title">Enter MPIN</div>
+      <div class="mpin-subtitle">Quick unlock for LAXMAN TELECOM</div>
+      <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN">
+      <button class="auth-btn" id="mpinUnlockBtn">Unlock</button>
+      <div id="mpinError"></div>
+      <div style="margin-top: 14px;">
+        <a href="#" id="mpinForgotLink">Forgot MPIN? Logout and login again</a>
       </div>
-      <div class="form-group">
-        <label>Details</label>
-        <textarea id="reqMessage" rows="3" placeholder="Describe what you need..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Upload Document (optional, max 5MB — photo, PDF, Aadhaar, etc.)</label>
-        <input type="file" id="reqFile" accept="image/*,.pdf">
-      </div>
-      <div id="uploadProgress" style="display:none;font-size:13px;color:#666;margin-bottom:10px;">Uploading...</div>
-      <button type="submit" class="auth-btn" id="submitReqBtn">Submit Request</button>
-    </form>
-  </div>
-
-  <div class="dash-card">
-    <h2>My Requests</h2>
-    <div id="requestsList">
-      <p>Loading...</p>
     </div>
   </div>
 
-  <div class="dash-card">
-    <h2>Account Settings</h2>
-    <div class="error-msg" id="settingsErrorMsg"></div>
-    <div class="success-msg" id="settingsSuccessMsg"></div>
-
-    <h3 style="margin-top:6px; font-size:16px;">Change Password</h3>
-    <form id="changePasswordForm">
-      <div class="form-group">
-        <label>Current Password</label>
-        <input type="password" id="currentPasswordInput" required>
+  <header class="header">
+    <div class="brand">
+      <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+      <div>
+        <h1>LAXMAN TELECOM</h1>
+        <p>Your Trusted Digital Service Center</p>
       </div>
-      <div class="form-group">
-        <label>New Password</label>
-        <input type="password" id="newPasswordInput" required minlength="6">
+    </div>
+
+    <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">☰</button>
+    <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+
+    <nav>
+      <a href="index.html#home">Home</a>
+      <a href="index.html#services">Services</a>
+      <a href="#newRequest" onclick="closeNav()">New Request</a>
+      <a href="#myRequests" onclick="closeNav()">My Requests</a>
+      <a href="#settings" onclick="closeNav()">Settings</a>
+      <a href="#" class="menu-logout-link" onclick="closeNav(); doLogout(); return false;">Logout</a>
+    </nav>
+  </header>
+
+  <main class="page">
+
+    <div class="welcome">
+      <p class="eyebrow">My Account</p>
+      <h2 id="greeting">Welcome</h2>
+      <p class="lead">Send a new service request, follow its progress and keep your account details up to date.</p>
+    </div>
+
+    <!-- Request statistics -->
+    <div class="stats">
+      <div class="card stat violet">
+        <div class="chip">📋</div>
+        <div class="number" id="statTotal">0</div>
+        <div class="name">Total requests</div>
       </div>
-      <div class="form-group">
-        <label>Confirm New Password</label>
-        <input type="password" id="confirmPasswordInput" required minlength="6">
+      <div class="card stat orange">
+        <div class="chip">⏳</div>
+        <div class="number" id="statPending">0</div>
+        <div class="name">Pending</div>
       </div>
-      <button type="submit" class="auth-btn">Update Password</button>
-    </form>
-    <p id="noPasswordNote" style="display:none; font-size:13px; color:#666; margin-top:8px;">You signed up with mobile OTP, so there is no password to change here.</p>
-
-    <h3 style="margin-top:26px; font-size:16px;">App MPIN (Quick Unlock)</h3>
-    <p style="font-size:13px; color:#666; margin-bottom:12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
-    <form id="setMpinForm">
-      <div class="form-group">
-        <label>New MPIN</label>
-        <input type="password" inputmode="numeric" id="newMpinInput" maxlength="6" minlength="4" required>
+      <div class="card stat indigo">
+        <div class="chip">🔧</div>
+        <div class="number" id="statProgress">0</div>
+        <div class="name">In progress</div>
       </div>
-      <div class="form-group">
-        <label>Confirm MPIN</label>
-        <input type="password" inputmode="numeric" id="confirmMpinInput" maxlength="6" minlength="4" required>
+      <div class="card stat green">
+        <div class="chip">✅</div>
+        <div class="number" id="statDone">0</div>
+        <div class="name">Completed</div>
       </div>
-      <button type="submit" class="auth-btn">Save MPIN</button>
-    </form>
-    <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:10px;">Remove MPIN from this device</button>
-  </div>
+    </div>
 
-</div>
+    <div class="layout">
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script>
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-function showSuccess(msg) {
-  const el = document.getElementById('successMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  setTimeout(() => { el.style.display = 'none'; }, 3000);
-}
+      <!-- Profile -->
+      <section class="card violet">
+        <div class="avatar" id="pAvatar">?</div>
+        <h2 style="font-size: 1.4rem; margin-bottom: 14px;">My Profile</h2>
+        <div class="profile-row"><span>Name</span><strong id="pName">-</strong></div>
+        <div class="profile-row"><span>Email</span><strong id="pEmail">-</strong></div>
+        <div class="profile-row"><span>Phone</span><strong id="pPhone">-</strong></div>
+      </section>
 
-function doLogout() {
-  auth.signOut().then(() => { window.location.href = 'login.html'; });
-}
+      <!-- New service request -->
+      <section class="card orange" id="newRequest">
+        <div class="card-title">
+          <span class="chip">✉️</span>
+          <h2>New Service Request</h2>
+        </div>
+        <div class="error-msg" id="errorMsg"></div>
+        <div class="success-msg" id="successMsg"></div>
+        <form id="requestForm">
+          <div class="form-group">
+            <label>Service Needed</label>
+            <select id="reqService" required>
+              <option value="">-- Select a service --</option>
+              <option>Mobile Repair</option>
+              <option>Aadhaar & PAN Services</option>
+              <option>Punjab Smart Ration Card</option>
+              <option>Voter ID Services</option>
+              <option>Ayushman Bharat</option>
+              <option>PM-KISAN</option>
+              <option>e-Shram & Labour</option>
+              <option>MSME (Udyam)</option>
+              <option>Banking Services</option>
+              <option>Travel Booking</option>
+              <option>Printing Services</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Details</label>
+            <textarea id="reqMessage" rows="3" placeholder="Describe what you need..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Upload Document (optional, max 5MB: photo, PDF, Aadhaar, etc.)</label>
+            <input type="file" id="reqFile" accept="image/*,.pdf">
+          </div>
+          <div class="upload-progress" id="uploadProgress">Uploading...</div>
+          <button type="submit" class="auth-btn" id="submitReqBtn">Submit Request</button>
+        </form>
+        <a class="help-link" href="https://wa.me/919041880370" target="_blank" rel="noopener">Need help? Message us on WhatsApp →</a>
+      </section>
 
-// --- MPIN quick-unlock ---------------------------------------------
-async function sha256Hex(text) {
-  const enc = new TextEncoder().encode(text);
-  const digest = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
+      <!-- Request history -->
+      <section class="card teal full" id="myRequests">
+        <div class="card-title">
+          <span class="chip">🗂️</span>
+          <h2>My Requests</h2>
+        </div>
+        <div id="requestsList"><p class="empty">Loading...</p></div>
+      </section>
 
-function getMpinKey(uid) {
-  return 'mpinHash_' + uid;
-}
+      <!-- Account settings -->
+      <section class="card indigo full" id="settings">
+        <div class="card-title">
+          <span class="chip">⚙️</span>
+          <h2>Account Settings</h2>
+        </div>
+        <div class="error-msg" id="settingsErrorMsg"></div>
+        <div class="success-msg" id="settingsSuccessMsg"></div>
 
-function showMpinLock(uid, onUnlock) {
-  const overlay = document.getElementById('mpinLockOverlay');
-  overlay.style.display = 'flex';
-  const input = document.getElementById('mpinInput');
-  const errorEl = document.getElementById('mpinError');
-  input.value = '';
-  errorEl.textContent = '';
-  setTimeout(() => input.focus(), 100);
+        <h3 class="section-heading">Change Password</h3>
+        <form id="changePasswordForm">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" id="currentPasswordInput" required>
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="newPasswordInput" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirmPasswordInput" required minlength="6">
+          </div>
+          <button type="submit" class="auth-btn">Update Password</button>
+        </form>
+        <p class="note" id="noPasswordNote" style="display: none;">You signed up with mobile OTP, so there is no password to change here.</p>
 
-  async function attemptUnlock() {
-    const entered = input.value.trim();
-    if (!entered) return;
-    const hash = await sha256Hex(entered);
-    if (hash === localStorage.getItem(getMpinKey(uid))) {
-      overlay.style.display = 'none';
-      onUnlock();
-    } else {
-      errorEl.textContent = 'Incorrect MPIN. Please try again.';
+        <h3 class="section-heading" style="margin-top: 32px;">App MPIN (Quick Unlock)</h3>
+        <p class="note" style="margin-bottom: 12px;">Set a 4-6 digit MPIN so you do not have to type your password every time you open the app on this device.</p>
+        <form id="setMpinForm">
+          <div class="form-group">
+            <label>New MPIN</label>
+            <input type="password" inputmode="numeric" id="newMpinInput" maxlength="6" minlength="4" required>
+          </div>
+          <div class="form-group">
+            <label>Confirm MPIN</label>
+            <input type="password" inputmode="numeric" id="confirmMpinInput" maxlength="6" minlength="4" required>
+          </div>
+          <button type="submit" class="auth-btn">Save MPIN</button>
+        </form>
+        <button type="button" class="btn" id="removeMpinBtn" style="margin-top: 14px;">Remove MPIN from this device</button>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    /* ==========================================================
+       Helpers
+       ========================================================== */
+    const $ = (id) => document.getElementById(id);
+
+    /** Escapes text before it is placed inside an HTML string. */
+    function esc(value) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      return String(value ?? '').replace(/[&<>"']/g, (ch) => map[ch]);
+    }
+
+    /**
+     * Shows a success or error box. prefix is 'settings' or '' for the request form.
+     * autoHideMs (optional) hides a success message again after that many milliseconds.
+     */
+    function showMessage(prefix, type, text, autoHideMs) {
+      const base = prefix ? prefix + 'ErrorMsg' : 'errorMsg';
+      const okBase = prefix ? prefix + 'SuccessMsg' : 'successMsg';
+      const shown = $(type === 'error' ? base : okBase);
+      const hidden = $(type === 'error' ? okBase : base);
+
+      shown.textContent = text;
+      shown.style.display = 'block';
+      hidden.style.display = 'none';
+
+      if (autoHideMs) setTimeout(() => { shown.style.display = 'none'; }, autoHideMs);
+    }
+
+    function getGreeting(name) {
+      const hour = new Date().getHours();
+      const period = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+      const firstName = (name || '').trim().split(/\s+/)[0];
+      return firstName ? `${period}, ${firstName}` : period;
+    }
+
+    /* ==========================================================
+       Navigation and session
+       ========================================================== */
+    function toggleNav() {
+      document.querySelector('nav').classList.toggle('nav-open');
+      $('navBackdrop').classList.toggle('nav-open');
+    }
+
+    function closeNav() {
+      document.querySelector('nav').classList.remove('nav-open');
+      $('navBackdrop').classList.remove('nav-open');
+    }
+
+    function doLogout() {
+      auth.signOut().then(() => { window.location.href = 'login.html'; });
+    }
+
+    /* ==========================================================
+       MPIN quick unlock
+       The MPIN is stored only as a SHA-256 hash in this browser.
+       ========================================================== */
+    async function sha256Hex(text) {
+      const bytes = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function getMpinKey(uid) {
+      return 'mpinHash_' + uid;
+    }
+
+    function showMpinLock(uid, onUnlock) {
+      const overlay = $('mpinLockOverlay');
+      const input = $('mpinInput');
+      const errorEl = $('mpinError');
+
+      overlay.style.display = 'flex';
       input.value = '';
-      input.focus();
+      errorEl.textContent = '';
+      setTimeout(() => input.focus(), 100);
+
+      async function attemptUnlock() {
+        const entered = input.value.trim();
+        if (!entered) return;
+
+        if (await sha256Hex(entered) === localStorage.getItem(getMpinKey(uid))) {
+          overlay.style.display = 'none';
+          onUnlock();
+        } else {
+          errorEl.textContent = 'Incorrect MPIN. Please try again.';
+          input.value = '';
+          input.focus();
+        }
+      }
+
+      $('mpinUnlockBtn').onclick = attemptUnlock;
+      input.onkeydown = (e) => { if (e.key === 'Enter') attemptUnlock(); };
+      $('mpinForgotLink').onclick = (e) => {
+        e.preventDefault();
+        if (confirm('Logout and login again with your password?')) {
+          auth.signOut().then(() => location.reload());
+        }
+      };
     }
-  }
 
-  document.getElementById('mpinUnlockBtn').onclick = attemptUnlock;
-  input.onkeydown = (e) => { if (e.key === 'Enter') attemptUnlock(); };
-  document.getElementById('mpinForgotLink').onclick = (e) => {
-    e.preventDefault();
-    if (confirm('Logout and login again with your password?')) {
-      auth.signOut().then(() => location.reload());
+    /* ==========================================================
+       Start-up
+       ========================================================== */
+    let currentUser = null;
+
+    function startDashboard(user) {
+      currentUser = user;
+      loadProfile(user.uid);
+      loadRequests(user.uid);
+
+      // Accounts created with mobile OTP have no email, so no password to change
+      if (!user.email) {
+        $('changePasswordForm').style.display = 'none';
+        $('noPasswordNote').style.display = 'block';
+      }
     }
-  };
-}
 
-function showSettingsError(msg) {
-  const el = document.getElementById('settingsErrorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  document.getElementById('settingsSuccessMsg').style.display = 'none';
-}
-function showSettingsSuccess(msg) {
-  const el = document.getElementById('settingsSuccessMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  document.getElementById('settingsErrorMsg').style.display = 'none';
-}
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      if (user.email === ADMIN_EMAIL) {
+        window.location.href = 'admin.html';
+        return;
+      }
 
-let currentUser = null;
-
-function startDashboard(user) {
-  currentUser = user;
-  loadProfile(user.uid);
-  loadRequests(user.uid);
-
-  if (!user.email) {
-    document.getElementById('changePasswordForm').style.display = 'none';
-    document.getElementById('noPasswordNote').style.display = 'block';
-  }
-}
-
-auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = 'login.html';
-    return;
-  }
-  if (user.email === ADMIN_EMAIL) {
-    window.location.href = 'admin.html';
-    return;
-  }
-  const mpinHash = localStorage.getItem(getMpinKey(user.uid));
-  if (mpinHash) {
-    showMpinLock(user.uid, () => startDashboard(user));
-  } else {
-    startDashboard(user);
-  }
-});
-
-document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const current = document.getElementById('currentPasswordInput').value;
-  const newPass = document.getElementById('newPasswordInput').value;
-  const confirmPass = document.getElementById('confirmPasswordInput').value;
-  if (newPass !== confirmPass) { showSettingsError('New passwords do not match.'); return; }
-
-  const user = auth.currentUser;
-  const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
-  user.reauthenticateWithCredential(cred)
-    .then(() => user.updatePassword(newPass))
-    .then(() => {
-      showSettingsSuccess('Password updated successfully.');
-      document.getElementById('changePasswordForm').reset();
-    })
-    .catch((err) => showSettingsError(err.message));
-});
-
-document.getElementById('setMpinForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const pin = document.getElementById('newMpinInput').value.trim();
-  const confirmPin = document.getElementById('confirmMpinInput').value.trim();
-  if (!/^\d{4,6}$/.test(pin)) { showSettingsError('MPIN must be 4-6 digits.'); return; }
-  if (pin !== confirmPin) { showSettingsError('MPIN entries do not match.'); return; }
-  const hash = await sha256Hex(pin);
-  localStorage.setItem(getMpinKey(auth.currentUser.uid), hash);
-  showSettingsSuccess('MPIN saved. You can use it to unlock the app next time on this device.');
-  document.getElementById('setMpinForm').reset();
-});
-
-document.getElementById('removeMpinBtn').addEventListener('click', function () {
-  if (!localStorage.getItem(getMpinKey(auth.currentUser.uid))) {
-    showSettingsSuccess('No MPIN is set on this device.');
-    return;
-  }
-  if (!confirm('Remove MPIN from this device? You will need your password to login next time.')) return;
-  localStorage.removeItem(getMpinKey(auth.currentUser.uid));
-  showSettingsSuccess('MPIN removed from this device.');
-});
-
-function loadProfile(uid) {
-  db.ref('users/' + uid).once('value').then((snap) => {
-    const data = snap.val() || {};
-    document.getElementById('pName').textContent = data.name || '-';
-    document.getElementById('pEmail').textContent = data.email || '-';
-    document.getElementById('pPhone').textContent = data.phone || '-';
-  });
-}
-
-const CLOUDINARY_CLOUD_NAME = 'xugjl6tk';
-const CLOUDINARY_UPLOAD_PRESET = 'wlfm48rw';
-
-function uploadToCloudinary(file) {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
-  return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, {
-    method: 'POST',
-    body: formData
-  })
-  .then((res) => res.json())
-  .then((data) => {
-    if (data.secure_url) return data.secure_url;
-    throw new Error(data.error ? data.error.message : 'Upload failed');
-  });
-}
-
-document.getElementById('requestForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const service = document.getElementById('reqService').value;
-  const message = document.getElementById('reqMessage').value.trim();
-  const fileInput = document.getElementById('reqFile');
-  const file = fileInput.files[0];
-  if (!service) { showError('Please select a service.'); return; }
-
-  if (file && file.size > 5 * 1024 * 1024) {
-    showError('File is too large. Max size is 5MB.');
-    return;
-  }
-
-  const submitBtn = document.getElementById('submitReqBtn');
-  submitBtn.disabled = true;
-
-  function saveRequest(documentUrl, documentName) {
-    return db.ref('requests/' + currentUser.uid).push({
-      service,
-      message,
-      status: 'Pending',
-      documentUrl: documentUrl || null,
-      documentName: documentName || null,
-      createdAt: firebase.database.ServerValue.TIMESTAMP
+      if (localStorage.getItem(getMpinKey(user.uid))) {
+        showMpinLock(user.uid, () => startDashboard(user));
+      } else {
+        startDashboard(user);
+      }
     });
-  }
 
-  if (file) {
-    document.getElementById('uploadProgress').style.display = 'block';
-    uploadToCloudinary(file)
-      .then((url) => saveRequest(url, file.name))
-      .then(() => {
-        showSuccess('Request submitted with document!');
-        document.getElementById('requestForm').reset();
-        document.getElementById('uploadProgress').style.display = 'none';
-        submitBtn.disabled = false;
-      })
-      .catch((err) => {
-        showError(err.message);
-        document.getElementById('uploadProgress').style.display = 'none';
-        submitBtn.disabled = false;
+    /* ==========================================================
+       Profile
+       ========================================================== */
+    function loadProfile(uid) {
+      db.ref('users/' + uid).once('value').then((snap) => {
+        const data = snap.val() || {};
+        $('pName').textContent = data.name || '-';
+        $('pEmail').textContent = data.email || '-';
+        $('pPhone').textContent = data.phone || '-';
+        $('pAvatar').textContent = (data.name || data.email || '?').trim().charAt(0).toUpperCase();
+        $('greeting').textContent = getGreeting(data.name);
       });
-  } else {
-    saveRequest(null, null)
-      .then(() => {
-        showSuccess('Request submitted!');
-        document.getElementById('requestForm').reset();
-        submitBtn.disabled = false;
-      })
-      .catch((err) => {
-        showError(err.message);
-        submitBtn.disabled = false;
-      });
-  }
-});
-
-function loadRequests(uid) {
-  db.ref('requests/' + uid).on('value', (snap) => {
-    const data = snap.val();
-    const container = document.getElementById('requestsList');
-    if (!data) {
-      container.innerHTML = '<p>No requests yet.</p>';
-      return;
     }
-    const entries = Object.entries(data).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
-    container.innerHTML = entries.map(([id, r]) => {
-      const statusClass = 'status-' + (r.status || 'Pending').replace(/\s/g, '');
-      const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '';
-      const docLink = r.documentUrl ? `<p style="margin:4px 0 0;font-size:13px;"><a href="${r.documentUrl}" target="_blank">📎 ${r.documentName || 'View document'}</a></p>` : '';
-      return `<div class="request-item">
-        <strong>${r.service}</strong>
-        <span class="status-pill ${statusClass}">${r.status || 'Pending'}</span>
-        <p style="margin:6px 0 0;color:#555;font-size:14px;">${r.message || ''}</p>
-        ${docLink}
-        <p style="margin:4px 0 0;color:#999;font-size:12px;">${date}</p>
-      </div>`;
-    }).join('');
-  });
-}
-</script>
+
+    /* ==========================================================
+       Account settings: password and MPIN
+       ========================================================== */
+    $('changePasswordForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const current = $('currentPasswordInput').value;
+      const newPass = $('newPasswordInput').value;
+      const confirmPass = $('confirmPasswordInput').value;
+
+      if (newPass !== confirmPass) {
+        showMessage('settings', 'error', 'New passwords do not match.');
+        return;
+      }
+
+      const user = auth.currentUser;
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, current);
+
+      user.reauthenticateWithCredential(credential)
+        .then(() => user.updatePassword(newPass))
+        .then(() => {
+          showMessage('settings', 'success', 'Password updated successfully.');
+          $('changePasswordForm').reset();
+        })
+        .catch((err) => showMessage('settings', 'error', err.message));
+    });
+
+    $('setMpinForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pin = $('newMpinInput').value.trim();
+      const confirmPin = $('confirmMpinInput').value.trim();
+
+      if (!/^\d{4,6}$/.test(pin)) {
+        showMessage('settings', 'error', 'MPIN must be 4-6 digits.');
+        return;
+      }
+      if (pin !== confirmPin) {
+        showMessage('settings', 'error', 'MPIN entries do not match.');
+        return;
+      }
+
+      localStorage.setItem(getMpinKey(auth.currentUser.uid), await sha256Hex(pin));
+      showMessage('settings', 'success', 'MPIN saved. You can use it to unlock the app next time on this device.');
+      $('setMpinForm').reset();
+    });
+
+    $('removeMpinBtn').addEventListener('click', () => {
+      const key = getMpinKey(auth.currentUser.uid);
+
+      if (!localStorage.getItem(key)) {
+        showMessage('settings', 'success', 'No MPIN is set on this device.');
+        return;
+      }
+      if (!confirm('Remove MPIN from this device? You will need your password to login next time.')) return;
+
+      localStorage.removeItem(key);
+      showMessage('settings', 'success', 'MPIN removed from this device.');
+    });
+
+    /* ==========================================================
+       New service request (with optional document upload)
+       ========================================================== */
+    const CLOUDINARY_CLOUD_NAME = 'xugjl6tk';
+    const CLOUDINARY_UPLOAD_PRESET = 'wlfm48rw';
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+    function uploadToCloudinary(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, {
+        method: 'POST',
+        body: formData
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.secure_url) return data.secure_url;
+          throw new Error(data.error ? data.error.message : 'Upload failed');
+        });
+    }
+
+    function saveRequest(service, message, documentUrl, documentName) {
+      return db.ref('requests/' + currentUser.uid).push({
+        service,
+        message,
+        status: 'Pending',
+        documentUrl: documentUrl || null,
+        documentName: documentName || null,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+
+    $('requestForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const service = $('reqService').value;
+      const message = $('reqMessage').value.trim();
+      const file = $('reqFile').files[0];
+      const submitBtn = $('submitReqBtn');
+      const progress = $('uploadProgress');
+
+      if (!service) {
+        showMessage('', 'error', 'Please select a service.');
+        return;
+      }
+      if (file && file.size > MAX_FILE_SIZE) {
+        showMessage('', 'error', 'File is too large. Max size is 5MB.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      if (file) progress.style.display = 'block';
+
+      // With a file: upload it first and store its link. Without a file: save straight away.
+      const upload = file ? uploadToCloudinary(file) : Promise.resolve(null);
+
+      upload
+        .then((url) => saveRequest(service, message, url, file ? file.name : null))
+        .then(() => {
+          showMessage('', 'success', file ? 'Request submitted with document!' : 'Request submitted!', 3000);
+          $('requestForm').reset();
+        })
+        .catch((err) => showMessage('', 'error', err.message))
+        .finally(() => {
+          progress.style.display = 'none';
+          submitBtn.disabled = false;
+        });
+    });
+
+    /* ==========================================================
+       Request history and statistics
+       ========================================================== */
+    const STATUS_CLASS = { 'Pending': 'st-pending', 'In Progress': 'st-progress', 'Done': 'st-done' };
+
+    function renderStats(requests) {
+      const count = (status) => requests.filter((r) => (r.status || 'Pending') === status).length;
+      $('statTotal').textContent = requests.length;
+      $('statPending').textContent = count('Pending');
+      $('statProgress').textContent = count('In Progress');
+      $('statDone').textContent = count('Done');
+    }
+
+    function loadRequests(uid) {
+      db.ref('requests/' + uid).on('value', (snap) => {
+        const data = snap.val();
+        const container = $('requestsList');
+
+        if (!data) {
+          renderStats([]);
+          container.innerHTML = '<div class="empty"><span>📭</span>No requests yet. Send your first request above.</div>';
+          return;
+        }
+
+        const entries = Object.values(data).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        renderStats(entries);
+
+        container.innerHTML = entries.map((r, index) => {
+          const status = r.status || 'Pending';
+          const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '';
+          // Only secure links are shown as document links
+          const doc = r.documentUrl && String(r.documentUrl).startsWith('https://')
+            ? `<a class="request-doc" href="${esc(r.documentUrl)}" target="_blank" rel="noopener">📎 ${esc(r.documentName || 'View document')}</a>`
+            : '';
+
+          return `<div class="request-item ${STATUS_CLASS[status] || 'st-pending'}" style="--i:${index}">
+            <div class="request-top">
+              <strong>${esc(r.service)}</strong>
+              <span class="status-pill">${esc(status)}</span>
+            </div>
+            ${r.message ? `<p class="request-message">${esc(r.message)}</p>` : ''}
+            ${doc}
+            <p class="request-meta">${esc(date)}</p>
+          </div>`;
+        }).join('');
+      });
+    }
+  </script>
 
 </body>
 </html>
