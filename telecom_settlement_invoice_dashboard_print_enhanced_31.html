@@ -3,832 +3,601 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0d2a5c" />
+  <meta name="theme-color" content="#111318" />
   <title>Telecom Settlement & Invoice Dashboard</title>
+  <script>document.documentElement.className = 'js';</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap');
-
+    /* ==========================================================
+       Design tokens
+       ========================================================== */
     :root {
-      --bg1: #f4f8ff;
-      --bg2: #eaf2ff;
-      --card: rgba(255,255,255,0.92);
-      --text: #1d2445;
-      --muted: #5d678d;
-      --line: rgba(104, 119, 184, 0.16);
-      --accent1: #0056b3;
-      --accent2: #0099ff;
-      --accent3: #0d2a5c;
-      --accent4: #f59e0b;
-      --good: #15803d;
-      --bad: #dc2626;
-      --shadow: 0 18px 40px rgba(58, 78, 155, 0.14);
+      --ink: #111318;
+      --accent: #ff8a00;
+      --accent-light: #ffb347;
+      --cream: #fbf7f0;
+      --line: #e9e1d3;
+      --text: #2c2f38;
+      --muted: #6b6f7b;
+      --shadow: 0 18px 40px -16px rgba(17, 19, 24, .22);
       --radius: 24px;
-      --font-body: 'Manrope', 'Segoe UI', Arial, Helvetica, sans-serif;
-      --font-head: 'Lora', Georgia, 'Times New Roman', serif;
+      --font-body: 'Figtree', 'Segoe UI', Arial, sans-serif;
+      --font-head: 'Bricolage Grotesque', Georgia, sans-serif;
     }
 
+    /* ==========================================================
+       Base
+       ========================================================== */
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; scroll-padding-top: 84px; }
 
     body {
       margin: 0;
       font-family: var(--font-body);
+      line-height: 1.6;
       color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(79,70,229,0.10), transparent 26%),
-        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 24%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
+      background: var(--cream);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
+    h1, h2, h3, h4 { font-family: var(--font-head); line-height: 1.15; color: var(--ink); }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
     .container { width: min(1260px, 94%); margin: auto; }
 
-    /* ===== Header (main website जैसा नीला header + hamburger menu) ===== */
+    @keyframes rise { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+    @keyframes drift { to { transform: translate(60px, 40px) scale(1.15); } }
+
+    /* Scroll reveal (switched on by the small script at the end of the page) */
+    .js .rv { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1); }
+    .js .rv.in { opacity: 1; transform: none; }
+
+    /* ==========================================================
+       Header and navigation
+       ========================================================== */
     header {
       position: sticky;
       top: 0;
       z-index: 40;
-      background: linear-gradient(135deg, #0056b3, #0099ff);
-      color: white;
-      box-shadow: 0 4px 16px rgba(0, 60, 140, 0.25);
+      background: rgba(251, 247, 240, .92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
     }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 10px 0;
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 14px; height: 70px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-mark { width: 42px; height: 42px; flex: none; border-radius: 50%; object-fit: cover; }
+    .brand h1 { margin: 0; font-size: 1.15rem; }
+    .brand p { margin: 2px 0 0; font-size: .72rem; color: var(--muted); }
+
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+
+    .nav-links a {
+      padding: 8px 14px;
+      font-size: .93rem;
+      font-weight: 600;
+      border-radius: 999px;
+      transition: background .2s;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 50px;
-      height: 50px;
-      flex: 0 0 auto;
-      border-radius: 14px;
-      object-fit: cover;
-      box-shadow: 0 6px 16px rgba(0, 20, 70, 0.30);
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 1.25rem;
-      font-family: var(--font-body);
-      font-weight: 800;
-      line-height: 1.2;
-      color: white;
-    }
-
-    .brand p {
-      margin: 2px 0 0;
-      color: rgba(255,255,255,0.9);
-      font-size: 0.82rem;
-    }
+    .nav-links a:hover { background: rgba(255, 138, 0, .13); }
+    .nav-links a.back-link { margin-left: 6px; color: #fff; background: var(--ink); }
+    .nav-links a.back-link:hover { background: var(--accent); color: var(--ink); }
 
     .nav-toggle {
       display: none;
-      flex: 0 0 auto;
       align-items: center;
       justify-content: center;
-      padding: 9px;
-      border-radius: 50%;
-      background: transparent;
-      color: white;
-      border: none;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      color: var(--ink);
+      background: none;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
     }
-
-    .nav-toggle:hover { background: rgba(255,255,255,0.18); transform: none; }
-    .nav-toggle:active { transform: scale(0.92); }
 
     .nav-backdrop { display: none; }
 
-    .nav-links {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: white;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 8px 12px;
-      border-radius: 10px;
-      transition: 0.25s ease;
-    }
-
-    .nav-links a:hover { color: #ffd700; }
-
-    .nav-links a.back-link {
-      border: 1px solid rgba(255,255,255,0.55);
-      margin-left: 6px;
-    }
-
-    .nav-links a.back-link:hover { background: rgba(255,255,255,0.15); }
-
-    .hero { padding: 28px 0 22px; }
+    /* ==========================================================
+       Hero
+       ========================================================== */
+    .hero { padding: 26px 0 18px; }
 
     .hero-box {
       position: relative;
       overflow: hidden;
-      border-radius: 34px;
-      padding: 34px;
-      color: white;
-      background: linear-gradient(135deg, #0d2a5c, #0056b3 55%, #0099ff);
-      box-shadow: 0 24px 60px rgba(13, 42, 92, 0.28);
+      isolation: isolate;
+      padding: 38px;
+      color: #c5cad6;
+      background: var(--ink);
+      border-radius: 32px;
+      box-shadow: 0 24px 60px -20px rgba(17, 19, 24, .5);
+      animation: rise .8s cubic-bezier(.2, .8, .2, 1) both;
     }
 
     .hero-box::before,
     .hero-box::after {
-      content: "";
+      content: '';
       position: absolute;
+      z-index: -1;
       border-radius: 50%;
-      background: rgba(255,255,255,0.12);
+      filter: blur(80px);
+      animation: drift 12s ease-in-out infinite alternate;
     }
 
-    .hero-box::before { width: 250px; height: 250px; right: -90px; top: -80px; }
-    .hero-box::after { width: 220px; height: 220px; left: -70px; bottom: -90px; }
+    .hero-box::before { width: 340px; height: 340px; left: -90px; top: -90px; background: rgba(255, 138, 0, .3); }
+    .hero-box::after { width: 320px; height: 320px; right: -70px; bottom: -100px; background: rgba(124, 58, 237, .28); animation-delay: -5s; }
 
-    .hero-grid {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 24px;
-      align-items: center;
-    }
+    .hero-wrap { display: flex; flex-direction: column; align-items: flex-start; }
 
     .badge {
       display: inline-block;
-      padding: 8px 14px;
+      padding: 7px 14px;
+      font-size: .85rem;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .15);
       border-radius: 999px;
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.22);
-      font-size: 0.9rem;
-      font-weight: 700;
     }
 
-    .hero h2 {
-      margin: 14px 0 12px;
-      font-size: clamp(2rem, 4vw, 3.3rem);
-      line-height: 1.08;
-      font-family: var(--font-head);
-      font-weight: 700;
-    }
+    .hero h2 { margin: 16px 0 6px; color: #fff; font-size: clamp(1.8rem, 3.6vw, 2.8rem); font-weight: 800; letter-spacing: -.02em; }
+    .hero-sub { margin: 0; }
 
-    .hero p { margin: 0; color: rgba(255,255,255,0.95); }
+    .profile-details { width: 100%; margin-top: 22px; }
 
-    .hero-card {
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.22);
-      border-radius: 24px;
-      padding: 22px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 18px 36px rgba(30, 44, 115, 0.18);
-    }
-
-    .hero-card h3 { margin-top: 0; }
-
-    /* ===== Compact premium hero ===== */
-    .hero-wrap { position: relative; display: flex; flex-direction: column; align-items: flex-start; }
-    .hero .hero-wrap h2 {
-      margin: 14px 0 6px;
-      font-size: clamp(1.7rem, 3.4vw, 2.5rem);
-      line-height: 1.15;
-    }
-    .hero .hero-sub { margin-top: 0; font-size: 0.98rem; opacity: 0.92; }
-
-    .profile-details { width: 100%; margin-top: 20px; }
     .profile-details summary {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 10px 18px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.3);
-      font-weight: 700;
-      font-size: 0.92rem;
-      cursor: pointer;
+      font-size: .92rem;
+      font-weight: 600;
+      color: #fff;
       list-style: none;
+      cursor: pointer;
       user-select: none;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 999px;
+      transition: background .2s;
     }
+
+    .profile-details summary:hover { background: rgba(255, 138, 0, .25); }
     .profile-details summary::-webkit-details-marker { display: none; }
     .profile-details[open] summary { margin-bottom: 14px; }
-    .profile-details .hero-card { max-width: 560px; }
-    .profile-details .hero-card h3 { display: none; }
-    .profile-details label { color: rgba(255,255,255,0.92); }
 
-    section { padding: 12px 0 22px; }
-
-    .grid-5, .grid-4, .grid-3, .grid-2 {
-      display: grid;
-      gap: 18px;
+    .hero-card {
+      max-width: 560px;
+      padding: 22px;
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(255, 255, 255, .15);
+      border-radius: 22px;
     }
 
-    .grid-5 > *, .grid-4 > *, .grid-3 > *, .grid-2 > *, .hero-grid > * { min-width: 0; }
+    .hero-card h3 { display: none; }
+    .hero-card label { color: #dfe3ee; }
 
+    /* ==========================================================
+       Layout helpers and section headings
+       ========================================================== */
+    section { padding: 14px 0 24px; }
+
+    .grid-5, .grid-4, .grid-3, .grid-2 { display: grid; gap: 18px; }
+    .grid-5 > *, .grid-4 > *, .grid-3 > *, .grid-2 > * { min-width: 0; }
     .grid-5 { grid-template-columns: repeat(5, 1fr); }
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
     .grid-2 { grid-template-columns: 1fr 1fr; }
 
-    .section-head {
-      text-align: center;
-      margin-bottom: 16px;
+    .section-head { text-align: center; margin-bottom: 20px; }
+    .section-head h3 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -.015em; }
+
+    .section-head h3::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      margin: 12px auto 0;
+      border-radius: 4px;
+      background: var(--accent);
     }
 
-    .section-head h3 {
-      margin: 0 0 8px;
-      font-size: 2rem;
-      color: #0d2a5c;
-      font-family: var(--font-head);
-    }
-
-    .section-head p {
-      margin: 0 auto;
-      max-width: 820px;
-      color: var(--muted);
-    }
-
+    /* ==========================================================
+       Cards
+       ========================================================== */
     .card {
-      background: var(--card);
-      border-radius: var(--radius);
+      --c1: var(--accent);
+      --c2: var(--accent-light);
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      background: #fff;
       border: 1px solid var(--line);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 22px;
+      transition: transform .3s, box-shadow .3s;
     }
 
-    .card h4 { margin: 0 0 14px; font-size: 1.16rem; color: #0d2a5c; font-family: var(--font-head); }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--c1), var(--c2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .card:hover::before { transform: scaleX(1); }
+
+    /* Cards in the summary rows cycle through five colour pairs */
+    .tinted > .card:nth-child(5n+1) { --c1: #7c3aed; --c2: #c026d3; }
+    .tinted > .card:nth-child(5n+2) { --c1: #0f766e; --c2: #14b8a6; }
+    .tinted > .card:nth-child(5n+3) { --c1: #ea580c; --c2: #fb923c; }
+    .tinted > .card:nth-child(5n+4) { --c1: #15803d; --c2: #4ade80; }
+    .tinted > .card:nth-child(5n+5) { --c1: #be123c; --c2: #f43f5e; }
+    .tinted > .card:hover { transform: translateY(-5px); }
+
+    .card h4 { margin: 0 0 14px; font-size: 1.15rem; }
 
     .icon-box {
-      width: 50px;
-      height: 50px;
-      border-radius: 16px;
       display: grid;
       place-items: center;
-      color: white;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 14px;
+      font-size: 1.15rem;
       font-weight: 800;
-      font-size: 1.1rem;
-      margin-bottom: 12px;
-      box-shadow: 0 12px 26px rgba(71, 86, 166, 0.18);
+      color: #fff;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      box-shadow: 0 12px 22px -6px var(--c1);
+      transition: transform .35s;
     }
 
-    .i1 { background: linear-gradient(135deg, #0f766e, #14b8a6); }
-    .i2 { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
-    .i3 { background: linear-gradient(135deg, #16a34a, #14b8a6); }
-    .i4 { background: linear-gradient(135deg, #ef4444, #f97316); }
-    .i5 { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+    .card:hover .icon-box { transform: rotate(-10deg) scale(1.1); }
 
-    .value {
-      font-size: 1.85rem;
-      font-weight: 800;
-      margin: 6px 0 4px;
-      color: #22295f;
-    }
+    .value { margin: 6px 0 4px; font-family: var(--font-head); font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+    .label-small { font-size: .9rem; font-weight: 600; color: var(--muted); }
 
-    .label-small {
-      color: var(--muted);
-      font-size: 0.92rem;
-      font-weight: 700;
-    }
-
-    label {
-      display: block;
-      font-size: 0.93rem;
-      font-weight: 700;
-      color: #313a69;
-      margin-bottom: 8px;
-    }
+    /* ==========================================================
+       Forms
+       ========================================================== */
+    label { display: block; margin-bottom: 6px; font-size: .9rem; font-weight: 600; color: var(--ink); }
 
     input, select, textarea {
       width: 100%;
-      padding: 13px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(108,124,188,0.22);
-      background: rgba(255,255,255,0.96);
-      color: var(--text);
-      font-size: 0.95rem;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: .95rem;
+      color: var(--ink);
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
       outline: none;
-      transition: 0.2s ease;
+      transition: border-color .2s, box-shadow .2s;
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: rgba(0,86,179,0.5);
-      box-shadow: 0 0 0 4px rgba(0,86,179,0.10);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255, 138, 0, .15);
     }
 
     textarea { min-height: 114px; resize: vertical; }
 
-    .button-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
+    /* ==========================================================
+       Buttons
+       ========================================================== */
+    .button-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
 
     button {
-      border: none;
+      padding: 12px 22px;
+      font: inherit;
+      font-size: .93rem;
+      font-weight: 700;
+      border: 0;
+      border-radius: 999px;
       cursor: pointer;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      transition: transform 0.18s ease;
+      transition: transform .2s, box-shadow .2s;
     }
 
     button:hover { transform: translateY(-2px); }
+    button:disabled { opacity: .6; cursor: wait; transform: none; }
 
-    .btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; }
-    .btn-secondary { background: rgba(0,86,179,0.08); color: #0d2a5c; border: 1px solid rgba(0,86,179,0.16); }
-    .btn-alert { background: linear-gradient(135deg, #0d2a5c, #0056b3); color: white; }
-    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
-    .btn-small { padding: 8px 12px; font-size: 0.84rem; border-radius: 10px; }
+    .btn-primary { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); box-shadow: 0 10px 22px rgba(255, 138, 0, .32); }
+    .btn-secondary { color: var(--ink); background: #fff; border: 1.5px solid var(--line); }
+    .btn-alert { color: #fff; background: var(--ink); }
+    .btn-danger { color: #fff; background: linear-gradient(135deg, #be123c, #f43f5e); }
+    .btn-small { padding: 7px 14px; font-size: .82rem; }
 
-    .pill-row {
+    .nav-toggle:hover { transform: none; }
+    .nav-toggle:active { transform: scale(.92); }
+
+    /* ==========================================================
+       Summary lists, notes and tables
+       ========================================================== */
+    .summary-list, .analysis-grid { display: grid; gap: 10px; }
+
+    .summary-row, .analysis-item {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .pill {
-      padding: 9px 13px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      border: 1px solid rgba(79,70,229,0.12);
-      background: rgba(79,70,229,0.08);
-      color: #3a35a1;
-    }
-
-    .hero .pill {
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.22);
-      color: white;
-    }
-
-    .summary-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .summary-row {
-      display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 10px;
-      align-items: center;
       padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(79,70,229,0.05);
-      border: 1px solid rgba(79,70,229,0.08);
-      font-weight: 700;
+      font-weight: 600;
+      background: var(--cream);
+      border: 1px solid var(--line);
+      border-radius: 14px;
     }
 
-    .table-wrap {
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-      border-radius: 18px;
-      border: 1px solid rgba(105,120,184,0.14);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1280px;
-      background: white;
-    }
-
-    thead th {
-      background: #eef2ff;
-      color: #26305f;
-      font-size: 0.92rem;
-      text-align: left;
-      padding: 14px 12px;
-      border-bottom: 1px solid rgba(111,126,188,0.16);
-    }
-
-    tbody td {
-      padding: 12px;
-      border-bottom: 1px solid rgba(111,126,188,0.1);
-      font-size: 0.94rem;
-      color: #2b345f;
-      vertical-align: top;
-    }
-
-    tbody tr:hover { background: #f9fbff; }
-
-    .tag {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .paid { background: rgba(22,163,74,0.12); color: #166534; }
-    .unpaid { background: rgba(239,68,68,0.12); color: #b91c1c; }
-    .partial { background: rgba(245,158,11,0.15); color: #9a580a; }
-
-    .mini-note {
-      margin-top: 12px;
+    .mini-note, .warn-note {
+      margin-top: 14px;
       padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(22,163,74,0.08);
-      border: 1px solid rgba(22,163,74,0.12);
-      color: #166534;
-      font-size: 0.93rem;
-      font-weight: 700;
+      font-size: .9rem;
+      font-weight: 600;
+      border-radius: 14px;
     }
 
-    .warn-note {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(245,158,11,0.10);
-      border: 1px solid rgba(245,158,11,0.16);
-      color: #9a580a;
-      font-size: 0.93rem;
-      font-weight: 700;
-    }
+    .mini-note { color: #166534; background: #ecfdf3; border: 1px solid #bbf7d0; }
+    .warn-note { color: #9a580a; background: #fff6e6; border: 1px solid #fde0ae; }
 
     .empty-box {
       padding: 18px;
       text-align: center;
       color: var(--muted);
-      background: rgba(79,70,229,0.04);
-      border-radius: 18px;
-      border: 1px dashed rgba(79,70,229,0.14);
-    }
-
-    .analysis-grid {
-      display: grid;
-      gap: 12px;
-    }
-
-    .analysis-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 14px;
+      background: var(--cream);
+      border: 1px dashed var(--line);
       border-radius: 16px;
-      background: rgba(255,255,255,0.88);
-      border: 1px solid rgba(104,119,184,0.14);
-      font-weight: 700;
     }
 
+    .table-wrap {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    table { width: 100%; min-width: 1280px; border-collapse: collapse; background: #fff; }
+
+    thead th {
+      padding: 14px 12px;
+      font-size: .76rem;
+      letter-spacing: .5px;
+      text-align: left;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--ink);
+      border-bottom: 3px solid var(--accent);
+    }
+
+    tbody td { padding: 12px; font-size: .92rem; vertical-align: top; border-bottom: 1px solid var(--line); }
+    tbody tr:nth-child(even) td { background: #fdfaf4; }
+    tbody tr:hover td { background: rgba(255, 138, 0, .08); }
+
+    .tag { display: inline-block; padding: 6px 12px; font-size: .8rem; font-weight: 800; white-space: nowrap; border-radius: 999px; }
+    .paid { color: #166534; background: rgba(22, 163, 74, .12); }
+    .unpaid { color: #b91c1c; background: rgba(239, 68, 68, .12); }
+    .partial { color: #9a580a; background: rgba(245, 158, 11, .15); }
+
+    footer { padding: 26px 0 40px; text-align: center; font-size: .92rem; color: var(--muted); }
+
+    /* ==========================================================
+       Admin check screen
+       ========================================================== */
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 138, 0, .3), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(124, 58, 237, .3), transparent 40%),
+        var(--ink);
+    }
+
+    .gate-card {
+      width: 100%;
+      max-width: 360px;
+      padding: 36px 30px;
+      text-align: center;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+      animation: rise .6s both;
+    }
+
+    .gate-title { margin-bottom: 4px; font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; color: var(--ink); }
+    .gate-sub { font-size: .88rem; color: var(--muted); }
+    .gate-status { margin-top: 18px; font-size: .9rem; color: var(--ink); }
+
+    /* ==========================================================
+       Invoice (this is the printed and PDF document)
+       ========================================================== */
     .invoice-preview {
-      background: white;
-      border: 1px solid rgba(13,42,92,0.16);
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 24px 50px rgba(13,42,92,0.16);
       position: relative;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid rgba(13, 42, 92, .16);
+      border-radius: 22px;
+      box-shadow: 0 24px 50px rgba(13, 42, 92, .16);
     }
 
     .invoice-watermark {
       position: absolute;
       inset: 0;
+      z-index: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      opacity: .09;
       pointer-events: none;
-      z-index: 0;
-      opacity: 0.09;
     }
 
     .invoice-watermark img { width: 260px; height: 260px; margin-bottom: 10px; }
-    .invoice-watermark span {
-      font-size: 2.6rem;
-      font-weight: 800;
-      color: #0d2a5c;
-      letter-spacing: 5px;
-      font-family: var(--font-head);
-    }
+    .invoice-watermark span { font-family: var(--font-head); font-size: 2.6rem; font-weight: 800; letter-spacing: 5px; color: #0d2a5c; }
 
-    .invoice-header, .invoice-meta-grid, .invoice-body {
-      position: relative;
-      z-index: 1;
-    }
+    .invoice-header, .invoice-meta-grid, .invoice-body { position: relative; z-index: 1; }
 
     .invoice-header {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      background: linear-gradient(135deg, #12275a, #0a1a3d);
-      color: white;
       position: relative;
       overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      color: #fff;
+      background: linear-gradient(135deg, #12275a, #0a1a3d);
     }
 
     .invoice-header::after {
-      content: "";
+      content: '';
       position: absolute;
       top: -60px;
       right: -60px;
       width: 220px;
       height: 220px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(56,189,248,0.22), transparent 70%);
+      background: radial-gradient(circle, rgba(56, 189, 248, .22), transparent 70%);
     }
 
-    .invoice-header > div { padding: 26px; position: relative; z-index: 1; }
-    .invoice-header h3 { margin: 0 0 8px; font-size: 1.9rem; font-family: var(--font-head); letter-spacing: 0.3px; }
-    .invoice-header p { margin: 4px 0; color: rgba(255,255,255,0.82); }
+    .invoice-header > div { position: relative; z-index: 1; padding: 26px; }
+    .invoice-header h3 { margin: 0 0 8px; font-family: var(--font-head); font-size: 1.9rem; letter-spacing: .3px; color: #fff; }
+    .invoice-header p { margin: 4px 0; color: rgba(255, 255, 255, .82); }
 
-    .invoice-brand-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .invoice-brand-row img {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.28);
-    }
+    .invoice-brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .invoice-brand-row img { width: 46px; height: 46px; border-radius: 12px; box-shadow: 0 8px 18px rgba(0, 0, 0, .28); }
 
     .invoice-title-badge {
       display: inline-block;
+      margin-bottom: 10px;
       padding: 6px 14px;
-      border-radius: 999px;
-      background: rgba(56,189,248,0.16);
-      border: 1px solid rgba(56,189,248,0.4);
-      color: #7dd3fc;
-      font-size: 0.78rem;
+      font-size: .78rem;
       font-weight: 800;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, .16);
+      border: 1px solid rgba(56, 189, 248, .4);
+      border-radius: 999px;
     }
 
     .invoice-meta-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      border-top: 1px solid rgba(13,42,92,0.12);
-      border-bottom: 1px solid rgba(13,42,92,0.12);
+      border-top: 1px solid rgba(13, 42, 92, .12);
+      border-bottom: 1px solid rgba(13, 42, 92, .12);
     }
 
-    .invoice-meta-item {
-      padding: 14px 18px;
-      border-right: 1px solid rgba(13,42,92,0.12);
-      background: #f4f8ff;
-    }
-
-    .invoice-meta-item .label-small { color: #5b6b9c; letter-spacing: 0.4px; text-transform: uppercase; font-size: 0.76rem; }
+    .invoice-meta-item { padding: 14px 18px; background: #f4f8ff; border-right: 1px solid rgba(13, 42, 92, .12); }
+    .invoice-meta-item:last-child { border-right: none; }
+    .invoice-meta-item .label-small { font-size: .76rem; letter-spacing: .4px; text-transform: uppercase; color: #5b6b9c; }
     .invoice-meta-item .value { color: #0d2a5c; }
 
-    .invoice-meta-item:last-child { border-right: none; }
     .invoice-body { padding: 24px; }
+
     .invoice-purpose {
-      font-weight: 600;
-      color: #37436b;
       margin-bottom: 18px;
       padding: 12px 14px;
-      background: rgba(244,248,255,0.9);
+      font-size: .92rem;
+      font-weight: 600;
+      color: #37436b;
+      background: rgba(244, 248, 255, .9);
       border-radius: 8px;
-      font-size: 0.92rem;
     }
 
-    .invoice-table {
-      width: 100%;
-      min-width: 900px;
-      page-break-inside:auto;
-      border-collapse: collapse;
-      margin-top: 10px;
-      background: transparent;
-    }
+    .invoice-table { width: 100%; min-width: 900px; margin-top: 10px; border-collapse: collapse; background: transparent; page-break-inside: auto; }
+    .invoice-table th, .invoice-table td { padding: 10px 12px; font-size: .92rem; border: 1px solid rgba(13, 42, 92, .14); }
+    .invoice-table th { font-size: .82rem; letter-spacing: .4px; text-transform: uppercase; color: #fff; background: #0d2a5c; border-bottom: 1px solid rgba(13, 42, 92, .14); }
+    .invoice-table tbody tr:nth-child(even) td { background: rgba(13, 42, 92, .035); }
+    .invoice-table tbody tr:hover td { background: rgba(13, 42, 92, .035); }
 
-    .invoice-table th, .invoice-table td {
-      border: 1px solid rgba(13,42,92,0.14);
-      padding: 10px 12px;
-      font-size: 0.92rem;
-    }
-
-    .invoice-table th {
-      background: #0d2a5c;
-      color: white;
-      font-size: 0.82rem;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
-
-    .invoice-table tbody tr:nth-child(even) td { background: rgba(13,42,92,0.035); }
-
-    .invoice-summary {
-      width: min(420px, 100%);
-      margin-left: auto;
-      margin-top: 18px;
-      border: 1px solid rgba(13,42,92,0.16);
-      border-radius: 14px;
-      overflow: hidden;
-    }
+    .invoice-summary { width: min(420px, 100%); margin: 18px 0 0 auto; overflow: hidden; border: 1px solid rgba(13, 42, 92, .16); border-radius: 14px; }
 
     .invoice-summary-row {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       padding: 12px 14px;
-      border-bottom: 1px solid rgba(13,42,92,0.1);
       font-weight: 700;
-      background: rgba(251,253,255,0.9);
       color: #29335c;
+      background: rgba(251, 253, 255, .9);
+      border-bottom: 1px solid rgba(13, 42, 92, .1);
     }
 
     .invoice-summary-row:last-child { border-bottom: none; }
-    .invoice-summary-row.total {
-      background: linear-gradient(135deg, #0d2a5c, #123a7a);
-      color: white;
-      font-size: 1.05rem;
-    }
+    .invoice-summary-row.total { font-size: 1.05rem; color: #fff; background: linear-gradient(135deg, #0d2a5c, #123a7a); }
 
     .invoice-notes {
       margin-top: 18px;
       padding: 16px;
-      border: 1px solid rgba(13,42,92,0.14);
-      background: rgba(244,248,255,0.9);
-      color: #37436b;
-      border-radius: 14px;
+      font-size: .9rem;
       font-weight: 600;
-      font-size: 0.9rem;
       line-height: 1.6;
+      color: #37436b;
+      background: rgba(244, 248, 255, .9);
+      border: 1px solid rgba(13, 42, 92, .14);
+      border-radius: 14px;
     }
 
-    .print-signature-box {
-      text-align: center;
-      font-size: 9pt;
-      color: #0d2a5c;
-    }
-    .print-signature-img {
-      display: block;
-      max-height: 60px;
-      max-width: 160px;
-      margin: 0 auto 4px;
-      object-fit: contain;
-    }
-    .print-signature,
-    .print-footnote { display: none; }
+    .print-signature, .print-footnote { display: none; }
 
-    footer {
-      padding: 26px 0 40px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    @page {
-      size: A4 portrait;
-      margin: 14mm 12mm;
-    }
+    /* ==========================================================
+       Print layout (A4 portrait letterhead)
+       ========================================================== */
+    @page { size: A4 portrait; margin: 14mm 12mm; }
 
     @media print {
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-
-      html, body {
-        background: #ffffff !important;
-        font-family: var(--font-body) !important;
-        font-size: 10.5px;
-        color: #1a2036 !important;
-      }
-
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      html, body { background: #fff !important; font-family: var(--font-body) !important; font-size: 10.5px; color: #1a2036 !important; }
       header, .hero, #overview, .hide-while-printing, footer, .section-head { display: none !important; }
-
+      .rv { opacity: 1 !important; transform: none !important; }
       .container { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
-
       #invoiceSection { display: block !important; padding: 0 !important; }
-      #invoiceSection .section-head { display: none !important; }
 
-      /* Letterhead-style invoice sheet */
-      .invoice-preview {
-        box-shadow: none !important;
-        border: none !important;
-        border-radius: 0 !important;
-        width: 100% !important;
-        overflow: visible !important;
-      }
+      .invoice-preview { width: 100% !important; overflow: visible !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
 
-      .invoice-header {
-        display: block !important;
-        background: #ffffff !important;
-        color: #0d2a5c !important;
-        border-bottom: 2.5pt solid #0d2a5c !important;
-        padding-bottom: 10pt !important;
-        margin-bottom: 10pt;
-      }
-
+      .invoice-header { display: block !important; margin-bottom: 10pt; padding-bottom: 10pt !important; color: #0d2a5c !important; background: #fff !important; border-bottom: 2.5pt solid #0d2a5c !important; }
       .invoice-header::after { display: none !important; }
-      .invoice-watermark {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        opacity: 0.10 !important;
-      }
-      .invoice-watermark img { width: 160pt !important; height: 160pt !important; }
-      .invoice-watermark span { font-size: 22pt !important; }
       .invoice-header > div { padding: 0 !important; }
       .invoice-header > div:first-child { margin-bottom: 8pt; }
-
-      .invoice-brand-row img {
-        width: 30pt !important;
-        height: 30pt !important;
-        box-shadow: none !important;
-      }
-
-      .invoice-title-badge {
-        background: transparent !important;
-        border: 0.75pt solid #38bdf8 !important;
-        color: #0a7ba8 !important;
-      }
-
-      .invoice-header h3 {
-        font-family: var(--font-head) !important;
-        font-size: 19pt !important;
-        font-weight: 700 !important;
-        color: #0d2a5c !important;
-        letter-spacing: 0.4pt;
-      }
-
+      .invoice-header h3 { font-family: var(--font-head) !important; font-size: 19pt !important; font-weight: 700 !important; letter-spacing: .4pt; color: #0d2a5c !important; }
       .invoice-header p { font-size: 9pt !important; color: #4b5573 !important; }
+      .invoice-header > div:last-child p:first-child { font-family: var(--font-head) !important; font-size: 14pt !important; font-weight: 700 !important; letter-spacing: .6pt; color: #0d2a5c !important; }
 
-      .invoice-header > div:last-child p:first-child {
-        font-family: var(--font-head) !important;
-        font-size: 14pt !important;
-        font-weight: 700 !important;
-        color: #0d2a5c !important;
-        letter-spacing: 0.6pt;
-      }
+      .invoice-watermark { position: fixed !important; inset: 0 !important; opacity: .10 !important; }
+      .invoice-watermark img { width: 160pt !important; height: 160pt !important; }
+      .invoice-watermark span { font-size: 22pt !important; }
 
-      .invoice-meta-grid {
-        display: grid !important;
-        grid-template-columns: repeat(4, 1fr) !important;
-        border: 0.75pt solid #cfd8ea !important;
-        border-radius: 6pt;
-        overflow: hidden;
-        margin-bottom: 10pt;
-      }
+      .invoice-brand-row img { width: 30pt !important; height: 30pt !important; box-shadow: none !important; }
+      .invoice-title-badge { color: #0a7ba8 !important; background: transparent !important; border: .75pt solid #38bdf8 !important; }
 
-      .invoice-meta-item {
-        background: #f7faf9 !important;
-        border-right: 0.75pt solid #dfe6f2 !important;
-        padding: 8pt 9pt !important;
-      }
-      .invoice-meta-item .label-small { font-size: 7.5pt !important; letter-spacing: 0.3pt; text-transform: uppercase; color: #6b7494 !important; }
+      .invoice-meta-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; margin-bottom: 10pt; overflow: hidden; border: .75pt solid #cfd8ea !important; border-radius: 6pt; }
+      .invoice-meta-item { padding: 8pt 9pt !important; background: #f7faf9 !important; border-right: .75pt solid #dfe6f2 !important; }
+      .invoice-meta-item .label-small { font-size: 7.5pt !important; letter-spacing: .3pt; text-transform: uppercase; color: #6b7494 !important; }
       .invoice-meta-item .value { font-size: 9.5pt !important; font-weight: 700 !important; color: #14213d !important; }
 
       .invoice-body { padding: 0 !important; }
-      .invoice-purpose { font-size: 8.5pt !important; color: #37436b !important; margin-bottom: 10pt !important; }
-
+      .invoice-purpose { margin-bottom: 10pt !important; font-size: 8.5pt !important; color: #37436b !important; }
       .table-wrap { overflow: visible !important; border: none !important; }
 
-      /* Table tuned to fit A4 portrait width */
-      .invoice-table {
-        width: 100% !important;
-        min-width: 0 !important;
-        table-layout: fixed !important;
-        border-collapse: collapse !important;
-        font-size: 8pt !important;
-        margin-top: 0 !important;
-      }
-
-      .invoice-table th, .invoice-table td {
-        border: 0.6pt solid #b9c3da !important;
-        padding: 4pt 3pt !important;
-        word-break: break-word;
-        text-align: left;
-      }
-
-      .invoice-table th {
-        background: #0d2a5c !important;
-        color: #ffffff !important;
-        font-size: 7.5pt !important;
-        letter-spacing: 0.2pt;
-        text-transform: uppercase;
-        font-weight: 700 !important;
-      }
-
+      /* Ten columns sized to fit the portrait page width */
+      .invoice-table { width: 100% !important; min-width: 0 !important; margin-top: 0 !important; table-layout: fixed !important; border-collapse: collapse !important; font-size: 8pt !important; }
+      .invoice-table th, .invoice-table td { padding: 4pt 3pt !important; text-align: left; word-break: break-word; border: .6pt solid #b9c3da !important; }
+      .invoice-table th { font-size: 7.5pt !important; font-weight: 700 !important; letter-spacing: .2pt; text-transform: uppercase; color: #fff !important; background: #0d2a5c !important; }
       .invoice-table tbody tr:nth-child(even) td { background: #f4f8f7 !important; }
-
-      /* keep header row repeating across pages */
       .invoice-table thead { display: table-header-group; }
       .invoice-table tfoot { display: table-footer-group; }
 
-      /* narrower numeric columns so 10 columns fit portrait width */
       .invoice-table th:nth-child(1), .invoice-table td:nth-child(1) { width: 5%; text-align: center; }
       .invoice-table th:nth-child(2), .invoice-table td:nth-child(2) { width: 10%; }
       .invoice-table th:nth-child(3), .invoice-table td:nth-child(3) { width: 13%; }
@@ -840,176 +609,105 @@
       .invoice-table th:nth-child(10), .invoice-table td:nth-child(10) { width: 10.4%; text-align: right; }
       .invoice-table th:nth-child(6), .invoice-table td:nth-child(6) { width: 7%; text-align: right; }
 
-      .invoice-summary {
-        width: min(300px, 62%) !important;
-        margin-top: 12pt !important;
-        border: 0.75pt solid #cfd8ea !important;
-        border-radius: 6pt;
-      }
+      .invoice-summary { width: min(300px, 62%) !important; margin-top: 12pt !important; border: .75pt solid #cfd8ea !important; border-radius: 6pt; }
+      .invoice-summary-row { padding: 6pt 9pt !important; font-size: 8.5pt !important; background: #fff !important; }
+      .invoice-summary-row.total { font-size: 9.5pt !important; color: #0d2a5c !important; background: #eaf2ff !important; }
 
-      .invoice-summary-row {
-        padding: 6pt 9pt !important;
-        font-size: 8.5pt !important;
-        background: #ffffff !important;
-      }
-      .invoice-summary-row.total {
-        background: #eaf2ff !important;
-        color: #0d2a5c !important;
-        font-size: 9.5pt !important;
-      }
+      .invoice-notes { margin-top: 12pt !important; padding: 9pt 10pt !important; font-size: 7.8pt !important; font-weight: 500 !important; line-height: 1.55; color: #37436b !important; background: #f8fafc !important; border: .75pt solid #dfe6f2 !important; border-radius: 6pt; }
 
-      .invoice-notes {
-        margin-top: 12pt !important;
-        padding: 9pt 10pt !important;
-        border: 0.75pt solid #dfe6f2 !important;
-        background: #f8fafc !important;
-        color: #37436b !important;
-        border-radius: 6pt;
-        font-size: 7.8pt !important;
-        font-weight: 500 !important;
-        line-height: 1.55;
-      }
-
-      .print-signature {
-        display: flex !important;
-        justify-content: flex-end;
-        margin-top: 34pt !important;
-      }
-      .print-signature-box {
-        text-align: center;
-        font-size: 9pt;
-        color: #14213d;
-      }
-      .print-signature-img {
-        display: block;
-        max-height: 60pt;
-        max-width: 160pt;
-        margin: 0 auto 2pt;
-        object-fit: contain;
-      }
-      .print-signature-line {
-        margin-top: 26pt;
-        padding-top: 4pt;
-        border-top: 0.75pt solid #14213d;
-        font-size: 7.5pt;
-        color: #6b7494;
-        letter-spacing: 0.3pt;
-        text-transform: uppercase;
-      }
-
-      .print-footnote {
-        display: block !important;
-        margin-top: 16pt;
-        text-align: center;
-        font-size: 7pt;
-        color: #8891ac;
-        font-style: italic;
-      }
+      .print-signature { display: flex !important; justify-content: flex-end; margin-top: 34pt !important; }
+      .print-footnote { display: block !important; margin-top: 16pt; font-size: 7pt; font-style: italic; text-align: center; color: #8891ac; }
 
       button { display: none !important; }
       tr, td, th { page-break-inside: avoid; }
       .invoice-summary, .print-signature { page-break-inside: avoid; }
     }
 
+    /* ==========================================================
+       Responsive
+       ========================================================== */
     @media (max-width: 1100px) {
-      .hero-grid, .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr 1fr; }
+      .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr 1fr; }
       .invoice-header, .invoice-meta-grid { grid-template-columns: 1fr; }
     }
 
-    /* ===== Mobile / tablet: hamburger menu ===== */
+    /* Tablet and phone: the links move into a slide-in drawer */
     @media (max-width: 900px) {
-      .nav { justify-content: flex-start; }
-      .nav-toggle { display: inline-flex; }
+      .nav-toggle { display: inline-flex; order: 2; }
 
       .nav-backdrop {
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.45);
         z-index: 50;
+        background: rgba(17, 19, 24, .45);
         opacity: 0;
         pointer-events: none;
         transition: opacity .3s ease;
       }
+
       .nav-backdrop.nav-open { opacity: 1; pointer-events: auto; }
 
       .nav-links {
         position: fixed;
         top: 0;
         left: 0;
-        height: 100%;
-        width: 78%;
-        max-width: 320px;
-        background: #ffffff;
+        z-index: 60;
         flex-direction: column;
-        flex-wrap: nowrap;
         align-items: stretch;
         gap: 0;
+        width: 78%;
+        max-width: 320px;
+        height: 100%;
         padding: 90px 0 30px;
+        overflow-y: auto;
+        background: var(--cream);
+        box-shadow: 6px 0 24px rgba(0, 0, 0, .25);
         transform: translateX(-100%);
         transition: transform .3s ease;
-        z-index: 60;
-        box-shadow: 6px 0 24px rgba(0,0,0,.25);
-        overflow-y: auto;
       }
+
       .nav-links.nav-open { transform: translateX(0); }
-
-      .nav-links a {
-        display: block;
-        color: #222;
-        padding: 16px 24px;
-        border-radius: 0;
-        border-bottom: 1px solid #eee;
-      }
-      .nav-links a:hover { background: #f5f7fb; color: #0056b3; }
-
-      .nav-links a.back-link {
-        margin: 14px 18px 0;
-        text-align: center;
-        border: 1px solid #0056b3;
-        border-radius: 10px;
-        color: #0056b3;
-      }
+      .nav-links a { padding: 16px 24px; border-bottom: 1px solid var(--line); border-radius: 0; }
+      .nav-links a.back-link { margin: 14px 18px 0; text-align: center; border: 0; border-radius: 999px; }
     }
 
     @media (max-width: 720px) {
-      .hero-grid, .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
-      .hero { padding: 18px 0 14px; }
-      .hero-box { padding: 22px 18px; border-radius: 26px; }
-      .hero h2 { font-size: 1.9rem; }
-      .badge { font-size: 0.82rem; }
-      .pill { font-size: 0.82rem; padding: 7px 11px; }
-      .brand h1 { font-size: 1.05rem; }
-      .brand p { font-size: 0.74rem; }
-      .brand-mark { width: 44px; height: 44px; }
-      .section-head h3 { font-size: 1.5rem; }
-      .card { padding: 18px 16px; border-radius: 20px; }
+      .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .hero { padding: 18px 0 12px; }
+      .hero-box { padding: 24px 18px; border-radius: 26px; }
+      .brand p { display: none; }
+      .card { padding: 20px 16px; border-radius: 20px; }
       .value { font-size: 1.55rem; }
       .button-row button { width: 100%; }
       .invoice-header h3 { font-size: 1.5rem; }
       .invoice-header > div { padding: 20px; }
       .invoice-body { padding: 16px; }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .js .rv { opacity: 1; transform: none; }
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <div id="adminLoginOverlay" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0f2a3f,#12403c); display:flex; align-items:center; justify-content:center; font-family:inherit;">
-    <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
-      <div style="font-size:1.4rem; font-weight:800; margin-bottom:6px; color:#0f2a3f;">LAXMAN TELECOM</div>
-      <div style="font-size:0.85rem; color:#64748b; margin-bottom:4px;">Settlement Dashboard</div>
-      <div id="adminAuthStatus" style="font-size:0.9rem; color:#12403c; margin-top:16px;">Checking admin login...</div>
+
+  <!-- Admin check screen: shown until the admin login is confirmed -->
+  <div id="adminLoginOverlay" class="gate">
+    <div class="gate-card">
+      <div class="gate-title">LAXMAN TELECOM</div>
+      <div class="gate-sub">Settlement Dashboard</div>
+      <div id="adminAuthStatus" class="gate-status">Checking admin login...</div>
     </div>
   </div>
+
   <div id="appRoot" style="display:none;">
+
   <header>
     <div class="container nav">
-      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
       <div class="brand">
         <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" class="brand-mark">
         <div>
@@ -1017,6 +715,11 @@
           <p>Settlement &amp; Invoice Dashboard</p>
         </div>
       </div>
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
       <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
       <nav class="nav-links" id="navLinks">
         <a href="#overview" onclick="closeNav()">Overview</a>
@@ -1038,19 +741,19 @@
           <details class="profile-details">
             <summary>⚙️ Shop Profile — tap to edit</summary>
             <div class="hero-card">
-            <h3>Profile Setup</h3>
-            <label for="shopName">Shop Name</label>
-            <input id="shopName" type="text" value="LAXMAN TELECOM" placeholder="Enter shop name" />
-            <label for="shopAddress" style="margin-top:12px;">Shop Address</label>
-            <input id="shopAddress" type="text" value="Puneet Nagar, Ludhiana, Punjab 141008" placeholder="Enter address" />
-            <label for="shopPhone" style="margin-top:12px;">Phone</label>
-            <input id="shopPhone" type="text" value="+91 9041880370" placeholder="Enter phone" />
-            <label for="shopEmail" style="margin-top:12px;">Email</label>
-            <input id="shopEmail" type="text" value="laxmantelecom03@gmail.com" placeholder="Enter email" />
-            <div class="button-row">
-              <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
-              <button class="btn-secondary" id="resetDashboardBtn">Reset Dashboard</button>
-            </div>
+              <h3>Profile Setup</h3>
+              <label for="shopName">Shop Name</label>
+              <input id="shopName" type="text" value="LAXMAN TELECOM" placeholder="Enter shop name" />
+              <label for="shopAddress" style="margin-top:12px;">Shop Address</label>
+              <input id="shopAddress" type="text" value="Puneet Nagar, Ludhiana, Punjab 141008" placeholder="Enter address" />
+              <label for="shopPhone" style="margin-top:12px;">Phone</label>
+              <input id="shopPhone" type="text" value="+91 9041880370" placeholder="Enter phone" />
+              <label for="shopEmail" style="margin-top:12px;">Email</label>
+              <input id="shopEmail" type="text" value="laxmantelecom03@gmail.com" placeholder="Enter email" />
+              <div class="button-row">
+                <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
+                <button class="btn-secondary" id="resetDashboardBtn">Reset Dashboard</button>
+              </div>
             </div>
           </details>
         </div>
@@ -1063,29 +766,29 @@
       <div class="section-head">
         <h3>Overview</h3>
       </div>
-      <div class="grid-5">
+      <div class="grid-5 tinted">
         <div class="card">
-          <div class="icon-box i1">₹</div>
+          <div class="icon-box">₹</div>
           <div class="value" id="grossValue">₹0.00</div>
           <div class="label-small">Gross recharge value</div>
         </div>
         <div class="card">
-          <div class="icon-box i5">%</div>
+          <div class="icon-box">%</div>
           <div class="value" id="commissionValue">₹0.00</div>
           <div class="label-small">Total commission earned</div>
         </div>
         <div class="card">
-          <div class="icon-box i2">=</div>
+          <div class="icon-box">=</div>
           <div class="value" id="payableValue">₹0.00</div>
           <div class="label-small">Total payable to vendor</div>
         </div>
         <div class="card">
-          <div class="icon-box i3">✓</div>
+          <div class="icon-box">✓</div>
           <div class="value" id="paidValue">₹0.00</div>
           <div class="label-small">Total paid amount</div>
         </div>
         <div class="card">
-          <div class="icon-box i4">!</div>
+          <div class="icon-box">!</div>
           <div class="value" id="dueValue">₹0.00</div>
           <div class="label-small">Total due amount</div>
         </div>
@@ -1095,7 +798,7 @@
 
   <section class="hide-while-printing">
     <div class="container">
-      <div class="grid-4">
+      <div class="grid-4 tinted">
         <div class="card">
           <h4>Operator-wise Count</h4>
           <div class="summary-list" id="operatorCountSummary"></div>
@@ -1306,7 +1009,7 @@
       <div class="section-head">
         <h3>Analysis</h3>
       </div>
-      <div class="grid-3">
+      <div class="grid-3 tinted">
         <div class="card">
           <h4>Commission by Operator</h4>
           <div class="analysis-grid" id="commissionAnalysis"></div>
@@ -1424,6 +1127,9 @@
   </footer>
 
   <script>
+    /* ==========================================================
+       Navigation drawer
+       ========================================================== */
     function toggleNav() {
       document.getElementById('navLinks').classList.toggle('nav-open');
       document.getElementById('navBackdrop').classList.toggle('nav-open');
@@ -1433,6 +1139,9 @@
       document.getElementById('navBackdrop').classList.remove('nav-open');
     }
 
+    /* ==========================================================
+       Element references
+       ========================================================== */
     const shopName = document.getElementById('shopName');
     const shopAddress = document.getElementById('shopAddress');
     const shopPhone = document.getElementById('shopPhone');
@@ -1457,33 +1166,6 @@
     const reportOperator = document.getElementById('reportOperator');
     const reportPaymentStatus = document.getElementById('reportPaymentStatus');
     const reportInvoiceStatus = document.getElementById('reportInvoiceStatus');
-    const INVOICE_COUNTER_KEY = 'telecomInvoiceCounter';
-
-    function generateInvoiceNumber() {
-      let seq = parseInt(localStorage.getItem(INVOICE_COUNTER_KEY) || '0', 10);
-      if (isNaN(seq)) seq = 0;
-      seq += 1;
-      localStorage.setItem(INVOICE_COUNTER_KEY, String(seq));
-      const paddedSeq = String(seq).padStart(4, '0');
-      return `LTRPI${paddedSeq}`;
-    }
-
-    function ensureInvoiceNumber() {
-      if (!reportInvoiceNo.value.trim()) {
-        reportInvoiceNo.value = generateInvoiceNumber();
-      }
-    }
-
-    function syncInvoiceCounterFromField() {
-      const match = reportInvoiceNo.value.match(/(\d+)\s*$/);
-      if (match) {
-        const num = parseInt(match[1], 10);
-        if (!isNaN(num)) {
-          localStorage.setItem(INVOICE_COUNTER_KEY, String(num));
-        }
-      }
-    }
-
     const reportInvoiceNo = document.getElementById('reportInvoiceNo');
 
     const searchInput = document.getElementById('searchInput');
@@ -1494,6 +1176,39 @@
     const recordsTableBody = document.getElementById('recordsTableBody');
     const emptyState = document.getElementById('emptyState');
 
+    /* ==========================================================
+       Invoice numbers
+       ========================================================== */
+    const INVOICE_COUNTER_KEY = 'telecomInvoiceCounter';
+
+    function generateInvoiceNumber() {
+      let seq = parseInt(localStorage.getItem(INVOICE_COUNTER_KEY) || '0', 10);
+      if (isNaN(seq)) seq = 0;
+      seq += 1;
+      localStorage.setItem(INVOICE_COUNTER_KEY, String(seq));
+      return `LTRPI${String(seq).padStart(4, '0')}`;
+    }
+
+    function ensureInvoiceNumber() {
+      if (!reportInvoiceNo.value.trim()) {
+        reportInvoiceNo.value = generateInvoiceNumber();
+      }
+    }
+
+    /** Keeps the counter in step when the invoice number is edited by hand. */
+    function syncInvoiceCounterFromField() {
+      const match = reportInvoiceNo.value.match(/(\d+)\s*$/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num)) {
+          localStorage.setItem(INVOICE_COUNTER_KEY, String(num));
+        }
+      }
+    }
+
+    /* ==========================================================
+       Formatting helpers
+       ========================================================== */
     function formatMoney(value) {
       return '₹' + Number(value || 0).toFixed(2);
     }
@@ -1509,9 +1224,43 @@
       return d.getFullYear() + '-' + month + '-' + day;
     }
 
+    function formatDateDDMMYYYY(isoDate) {
+      if (!isoDate) return '';
+      const [year, month, day] = isoDate.split('-');
+      return `${day}-${month}-${year}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function sanitizeVendorKey(vendorName) {
+      return (vendorName || 'vendor')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'vendor';
+    }
+
+    /* ==========================================================
+       Cloud data (Firebase Realtime Database)
+       ========================================================== */
     const FIREBASE_DATA_PATH = 'telecomSettlement';
     let cachedRecords = [];
     let cachedProfile = {};
+
+    function getRecords() {
+      return cachedRecords;
+    }
+
+    function updateProfileTitle() {
+      document.getElementById('dashboardTitle').textContent = (shopName.value.trim() || 'Telecom') + ' Settlement Dashboard';
+    }
 
     function applyProfileToForm(profile) {
       shopName.value = profile.shopName || 'LAXMAN TELECOM';
@@ -1533,26 +1282,10 @@
         .catch((err) => alert('Could not save profile: ' + err.message));
     }
 
-    function updateProfileTitle() {
-      document.getElementById('dashboardTitle').textContent = (shopName.value.trim() || 'Telecom') + ' Settlement Dashboard';
-    }
-
-    function getRecords() {
-      return cachedRecords;
-    }
-
     function startFirebaseSync() {
-      // NOTE: the one-time legacy migration (telecomSettlement/records ->
-      // telecomSettlement/vendorView) used to run on every page load here.
-      // That caused a bug: once you deleted an entry from vendorView, the
-      // same entry still existed under the old /records path, so on the
-      // next refresh the migration saw it "missing" from vendorView and
-      // copied it right back in - deleted entries kept reappearing.
-      // The migration is no longer called automatically. If you ever need
-      // to recover old data from before vendor-scoped storage existed,
-      // call migrateLegacyRecordsIfNeeded() manually from the browser
-      // console - just don't leave it running on every load.
-
+      // The legacy migration (telecomSettlement/records -> telecomSettlement/vendorView)
+      // is intentionally NOT run on page load. It used to copy deleted entries back
+      // into vendorView on every refresh. See migrateLegacyRecordsIfNeeded() below.
       db.ref(FIREBASE_DATA_PATH + '/vendorView').on('value', (snap) => {
         const val = snap.val() || {};
         const flat = [];
@@ -1573,10 +1306,11 @@
       });
     }
 
-    // One-time self-healing migration (kept for manual/console use only -
-    // see the note in startFirebaseSync above for why it's not called
-    // automatically anymore). Copies any legacy telecomSettlement/records
-    // entries into vendorView that aren't already there.
+    /**
+     * Manual recovery tool: run it from the browser console to copy old
+     * telecomSettlement/records entries into vendorView when they are missing there.
+     * Do not call it automatically.
+     */
     function migrateLegacyRecordsIfNeeded() {
       db.ref(FIREBASE_DATA_PATH + '/records').once('value').then((legacySnap) => {
         const legacyVal = legacySnap.val();
@@ -1591,8 +1325,7 @@
           Object.keys(legacyVal).forEach((id) => {
             if (existingIds.has(id)) return;
             const rec = legacyVal[id];
-            const vendorKey = sanitizeVendorKey(rec.vendor);
-            updates[FIREBASE_DATA_PATH + '/vendorView/' + vendorKey + '/' + id] = rec;
+            updates[FIREBASE_DATA_PATH + '/vendorView/' + sanitizeVendorKey(rec.vendor) + '/' + id] = rec;
           });
           if (Object.keys(updates).length) {
             db.ref().update(updates);
@@ -1601,6 +1334,9 @@
       });
     }
 
+    /* ==========================================================
+       Entry form
+       ========================================================== */
     function clearForm() {
       entryDate.value = getTodayIso();
       entryMobile.value = '';
@@ -1671,29 +1407,22 @@
         paymentNote
       };
 
-      const vendorKey = sanitizeVendorKey(vendor);
-      db.ref(FIREBASE_DATA_PATH + '/vendorView/' + vendorKey + '/' + id).set(recordData)
+      db.ref(FIREBASE_DATA_PATH + '/vendorView/' + sanitizeVendorKey(vendor) + '/' + id).set(recordData)
         .catch((err) => alert('Could not save this entry to the cloud: ' + err.message));
 
       sendEntryToWhatsApp({ mobile, operator, amount });
       clearForm();
     }
 
-    function sanitizeVendorKey(vendorName) {
-      return (vendorName || 'vendor')
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '') || 'vendor';
-    }
-
     function sendEntryToWhatsApp(entry) {
       const NOTIFY_NUMBER = '919056548781';
       const text = `Mobile Number: ${entry.mobile}\nOperator: ${entry.operator}\nRecharge Amount: ₹${entry.amount}`;
-      const url = `https://wa.me/${NOTIFY_NUMBER}?text=${encodeURIComponent(text)}`;
-      window.open(url, '_blank');
+      window.open(`https://wa.me/${NOTIFY_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
+    /* ==========================================================
+       Filters
+       ========================================================== */
     function getFilteredTableRecords() {
       const search = searchInput.value.trim().toLowerCase();
       const operator = tableOperatorFilter.value;
@@ -1733,19 +1462,13 @@
       });
     }
 
+    /* ==========================================================
+       Rendering
+       ========================================================== */
     function getStatusTag(status) {
       if (status === 'PAID') return '<span class="tag paid">PAID</span>';
       if (status === 'PARTIAL') return '<span class="tag partial">PARTIAL</span>';
       return '<span class="tag unpaid">UNPAID</span>';
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
     }
 
     function renderTable() {
@@ -1761,9 +1484,9 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${record.date}</td>
-          <td>${record.mobile}</td>
-          <td>${record.operator}</td>
-          <td>${record.vendor}</td>
+          <td>${escapeHtml(record.mobile)}</td>
+          <td>${escapeHtml(record.operator)}</td>
+          <td>${escapeHtml(record.vendor)}</td>
           <td>${formatMoney(record.amount)}</td>
           <td>${Number(record.commissionPercent).toFixed(2)}%</td>
           <td>${formatMoney(record.commissionEarned)}</td>
@@ -1796,17 +1519,8 @@
       return { gross, commission, payable, paid, due };
     }
 
-    function updateToday() {
-      const now = new Date();
-      const todayEl = document.getElementById('todayValue');
-      if (todayEl) {
-        todayEl.textContent = now.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
-      }
-    }
-
     function renderOverview() {
-      const allRecords = getRecords();
-      const totals = calculateTotals(allRecords);
+      const totals = calculateTotals(getRecords());
       document.getElementById('grossValue').textContent = formatMoney(totals.gross);
       document.getElementById('commissionValue').textContent = formatMoney(totals.commission);
       document.getElementById('payableValue').textContent = formatMoney(totals.payable);
@@ -1847,48 +1561,33 @@
 
       keys.sort().forEach(operator => {
         const s = stats[operator];
-        countBox.innerHTML += `<div class="summary-row"><span>${operator}</span><strong>${s.count}</strong></div>`;
-        grossBox.innerHTML += `<div class="summary-row"><span>${operator}</span><strong>${formatMoney(s.gross)}</strong></div>`;
-        commissionBox.innerHTML += `<div class="summary-row"><span>${operator}</span><strong>${formatMoney(s.commission)}</strong></div>`;
+        countBox.innerHTML += `<div class="summary-row"><span>${escapeHtml(operator)}</span><strong>${s.count}</strong></div>`;
+        grossBox.innerHTML += `<div class="summary-row"><span>${escapeHtml(operator)}</span><strong>${formatMoney(s.gross)}</strong></div>`;
+        commissionBox.innerHTML += `<div class="summary-row"><span>${escapeHtml(operator)}</span><strong>${formatMoney(s.commission)}</strong></div>`;
       });
     }
 
     function renderAnalysis() {
       const stats = buildOperatorStats(getRecords());
-      const commissionAnalysis = document.getElementById('commissionAnalysis');
-      const grossAnalysis = document.getElementById('grossAnalysis');
-      const dueAnalysis = document.getElementById('dueAnalysis');
-      commissionAnalysis.innerHTML = '';
-      grossAnalysis.innerHTML = '';
-      dueAnalysis.innerHTML = '';
       const items = Object.entries(stats);
+      const panels = [
+        { box: document.getElementById('commissionAnalysis'), field: 'commission' },
+        { box: document.getElementById('grossAnalysis'), field: 'gross' },
+        { box: document.getElementById('dueAnalysis'), field: 'due' }
+      ];
 
-      if (!items.length) {
-        commissionAnalysis.innerHTML = '<div class="empty-box">No data yet.</div>';
-        grossAnalysis.innerHTML = '<div class="empty-box">No data yet.</div>';
-        dueAnalysis.innerHTML = '<div class="empty-box">No data yet.</div>';
-        return;
-      }
-
-      [...items].sort((a,b) => b[1].commission - a[1].commission).forEach(([operator, stat]) => {
-        const c1 = document.createElement('div');
-        c1.className = 'analysis-item';
-        c1.innerHTML = `<span>${operator}</span><strong>${formatMoney(stat.commission)}</strong>`;
-        commissionAnalysis.appendChild(c1);
-      });
-
-      [...items].sort((a,b) => b[1].gross - a[1].gross).forEach(([operator, stat]) => {
-        const c2 = document.createElement('div');
-        c2.className = 'analysis-item';
-        c2.innerHTML = `<span>${operator}</span><strong>${formatMoney(stat.gross)}</strong>`;
-        grossAnalysis.appendChild(c2);
-      });
-
-      [...items].sort((a,b) => b[1].due - a[1].due).forEach(([operator, stat]) => {
-        const c3 = document.createElement('div');
-        c3.className = 'analysis-item';
-        c3.innerHTML = `<span>${operator}</span><strong>${formatMoney(stat.due)}</strong>`;
-        dueAnalysis.appendChild(c3);
+      panels.forEach(({ box, field }) => {
+        box.innerHTML = '';
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-box">No data yet.</div>';
+          return;
+        }
+        [...items].sort((a, b) => b[1][field] - a[1][field]).forEach(([operator, stat]) => {
+          const row = document.createElement('div');
+          row.className = 'analysis-item';
+          row.innerHTML = `<span>${escapeHtml(operator)}</span><strong>${formatMoney(stat[field])}</strong>`;
+          box.appendChild(row);
+        });
       });
     }
 
@@ -1896,12 +1595,6 @@
       if (!records.length) return 0;
       const total = records.reduce((sum, record) => sum + Number(record.commissionPercent), 0);
       return total / records.length;
-    }
-
-    function formatDateDDMMYYYY(isoDate) {
-      if (!isoDate) return '';
-      const [year, month, day] = isoDate.split('-');
-      return `${day}-${month}-${year}`;
     }
 
     function refreshInvoicePreview() {
@@ -1945,8 +1638,8 @@
           tr.innerHTML = `
             <td>${index + 1}</td>
             <td>${formatDateDDMMYYYY(record.date)}</td>
-            <td>${record.mobile}</td>
-            <td>${record.operator}</td>
+            <td>${escapeHtml(record.mobile)}</td>
+            <td>${escapeHtml(record.operator)}</td>
             <td>${formatMoneyNoSymbol(record.amount)}</td>
             <td>${Number(record.commissionPercent).toFixed(2)}%</td>
             <td>${formatMoneyNoSymbol(record.commissionEarned)}</td>
@@ -1978,11 +1671,19 @@
         : 'No records match the current report filters.';
     }
 
+    function renderAll() {
+      renderTable();
+      renderOverview();
+      renderSummaryBoxes();
+      renderAnalysis();
+      refreshInvoicePreview();
+    }
+
+    /* ==========================================================
+       Backup: export and import
+       ========================================================== */
     function exportJson() {
-      const data = {
-        profile: cachedProfile,
-        records: getRecords()
-      };
+      const data = { profile: cachedProfile, records: getRecords() };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -2030,6 +1731,9 @@
       reader.readAsText(file);
     }
 
+    /* ==========================================================
+       WhatsApp message and PDF
+       ========================================================== */
     function buildWhatsAppText() {
       const vendorName = reportVendor.value.trim() || 'Vendor';
       const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
@@ -2048,9 +1752,7 @@
     }
 
     function openWhatsAppMessage() {
-      const text = buildWhatsAppText();
-      const url = 'https://wa.me/?text=' + encodeURIComponent(text);
-      window.open(url, '_blank');
+      window.open('https://wa.me/?text=' + encodeURIComponent(buildWhatsAppText()), '_blank');
     }
 
     async function generateInvoicePdfBlob() {
@@ -2086,12 +1788,9 @@
         const file = new File([blob], fileName, { type: 'application/pdf' });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: fileName,
-            text: text
-          });
+          await navigator.share({ files: [file], title: fileName, text: text });
         } else {
+          // Sharing a file is not supported here: download it and open WhatsApp instead.
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -2101,18 +1800,16 @@
           a.remove();
           URL.revokeObjectURL(url);
 
-          const isFileProtocol = window.location.protocol === 'file:';
-          const reason = isFileProtocol
-            ? "Yeh file aapke computer se seedha (file://) khuli hai, is wajah se browser ka 'Share' feature is context me kaam nahi karta - yeh sirf https:// par host ki gayi site par kaam karta hai."
-            : "Is browser/device par WhatsApp me file seedha attach nahi ho sakti - yeh WhatsApp/browser ki apni limit hai.";
-          alert(`${reason}\n\nInvoice PDF download ho gaya hai - WhatsApp ab khulega, bas PDF ko attach karke Send kar dein.`);
+          const reason = window.location.protocol === 'file:'
+            ? "This page is open directly from your computer (file://), so the browser's Share feature does not work here. It only works on a site hosted over https://."
+            : 'This browser or device cannot attach the file to WhatsApp directly. This is a WhatsApp or browser limitation.';
+          alert(`${reason}\n\nThe invoice PDF has been downloaded. WhatsApp will open now. Attach the PDF and press Send.`);
           openWhatsAppMessage();
         }
       } catch (err) {
-        if (err && err.name === 'AbortError') {
-          // user cancelled the share sheet - nothing else to do
-        } else {
-          alert('PDF taiyar karte waqt error aaya. Print / Save as PDF button se try karein.');
+        // A cancelled share sheet is not an error.
+        if (!err || err.name !== 'AbortError') {
+          alert('Something went wrong while preparing the PDF. Please use the Print / Save as PDF button instead.');
         }
       } finally {
         whatsappBtn.disabled = false;
@@ -2120,28 +1817,23 @@
       }
     }
 
-    function renderAll() {
-      renderTable();
-      renderOverview();
-      renderSummaryBoxes();
-      renderAnalysis();
-      updateToday();
-      refreshInvoicePreview();
-    }
-
-    window.deleteEntry = function(id) {
+    /* ==========================================================
+       Delete
+       ========================================================== */
+    window.deleteEntry = function (id) {
       const record = cachedRecords.find(r => r.id === id);
       if (!record) return;
       const vendorKey = sanitizeVendorKey(record.vendor);
-      // Delete from the new location, and also from the old legacy
-      // location (if it happens to exist there too) so it can never
-      // get resurrected even if migrateLegacyRecordsIfNeeded() is ever
-      // run again manually in future.
+      // Also remove any copy under the legacy path so the entry cannot come back
+      // if the legacy migration is ever run manually.
       db.ref(FIREBASE_DATA_PATH + '/vendorView/' + vendorKey + '/' + id).remove()
         .catch((err) => alert('Could not delete this entry: ' + err.message));
       db.ref(FIREBASE_DATA_PATH + '/records/' + id).remove().catch(() => {});
     };
 
+    /* ==========================================================
+       Event listeners
+       ========================================================== */
     document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
     document.getElementById('resetDashboardBtn').addEventListener('click', () => {
       if (!confirm('Reset profile and all dashboard data? This deletes your cloud data permanently.')) return;
@@ -2162,8 +1854,7 @@
       document.getElementById('importJsonInput').click();
     });
     document.getElementById('importJsonInput').addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      importJson(file);
+      importJson(event.target.files[0]);
       event.target.value = '';
     });
     document.getElementById('deleteAllBtn').addEventListener('click', () => {
@@ -2192,6 +1883,23 @@
     reportPaymentStatus.addEventListener('change', refreshInvoicePreview);
     reportInvoiceStatus.addEventListener('change', refreshInvoicePreview);
     reportInvoiceNo.addEventListener('input', () => { syncInvoiceCounterFromField(); refreshInvoicePreview(); });
+
+    /* ==========================================================
+       Scroll reveal for the dashboard cards and headings
+       ========================================================== */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.hide-while-printing .card, .section-head').forEach((el) => {
+      el.classList.add('rv');
+      revealObserver.observe(el);
+    });
   </script>
   </div>
 
@@ -2200,6 +1908,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="firebase-config.js"></script>
   <script>
+    /* Only the admin account may open this dashboard */
     const adminLoginOverlay = document.getElementById('adminLoginOverlay');
     const adminAuthStatus = document.getElementById('adminAuthStatus');
     const appRoot = document.getElementById('appRoot');
