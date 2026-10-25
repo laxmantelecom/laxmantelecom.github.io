@@ -40,6 +40,33 @@ nav a:hover{color:var(--navy)}
 .login{background:var(--navy);color:#fff;padding:9px 20px;border-radius:999px}
 .login:hover{background:var(--ink);color:#fff}
 
+/* topbar + menu */
+.topbar{background:var(--ink);color:#a9bde6;font-size:.82rem}
+.topbar .wrap{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.topbar a:hover{color:#fff}
+nav a.on{color:var(--navy);font-weight:600}
+.burger{display:none;background:none;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;font-size:1.3rem;color:var(--navy);cursor:pointer}
+/* quick tiles */
+.quick{padding:64px 0 0}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 18px;transition:transform .15s,box-shadow .15s,border-color .15s}
+.tile:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(13,42,92,.12);border-color:var(--cyan)}
+.tile span{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--paper);font-size:1.6rem;margin-bottom:14px}
+.tile b{font-family:'Bricolage Grotesque';font-size:1.05rem;color:var(--ink);display:block}
+.tile small{color:var(--mute);font-size:.84rem}
+/* why */
+.why{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.why div{background:var(--paper);border-radius:16px;padding:20px}
+.why b{font-family:'Bricolage Grotesque';color:var(--ink);display:block;margin-bottom:4px}
+.why span{font-size:.9rem;color:var(--mute)}
+/* footer */
+footer{text-align:left;padding:0}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:40px;padding:48px 20px 32px}
+footer h4{font-family:'Bricolage Grotesque';color:#fff;margin-bottom:12px;font-size:1.05rem}
+footer a,footer p{display:block;margin-bottom:8px;font-size:.9rem}
+footer a:hover{color:#fff}
+footer .copy{border-top:1px solid rgba(255,255,255,.1);text-align:center;padding:16px;font-size:.82rem}
+
 /* hero */
 .hero{background:var(--ink);color:#cfe0ff;position:relative;overflow:hidden}
 .hero .wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center;padding-top:76px;padding-bottom:84px}
@@ -109,7 +136,14 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
 .fab{position:fixed;right:18px;bottom:18px;z-index:30;width:56px;height:56px;border-radius:50%;background:var(--wa);display:grid;place-items:center;font-size:1.6rem;box-shadow:0 10px 24px rgba(0,0,0,.3)}
 
 @media(max-width:860px){
-  nav a:not(.login){display:none}
+  .burger{display:block}
+  nav{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:#fff;border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(13,42,92,.1)}
+  nav.open{display:flex}
+  nav a{padding:13px 0;border-bottom:1px solid var(--line)}
+  nav .login{margin-top:14px;text-align:center;border:0}
+  .topbar .r{display:none}
+  .tiles{grid-template-columns:1fr 1fr}.why{grid-template-columns:1fr}
+  footer .cols{grid-template-columns:1fr;gap:26px}
   .hero .wrap,.about .wrap,.contact .wrap{grid-template-columns:1fr;gap:36px}
   .hero .wrap{padding-top:48px;padding-bottom:56px}
   .logo-anim{width:min(48%,190px)}
@@ -124,10 +158,15 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
 </head>
 <body>
 
+<div class="topbar"><div class="wrap">
+  <span>📞 <a href="tel:+919041880370">+91 90418-80370</a> &nbsp;|&nbsp; 📍 Puneet Nagar, Ludhiana</span>
+  <span class="r">Mon - Sat: 3 PM - 10 PM &nbsp;|&nbsp; Sunday: 8 AM - 1 PM</span>
+</div></div>
 <header>
   <div class="wrap">
     <a class="brand" href="#home"><img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo"><span><b>LAXMAN TELECOM</b><small>Your Trusted Digital Service Center</small></span></a>
-    <nav><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a><a class="login" href="login-select.html">Login</a></nav>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">☰</button>
+    <nav id="nav"><a class="on" href="#home">Home</a><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a><a class="login" href="login-select.html">Login</a></nav>
   </div>
 </header>
 
@@ -166,6 +205,14 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
     <div><b>Ludhiana</b><span>Puneet Nagar</span></div>
   </div></div>
 
+  <section class="quick" id="quick">
+    <div class="wrap">
+      <h2>Most Used Services</h2>
+      <p class="sub">Sabse zyada use hone wali services, ek tap mein WhatsApp par enquiry.</p>
+      <div class="tiles" id="tiles"></div>
+    </div>
+  </section>
+
   <section id="services">
     <div class="wrap">
       <h2>Our Services</h2>
@@ -183,6 +230,12 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
       <div>
         <p>LAXMAN TELECOM is a trusted and fully equipped Digital Service Center located in Puneet Nagar, Ludhiana, Punjab.</p>
         <p>Our mission is to bridge the digital gap by providing fast, reliable, and transparent digital solutions to every customer. From complex mobile hardware troubleshooting to official government registrations, we ensure high-quality service with utmost precision.</p>
+        <div class="why">
+          <div><b>27+ services, one roof</b><span>Mobile, banking, documents and govt schemes in one place.</span></div>
+          <div><b>Instant WhatsApp reply</b><span>Our AI assistant answers your enquiry anytime.</span></div>
+          <div><b>Fast and transparent</b><span>Clear process, no confusion, precise work.</span></div>
+          <div><b>Safe and secure</b><span>Your documents and details are handled with care.</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -212,7 +265,14 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
   </section>
 </main>
 
-<footer>© 2026 LAXMAN TELECOM | All Rights Reserved</footer>
+<footer>
+  <div class="wrap cols">
+    <div><h4>LAXMAN TELECOM</h4><p>Your Trusted Digital Service Center, 7, Street No. 1, Puneet Nagar, Ludhiana, Punjab - 141008</p></div>
+    <div><h4>Quick Links</h4><a href="#home">Home</a><a href="#services">Services</a><a href="#about">About Us</a><a href="#contact">Contact</a><a href="login-select.html">Login</a></div>
+    <div><h4>Get in touch</h4><a href="tel:+919041880370">📞 +91 90418-80370</a><a href="mailto:laxmantelecom.help@gmail.com">📧 laxmantelecom.help@gmail.com</a><a href="https://wa.me/919041880370" target="_blank" rel="noopener">💬 WhatsApp</a></div>
+  </div>
+  <div class="copy">© 2026 LAXMAN TELECOM | All Rights Reserved</div>
+</footer>
 <a class="fab" href="https://wa.me/919041880370" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
 <script>
@@ -261,6 +321,11 @@ $("q").oninput=render;
 $("chips").innerHTML=["Recharge","PAN card","Passport","Mobile repair","Electricity bill"].map(c=>`<button>${c}</button>`).join("");
 $("chips").onclick=e=>{if(e.target.tagName!=="BUTTON")return;$("q").value=e.target.textContent;render();$("services").scrollIntoView()};
 render();
+const T=[["⚡","Recharge","Mobile & WiFi"],["🛠️","Mobile Repair","Hardware & software"],["🆔","Aadhaar & PAN","Apply, update, link"],["💳","Banking & ATM","AEPS, transfer"],["💡","Electricity Bill","Pay online"],["🛂","Passport","New & renewal"],["📱","New SIM / Porting","Airtel, Jio, Vi"],["🖨️","Printing & Forms","Print, copy, online forms"]];
+$("tiles").innerHTML=T.map(t=>`<a class="tile" href="https://wa.me/919041880370?text=${encodeURIComponent("Hello, I want to enquire about: "+t[1])}" target="_blank" rel="noopener"><span>${t[0]}</span><b>${t[1]}</b><small>${t[2]}</small></a>`).join("");
+const nav=$("nav"),bg=$("burger");
+bg.onclick=()=>{const o=nav.classList.toggle("open");bg.setAttribute("aria-expanded",o);bg.textContent=o?"✕":"☰"};
+nav.onclick=e=>{if(e.target.tagName==="A"){nav.classList.remove("open");bg.textContent="☰";[...nav.querySelectorAll("a:not(.login)")].forEach(a=>a.classList.toggle("on",a===e.target))}};
 </script>
 </body>
 </html>
