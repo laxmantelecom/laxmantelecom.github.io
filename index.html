@@ -126,17 +126,22 @@ h2::after{content:'';display:block;width:0;height:4px;border-radius:4px;backgrou
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 28px}
 .tabs button{font:inherit;font-weight:500;font-size:.92rem;background:#fff;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:9px 18px;cursor:pointer;transition:all .2s}
 .tabs button:hover{border-color:var(--acc)}
-.tabs button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.tabs button[aria-pressed=true]{background:linear-gradient(135deg,var(--c1),var(--c2));border-color:transparent;color:#fff;box-shadow:0 8px 18px -6px var(--c1)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;transition:transform .3s,box-shadow .3s,border-color .3s}
-.card::before{content:'';position:absolute;left:24px;right:24px;top:-1px;height:3px;border-radius:0 0 4px 4px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .4s}
-.card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(17,19,24,.1);border-color:#f0cf9f}
-.card:hover::before{transform:scaleX(1)}
-.card .ic{width:54px;height:54px;border-radius:16px;background:var(--cream);display:grid;place-items:center;font-size:1.6rem;margin-bottom:16px;transition:transform .35s,background .35s}
-.card:hover .ic{background:var(--acc2);transform:rotate(-8deg) scale(1.1)}
+.card{position:relative;overflow:hidden;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px 24px 24px;transition:transform .3s,box-shadow .3s}
+.card::before{content:'';position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,var(--c1),var(--c2));transition:height .3s}
+.card::after{content:'';position:absolute;right:-56px;top:-56px;width:170px;height:170px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.09;transition:transform .5s,opacity .3s}
+.card:hover{transform:translateY(-6px);box-shadow:0 22px 44px -10px rgba(17,19,24,.18)}
+.card:hover::before{height:9px}
+.card:hover::after{transform:scale(1.35);opacity:.14}
+.card .num{position:absolute;right:16px;bottom:2px;font-family:'Bricolage Grotesque';font-style:normal;font-weight:800;font-size:4.6rem;line-height:1;color:var(--c1);opacity:.09;pointer-events:none;transition:opacity .3s,transform .4s}
+.card:hover .num{opacity:.16;transform:translateY(-4px)}
+.card .ic{position:relative;z-index:1;width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:grid;place-items:center;font-size:1.7rem;margin-bottom:18px;box-shadow:0 14px 26px -6px var(--c1);transition:transform .35s}
+.card:hover .ic{transform:rotate(-10deg) scale(1.1)}
+.card h3,.card p,.card a{position:relative;z-index:1}
 .card h3{font-size:1.12rem;font-weight:700;margin-bottom:6px}
 .card p{font-size:.9rem;color:var(--mute);flex:1}
-.card a{align-self:flex-start;margin-top:18px;font-size:.86rem;font-weight:600;color:var(--wa);border:1.5px solid var(--wa);border-radius:999px;padding:7px 16px;transition:all .2s}
+.card a{align-self:flex-start;margin-top:18px;font-size:.86rem;font-weight:600;color:var(--wa);border:1.5px solid var(--wa);border-radius:999px;padding:7px 16px;background:#fff;transition:all .2s}
 .card a:hover{background:var(--wa);color:#fff;padding-right:22px}
 .empty{display:none;padding:30px 0}
 .note{margin-top:30px;font-size:.84rem;color:var(--mute);border-left:3px solid var(--acc);padding-left:14px;max-width:700px}
@@ -353,6 +358,7 @@ const S=[
 ["📧","Gmail & Account Services","New Gmail account creation, blocked account recovery, and registration for various online applications.",5],
 ["💾","Songs & Movies Downloading","Get high-quality HD movies, videos, and latest MP3 songs downloaded directly into your memory card or phone.",5]
 ];
+const P=[["#111318","#3a3f4d"],["#7c3aed","#c026d3"],["#0f766e","#14b8a6"],["#ea580c","#fb923c"],["#be123c","#f43f5e"],["#2563eb","#6366f1"]];
 const $=id=>document.getElementById(id);
 const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
@@ -362,12 +368,12 @@ const watch=()=>document.querySelectorAll(".rv:not(.in)").forEach(el=>io.observe
 let cat=0;
 function render(){
   const q=$("q").value.trim().toLowerCase();
-  const r=S.filter(s=>(!cat||s[3]===cat)&&(!q||(s[1]+" "+s[2]).toLowerCase().includes(q)));
-  $("list").innerHTML=r.map((s,i)=>`<div class="card rv" style="--d:${(i%3)*.08}s"><div class="ic">${s[0]}</div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p><a href="https://wa.me/919041880370?text=${encodeURIComponent("Hello, I want to enquire about: "+s[1])}" target="_blank" rel="noopener">Enquire →</a></div>`).join("");
+  const r=S.map((s,n)=>[s,n]).filter(([s])=>(!cat||s[3]===cat)&&(!q||(s[1]+" "+s[2]).toLowerCase().includes(q)));
+  $("list").innerHTML=r.map(([s,n],i)=>`<div class="card rv" style="--d:${(i%3)*.08}s;--c1:${P[s[3]][0]};--c2:${P[s[3]][1]}"><i class="num">${String(n+1).padStart(2,"0")}</i><div class="ic">${s[0]}</div><h3>${esc(s[1])}</h3><p>${esc(s[2])}</p><a href="https://wa.me/919041880370?text=${encodeURIComponent("Hello, I want to enquire about: "+s[1])}" target="_blank" rel="noopener">Enquire →</a></div>`).join("");
   $("empty").style.display=r.length?"none":"block";
   watch();
 }
-$("tabs").innerHTML=CATS.map((c,i)=>`<button aria-pressed="${i===0}" data-i="${i}">${esc(c)}</button>`).join("");
+$("tabs").innerHTML=CATS.map((c,i)=>`<button aria-pressed="${i===0}" data-i="${i}" style="--c1:${P[i][0]};--c2:${P[i][1]}">${esc(c)}</button>`).join("");
 $("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;cat=+b.dataset.i;[...$("tabs").children].forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
 $("q").oninput=render;
 $("chips").innerHTML=["Recharge","PAN card","Passport","Mobile repair","Electricity bill"].map(c=>`<button>${c}</button>`).join("");
