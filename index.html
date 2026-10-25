@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script src="app-splash.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LAXMAN TELECOM | Digital Service Center</title>
 <meta name="description" content="LAXMAN TELECOM is a digital service center in Ludhiana providing mobile repair, recharge, electricity bill payment, Aadhaar, PAN card, passport, birth, caste and residence certificates, ration card, online forms, printing and other digital services.">
@@ -54,13 +55,15 @@ nav a:hover{color:var(--navy)}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 
 /* signal bars: the brand mark, drawn once on load */
-.bars{display:flex;align-items:flex-end;gap:14px;height:260px;justify-content:center}
-.bars i{width:34px;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--cyan),#1f5fd6);transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
-.bars i:nth-child(1){height:22%}.bars i:nth-child(2){height:42%;animation-delay:.12s}
-.bars i:nth-child(3){height:64%;animation-delay:.24s}.bars i:nth-child(4){height:86%;animation-delay:.36s}
-.bars i:nth-child(5){height:100%;animation-delay:.48s}
+.logo-anim{display:block;width:min(72%,300px);height:auto;margin:0 auto;overflow:visible}
+.logo-anim .b{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);animation:ltGrow .6s cubic-bezier(.34,1.56,.64,1) forwards}
+.logo-anim .b1{animation-delay:.3s}.logo-anim .b2{animation-delay:.52s}.logo-anim .b3{animation-delay:.74s}.logo-anim .b4{animation-delay:.96s}
+.logo-anim .d{opacity:0;animation:ltDrop .7s cubic-bezier(.34,1.56,.64,1) 1.25s forwards}
+.logo-anim .ring{fill:none;stroke:#3bbdfa;stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center;animation:ltRing .9s ease-out 1.7s forwards}
 .bars-cap{text-align:center;margin-top:18px;font-size:.9rem;color:#8fa6d4}
-@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes ltGrow{to{transform:scaleY(1)}}
+@keyframes ltDrop{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ltRing{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(7)}}
 
 /* facts strip */
 .facts{background:#fff;border-bottom:1px solid var(--line)}
@@ -109,14 +112,14 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
   nav a:not(.login){display:none}
   .hero .wrap,.about .wrap,.contact .wrap{grid-template-columns:1fr;gap:36px}
   .hero .wrap{padding-top:48px;padding-bottom:56px}
-  .bars{height:150px}.bars i{width:26px}
+  .logo-anim{width:min(48%,190px)}
   .facts .wrap{grid-template-columns:1fr 1fr}
   .facts div:nth-child(2){border-right:0}.facts div:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .list{grid-template-columns:1fr}
   section{padding:60px 0}
 }
 @media(max-width:420px){.svc{grid-template-columns:44px 1fr}.svc a{grid-column:2;justify-self:start}.brand small{display:none}}
-@media(prefers-reduced-motion:reduce){.bars i{animation:none}html{scroll-behavior:auto}.btn:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.logo-anim .b{animation:none;transform:none}.logo-anim .d{animation:none;opacity:1}html{scroll-behavior:auto}.btn:hover{transform:none}}
 </style>
 </head>
 <body>
@@ -145,7 +148,14 @@ footer{background:var(--ink);color:#8fa6d4;text-align:center;padding:22px;font-s
           <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=Laxman+Telecom+7+Street+No+1+Puneet+Nagar+Ludhiana+141008" target="_blank" rel="noopener">📍 Get Directions</a>
         </div>
       </div>
-      <div aria-hidden="true"><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><p class="bars-cap">Full signal, every service</p></div>
+      <div aria-hidden="true"><svg class="logo-anim" viewBox="380 340 270 320" xmlns="http://www.w3.org/2000/svg">
+<rect class="b b1" x="391" y="565" width="45" height="80" rx="22.5" fill="#fff"/>
+<rect class="b b2" x="457" y="516" width="45" height="129" rx="22.5" fill="#fff"/>
+<rect class="b b3" x="523" y="467" width="45" height="178" rx="22.5" fill="#fff"/>
+<rect class="b b4" x="589" y="420" width="45" height="225" rx="22.5" fill="#3bbdfa"/>
+<circle class="ring" cx="611.5" cy="376" r="18"/>
+<circle class="d" cx="611.5" cy="376" r="18" fill="#3bbdfa"/>
+</svg><p class="bars-cap">Your Trusted Digital Service Center</p></div>
     </div>
   </div>
 
