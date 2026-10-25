@@ -1,520 +1,1031 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard | LAXMAN TELECOM</title>
-<link rel="stylesheet" href="style.css?v=1.3">
-<link rel="stylesheet" href="auth-style.css?v=1.3">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
-<link rel="shortcut icon" href="favicon.ico">
-<style>
-/* ✅ चौड़ी tables card के अंदर ही left-right scroll होंगी, पूरा page चौड़ा नहीं होगा */
-.dash-wrapper { max-width: 100%; }
-.dash-wrapper > * { min-width: 0; }
-.dash-card {
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | LAXMAN TELECOM</title>
+  <meta name="theme-color" content="#111318">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================
+       Design tokens
+       ========================================================== */
+    :root {
+      --ink: #111318;
+      --accent: #ff8a00;
+      --accent-light: #ffb347;
+      --cream: #fbf7f0;
+      --line: #e9e1d3;
+      --text: #2c2f38;
+      --muted: #6b6f7b;
+    }
+
+    /* ==========================================================
+       Base
+       ========================================================== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: Figtree, system-ui, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--cream);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Dark banner behind the top of every page */
+    body::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 330px;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255, 138, 0, .32), transparent 38%),
+        radial-gradient(circle at 92% 90%, rgba(124, 58, 237, .28), transparent 40%),
+        linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px) 0 0 / 56px 56px,
+        var(--ink);
+    }
+
+    h1, h2, h3 {
+      font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    code { background: var(--cream); padding: 1px 6px; border-radius: 6px; font-size: .85em; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(34px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ==========================================================
+       Header and navigation
+       ========================================================== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      padding: 0 max(20px, calc((100% - 1140px) / 2));
+      background: rgba(251, 247, 240, .92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { width: 40px; height: 40px; border-radius: 50%; }
+    .brand h1 { font-size: 1.15rem; }
+    .brand p { margin-top: 2px; font-size: .68rem; color: var(--muted); }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: .9rem;
+      font-weight: 500;
+    }
+
+    nav a {
+      padding: 8px 12px;
+      border-radius: 999px;
+      transition: background .2s;
+    }
+
+    nav a:hover { background: rgba(255, 138, 0, .13); }
+
+    nav a.menu-logout-link { margin-left: 6px; color: #fff; background: #be123c; }
+    nav a.menu-logout-link:hover { background: #9f1239; }
+
+    .nav-toggle {
+      display: none;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      color: var(--ink);
+      background: none;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .nav-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(17, 19, 24, .45);
+    }
+
+    .nav-backdrop.nav-open { display: block; }
+
+    /* ==========================================================
+       Buttons
+       ========================================================== */
+    .btn,
+    .auth-btn {
+      display: inline-block;
+      border: 0;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+
+    .btn:hover,
+    .auth-btn:hover { transform: translateY(-2px); }
+
+    .btn { padding: 9px 20px; font-size: .9rem; }
+    .btn-small { padding: 7px 14px; font-size: .82rem; }
+    .btn-danger { color: #fff; background: linear-gradient(135deg, #be123c, #f43f5e); }
+    .btn-warn { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .btn-dark { color: #fff; background: var(--ink); }
+    .btn-ghost { color: var(--ink); background: #fff; border: 1.5px solid var(--line); }
+
+    /* Primary full-width form button with a light sweep on hover */
+    .auth-btn {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      box-shadow: 0 10px 24px rgba(255, 138, 0, .35);
+    }
+
+    .auth-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .5), transparent);
+      transform: skewX(-20deg);
+      transition: left .6s;
+    }
+
+    .auth-btn:hover::after { left: 150%; }
+    .auth-btn:disabled { opacity: .6; cursor: wait; transform: none; }
+
+    /* ==========================================================
+       Dashboard cards
+       ========================================================== */
+    .dash-wrapper {
+      display: grid;
+      gap: 22px;
+      max-width: 1140px;
+      margin: 40px auto 70px;
+      padding: 0 16px;
+    }
+
+    .dash-wrapper > * { min-width: 0; }
+
+    .dash-card {
+      position: relative;
+      overflow-x: auto;
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 24px 50px -20px rgba(17, 19, 24, .3);
+      scroll-margin-top: 100px;
+      animation: rise .8s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .dash-card:nth-child(2) { animation-delay: .1s; }
+    .dash-card:nth-child(3) { animation-delay: .2s; }
+    .dash-card:nth-child(4) { animation-delay: .3s; }
+
+    /* Each card has its own colour pair, used by the top bar and the icon chip */
+    .violet { --c1: #7c3aed; --c2: #c026d3; }
+    .teal   { --c1: #0f766e; --c2: #14b8a6; }
+    .orange { --c1: #ea580c; --c2: #fb923c; }
+    .indigo { --c1: #2563eb; --c2: #6366f1; }
+
+    .dash-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--c1), var(--c2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .dash-card:hover::before { transform: scaleX(1); }
+
+    .card-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card-title { display: flex; align-items: center; gap: 14px; }
+    .card-title h2 { font-size: 1.5rem; }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .chip {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 48px;
+      height: 48px;
+      font-size: 1.3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      box-shadow: 0 12px 22px -6px var(--c1);
+    }
+
+    .card-note { margin-bottom: 18px; font-size: .9rem; color: var(--muted); }
+    .section-heading { margin: 8px 0 12px; font-size: 1.05rem; }
+    .empty { padding: 20px 0; color: var(--muted); }
+
+    /* ==========================================================
+       Forms and messages
+       ========================================================== */
+    form { max-width: 420px; }
+
+    .form-group { margin-bottom: 14px; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .88rem;
+      font-weight: 600;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=password] {
+      width: 100%;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255, 138, 0, .15);
+    }
+
+    .error-msg,
+    .success-msg {
+      display: none;
+      margin-bottom: 14px;
+      padding: 11px 14px;
+      font-size: .9rem;
+      border-radius: 12px;
+    }
+
+    .error-msg   { color: #be123c; background: #fff1f2; border: 1px solid #fecdd3; }
+    .success-msg { color: #166534; background: #ecfdf3; border: 1px solid #bbf7d0; }
+
+    /* ==========================================================
+       Data tables
+       ========================================================== */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .admin-table { width: 100%; min-width: 720px; border-collapse: collapse; }
+
+    .admin-table th,
+    .admin-table td {
+      padding: 12px;
+      font-size: .9rem;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .admin-table th {
+      font-size: .74rem;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--ink);
+      border-bottom: 3px solid var(--accent);
+    }
+
+    .admin-table tbody tr:nth-child(even) td { background: #fdfaf4; }
+    .admin-table tbody tr:hover td { background: rgba(255, 138, 0, .08); }
+    .admin-table .actions { white-space: nowrap; }
+
+    .admin-table select {
+      padding: 8px 12px;
+      font: inherit;
+      font-size: .88rem;
+      color: var(--ink);
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    /* ==========================================================
+       MPIN lock screen
+       ========================================================== */
+    #mpinLockOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 138, 0, .3), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(124, 58, 237, .3), transparent 40%),
+        var(--ink);
+    }
+
+    .mpin-card {
+      width: 100%;
+      max-width: 350px;
+      padding: 36px 30px;
+      text-align: center;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+      animation: rise .6s both;
+    }
+
+    .mpin-title { margin-bottom: 4px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.45rem; font-weight: 800; color: var(--ink); }
+    .mpin-subtitle { margin-bottom: 20px; font-size: .85rem; color: var(--muted); }
+    #mpinInput { margin-bottom: 12px; font-size: 1.3rem; text-align: center; letter-spacing: 8px; }
+    #mpinError { min-height: 18px; margin-top: 10px; font-size: .85rem; color: #be123c; }
+    #mpinForgotLink { font-size: .82rem; color: var(--muted); }
+    #mpinForgotLink:hover { color: var(--accent); }
+
+    /* ==========================================================
+       Responsive
+       ========================================================== */
+    @media (max-width: 1100px) {
+      .nav-toggle { display: grid; }
+
+      nav {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 8px 20px 18px;
+        background: var(--cream);
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 14px 24px rgba(17, 19, 24, .12);
+      }
+
+      nav.nav-open { display: flex; }
+
+      nav a {
+        padding: 13px 8px;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+      }
+
+      nav a.menu-logout-link {
+        margin: 14px 0 0;
+        text-align: center;
+        border: 0;
+        border-radius: 999px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .brand p { display: none; }
+      .dash-card { padding: 20px 16px; }
+      .card-title h2 { font-size: 1.25rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
-<body class="admin-page">
 
-<div id="mpinLockOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0d2a5c,#123a7a); align-items:center; justify-content:center; font-family:inherit;">
-  <div style="background:#fff; border-radius:16px; padding:36px 32px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,0.35); text-align:center;">
-    <div style="font-size:1.3rem; font-weight:800; margin-bottom:6px; color:#0d2a5c;">Enter MPIN</div>
-    <div style="font-size:0.85rem; color:#64748b; margin-bottom:20px;">Quick unlock for LAXMAN TELECOM Admin</div>
-    <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN" style="width:100%; padding:12px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:1.3rem; text-align:center; letter-spacing:8px; margin-bottom:12px; box-sizing:border-box;">
-    <button id="mpinUnlockBtn" style="width:100%; padding:12px; border:none; border-radius:8px; background:#0d2a5c; color:#fff; font-weight:700; font-size:1rem; cursor:pointer;">Unlock</button>
-    <div id="mpinError" style="color:#dc2626; font-size:0.85rem; margin-top:10px; min-height:18px;"></div>
-    <div style="margin-top:14px;"><a href="#" id="mpinForgotLink" style="font-size:0.82rem; color:#64748b;">Forgot MPIN? Logout and login again</a></div>
-  </div>
-</div>
-<div id="adminAppRoot" style="display:none;">
-<header class="header">
-  <div class="logo" style="display:flex; align-items:center; gap:14px;">
-    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:52px; width:52px;">
-    <div>
-      <h1>LAXMAN TELECOM</h1>
-      <p>Admin Dashboard</p>
-    </div>
-  </div>
+<body>
 
-  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-
-  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
-  <nav>
-    <a href="index.html#home">Home</a>
-    <a href="#requestsSection" onclick="closeNav()">Service Requests</a>
-    <a href="#vendorSection" onclick="closeNav()">Vendor Accounts</a>
-    <a href="#concernsSection" onclick="closeNav()">Payment Concerns</a>
-    <a href="#settingsSection" onclick="closeNav()">Account Settings</a>
-    <a href="telecom_settlement_invoice_dashboard_print_enhanced_31.html">Recharge Settlement</a>
-    <a href="#" class="menu-logout-link" onclick="closeNav(); doLogout(); return false;">Logout</a>
-  </nav>
-</header>
-<div class="dash-wrapper">
-  <div class="dash-card" id="requestsSection" style="scroll-margin-top:100px;">
-    <div class="dash-top">
-      <h2>All Service Requests</h2>
-      <div style="display:flex; gap:10px; align-items:center;">
-        <a href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" class="logout-btn" style="text-decoration:none; display:inline-block;">Recharge Settlement Dashboard</a>
-        <button class="logout-btn" onclick="doLogout()">Logout</button>
+  <!-- ========== MPIN lock screen (shown only when an MPIN is set on this device) ========== -->
+  <div id="mpinLockOverlay" style="display: none;">
+    <div class="mpin-card">
+      <div class="mpin-title">Enter MPIN</div>
+      <div class="mpin-subtitle">Quick unlock for LAXMAN TELECOM Admin</div>
+      <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN">
+      <button class="auth-btn" id="mpinUnlockBtn">Unlock</button>
+      <div id="mpinError"></div>
+      <div style="margin-top: 14px;">
+        <a href="#" id="mpinForgotLink">Forgot MPIN? Logout and login again</a>
       </div>
     </div>
-    <div id="adminContent"><p>Loading...</p></div>
   </div>
 
-  <div class="dash-card" id="vendorSection" style="scroll-margin-top:100px;">
-    <h2>Vendor Accounts</h2>
-    <p style="color:#666; font-size:14px; margin-top:-6px;">Create a login for a vendor (e.g. Ankit Gupta) so they can view their own recharge settlement hisaab at <code>vendor.html</code>. The Vendor Name must exactly match the vendor name used in the Recharge Settlement Dashboard.</p>
-    <div class="error-msg" id="vendorErrorMsg"></div>
-    <div class="success-msg" id="vendorSuccessMsg"></div>
-    <form id="addVendorForm">
-      <div class="form-group">
-        <label>Vendor Name (must match exactly)</label>
-        <input type="text" id="newVendorName" required placeholder="Example: Ankit Gupta">
+  <!-- ========== Admin app (hidden until the admin is verified) ========== -->
+  <div id="adminAppRoot" style="display: none;">
+
+    <header class="header">
+      <div class="brand">
+        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+        <div>
+          <h1>LAXMAN TELECOM</h1>
+          <p>Admin Dashboard</p>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Vendor Email (their login)</label>
-        <input type="email" id="newVendorEmail" required placeholder="vendor@example.com">
-      </div>
-      <div class="form-group">
-        <label>Vendor Password</label>
-        <input type="text" id="newVendorPassword" required placeholder="At least 6 characters" minlength="6">
-      </div>
-      <button type="submit" class="auth-btn" id="addVendorBtn">Create Vendor Login</button>
-    </form>
-    <div id="vendorAccountsList" style="margin-top:20px;"><p>Loading vendor accounts...</p></div>
+
+      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+
+      <nav>
+        <a href="index.html#home">Home</a>
+        <a href="#requestsSection" onclick="closeNav()">Service Requests</a>
+        <a href="#vendorSection" onclick="closeNav()">Vendor Accounts</a>
+        <a href="#concernsSection" onclick="closeNav()">Payment Concerns</a>
+        <a href="#settingsSection" onclick="closeNav()">Account Settings</a>
+        <a href="telecom_settlement_invoice_dashboard_print_enhanced_31.html">Recharge Settlement</a>
+        <a href="#" class="menu-logout-link" onclick="closeNav(); doLogout(); return false;">Logout</a>
+      </nav>
+    </header>
+
+    <main class="dash-wrapper">
+
+      <!-- Service requests -->
+      <section class="dash-card violet" id="requestsSection">
+        <div class="card-top">
+          <div class="card-title">
+            <span class="chip">📋</span>
+            <h2>All Service Requests</h2>
+          </div>
+          <div class="card-actions">
+            <a href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" class="btn btn-dark">Recharge Settlement Dashboard</a>
+            <button class="btn btn-danger" onclick="doLogout()">Logout</button>
+          </div>
+        </div>
+        <div id="adminContent"><p class="empty">Loading...</p></div>
+      </section>
+
+      <!-- Vendor accounts -->
+      <section class="dash-card teal" id="vendorSection">
+        <div class="card-top">
+          <div class="card-title">
+            <span class="chip">🤝</span>
+            <h2>Vendor Accounts</h2>
+          </div>
+        </div>
+        <p class="card-note">
+          Create a login for a vendor (for example Ankit Gupta) so they can view their own recharge settlement statement at <code>vendor.html</code>.
+          The Vendor Name must exactly match the vendor name used in the Recharge Settlement Dashboard.
+        </p>
+        <div class="error-msg" id="vendorErrorMsg"></div>
+        <div class="success-msg" id="vendorSuccessMsg"></div>
+        <form id="addVendorForm">
+          <div class="form-group">
+            <label>Vendor Name (must match exactly)</label>
+            <input type="text" id="newVendorName" required placeholder="Example: Ankit Gupta">
+          </div>
+          <div class="form-group">
+            <label>Vendor Email (their login)</label>
+            <input type="email" id="newVendorEmail" required placeholder="vendor@example.com">
+          </div>
+          <div class="form-group">
+            <label>Vendor Password</label>
+            <input type="text" id="newVendorPassword" required minlength="6" placeholder="At least 6 characters">
+          </div>
+          <button type="submit" class="auth-btn" id="addVendorBtn">Create Vendor Login</button>
+        </form>
+        <div id="vendorAccountsList" style="margin-top: 24px;"><p class="empty">Loading vendor accounts...</p></div>
+      </section>
+
+      <!-- Payment concerns raised by vendors -->
+      <section class="dash-card orange" id="concernsSection">
+        <div class="card-top">
+          <div class="card-title">
+            <span class="chip">⚠️</span>
+            <h2>Payment Concerns</h2>
+          </div>
+        </div>
+        <p class="card-note">When a vendor raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
+        <div id="paymentConcernsList"><p class="empty">Loading...</p></div>
+      </section>
+
+      <!-- Account settings -->
+      <section class="dash-card indigo" id="settingsSection">
+        <div class="card-top">
+          <div class="card-title">
+            <span class="chip">⚙️</span>
+            <h2>Account Settings</h2>
+          </div>
+        </div>
+        <div class="error-msg" id="settingsErrorMsg"></div>
+        <div class="success-msg" id="settingsSuccessMsg"></div>
+
+        <h3 class="section-heading">Change Password</h3>
+        <form id="changePasswordForm">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" id="currentPasswordInput" required>
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="newPasswordInput" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirmPasswordInput" required minlength="6">
+          </div>
+          <button type="submit" class="auth-btn">Update Password</button>
+        </form>
+
+        <h3 class="section-heading" style="margin-top: 32px;">App MPIN (Quick Unlock)</h3>
+        <p class="card-note" style="margin-bottom: 12px;">
+          Set a 4-6 digit MPIN so you do not have to type your password every time you open the admin panel on this device.
+        </p>
+        <form id="setMpinForm">
+          <div class="form-group">
+            <label>New MPIN</label>
+            <input type="password" inputmode="numeric" id="newMpinInput" maxlength="6" minlength="4" required>
+          </div>
+          <div class="form-group">
+            <label>Confirm MPIN</label>
+            <input type="password" inputmode="numeric" id="confirmMpinInput" maxlength="6" minlength="4" required>
+          </div>
+          <button type="submit" class="auth-btn">Save MPIN</button>
+        </form>
+        <button type="button" class="btn btn-danger" id="removeMpinBtn" style="margin-top: 14px;">Remove MPIN from this device</button>
+      </section>
+
+    </main>
   </div>
 
-  <div class="dash-card" id="concernsSection" style="scroll-margin-top:100px;">
-    <h2>Payment Concerns</h2>
-    <p style="color:#666; font-size:14px; margin-top:-6px;">When a vendor raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
-    <div id="paymentConcernsList"><p>Loading...</p></div>
-  </div>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
 
-  <div class="dash-card" id="settingsSection" style="scroll-margin-top:100px;">
-    <h2>Account Settings</h2>
-    <div class="error-msg" id="settingsErrorMsg"></div>
-    <div class="success-msg" id="settingsSuccessMsg"></div>
+  <script>
+    /* ==========================================================
+       Helpers
+       ========================================================== */
+    const $ = (id) => document.getElementById(id);
 
-    <h3 style="margin-top:6px; font-size:16px;">Change Password</h3>
-    <form id="changePasswordForm">
-      <div class="form-group">
-        <label>Current Password</label>
-        <input type="password" id="currentPasswordInput" required>
-      </div>
-      <div class="form-group">
-        <label>New Password</label>
-        <input type="password" id="newPasswordInput" required minlength="6">
-      </div>
-      <div class="form-group">
-        <label>Confirm New Password</label>
-        <input type="password" id="confirmPasswordInput" required minlength="6">
-      </div>
-      <button type="submit" class="auth-btn">Update Password</button>
-    </form>
+    /** Escapes text before it is placed inside an HTML string. */
+    function esc(value) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      return String(value ?? '').replace(/[&<>"']/g, (ch) => map[ch]);
+    }
 
-    <h3 style="margin-top:26px; font-size:16px;">App MPIN (Quick Unlock)</h3>
-    <p style="font-size:13px; color:#666; margin-bottom:12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the admin panel on this device.</p>
-    <form id="setMpinForm">
-      <div class="form-group">
-        <label>New MPIN</label>
-        <input type="password" inputmode="numeric" id="newMpinInput" maxlength="6" minlength="4" required>
-      </div>
-      <div class="form-group">
-        <label>Confirm MPIN</label>
-        <input type="password" inputmode="numeric" id="confirmMpinInput" maxlength="6" minlength="4" required>
-      </div>
-      <button type="submit" class="auth-btn">Save MPIN</button>
-    </form>
-    <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:10px;">Remove MPIN from this device</button>
-  </div>
-</div>
-</div>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script>
-function toggleNav() {
-  document.querySelector('nav').classList.toggle('nav-open');
-  document.getElementById('navBackdrop').classList.toggle('nav-open');
-}
-function closeNav() {
-  document.querySelector('nav').classList.remove('nav-open');
-  document.getElementById('navBackdrop').classList.remove('nav-open');
-}
+    /** Shows a success or error box. prefix is 'settings' or 'vendor'. */
+    function showMessage(prefix, type, text) {
+      const shown = $(prefix + (type === 'error' ? 'ErrorMsg' : 'SuccessMsg'));
+      const hidden = $(prefix + (type === 'error' ? 'SuccessMsg' : 'ErrorMsg'));
+      shown.textContent = text;
+      shown.style.display = 'block';
+      hidden.style.display = 'none';
+    }
 
-function doLogout() {
-  auth.signOut().then(() => { window.location.href = 'login.html'; });
-}
+    /** Builds a scrollable table from a header list and ready-made row HTML. */
+    function buildTable(headers, rowsHtml) {
+      const head = headers.map((h) => `<th>${h}</th>`).join('');
+      return `<div class="table-wrap"><table class="admin-table"><thead><tr>${head}</tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
+    }
 
-// --- MPIN quick-unlock ---------------------------------------------
-async function sha256Hex(text) {
-  const enc = new TextEncoder().encode(text);
-  const digest = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
+    /** Formats a timestamp as DD-MM-YYYY, h:mm AM/PM. */
+    function formatDateTime(ms) {
+      if (!ms) return '';
+      const d = new Date(ms);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const hours = d.getHours();
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const period = hours >= 12 ? 'PM' : 'AM';
+      return `${day}-${month}-${d.getFullYear()}, ${hours % 12 || 12}:${minutes} ${period}`;
+    }
 
-function getMpinKey(uid) {
-  return 'mpinHash_' + uid;
-}
+    /* ==========================================================
+       Navigation and session
+       ========================================================== */
+    function toggleNav() {
+      document.querySelector('nav').classList.toggle('nav-open');
+      $('navBackdrop').classList.toggle('nav-open');
+    }
 
-function showMpinLock(uid, onUnlock) {
-  const overlay = document.getElementById('mpinLockOverlay');
-  overlay.style.display = 'flex';
-  const input = document.getElementById('mpinInput');
-  const errorEl = document.getElementById('mpinError');
-  input.value = '';
-  errorEl.textContent = '';
-  setTimeout(() => input.focus(), 100);
+    function closeNav() {
+      document.querySelector('nav').classList.remove('nav-open');
+      $('navBackdrop').classList.remove('nav-open');
+    }
 
-  async function attemptUnlock() {
-    const entered = input.value.trim();
-    if (!entered) return;
-    const hash = await sha256Hex(entered);
-    if (hash === localStorage.getItem(getMpinKey(uid))) {
-      overlay.style.display = 'none';
-      onUnlock();
-    } else {
-      errorEl.textContent = 'Incorrect MPIN. Please try again.';
+    function doLogout() {
+      auth.signOut().then(() => { window.location.href = 'login.html'; });
+    }
+
+    /* ==========================================================
+       MPIN quick unlock
+       The MPIN is stored only as a SHA-256 hash in this browser.
+       ========================================================== */
+    async function sha256Hex(text) {
+      const bytes = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function getMpinKey(uid) {
+      return 'mpinHash_' + uid;
+    }
+
+    function showMpinLock(uid, onUnlock) {
+      const overlay = $('mpinLockOverlay');
+      const input = $('mpinInput');
+      const errorEl = $('mpinError');
+
+      overlay.style.display = 'flex';
       input.value = '';
-      input.focus();
-    }
-  }
+      errorEl.textContent = '';
+      setTimeout(() => input.focus(), 100);
 
-  document.getElementById('mpinUnlockBtn').onclick = attemptUnlock;
-  input.onkeydown = (e) => { if (e.key === 'Enter') attemptUnlock(); };
-  document.getElementById('mpinForgotLink').onclick = (e) => {
-    e.preventDefault();
-    if (confirm('Logout and login again with your password?')) {
-      auth.signOut().then(() => location.reload());
-    }
-  };
-}
+      async function attemptUnlock() {
+        const entered = input.value.trim();
+        if (!entered) return;
 
-function showSettingsError(msg) {
-  const el = document.getElementById('settingsErrorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  document.getElementById('settingsSuccessMsg').style.display = 'none';
-}
-function showSettingsSuccess(msg) {
-  const el = document.getElementById('settingsSuccessMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  document.getElementById('settingsErrorMsg').style.display = 'none';
-}
-
-function startAdminPanel() {
-  document.getElementById('adminAppRoot').style.display = 'block';
-  loadAllRequests();
-  loadVendorAccounts();
-  loadPaymentConcerns();
-}
-
-auth.onAuthStateChanged((user) => {
-  if (!user || user.email !== ADMIN_EMAIL) {
-    window.location.href = 'login.html';
-    return;
-  }
-  const mpinHash = localStorage.getItem(getMpinKey(user.uid));
-  if (mpinHash) {
-    showMpinLock(user.uid, startAdminPanel);
-  } else {
-    startAdminPanel();
-  }
-});
-
-document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const current = document.getElementById('currentPasswordInput').value;
-  const newPass = document.getElementById('newPasswordInput').value;
-  const confirmPass = document.getElementById('confirmPasswordInput').value;
-  if (newPass !== confirmPass) { showSettingsError('New passwords do not match.'); return; }
-
-  const user = auth.currentUser;
-  const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
-  user.reauthenticateWithCredential(cred)
-    .then(() => user.updatePassword(newPass))
-    .then(() => {
-      showSettingsSuccess('Password updated successfully.');
-      document.getElementById('changePasswordForm').reset();
-    })
-    .catch((err) => showSettingsError(err.message));
-});
-
-document.getElementById('setMpinForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const pin = document.getElementById('newMpinInput').value.trim();
-  const confirmPin = document.getElementById('confirmMpinInput').value.trim();
-  if (!/^\d{4,6}$/.test(pin)) { showSettingsError('MPIN must be 4-6 digits.'); return; }
-  if (pin !== confirmPin) { showSettingsError('MPIN entries do not match.'); return; }
-  const hash = await sha256Hex(pin);
-  localStorage.setItem(getMpinKey(auth.currentUser.uid), hash);
-  showSettingsSuccess('MPIN saved. You can use it to unlock the admin panel next time on this device.');
-  document.getElementById('setMpinForm').reset();
-});
-
-document.getElementById('removeMpinBtn').addEventListener('click', function () {
-  if (!localStorage.getItem(getMpinKey(auth.currentUser.uid))) {
-    showSettingsSuccess('No MPIN is set on this device.');
-    return;
-  }
-  if (!confirm('Remove MPIN from this device? You will need your password to login next time.')) return;
-  localStorage.removeItem(getMpinKey(auth.currentUser.uid));
-  showSettingsSuccess('MPIN removed from this device.');
-});
-function loadAllRequests() {
-  Promise.all([
-    db.ref('requests').once('value'),
-    db.ref('users').once('value')
-  ]).then(([reqSnap, userSnap]) => {
-    const requestsByUser = reqSnap.val() || {};
-    const users = userSnap.val() || {};
-    let rows = [];
-    Object.entries(requestsByUser).forEach(([uid, userRequests]) => {
-      const profile = users[uid] || {};
-      Object.entries(userRequests).forEach(([reqId, r]) => {
-        rows.push({ uid, reqId, profile, ...r });
-      });
-    });
-    rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-    const container = document.getElementById('adminContent');
-    if (rows.length === 0) {
-      container.innerHTML = '<p>No requests yet.</p>';
-      return;
-    }
-    let table = `<table class="admin-table">
-      <tr><th>Customer</th><th>Contact</th><th>Service</th><th>Details</th><th>Date</th><th>Status</th></tr>`;
-    rows.forEach((r) => {
-      const date = r.createdAt ? new Date(r.createdAt).toLocaleString() : '';
-      table += `<tr>
-        <td>${r.profile.name || '(no name)'}</td>
-        <td>${r.profile.email || ''}${r.profile.phone ? '<br>' + r.profile.phone : ''}</td>
-        <td>${r.service}</td>
-        <td>${r.message || ''}</td>
-        <td>${date}</td>
-        <td>
-          <select onchange="updateStatus('${r.uid}','${r.reqId}',this.value)">
-            <option ${r.status === 'Pending' ? 'selected' : ''}>Pending</option>
-            <option ${r.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-            <option ${r.status === 'Done' ? 'selected' : ''}>Done</option>
-          </select>
-        </td>
-      </tr>`;
-    });
-    table += `</table>`;
-    container.innerHTML = table;
-  }).catch((err) => {
-    document.getElementById('adminContent').innerHTML = '<p>Error loading requests: ' + err.message + '</p>';
-  });
-}
-function updateStatus(uid, reqId, status) {
-  db.ref('requests/' + uid + '/' + reqId).update({ status });
-}
-
-// --- Payment Concerns (vendor-raised) ---------------------------------
-function formatDateTimeAdmin(ms) {
-  if (!ms) return '';
-  const d = new Date(ms);
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const year = d.getFullYear();
-  let hours = d.getHours();
-  const minutes = String(d.getMinutes()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
-  return `${day}-${month}-${year}, ${hours}:${minutes} ${ampm}`;
-}
-
-function loadPaymentConcerns() {
-  db.ref('telecomSettlement/paymentDisputes').on('value', (snap) => {
-    const val = snap.val() || {};
-    const container = document.getElementById('paymentConcernsList');
-    const rows = [];
-    Object.keys(val).forEach((vendorKey) => {
-      const disputes = val[vendorKey] || {};
-      Object.keys(disputes).forEach((disputeId) => {
-        const d = disputes[disputeId];
-        if (d.status === 'Pending') rows.push({ vendorKey, disputeId, ...d });
-      });
-    });
-    if (!rows.length) {
-      container.innerHTML = '<p>No pending concerns.</p>';
-      return;
-    }
-    rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-    let table = `<table class="admin-table">
-      <tr><th>Concern ID</th><th>Vendor</th><th>Mobile</th><th>Entry Date</th><th>Amount</th><th>Reason</th><th>Raised On</th><th>Action</th></tr>`;
-    rows.forEach((r) => {
-      let dateText = '';
-      if (r.date) {
-        const [y, m, d] = r.date.split('-');
-        dateText = `${d}-${m}-${y}`;
+        if (await sha256Hex(entered) === localStorage.getItem(getMpinKey(uid))) {
+          overlay.style.display = 'none';
+          onUnlock();
+        } else {
+          errorEl.textContent = 'Incorrect MPIN. Please try again.';
+          input.value = '';
+          input.focus();
+        }
       }
-      const concernId = 'CN-' + String(r.disputeId).slice(-6);
-      table += `<tr>
-        <td>${concernId}</td>
-        <td>${r.vendorName || ''}</td>
-        <td>${r.mobile || ''}</td>
-        <td>${dateText}</td>
-        <td>₹${Number(r.amount || 0).toFixed(2)}</td>
-        <td>${r.reason || ''}</td>
-        <td>${formatDateTimeAdmin(r.createdAt)}</td>
-        <td style="white-space:nowrap;">
-          <button class="logout-btn" onclick="resolveConcern('${r.vendorKey}','${r.disputeId}','${r.recordId}',true)">Mark Unpaid</button>
-          <button class="logout-btn" style="margin-left:6px;" onclick="resolveConcern('${r.vendorKey}','${r.disputeId}','${r.recordId}',false)">Reject</button>
-        </td>
-      </tr>`;
-    });
-    table += `</table>`;
-    container.innerHTML = table;
-  });
-}
 
-window.resolveConcern = function (vendorKey, disputeId, recordId, approve) {
-  if (approve) {
-    if (!confirm('Mark this entry as Unpaid? This will update the vendor\'s account.')) return;
-    db.ref('telecomSettlement/vendorView/' + vendorKey + '/' + recordId).once('value').then((snap) => {
-      const record = snap.val();
-      if (!record) { alert('This entry no longer exists.'); return; }
-      const updates = {};
-      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paymentStatus'] = 'UNPAID';
-      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidAmount'] = 0;
-      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/dueAmount'] = record.payable;
-      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidDate'] = '';
-      updates['telecomSettlement/vendorView/' + vendorKey + '/' + recordId + '/paidAt'] = null;
-      updates['telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId + '/status'] = 'Resolved-Unpaid';
-      updates['telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId + '/resolvedAt'] = Date.now();
-      db.ref().update(updates).catch((err) => alert('Could not update: ' + err.message));
-    });
-  } else {
-    if (!confirm('Reject this concern and keep the entry as Paid?')) return;
-    db.ref('telecomSettlement/paymentDisputes/' + vendorKey + '/' + disputeId).update({
-      status: 'Rejected',
-      resolvedAt: Date.now()
-    }).catch((err) => alert('Could not update: ' + err.message));
-  }
-};
-
-// --- Vendor Accounts management --------------------------------------
-function sanitizeVendorKey(vendorName) {
-  return (vendorName || 'vendor')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '') || 'vendor';
-}
-
-function showVendorError(msg) {
-  const el = document.getElementById('vendorErrorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  document.getElementById('vendorSuccessMsg').style.display = 'none';
-}
-function showVendorSuccess(msg) {
-  const el = document.getElementById('vendorSuccessMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-  document.getElementById('vendorErrorMsg').style.display = 'none';
-}
-
-function loadVendorAccounts() {
-  db.ref('vendorAccounts').on('value', (snap) => {
-    const val = snap.val() || {};
-    const container = document.getElementById('vendorAccountsList');
-    const entries = Object.entries(val);
-    if (!entries.length) {
-      container.innerHTML = '<p>No vendor accounts yet.</p>';
-      return;
+      $('mpinUnlockBtn').onclick = attemptUnlock;
+      input.onkeydown = (e) => { if (e.key === 'Enter') attemptUnlock(); };
+      $('mpinForgotLink').onclick = (e) => {
+        e.preventDefault();
+        if (confirm('Logout and login again with your password?')) {
+          auth.signOut().then(() => location.reload());
+        }
+      };
     }
-    let table = `<table class="admin-table">
-      <tr><th>Vendor Name</th><th>Email</th><th>Action</th></tr>`;
-    entries.forEach(([uid, v]) => {
-      table += `<tr>
-        <td>${v.name || ''}</td>
-        <td>${v.email || ''}</td>
-        <td><button class="logout-btn" onclick="removeVendorAccount('${uid}')">Remove Access</button></td>
-      </tr>`;
-    });
-    table += `</table>`;
-    container.innerHTML = table;
-  });
-}
 
-window.removeVendorAccount = function (uid) {
-  if (!confirm('Remove this vendor\'s access? They will no longer be able to log in to view their hisaab (their login itself is not deleted, only their access).')) return;
-  db.ref('vendorAccounts/' + uid).remove()
-    .then(() => showVendorSuccess('Vendor access removed.'))
-    .catch((err) => showVendorError(err.message));
-};
+    /* ==========================================================
+       Start-up: only the admin account may open this page
+       ========================================================== */
+    function startAdminPanel() {
+      $('adminAppRoot').style.display = 'block';
+      loadAllRequests();
+      loadVendorAccounts();
+      loadPaymentConcerns();
+    }
 
-document.getElementById('addVendorForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const name = document.getElementById('newVendorName').value.trim();
-  const email = document.getElementById('newVendorEmail').value.trim();
-  const password = document.getElementById('newVendorPassword').value;
-  const addBtn = document.getElementById('addVendorBtn');
-  addBtn.disabled = true;
+    auth.onAuthStateChanged((user) => {
+      if (!user || user.email !== ADMIN_EMAIL) {
+        window.location.href = 'login.html';
+        return;
+      }
 
-  // Use a secondary Firebase app instance so this does NOT sign the admin
-  // out of their own session (a normal createUserWithEmailAndPassword /
-  // signInWithEmailAndPassword call on the main app would otherwise switch
-  // the current session over to the vendor's account).
-  const secondaryApp = firebase.apps.find(a => a.name === 'Secondary') || firebase.initializeApp(firebaseConfig, 'Secondary');
-  const secondaryAuth = secondaryApp.auth();
-  const vendorKey = sanitizeVendorKey(name);
-
-  function grantAccess(uid) {
-    return db.ref('vendorAccounts/' + uid).set({ name, email, vendorKey })
-      .then(() => secondaryAuth.signOut());
-  }
-
-  secondaryAuth.createUserWithEmailAndPassword(email, password)
-    .then((cred) => grantAccess(cred.user.uid))
-    .then(() => {
-      showVendorSuccess('Vendor login created for ' + name + '. Share this email/password with them along with the vendor.html link.');
-      document.getElementById('addVendorForm').reset();
-      addBtn.disabled = false;
-    })
-    .catch((err) => {
-      if (err.code === 'auth/email-already-in-use') {
-        // This email already has a Firebase login (e.g. access was removed
-        // earlier but the underlying account still exists) - re-grant
-        // access to that same account instead of failing, as long as the
-        // password entered here matches their existing password.
-        secondaryAuth.signInWithEmailAndPassword(email, password)
-          .then((cred) => grantAccess(cred.user.uid))
-          .then(() => {
-            showVendorSuccess('Access restored for ' + name + ' using their existing login.');
-            document.getElementById('addVendorForm').reset();
-          })
-          .catch((signInErr) => {
-            if (signInErr.code === 'auth/wrong-password' || signInErr.code === 'auth/invalid-credential') {
-              showVendorError('This email already has a login, but the password entered here does not match their original password. Enter their original password to restore access, or use a different email.');
-            } else {
-              showVendorError(signInErr.message);
-            }
-          })
-          .finally(() => { addBtn.disabled = false; });
+      if (localStorage.getItem(getMpinKey(user.uid))) {
+        showMpinLock(user.uid, startAdminPanel);
       } else {
-        showVendorError(err.message);
-        addBtn.disabled = false;
+        startAdminPanel();
       }
     });
-});
-</script>
 
+    /* ==========================================================
+       Account settings: password and MPIN
+       ========================================================== */
+    $('changePasswordForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const current = $('currentPasswordInput').value;
+      const newPass = $('newPasswordInput').value;
+      const confirmPass = $('confirmPasswordInput').value;
+
+      if (newPass !== confirmPass) {
+        showMessage('settings', 'error', 'New passwords do not match.');
+        return;
+      }
+
+      const user = auth.currentUser;
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, current);
+
+      user.reauthenticateWithCredential(credential)
+        .then(() => user.updatePassword(newPass))
+        .then(() => {
+          showMessage('settings', 'success', 'Password updated successfully.');
+          $('changePasswordForm').reset();
+        })
+        .catch((err) => showMessage('settings', 'error', err.message));
+    });
+
+    $('setMpinForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pin = $('newMpinInput').value.trim();
+      const confirmPin = $('confirmMpinInput').value.trim();
+
+      if (!/^\d{4,6}$/.test(pin)) {
+        showMessage('settings', 'error', 'MPIN must be 4-6 digits.');
+        return;
+      }
+      if (pin !== confirmPin) {
+        showMessage('settings', 'error', 'MPIN entries do not match.');
+        return;
+      }
+
+      localStorage.setItem(getMpinKey(auth.currentUser.uid), await sha256Hex(pin));
+      showMessage('settings', 'success', 'MPIN saved. You can use it to unlock the admin panel next time on this device.');
+      $('setMpinForm').reset();
+    });
+
+    $('removeMpinBtn').addEventListener('click', () => {
+      const key = getMpinKey(auth.currentUser.uid);
+
+      if (!localStorage.getItem(key)) {
+        showMessage('settings', 'success', 'No MPIN is set on this device.');
+        return;
+      }
+      if (!confirm('Remove MPIN from this device? You will need your password to login next time.')) return;
+
+      localStorage.removeItem(key);
+      showMessage('settings', 'success', 'MPIN removed from this device.');
+    });
+
+    /* ==========================================================
+       Service requests
+       ========================================================== */
+    const REQUEST_STATUSES = ['Pending', 'In Progress', 'Done'];
+
+    function loadAllRequests() {
+      Promise.all([db.ref('requests').once('value'), db.ref('users').once('value')])
+        .then(([requestsSnap, usersSnap]) => {
+          const requestsByUser = requestsSnap.val() || {};
+          const users = usersSnap.val() || {};
+          const rows = [];
+
+          Object.entries(requestsByUser).forEach(([uid, userRequests]) => {
+            Object.entries(userRequests).forEach(([reqId, request]) => {
+              rows.push({ uid, reqId, profile: users[uid] || {}, ...request });
+            });
+          });
+
+          rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+          if (!rows.length) {
+            $('adminContent').innerHTML = '<p class="empty">No requests yet.</p>';
+            return;
+          }
+
+          const body = rows.map((r) => {
+            const date = r.createdAt ? new Date(r.createdAt).toLocaleString() : '';
+            const contact = esc(r.profile.email) + (r.profile.phone ? '<br>' + esc(r.profile.phone) : '');
+            const options = REQUEST_STATUSES
+              .map((s) => `<option ${r.status === s ? 'selected' : ''}>${s}</option>`)
+              .join('');
+
+            return `<tr>
+              <td>${esc(r.profile.name) || '(no name)'}</td>
+              <td>${contact}</td>
+              <td>${esc(r.service)}</td>
+              <td>${esc(r.message)}</td>
+              <td>${esc(date)}</td>
+              <td><select onchange="updateStatus('${r.uid}','${r.reqId}',this.value)">${options}</select></td>
+            </tr>`;
+          }).join('');
+
+          $('adminContent').innerHTML = buildTable(
+            ['Customer', 'Contact', 'Service', 'Details', 'Date', 'Status'], body
+          );
+        })
+        .catch((err) => {
+          $('adminContent').innerHTML = '<p class="empty">Error loading requests: ' + esc(err.message) + '</p>';
+        });
+    }
+
+    function updateStatus(uid, reqId, status) {
+      db.ref('requests/' + uid + '/' + reqId).update({ status });
+    }
+
+    /* ==========================================================
+       Payment concerns raised by vendors
+       ========================================================== */
+    function loadPaymentConcerns() {
+      db.ref('telecomSettlement/paymentDisputes').on('value', (snap) => {
+        const disputesByVendor = snap.val() || {};
+        const rows = [];
+
+        Object.keys(disputesByVendor).forEach((vendorKey) => {
+          const disputes = disputesByVendor[vendorKey] || {};
+          Object.keys(disputes).forEach((disputeId) => {
+            const dispute = disputes[disputeId];
+            if (dispute.status === 'Pending') rows.push({ vendorKey, disputeId, ...dispute });
+          });
+        });
+
+        if (!rows.length) {
+          $('paymentConcernsList').innerHTML = '<p class="empty">No pending concerns.</p>';
+          return;
+        }
+
+        rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        const body = rows.map((r) => {
+          const entryDate = r.date ? r.date.split('-').reverse().join('-') : '';
+          const concernId = 'CN-' + String(r.disputeId).slice(-6);
+          const args = `'${r.vendorKey}','${r.disputeId}','${r.recordId}'`;
+
+          return `<tr>
+            <td>${concernId}</td>
+            <td>${esc(r.vendorName)}</td>
+            <td>${esc(r.mobile)}</td>
+            <td>${entryDate}</td>
+            <td>₹${Number(r.amount || 0).toFixed(2)}</td>
+            <td>${esc(r.reason)}</td>
+            <td>${formatDateTime(r.createdAt)}</td>
+            <td class="actions">
+              <button class="btn btn-small btn-warn" onclick="resolveConcern(${args},true)">Mark Unpaid</button>
+              <button class="btn btn-small btn-ghost" onclick="resolveConcern(${args},false)">Reject</button>
+            </td>
+          </tr>`;
+        }).join('');
+
+        $('paymentConcernsList').innerHTML = buildTable(
+          ['Concern ID', 'Vendor', 'Mobile', 'Entry Date', 'Amount', 'Reason', 'Raised On', 'Action'], body
+        );
+      });
+    }
+
+    /** approve = true: entry becomes Unpaid again. approve = false: concern is rejected. */
+    function resolveConcern(vendorKey, disputeId, recordId, approve) {
+      const recordPath = `telecomSettlement/vendorView/${vendorKey}/${recordId}`;
+      const disputePath = `telecomSettlement/paymentDisputes/${vendorKey}/${disputeId}`;
+
+      if (!approve) {
+        if (!confirm('Reject this concern and keep the entry as Paid?')) return;
+        db.ref(disputePath)
+          .update({ status: 'Rejected', resolvedAt: Date.now() })
+          .catch((err) => alert('Could not update: ' + err.message));
+        return;
+      }
+
+      if (!confirm("Mark this entry as Unpaid? This will update the vendor's account.")) return;
+
+      db.ref(recordPath).once('value').then((snap) => {
+        const record = snap.val();
+        if (!record) {
+          alert('This entry no longer exists.');
+          return;
+        }
+
+        const updates = {};
+        updates[recordPath + '/paymentStatus'] = 'UNPAID';
+        updates[recordPath + '/paidAmount'] = 0;
+        updates[recordPath + '/dueAmount'] = record.payable;
+        updates[recordPath + '/paidDate'] = '';
+        updates[recordPath + '/paidAt'] = null;
+        updates[disputePath + '/status'] = 'Resolved-Unpaid';
+        updates[disputePath + '/resolvedAt'] = Date.now();
+
+        db.ref().update(updates).catch((err) => alert('Could not update: ' + err.message));
+      });
+    }
+
+    /* ==========================================================
+       Vendor accounts
+       ========================================================== */
+
+    /** Turns "Ankit Gupta" into "ankit-gupta" for use as a database key. */
+    function sanitizeVendorKey(vendorName) {
+      return (vendorName || 'vendor')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'vendor';
+    }
+
+    function loadVendorAccounts() {
+      db.ref('vendorAccounts').on('value', (snap) => {
+        const entries = Object.entries(snap.val() || {});
+
+        if (!entries.length) {
+          $('vendorAccountsList').innerHTML = '<p class="empty">No vendor accounts yet.</p>';
+          return;
+        }
+
+        const body = entries.map(([uid, vendor]) => `<tr>
+          <td>${esc(vendor.name)}</td>
+          <td>${esc(vendor.email)}</td>
+          <td><button class="btn btn-small btn-danger" onclick="removeVendorAccount('${uid}')">Remove Access</button></td>
+        </tr>`).join('');
+
+        $('vendorAccountsList').innerHTML = buildTable(['Vendor Name', 'Email', 'Action'], body);
+      });
+    }
+
+    function removeVendorAccount(uid) {
+      const message = "Remove this vendor's access? They will no longer be able to log in to view their statement " +
+        '(their login itself is not deleted, only their access).';
+      if (!confirm(message)) return;
+
+      db.ref('vendorAccounts/' + uid).remove()
+        .then(() => showMessage('vendor', 'success', 'Vendor access removed.'))
+        .catch((err) => showMessage('vendor', 'error', err.message));
+    }
+
+    $('addVendorForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = $('newVendorName').value.trim();
+      const email = $('newVendorEmail').value.trim();
+      const password = $('newVendorPassword').value;
+      const addBtn = $('addVendorBtn');
+      addBtn.disabled = true;
+
+      // A second Firebase app is used so that creating the vendor login does not
+      // sign the admin out of their own session.
+      const secondaryApp = firebase.apps.find((a) => a.name === 'Secondary')
+        || firebase.initializeApp(firebaseConfig, 'Secondary');
+      const secondaryAuth = secondaryApp.auth();
+      const vendorKey = sanitizeVendorKey(name);
+
+      function grantAccess(uid) {
+        return db.ref('vendorAccounts/' + uid).set({ name, email, vendorKey })
+          .then(() => secondaryAuth.signOut());
+      }
+
+      secondaryAuth.createUserWithEmailAndPassword(email, password)
+        .then((cred) => grantAccess(cred.user.uid))
+        .then(() => {
+          showMessage('vendor', 'success', 'Vendor login created for ' + name + '. Share this email and password with them along with the vendor.html link.');
+          $('addVendorForm').reset();
+          addBtn.disabled = false;
+        })
+        .catch((err) => {
+          if (err.code !== 'auth/email-already-in-use') {
+            showMessage('vendor', 'error', err.message);
+            addBtn.disabled = false;
+            return;
+          }
+
+          // The email already has a login (for example access was removed earlier).
+          // Restore access to that same account if the password entered matches.
+          secondaryAuth.signInWithEmailAndPassword(email, password)
+            .then((cred) => grantAccess(cred.user.uid))
+            .then(() => {
+              showMessage('vendor', 'success', 'Access restored for ' + name + ' using their existing login.');
+              $('addVendorForm').reset();
+            })
+            .catch((signInErr) => {
+              const wrongPassword = signInErr.code === 'auth/wrong-password' || signInErr.code === 'auth/invalid-credential';
+              showMessage('vendor', 'error', wrongPassword
+                ? 'This email already has a login, but the password entered here does not match their original password. Enter their original password to restore access, or use a different email.'
+                : signInErr.message);
+            })
+            .finally(() => { addBtn.disabled = false; });
+        });
+    });
+  </script>
 
 </body>
 </html>
