@@ -424,54 +424,5 @@ const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const
 ["home","services","about","contact"].forEach(id=>{const el=$(id);if(el)spy.observe(id==="home"?document.querySelector(".hero"):el)});
 render();watch();
 </script>
-  <!-- Diwali Widget Start -->
-<div id="diwali-widget" style="
-    position: fixed; 
-    bottom: 20px; 
-    right: 20px; 
-    background: linear-gradient(135deg, #800020, #b30000); 
-    color: #fff; 
-    padding: 15px 20px; 
-    border-radius: 15px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
-    font-family: 'Arial', sans-serif; 
-    text-align: center; 
-    z-index: 99999; 
-    border: 2px solid #ffd700;
-    animation: float 3s ease-in-out infinite;
-">
-    <!-- Animated Diya Emoji / Symbol -->
-    <div style="font-size: 40px; margin-bottom: 5px; animation: flicker 0.15s ease-in-out infinite alternate;">🪔</div>
-    <div style="font-weight: bold; font-size: 16px; color: #ffd700; margin-bottom: 2px;">शुभ दीपावली!</div>
-    <div style="font-size: 12px; opacity: 0.9;">Wishing you Light & Prosperity</div>
-    
-    <!-- Close Button -->
-    <button onclick="document.getElementById('diwali-widget').style.display='none';" style="
-        position: absolute; 
-        top: 5px; 
-        right: 8px; 
-        background: none; 
-        border: none; 
-        color: #fff; 
-        font-size: 14px; 
-        cursor: pointer; 
-        opacity: 0.6;
-    ">×</button>
-</div>
-
-<!-- Styles for Animation -->
-<style>
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0px); }
-    }
-    @keyframes flicker {
-        0% { transform: scale(1); opacity: 0.9; }
-        100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 10px #ffd700); }
-    }
-</style>
-<!-- Diwali Widget End -->
-
 </body>
 </html>
