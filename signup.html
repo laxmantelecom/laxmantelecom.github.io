@@ -169,7 +169,6 @@ function closeNav() {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script>
 function showTab(tab) {
   document.getElementById('tabEmailBtn').classList.toggle('active', tab === 'email');
   document.getElementById('tabPhoneBtn').classList.toggle('active', tab === 'phone');
@@ -227,7 +226,7 @@ function startResendVerificationCooldown() {
 
   let secondsLeft = 60;
   button.disabled = true;
-  button.textContent = 'Resend in 60s';
+  button.textContent = 'Resend in ' + secondsLeft + 's';
 
   resendVerificationTimer = setInterval(function () {
     secondsLeft -= 1;
@@ -243,22 +242,25 @@ function startResendVerificationCooldown() {
   }, 1000);
 }
 
-document.getElementById('resendVerificationBtn').addEventListener('click', function () {
-  const user = auth.currentUser;
-
-  if (!user) {
-    showError('Please sign in first.');
-    return;
-  }
-
+function triggerVerificationFlow(user) {
   user.sendEmailVerification()
     .then(function () {
-      alert('A verification email has been sent.');
+      window.open('https://mail.google.com/', '_blank');
+      showSuccess('A verification email has been sent. Please check your inbox.');
       startResendVerificationCooldown();
     })
     .catch(function (err) {
       showError(err.message);
     });
+}
+
+document.getElementById('resendVerificationBtn').addEventListener('click', function () {
+  const user = auth.currentUser;
+  if (!user) {
+    showError('Please sign in first.');
+    return;
+  }
+  triggerVerificationFlow(user);
 });
 
 document.getElementById('emailSignupForm').addEventListener('submit', function (e) {
@@ -275,16 +277,7 @@ document.getElementById('emailSignupForm').addEventListener('submit', function (
       });
     })
     .then(function (user) {
-      return user.sendEmailVerification().then(function () {
-        return user;
-      });
-    })
-    .then(function () {
-      alert('A verification email has been sent.');
-      return auth.signOut();
-    })
-    .then(function () {
-      window.location.href = 'login.html';
+      triggerVerificationFlow(user);
     })
     .catch(function (err) {
       showError(err.message);
@@ -364,9 +357,3 @@ document.getElementById('verifyOtpBtn').addEventListener('click', function () {
     });
 });
 
-startResendVerificationCooldown();
-</script>
-
-</body>
-</html>
-```
