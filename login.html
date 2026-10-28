@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +18,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;overflow-x:hidden}
-body::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:330px;background:radial-gradient(circle at 12% 10%,rgba(255,138,0,.32),transparent 38%),radial-gradient(circle at 92% 90%,rgba(124,58,237,.28),transparent 40%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,var(--ink)}
+body::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:330px;background:radial-gradient(circle at 12% 10%,rgba(255,138,0,.32),transparent 38%),radial-gradient(circle at 92% 9%,rgba(124,58,237,.2),transparent 34%),linear-gradient(180deg,#fff8ef 0%,var(--cream) 100%)}
 h1,h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.15}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
@@ -25,9 +26,8 @@ a{color:inherit;text-decoration:none}
 @keyframes up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
 @keyframes float{50%{transform:translateY(-8px)}}
 
-/* header */
-.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:70px;padding:0 max(20px,calc((100% - 1140px)/2));background:rgba(251,247,240,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.logo{gap:10px!important}
+.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:70px;padding:0 max(20px,calc((100% - 1140px)/2));background:rgba(251,247,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(17,19,24,.06)}
+.logo{display:flex;align-items:center;gap:10px}
 .logo img{border-radius:50%;height:40px!important;width:40px!important}
 .logo h1{font-size:1.15rem}
 .logo p{font-size:.68rem;color:var(--mute);margin-top:2px}
@@ -40,25 +40,22 @@ nav a.on{background:var(--ink);color:#fff}
 .nav-backdrop.nav-open{display:block}
 @media(max-width:900px){
   .nav-toggle{display:block}
-  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(17,19,24,.12)}
+  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 18px 38px -22px rgba(17,19,24,.45)}
   nav.nav-open{display:flex}
   nav a{border-radius:0;border-bottom:1px solid var(--line);padding:13px 8px}
   nav a.on{background:none;color:#b35f00;font-weight:600}
 }
 
-/* card */
-.auth-wrapper{width:92%;max-width:440px;margin:56px auto 70px;padding:34px 30px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px -16px rgba(17,19,24,.35);animation:up .8s cubic-bezier(.2,.8,.2,1) both}
+.auth-wrapper{width:92%;max-width:440px;margin:56px auto 70px;padding:34px 30px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px -16px rgba(17,19,24,.35);animation:up .45s ease}
 .auth-wrapper h2{text-align:center;font-size:1.8rem}
-.auth-wrapper h2::before{content:'👤';display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:50%;font-size:1.8rem;background:linear-gradient(135deg,#7c3aed,#c026d3);box-shadow:0 14px 26px -6px #7c3aed;animation:float 6s ease-in-out 1s infinite}
+.auth-wrapper h2::before{content:'👤';display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:50%;font-size:1.8rem;background:linear-gradient(135deg,#7c3aed,#c026d3);box-shadow:0 12px 28px -16px rgba(124,58,237,.8)}
 .sub{text-align:center;color:var(--mute);margin:6px 0 22px}
 
-/* tabs */
 .tab-switch{display:flex;gap:4px;background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:5px;margin-bottom:20px}
 .tab-switch button{flex:1;border:0;background:transparent;padding:10px;border-radius:999px;font:inherit;font-weight:600;font-size:.92rem;color:var(--mute);cursor:pointer;transition:all .25s}
 .tab-switch button:hover{color:var(--ink)}
 .tab-switch button.active{background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;box-shadow:0 8px 18px -6px #7c3aed}
 
-/* forms */
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
 input[type=text],input[type=email],input[type=password],input[type=tel]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s}
@@ -66,9 +63,17 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 .error-msg,.success-msg{display:none;border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:.9rem}
 .error-msg{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
 .success-msg{background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
-.auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.35);transition:transform .2s}
-.auth-btn:hover{transform:translateY(-3px)}
-.auth-btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s}
+
+.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0 16px;color:var(--mute);font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 14px;margin-bottom:14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
+.google-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px -12px rgba(17,19,24,.25);border-color:#d8dfe7}
+.google-btn svg{width:18px;height:18px;display:block}
+
+.auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:12px;cursor:pointer;box-shadow:0 18px 30px -18px rgba(255,138,0,.8);transition:transform .2s,box-shadow .2s}
+.auth-btn:hover{transform:translateY(-3px);box-shadow:0 18px 36px -18px rgba(255,138,0,.9)}
+.auth-btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .55s ease}
 .auth-btn:hover::after{left:150%}
 #recaptcha-container{display:flex;justify-content:center;margin:12px 0}
 .auth-link{text-align:center;font-size:.9rem;color:var(--mute);margin-top:18px}
@@ -83,8 +88,8 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 <body>
 
 <header class="header">
-  <div class="logo" style="display:flex; align-items:center; gap:14px;">
-    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px;">
+  <div class="logo">
+    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
     <div>
       <h1>LAXMAN TELECOM</h1>
       <p>Your Trusted Digital Service Center</p>
@@ -124,7 +129,6 @@ function closeNav() {
   <div class="error-msg" id="errorMsg"></div>
   <div class="success-msg" id="successMsg"></div>
 
-  <!-- EMAIL LOGIN -->
   <form id="emailLoginForm">
     <div class="form-group">
       <label>Email</label>
@@ -137,10 +141,24 @@ function closeNav() {
         <span id="toggleLoginPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; user-select:none;">👁️</span>
       </div>
     </div>
+
+    <div class="auth-divider">
+      <span>or</span>
+    </div>
+
+    <button type="button" class="google-btn" id="googleLoginBtn" aria-label="Continue with Google">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.7 1.22 9.2 3.6l6.8-6.8C35.9 2.5 30.5 0 24 0 14.6 0 6.4 5.4 2.5 13.3l7.9 6.1C12.2 14.4 17.5 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.8-2.1 5.1-4.5 6.7l7.3 5.7c4.3-3.9 6.9-9.8 6.9-16.4z"/>
+        <path fill="#FBBC05" d="M32.2 35.7c-1.9 1.3-4.4 2.1-8.2 2.1-6.5 0-11.9-4.3-13.8-10.1l-7.9 6.1C5.9 42 14.1 48 24 48c6.7 0 12.3-2.2 16.4-6.1l-8.2-6.2z"/>
+        <path fill="#34A853" d="M10.2 27.7A14.8 14.8 0 0 1 9.5 24c0-1.7.3-3.3.8-4.8L2.5 13.3A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.5 10.7l7.7-6.9z"/>
+      </svg>
+      Continue with Google
+    </button>
+
     <button type="submit" class="auth-btn">Login</button>
   </form>
 
-  <!-- PHONE LOGIN -->
   <form id="phoneLoginForm" class="hidden">
     <div class="form-group">
       <label>Mobile Number (with country code)</label>
@@ -203,7 +221,40 @@ function redirectAfterLogin(user) {
   }
 }
 
-// ---- EMAIL LOGIN ----
+function ensureUserProfile(user, fallbackPhone) {
+  return db.ref('users/' + user.uid).once('value').then((snap) => {
+    if (!snap.exists()) {
+      return db.ref('users/' + user.uid).set({
+        name: user.displayName || '',
+        phone: fallbackPhone || user.phoneNumber || '',
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+
+    const current = snap.val() || {};
+    const updates = {};
+
+    if (!current.name && (user.displayName || '')) {
+      updates.name = user.displayName || '';
+    }
+    if (!current.email && (user.email || '')) {
+      updates.email = user.email || '';
+    }
+    if (!current.phone && (fallbackPhone || user.phoneNumber || '')) {
+      updates.phone = fallbackPhone || user.phoneNumber || '';
+    }
+    if (!current.photoURL && (user.photoURL || '')) {
+      updates.photoURL = user.photoURL || '';
+    }
+
+    if (Object.keys(updates).length) {
+      return db.ref('users/' + user.uid).update(updates);
+    }
+  });
+}
+
 document.getElementById('emailLoginForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value.trim();
@@ -217,7 +268,21 @@ document.getElementById('emailLoginForm').addEventListener('submit', function (e
     .catch((err) => showError(err.message));
 });
 
-// ---- PHONE LOGIN ----
+document.getElementById('googleLoginBtn').addEventListener('click', function () {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+
+  auth.signInWithPopup(provider)
+    .then((result) => {
+      return ensureUserProfile(result.user, '').then(() => result.user);
+    })
+    .then((user) => {
+      showSuccess('Google login successful! Redirecting...');
+      setTimeout(() => redirectAfterLogin(user), 500);
+    })
+    .catch((err) => showError(err.message));
+});
+
 window.recaptchaVerifier = null;
 
 document.getElementById('sendOtpBtn').addEventListener('click', function () {
@@ -243,17 +308,7 @@ document.getElementById('verifyOtpBtn').addEventListener('click', function () {
 
   window.confirmationResult.confirm(code)
     .then((result) => {
-      // If this phone number never signed up before, create a basic profile
-      return db.ref('users/' + result.user.uid).once('value').then((snap) => {
-        if (!snap.exists()) {
-          return db.ref('users/' + result.user.uid).set({
-            name: '',
-            phone: phoneNumber,
-            email: '',
-            createdAt: firebase.database.ServerValue.TIMESTAMP
-          });
-        }
-      }).then(() => result.user);
+      return ensureUserProfile(result.user, phoneNumber).then(() => result.user);
     })
     .then((user) => {
       showSuccess('Login successful! Redirecting...');
@@ -265,3 +320,4 @@ document.getElementById('verifyOtpBtn').addEventListener('click', function () {
 
 </body>
 </html>
+```
