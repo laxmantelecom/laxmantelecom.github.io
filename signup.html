@@ -53,6 +53,14 @@
     height: 18px;
     display: block;
   }
+  .secondary-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+  .auth-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 </style>
 </head>
 <body>
@@ -132,6 +140,7 @@ function closeNav() {
     </button>
 
     <button type="submit" class="auth-btn">Sign Up</button>
+    <button type="button" class="auth-btn secondary-btn" id="resendVerificationBtn">Resend Verification Email</button>
   </form>
 
   <form id="phoneSignupForm" class="hidden">
@@ -199,6 +208,59 @@ function saveUserProfile(uid, data) {
   });
 }
 
+let resendVerificationTimer = null;
+
+function stopResendVerificationTimer() {
+  if (resendVerificationTimer) {
+    clearInterval(resendVerificationTimer);
+    resendVerificationTimer = null;
+  }
+}
+
+function startResendVerificationCooldown() {
+  const button = document.getElementById('resendVerificationBtn');
+  if (!button) {
+    return;
+  }
+
+  stopResendVerificationTimer();
+
+  let secondsLeft = 60;
+  button.disabled = true;
+  button.textContent = 'Resend in 60s';
+
+  resendVerificationTimer = setInterval(function () {
+    secondsLeft -= 1;
+
+    if (secondsLeft <= 0) {
+      stopResendVerificationTimer();
+      button.disabled = false;
+      button.textContent = 'Resend Verification Email';
+      return;
+    }
+
+    button.textContent = 'Resend in ' + secondsLeft + 's';
+  }, 1000);
+}
+
+document.getElementById('resendVerificationBtn').addEventListener('click', function () {
+  const user = auth.currentUser;
+
+  if (!user) {
+    showError('Please sign in first.');
+    return;
+  }
+
+  user.sendEmailVerification()
+    .then(function () {
+      alert('A verification email has been sent.');
+      startResendVerificationCooldown();
+    })
+    .catch(function (err) {
+      showError(err.message);
+    });
+});
+
 document.getElementById('emailSignupForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const name = document.getElementById('signupName').value.trim();
@@ -207,12 +269,26 @@ document.getElementById('emailSignupForm').addEventListener('submit', function (
   const password = document.getElementById('signupPassword').value;
 
   auth.createUserWithEmailAndPassword(email, password)
-    .then((cred) => saveUserProfile(cred.user.uid, { name, email, phone }))
-    .then(() => {
-      showSuccess('Account created! Redirecting...');
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+    .then(function (cred) {
+      return saveUserProfile(cred.user.uid, { name, email, phone }).then(function () {
+        return cred.user;
+      });
     })
-    .catch((err) => showError(err.message));
+    .then(function (user) {
+      return user.sendEmailVerification().then(function () {
+        return user;
+      });
+    })
+    .then(function () {
+      alert('A verification email has been sent.');
+      return auth.signOut();
+    })
+    .then(function () {
+      window.location.href = 'login.html';
+    })
+    .catch(function (err) {
+      showError(err.message);
+    });
 });
 
 document.getElementById('googleSignupBtn').addEventListener('click', function () {
@@ -220,7 +296,7 @@ document.getElementById('googleSignupBtn').addEventListener('click', function ()
   provider.setCustomParameters({ prompt: 'select_account' });
 
   auth.signInWithPopup(provider)
-    .then((result) => {
+    .then(function (result) {
       const user = result.user;
       const name = user.displayName || document.getElementById('signupName').value.trim() || '';
       const email = user.email || '';
@@ -228,11 +304,15 @@ document.getElementById('googleSignupBtn').addEventListener('click', function ()
 
       return saveUserProfile(user.uid, { name, email, phone });
     })
-    .then(() => {
+    .then(function () {
       showSuccess('Google sign-up successful! Redirecting...');
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+      setTimeout(function () {
+        window.location.href = 'dashboard.html';
+      }, 800);
     })
-    .catch((err) => showError(err.message));
+    .catch(function (err) {
+      showError(err.message);
+    });
 });
 
 window.recaptchaVerifier = null;
@@ -240,20 +320,28 @@ window.recaptchaVerifier = null;
 document.getElementById('sendOtpBtn').addEventListener('click', function () {
   const name = document.getElementById('phoneSignupName').value.trim();
   const phoneNumber = document.getElementById('phoneNumberInput').value.trim();
-  if (!name) { showError('Please enter your name first.'); return; }
-  if (!phoneNumber.startsWith('+')) { showError('Include country code, e.g. +91...'); return; }
+  if (!name) {
+    showError('Please enter your name first.');
+    return;
+  }
+  if (!phoneNumber.startsWith('+')) {
+    showError('Include country code, e.g. +91...');
+    return;
+  }
 
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
   }
 
   auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-    .then((confirmationResult) => {
+    .then(function (confirmationResult) {
       window.confirmationResult = confirmationResult;
       document.getElementById('otpGroup').classList.remove('hidden');
       showSuccess('OTP sent! Please check your SMS.');
     })
-    .catch((err) => showError(err.message));
+    .catch(function (err) {
+      showError(err.message);
+    });
 });
 
 document.getElementById('verifyOtpBtn').addEventListener('click', function () {
@@ -262,13 +350,21 @@ document.getElementById('verifyOtpBtn').addEventListener('click', function () {
   const phoneNumber = document.getElementById('phoneNumberInput').value.trim();
 
   window.confirmationResult.confirm(code)
-    .then((result) => saveUserProfile(result.user.uid, { name, phone: phoneNumber, email: '' }))
-    .then(() => {
-      showSuccess('Account created! Redirecting...');
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+    .then(function (result) {
+      return saveUserProfile(result.user.uid, { name, phone: phoneNumber, email: '' });
     })
-    .catch((err) => showError(err.message));
+    .then(function () {
+      showSuccess('Account created! Redirecting...');
+      setTimeout(function () {
+        window.location.href = 'dashboard.html';
+      }, 800);
+    })
+    .catch(function (err) {
+      showError(err.message);
+    });
 });
+
+startResendVerificationCooldown();
 </script>
 
 </body>
