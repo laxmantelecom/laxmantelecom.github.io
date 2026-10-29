@@ -1,4 +1,5 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration for LAXMAN TELECOM.
+// Loaded by every page after the Firebase SDK scripts.
 const firebaseConfig = {
   apiKey: "AIzaSyC2bhnG8gKF1bVfgtSWOimc3h-SR7bvIHw",
   authDomain: "laxman-telecom.firebaseapp.com",
@@ -10,9 +11,13 @@ const firebaseConfig = {
   measurementId: "G-S2686ZFNYE"
 };
 
+// Start Firebase only once, even if this file is loaded twice
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
 
 const auth = firebase.auth();
 const db = firebase.database();
+
+// The one account that is allowed to open the admin pages
+const ADMIN_EMAIL = "laxmantelecom.help@gmail.com";
