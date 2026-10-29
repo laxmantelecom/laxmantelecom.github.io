@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,15 +17,17 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;overflow-x:hidden}
-body::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:330px;background:radial-gradient(circle at 12% 10%,rgba(255,138,0,.32),transparent 38%),radial-gradient(circle at 92% 9%,rgba(124,58,237,.2),transparent 34%),linear-gradient(180deg,#fff8ef 0%,var(--cream) 100%)}
+body::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:330px;background:radial-gradient(circle at 12% 10%,rgba(255,138,0,.32),transparent 38%),radial-gradient(circle at 92% 90%,rgba(124,58,237,.28),transparent 40%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,var(--ink)}
 h1,h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.15}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 .hidden{display:none!important}
 @keyframes up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+@keyframes float{50%{transform:translateY(-8px)}}
 
-.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:70px;padding:0 max(20px,calc((100% - 1140px)/2));background:rgba(251,247,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(17,19,24,.06)}
-.logo{display:flex;align-items:center;gap:10px}
+/* header */
+.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:70px;padding:0 max(20px,calc((100% - 1140px)/2));background:rgba(251,247,240,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{gap:10px!important}
 .logo img{border-radius:50%;height:40px!important;width:40px!important}
 .logo h1{font-size:1.15rem}
 .logo p{font-size:.68rem;color:var(--mute);margin-top:2px}
@@ -39,22 +40,25 @@ nav a.on{background:var(--ink);color:#fff}
 .nav-backdrop.nav-open{display:block}
 @media(max-width:900px){
   .nav-toggle{display:block}
-  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 18px 38px -22px rgba(17,19,24,.45)}
+  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(17,19,24,.12)}
   nav.nav-open{display:flex}
   nav a{border-radius:0;border-bottom:1px solid var(--line);padding:13px 8px}
   nav a.on{background:none;color:#b35f00;font-weight:600}
 }
 
-.auth-wrapper{width:92%;max-width:440px;margin:56px auto 70px;padding:34px 30px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px -16px rgba(17,19,24,.35);animation:up .45s ease}
+/* card */
+.auth-wrapper{width:92%;max-width:440px;margin:56px auto 70px;padding:34px 30px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px -16px rgba(17,19,24,.35);animation:up .8s cubic-bezier(.2,.8,.2,1) both}
 .auth-wrapper h2{text-align:center;font-size:1.8rem}
-.auth-wrapper h2::before{content:'👤';display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:50%;font-size:1.8rem;background:linear-gradient(135deg,#7c3aed,#c026d3);box-shadow:0 12px 28px -16px rgba(124,58,237,.8)}
+.auth-wrapper h2::before{content:'👤';display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:50%;font-size:1.8rem;background:linear-gradient(135deg,#7c3aed,#c026d3);box-shadow:0 14px 26px -6px #7c3aed;animation:float 6s ease-in-out 1s infinite}
 .sub{text-align:center;color:var(--mute);margin:6px 0 22px}
 
+/* tabs */
 .tab-switch{display:flex;gap:4px;background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:5px;margin-bottom:20px}
 .tab-switch button{flex:1;border:0;background:transparent;padding:10px;border-radius:999px;font:inherit;font-weight:600;font-size:.92rem;color:var(--mute);cursor:pointer;transition:all .25s}
 .tab-switch button:hover{color:var(--ink)}
 .tab-switch button.active{background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;box-shadow:0 8px 18px -6px #7c3aed}
 
+/* forms */
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
 input[type=text],input[type=email],input[type=password],input[type=tel]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s}
@@ -62,23 +66,21 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 .error-msg,.success-msg{display:none;border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:.9rem}
 .error-msg{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
 .success-msg{background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
-
-.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0 16px;color:var(--mute);font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
-.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--line)}
-
-.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 14px;margin-bottom:14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
-.google-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px -12px rgba(17,19,24,.25);border-color:#d8dfe7}
-.google-btn svg{width:18px;height:18px;display:block}
-
-.auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:12px;cursor:pointer;box-shadow:0 18px 30px -18px rgba(255,138,0,.8);transition:transform .2s,box-shadow .2s}
-.auth-btn:hover{transform:translateY(-3px);box-shadow:0 18px 36px -18px rgba(255,138,0,.9)}
-.auth-btn:disabled{opacity:.7;cursor:not-allowed;transform:none;box-shadow:none}
-.auth-btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .55s ease}
+.auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.35);transition:transform .2s}
+.auth-btn:hover{transform:translateY(-3px)}
+.auth-btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s}
 .auth-btn:hover::after{left:150%}
 #recaptcha-container{display:flex;justify-content:center;margin:12px 0}
 .auth-link{text-align:center;font-size:.9rem;color:var(--mute);margin-top:18px}
 .auth-link a{color:#b35f00;font-weight:600}
 .auth-link a:hover{text-decoration:underline}
+
+.forgot-row{margin:-4px 0 16px;text-align:right}
+.forgot-row a,.back-row a{font-size:.88rem;font-weight:600;color:#b35f00}
+.forgot-row a:hover,.back-row a:hover{text-decoration:underline}
+.back-row{margin-top:16px;text-align:center}
+.reset-title{margin-bottom:4px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.25rem;color:var(--ink)}
+.reset-text{margin-bottom:16px;font-size:.9rem;color:var(--mute)}
 
 @media(max-width:520px){.logo p{display:none}.auth-wrapper{padding:28px 20px}}
 @media(max-width:400px){#recaptcha-container{transform:scale(.88);margin:12px -20px}}
@@ -121,7 +123,7 @@ function closeNav() {
   <h2>Login</h2>
   <p class="sub">Access your account</p>
 
-  <div class="tab-switch">
+  <div class="tab-switch" id="tabSwitch">
     <button id="tabEmailBtn" class="active" onclick="showTab('email')">Email</button>
     <button id="tabPhoneBtn" onclick="showTab('phone')">Mobile OTP</button>
   </div>
@@ -129,6 +131,7 @@ function closeNav() {
   <div class="error-msg" id="errorMsg"></div>
   <div class="success-msg" id="successMsg"></div>
 
+  <!-- EMAIL LOGIN -->
   <form id="emailLoginForm">
     <div class="form-group">
       <label>Email</label>
@@ -141,24 +144,23 @@ function closeNav() {
         <span id="toggleLoginPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; user-select:none;">👁️</span>
       </div>
     </div>
-
-    <div class="auth-divider">
-      <span>or</span>
-    </div>
-
-    <button type="button" class="google-btn" id="googleLoginBtn" aria-label="Continue with Google">
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.7 1.22 9.2 3.6l6.8-6.8C35.9 2.5 30.5 0 24 0 14.6 0 6.4 5.4 2.5 13.3l7.9 6.1C12.2 14.4 17.5 9.5 24 9.5z"/>
-        <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.8-2.1 5.1-4.5 6.7l7.3 5.7c4.3-3.9 6.9-9.8 6.9-16.4z"/>
-        <path fill="#FBBC05" d="M32.2 35.7c-1.9 1.3-4.4 2.1-8.2 2.1-6.5 0-11.9-4.3-13.8-10.1l-7.9 6.1C5.9 42 14.1 48 24 48c6.7 0 12.3-2.2 16.4-6.1l-8.2-6.2z"/>
-        <path fill="#34A853" d="M10.2 27.7A14.8 14.8 0 0 1 9.5 24c0-1.7.3-3.3.8-4.8L2.5 13.3A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.5 10.7l7.7-6.9z"/>
-      </svg>
-      Continue with Google
-    </button>
-
+    <div class="forgot-row"><a href="#" id="forgotLink">Forgot password?</a></div>
     <button type="submit" class="auth-btn">Login</button>
   </form>
 
+  <!-- FORGOT PASSWORD -->
+  <form id="resetForm" class="hidden">
+    <h3 class="reset-title">Reset password</h3>
+    <p class="reset-text">We'll email you a reset link.</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="resetEmail" required placeholder="you@example.com">
+    </div>
+    <button type="submit" class="auth-btn" id="resetBtn">Send Reset Link</button>
+    <p class="back-row"><a href="#" id="backToLogin">&larr; Back to login</a></p>
+  </form>
+
+  <!-- PHONE LOGIN -->
   <form id="phoneLoginForm" class="hidden">
     <div class="form-group">
       <label>Mobile Number (with country code)</label>
@@ -173,10 +175,6 @@ function closeNav() {
       <button type="button" class="auth-btn" id="verifyOtpBtn" style="margin-top:10px;">Verify & Login</button>
     </div>
   </form>
-
-  <div id="verificationSection" class="hidden" style="margin-top:18px;">
-    <button type="button" id="resendVerificationBtn" class="auth-btn">Resend Verification Email</button>
-  </div>
 
   <p class="auth-link">Don't have an account? <a href="signup.html">Sign up here</a></p>
 </div>
@@ -225,49 +223,7 @@ function redirectAfterLogin(user) {
   }
 }
 
-let pendingVerificationUser = null;
-let resendVerificationTimer = null;
-
-function hideVerificationSection() {
-  document.getElementById('verificationSection').classList.add('hidden');
-  document.getElementById('resendVerificationBtn').disabled = false;
-  document.getElementById('resendVerificationBtn').textContent = 'Resend Verification Email';
-  if (resendVerificationTimer) {
-    clearInterval(resendVerificationTimer);
-    resendVerificationTimer = null;
-  }
-}
-
-function showVerificationSection(user) {
-  pendingVerificationUser = user;
-  document.getElementById('verificationSection').classList.remove('hidden');
-  document.getElementById('resendVerificationBtn').disabled = false;
-  document.getElementById('resendVerificationBtn').textContent = 'Resend Verification Email';
-}
-
-function startVerificationCooldown() {
-  let secondsLeft = 60;
-  const btn = document.getElementById('resendVerificationBtn');
-  btn.disabled = true;
-  btn.textContent = 'Resend in ' + secondsLeft + 's';
-
-  if (resendVerificationTimer) {
-    clearInterval(resendVerificationTimer);
-  }
-
-  resendVerificationTimer = setInterval(function () {
-    secondsLeft -= 1;
-    if (secondsLeft <= 0) {
-      clearInterval(resendVerificationTimer);
-      resendVerificationTimer = null;
-      btn.disabled = false;
-      btn.textContent = 'Resend Verification Email';
-      return;
-    }
-    btn.textContent = 'Resend in ' + secondsLeft + 's';
-  }, 1000);
-}
-
+// ---- EMAIL LOGIN ----
 document.getElementById('emailLoginForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value.trim();
@@ -275,54 +231,83 @@ document.getElementById('emailLoginForm').addEventListener('submit', function (e
 
   auth.signInWithEmailAndPassword(email, password)
     .then((cred) => {
-      const user = cred.user;
-
-      if (!user.emailVerified) {
-        window.alert('Please verify your email before continuing.');
-        pendingVerificationUser = user;
-        auth.signOut()
-          .then(() => {
-            showVerificationSection(user);
-            document.getElementById('successMsg').style.display = 'none';
-            document.getElementById('errorMsg').style.display = 'none';
-          })
-          .catch((err) => showError(err.message));
-        return;
-      }
-
       showSuccess('Login successful! Redirecting...');
-      hideVerificationSection();
-      setTimeout(() => redirectAfterLogin(user), 500);
+      setTimeout(() => redirectAfterLogin(cred.user), 500);
     })
     .catch((err) => showError(err.message));
 });
 
-document.getElementById('googleLoginBtn').addEventListener('click', function () {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
+// ---- FORGOT PASSWORD ----
+let resetTimer = null;
 
-  auth.signInWithPopup(provider)
-    .then((result) => {
-      hideVerificationSection();
-      showSuccess('Login successful! Redirecting...');
-      setTimeout(() => redirectAfterLogin(result.user), 500);
-    })
-    .catch((err) => showError(err.message));
+function showResetForm(show) {
+  document.getElementById('tabSwitch').classList.toggle('hidden', show);
+  document.getElementById('resetForm').classList.toggle('hidden', !show);
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'none';
+
+  if (show) {
+    document.getElementById('emailLoginForm').classList.add('hidden');
+    document.getElementById('phoneLoginForm').classList.add('hidden');
+    document.getElementById('resetEmail').value = document.getElementById('loginEmail').value.trim();
+  } else {
+    showTab('email');
+  }
+}
+
+/** Disables the send button for 60 seconds so reset emails cannot be spammed. */
+function startResetCooldown() {
+  const button = document.getElementById('resetBtn');
+  let secondsLeft = 60;
+
+  clearInterval(resetTimer);
+  button.disabled = true;
+  button.textContent = 'Resend in ' + secondsLeft + 's';
+
+  resetTimer = setInterval(function () {
+    secondsLeft -= 1;
+    if (secondsLeft <= 0) {
+      clearInterval(resetTimer);
+      button.disabled = false;
+      button.textContent = 'Send Reset Link';
+      return;
+    }
+    button.textContent = 'Resend in ' + secondsLeft + 's';
+  }, 1000);
+}
+
+document.getElementById('forgotLink').addEventListener('click', function (e) {
+  e.preventDefault();
+  showResetForm(true);
 });
 
-document.getElementById('resendVerificationBtn').addEventListener('click', function () {
-  if (!pendingVerificationUser) {
-    return;
+document.getElementById('backToLogin').addEventListener('click', function (e) {
+  e.preventDefault();
+  showResetForm(false);
+});
+
+document.getElementById('resetForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const email = document.getElementById('resetEmail').value.trim();
+
+  function linkSent() {
+    showSuccess('Reset link sent. Please check your inbox and spam folder.');
+    startResetCooldown();
   }
 
-  pendingVerificationUser.sendEmailVerification()
-    .then(() => {
-      window.alert('Verification link resent. Please check your email.');
-      startVerificationCooldown();
-    })
-    .catch((err) => showError(err.message));
+  auth.sendPasswordResetEmail(email)
+    .then(linkSent)
+    .catch(function (err) {
+      // The same message is shown when no account exists, so emails cannot be probed.
+      if (err.code === 'auth/user-not-found') {
+        linkSent();
+      } else {
+        showError(err.message);
+      }
+    });
 });
 
+// ---- PHONE LOGIN ----
 window.recaptchaVerifier = null;
 
 document.getElementById('sendOtpBtn').addEventListener('click', function () {
@@ -348,6 +333,7 @@ document.getElementById('verifyOtpBtn').addEventListener('click', function () {
 
   window.confirmationResult.confirm(code)
     .then((result) => {
+      // If this phone number never signed up before, create a basic profile
       return db.ref('users/' + result.user.uid).once('value').then((snap) => {
         if (!snap.exists()) {
           return db.ref('users/' + result.user.uid).set({
@@ -369,4 +355,3 @@ document.getElementById('verifyOtpBtn').addEventListener('click', function () {
 
 </body>
 </html>
-```
