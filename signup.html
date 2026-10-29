@@ -603,6 +603,34 @@
     /* ==========================================================
        Sign up with mobile OTP
        ========================================================== */
+    /** Turns Firebase phone sign-in error codes into a message that says what to fix. */
+    function otpErrorMessage(err) {
+      const messages = {
+        'auth/invalid-phone-number': 'Enter the number with country code and no spaces, for example +919041880370.',
+        'auth/missing-phone-number': 'Please enter your mobile number.',
+        'auth/operation-not-allowed': 'Phone sign-in is turned off, or SMS to this country is blocked, in Firebase Authentication.',
+        'auth/unauthorized-domain': 'This website is not in the Firebase authorized domains list.',
+        'auth/billing-not-enabled': 'Sending SMS needs billing enabled (Blaze plan) on the Firebase project.',
+        'auth/quota-exceeded': 'The SMS limit of the Firebase project has been reached. Try again later.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a while and try again.',
+        'auth/captcha-check-failed': 'The security check failed. Please try again.',
+        'auth/invalid-app-credential': 'The security check was not accepted. Reload the page and try again.',
+        'auth/network-request-failed': 'Network error. Please check your internet connection.',
+        'auth/invalid-verification-code': 'Wrong OTP. Please check the code and try again.',
+        'auth/code-expired': 'This OTP has expired. Please request a new one.'
+      };
+      return messages[err.code] || err.message;
+    }
+    
+    /** A used or failed reCAPTCHA cannot be reused, so it is removed and drawn fresh on the next try. */
+    function resetRecaptcha() {
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+      document.getElementById('recaptcha-container').innerHTML = '';
+    }
+    
     window.recaptchaVerifier = null;
 
     $('sendOtpBtn').addEventListener('click', () => {
@@ -628,7 +656,11 @@
           $('otpGroup').classList.remove('hidden');
           showSuccess('OTP sent! Please check your SMS.');
         })
-        .catch((err) => showError(err.message));
+        .catch((err) => {
+          console.error('OTP send failed:', err.code, err.message);
+          resetRecaptcha();
+          showError(otpErrorMessage(err));
+        });
     });
 
     $('verifyOtpBtn').addEventListener('click', () => {
@@ -647,7 +679,7 @@
           showSuccess('Account created! Redirecting...');
           goToDashboard();
         })
-        .catch((err) => showError(err.message));
+        .catch((err) => showError(otpErrorMessage(err)));
     });
   </script>
 
