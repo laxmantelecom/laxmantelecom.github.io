@@ -397,7 +397,7 @@ document.getElementById('sendOtpBtn').addEventListener('click', function () {
   if (!phoneNumber.startsWith('+')) { showError('Include country code, e.g. +91...'); return; }
 
   if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'normal' }, auth);
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'normal' });
   }
 
   auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
