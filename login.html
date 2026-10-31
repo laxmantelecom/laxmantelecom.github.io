@@ -66,6 +66,7 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 .error-msg,.success-msg{display:none;border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:.9rem}
 .error-msg{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
 .success-msg{background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
+.error-msg.notice{color:#9a580a;background:#fff6e6;border:1px solid #fde0ae}
 .auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.35);transition:transform .2s}
 .auth-btn:hover{transform:translateY(-3px)}
 .auth-btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s}
@@ -221,10 +222,17 @@ document.getElementById('toggleLoginPassword').addEventListener('click', functio
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
+  el.classList.remove('notice');
   el.textContent = msg;
   el.style.display = 'block';
   document.getElementById('successMsg').style.display = 'none';
 }
+/** Same box as an error, in a calm amber colour, for service notices. */
+function showNotice(msg) {
+  showError(msg);
+  document.getElementById('errorMsg').classList.add('notice');
+}
+
 function showSuccess(msg) {
   const el = document.getElementById('successMsg');
   el.textContent = msg;
@@ -362,15 +370,24 @@ document.getElementById('resetForm').addEventListener('submit', function (e) {
 });
 
 // ---- PHONE LOGIN ----
-/** Turns Firebase phone sign-in error codes into a message that says what to fix. */
+/** Shown when OTP sending is not available yet (for example while SMS billing is not set up). */
+const OTP_NOTICE = 'Mobile OTP is being set up right now. Our team is working on it and it will be available very soon. Please use Email or Google for now.';
+
+/** Firebase codes that mean the SMS service itself is not ready, not that the customer did something wrong. */
+const OTP_UNAVAILABLE_CODES = [
+  'auth/billing-not-enabled',
+  'auth/quota-exceeded',
+  'auth/operation-not-allowed',
+  'auth/unauthorized-domain',
+  'auth/internal-error',
+  'auth/app-not-authorized'
+];
+
+/** Turns Firebase phone sign-in error codes into a short, customer-friendly message. */
 function otpErrorMessage(err) {
   const messages = {
     'auth/invalid-phone-number': 'Enter the number with country code and no spaces, for example +919041880370.',
     'auth/missing-phone-number': 'Please enter your mobile number.',
-    'auth/operation-not-allowed': 'Phone sign-in is turned off, or SMS to this country is blocked, in Firebase Authentication.',
-    'auth/unauthorized-domain': 'This website is not in the Firebase authorized domains list.',
-    'auth/billing-not-enabled': 'Sending SMS needs billing enabled (Blaze plan) on the Firebase project.',
-    'auth/quota-exceeded': 'The SMS limit of the Firebase project has been reached. Try again later.',
     'auth/too-many-requests': 'Too many attempts. Please wait a while and try again.',
     'auth/captcha-check-failed': 'The security check failed. Please try again.',
     'auth/invalid-app-credential': 'The security check was not accepted. Reload the page and try again.',
@@ -378,7 +395,16 @@ function otpErrorMessage(err) {
     'auth/invalid-verification-code': 'Wrong OTP. Please check the code and try again.',
     'auth/code-expired': 'This OTP has expired. Please request a new one.'
   };
-  return messages[err.code] || err.message;
+  return messages[err.code] || 'We could not complete this right now. Please try again in a little while, or use Email or Google.';
+}
+
+/** Shows an amber notice when the OTP service is unavailable, otherwise a normal error. */
+function showOtpProblem(err) {
+  if (OTP_UNAVAILABLE_CODES.includes(err.code)) {
+    showNotice(OTP_NOTICE);
+  } else {
+    showError(otpErrorMessage(err));
+  }
 }
 
 /** A used or failed reCAPTCHA cannot be reused, so it is removed and drawn fresh on the next try. */
@@ -409,7 +435,7 @@ document.getElementById('sendOtpBtn').addEventListener('click', function () {
     .catch((err) => {
       console.error('OTP send failed:', err.code, err.message);
       resetRecaptcha();
-      showError(otpErrorMessage(err));
+      showOtpProblem(err);
     });
 });
 
