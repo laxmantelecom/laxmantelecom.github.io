@@ -427,21 +427,10 @@
     .invoice-preview {
       position: relative;
       overflow: hidden;
-      max-width: 1000px;
-      margin: 0 auto;
-      color: #1c1f27;
       background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      box-shadow: 0 24px 50px -20px rgba(17, 19, 24, .3);
-    }
-
-    /* Thin brand-colour bar along the top edge */
-    .invoice-preview::before {
-      content: '';
-      display: block;
-      height: 8px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      border: 1px solid rgba(13, 42, 92, .16);
+      border-radius: 22px;
+      box-shadow: 0 24px 50px rgba(13, 42, 92, .16);
     }
 
     .invoice-watermark {
@@ -452,168 +441,167 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      opacity: .06;
+      opacity: .09;
       pointer-events: none;
     }
 
     .invoice-watermark img { width: 260px; height: 260px; margin-bottom: 10px; }
-    .invoice-watermark span { font-family: var(--font-head); font-size: 2.6rem; font-weight: 800; letter-spacing: 5px; color: var(--ink); }
+    .invoice-watermark span { font-family: var(--font-head); font-size: 2.6rem; font-weight: 800; letter-spacing: 5px; color: #0d2a5c; }
 
     .invoice-header, .invoice-meta-grid, .invoice-body { position: relative; z-index: 1; }
 
-    /* Letterhead */
     .invoice-header {
+      position: relative;
+      overflow: hidden;
       display: grid;
       grid-template-columns: 1.2fr .8fr;
-      gap: 24px;
-      padding: 28px 32px 22px;
-      border-bottom: 2px solid var(--ink);
+      color: #fff;
+      background: linear-gradient(135deg, #12275a, #0a1a3d);
     }
 
-    .inv-brand { display: flex; align-items: flex-start; gap: 16px; }
-    .inv-brand img { flex: none; width: 64px; height: 64px; border-radius: 50%; }
-    .inv-brand h3 { margin-bottom: 4px; font-size: 1.7rem; letter-spacing: .01em; }
-    .inv-brand p { margin: 2px 0; font-size: .9rem; color: #555a66; }
+    .invoice-header::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, .22), transparent 70%);
+    }
 
-    .inv-title { text-align: right; }
+    .invoice-header > div { position: relative; z-index: 1; padding: 26px; }
+    .invoice-header h3 { margin: 0 0 8px; font-family: var(--font-head); font-size: 1.9rem; letter-spacing: .3px; color: #fff; }
+    .invoice-header p { margin: 4px 0; color: rgba(255, 255, 255, .82); }
+
+    .invoice-brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .invoice-brand-row img { width: 46px; height: 46px; border-radius: 12px; box-shadow: 0 8px 18px rgba(0, 0, 0, .28); }
 
     .invoice-title-badge {
       display: inline-block;
-      padding: 3px 12px;
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .14em;
+      margin-bottom: 10px;
+      padding: 6px 14px;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: #b35f00;
-      background: #fff3e0;
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, .16);
+      border: 1px solid rgba(56, 189, 248, .4);
       border-radius: 999px;
     }
 
-    .inv-doc { margin: 8px 0 12px; font-family: var(--font-head); font-size: 1.9rem; font-weight: 800; letter-spacing: .04em; color: var(--ink); }
-
-    .inv-meta { margin-left: auto; border-collapse: collapse; font-size: .88rem; }
-    .inv-meta td { padding: 3px 0 3px 18px; text-align: right; }
-    .inv-meta td:first-child { color: #6b6f7b; }
-    .inv-meta td:last-child { font-weight: 700; color: var(--ink); }
-
-    .inv-badge { display: inline-block; padding: 2px 12px; font-size: .78rem; font-weight: 800; letter-spacing: .06em; border: 1.5px solid currentColor; border-radius: 999px; }
-    .inv-badge.paid { color: #15803d; background: #ecfdf3; }
-    .inv-badge.unpaid { color: #b91c1c; background: #fff1f2; }
-    .inv-badge.partial { color: #9a580a; background: #fff6e6; }
-    .inv-badge.mixed { color: #374151; background: #f3f4f6; }
-
-    /* Four detail boxes under the letterhead */
     .invoice-meta-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      margin: 22px 32px 0;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 6px;
+      border-top: 1px solid rgba(13, 42, 92, .12);
+      border-bottom: 1px solid rgba(13, 42, 92, .12);
     }
 
-    .invoice-meta-item { padding: 12px 16px; background: #faf7f2; border-right: 1px solid var(--line); }
+    .invoice-meta-item { padding: 14px 18px; background: #f4f8ff; border-right: 1px solid rgba(13, 42, 92, .12); }
     .invoice-meta-item:last-child { border-right: none; }
-    .inv-label { margin-bottom: 4px; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #6b6f7b; }
-    .inv-value { font-size: .98rem; font-weight: 700; color: var(--ink); }
+    .invoice-meta-item .label-small { font-size: .76rem; letter-spacing: .4px; text-transform: uppercase; color: #5b6b9c; }
+    .invoice-meta-item .value { color: #0d2a5c; }
 
-    .invoice-body { padding: 22px 32px 28px; }
+    .invoice-body { padding: 24px; }
 
     .invoice-purpose {
-      margin-bottom: 16px;
-      padding-left: 12px;
-      font-size: .88rem;
-      font-style: italic;
-      color: #4b5060;
-      border-left: 3px solid var(--accent);
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      font-size: .92rem;
+      font-weight: 600;
+      color: #37436b;
+      background: rgba(244, 248, 255, .9);
+      border-radius: 8px;
     }
 
-    /* Entries table */
-    .invoice-table { width: 100%; min-width: 880px; border-collapse: collapse; font-size: .88rem; page-break-inside: auto; }
-    .invoice-table th { padding: 10px; font-size: .72rem; letter-spacing: .06em; text-align: left; text-transform: uppercase; white-space: nowrap; color: #fff; background: var(--ink); }
-    .invoice-table td { padding: 9px 10px; border-bottom: 1px solid #e8e3d9; }
-    .invoice-table th:nth-child(n+5), .invoice-table td:nth-child(n+5) { text-align: right; }
-    .invoice-table th:nth-child(1), .invoice-table td:nth-child(1) { width: 46px; text-align: center; }
-    .invoice-table tbody tr:nth-child(even) td { background: #fbf9f5; }
-    .invoice-table tbody tr:hover td { background: #fbf9f5; }
-    .invoice-table tfoot td { padding: 11px 10px; font-weight: 800; text-align: right; background: #f4efe6; border-top: 2px solid var(--ink); border-bottom: none; }
-    .invoice-table tfoot td:first-child { text-align: left; letter-spacing: .06em; text-transform: uppercase; font-size: .78rem; }
+    .invoice-table { width: 100%; min-width: 900px; margin-top: 10px; border-collapse: collapse; background: transparent; page-break-inside: auto; }
+    .invoice-table th, .invoice-table td { padding: 10px 12px; font-size: .92rem; border: 1px solid rgba(13, 42, 92, .14); }
+    .invoice-table th { font-size: .82rem; letter-spacing: .4px; text-transform: uppercase; color: #fff; background: #0d2a5c; border-bottom: 1px solid rgba(13, 42, 92, .14); }
+    .invoice-table tbody tr:nth-child(even) td { background: rgba(13, 42, 92, .035); }
+    .invoice-table tbody tr:hover td { background: rgba(13, 42, 92, .035); }
 
-    /* Words, notes and totals */
-    .invoice-bottom { display: grid; grid-template-columns: 1fr 380px; gap: 28px; align-items: start; margin-top: 22px; }
-    .inv-words { margin-bottom: 14px; padding: 12px 14px; background: #faf7f2; border: 1px solid var(--line); border-radius: 6px; }
-    .inv-words > div:last-child { font-size: .92rem; font-weight: 700; color: var(--ink); }
-    .invoice-notes { font-size: .82rem; line-height: 1.7; color: #4b5060; }
+    .invoice-summary { width: min(420px, 100%); margin: 18px 0 0 auto; overflow: hidden; border: 1px solid rgba(13, 42, 92, .16); border-radius: 14px; }
 
-    .invoice-summary { overflow: hidden; border: 1px solid var(--line); border-radius: 6px; }
-    .invoice-summary-row { display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; font-size: .9rem; color: #2c2f38; border-bottom: 1px solid var(--line); }
-    .invoice-summary-row strong { white-space: nowrap; }
-    .invoice-summary-row.total { font-size: 1.05rem; font-weight: 800; color: #fff; background: var(--ink); border-bottom: none; }
-
-    .inv-sign { display: flex; justify-content: flex-end; margin-top: 34px; }
-    .inv-sign-box { width: 230px; text-align: center; }
-    .inv-sign-space { height: 54px; }
-    .inv-sign-line { padding-top: 6px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #6b6f7b; border-top: 1px solid var(--ink); }
-    .inv-sign-name { font-size: .9rem; font-weight: 700; }
-
-    .inv-foot { margin-top: 22px; padding-top: 12px; font-size: .78rem; text-align: center; color: #8a8f9c; border-top: 1px dashed var(--line); }
-
-    @media (max-width: 1100px) {
-      .invoice-header, .invoice-meta-grid, .invoice-bottom { grid-template-columns: 1fr; }
-      .inv-title { text-align: left; }
-      .inv-meta { margin-left: 0; }
-      .inv-meta td { padding: 3px 18px 3px 0; text-align: left; }
+    .invoice-summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      font-weight: 700;
+      color: #29335c;
+      background: rgba(251, 253, 255, .9);
+      border-bottom: 1px solid rgba(13, 42, 92, .1);
     }
+
+    .invoice-summary-row:last-child { border-bottom: none; }
+    .invoice-summary-row.total { font-size: 1.05rem; color: #fff; background: linear-gradient(135deg, #0d2a5c, #123a7a); }
+
+    .invoice-notes {
+      margin-top: 18px;
+      padding: 16px;
+      font-size: .9rem;
+      font-weight: 600;
+      line-height: 1.6;
+      color: #37436b;
+      background: rgba(244, 248, 255, .9);
+      border: 1px solid rgba(13, 42, 92, .14);
+      border-radius: 14px;
+    }
+
+    .print-signature, .print-footnote { display: none; }
 
     /* ==========================================================
-       Print layout (A4 portrait)
+       Print layout (A4 portrait letterhead)
        ========================================================== */
-    @page { size: A4 portrait; margin: 12mm; }
+    @page { size: A4 portrait; margin: 14mm 12mm; }
 
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      html, body { background: #fff !important; font-family: var(--font-body) !important; font-size: 10px; color: #1c1f27 !important; }
+      html, body { background: #fff !important; font-family: var(--font-body) !important; font-size: 10.5px; color: #1a2036 !important; }
       header, .hero, #overview, .hide-while-printing, footer, .section-head { display: none !important; }
       .rv { opacity: 1 !important; transform: none !important; }
       .container { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
       #invoiceSection { display: block !important; padding: 0 !important; }
 
-      .invoice-preview { max-width: none !important; overflow: visible !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
-      .invoice-preview::before { height: 5pt; }
-      .invoice-watermark { position: fixed !important; inset: 0 !important; opacity: .06 !important; }
-      .invoice-watermark img { width: 170pt !important; height: 170pt !important; }
+      .invoice-preview { width: 100% !important; overflow: visible !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
+
+      .invoice-header { display: block !important; margin-bottom: 10pt; padding-bottom: 10pt !important; color: #0d2a5c !important; background: #fff !important; border-bottom: 2.5pt solid #0d2a5c !important; }
+      .invoice-header::after { display: none !important; }
+      .invoice-header > div { padding: 0 !important; }
+      .invoice-header > div:first-child { margin-bottom: 8pt; }
+      .invoice-header h3 { font-family: var(--font-head) !important; font-size: 19pt !important; font-weight: 700 !important; letter-spacing: .4pt; color: #0d2a5c !important; }
+      .invoice-header p { font-size: 9pt !important; color: #4b5573 !important; }
+      .invoice-header > div:last-child p:first-child { font-family: var(--font-head) !important; font-size: 14pt !important; font-weight: 700 !important; letter-spacing: .6pt; color: #0d2a5c !important; }
+
+      .invoice-watermark { position: fixed !important; inset: 0 !important; opacity: .10 !important; }
+      .invoice-watermark img { width: 160pt !important; height: 160pt !important; }
       .invoice-watermark span { font-size: 22pt !important; }
 
-      .invoice-header { grid-template-columns: 1.15fr .85fr !important; gap: 14pt !important; padding: 12pt 0 10pt !important; border-bottom: 2pt solid #111318 !important; }
-      .inv-brand img { width: 42pt !important; height: 42pt !important; }
-      .inv-brand h3 { font-size: 18pt !important; }
-      .inv-brand p { font-size: 8.5pt !important; }
-      .inv-doc { margin: 5pt 0 7pt !important; font-size: 16pt !important; }
-      .inv-meta { font-size: 8.5pt !important; }
-      .invoice-title-badge { font-size: 7pt !important; }
+      .invoice-brand-row img { width: 30pt !important; height: 30pt !important; box-shadow: none !important; }
+      .invoice-title-badge { color: #0a7ba8 !important; background: transparent !important; border: .75pt solid #38bdf8 !important; }
 
-      .invoice-meta-grid { grid-template-columns: repeat(4, 1fr) !important; margin: 10pt 0 0 !important; border: .75pt solid #d9d2c3 !important; }
-      .invoice-meta-item { padding: 7pt 9pt !important; background: #faf7f2 !important; border-right: .75pt solid #e6e0d3 !important; }
-      .inv-label { font-size: 7pt !important; }
-      .inv-value { font-size: 9pt !important; }
+      .invoice-meta-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; margin-bottom: 10pt; overflow: hidden; border: .75pt solid #cfd8ea !important; border-radius: 6pt; }
+      .invoice-meta-item { padding: 8pt 9pt !important; background: #f7faf9 !important; border-right: .75pt solid #dfe6f2 !important; }
+      .invoice-meta-item .label-small { font-size: 7.5pt !important; letter-spacing: .3pt; text-transform: uppercase; color: #6b7494 !important; }
+      .invoice-meta-item .value { font-size: 9.5pt !important; font-weight: 700 !important; color: #14213d !important; }
 
-      .invoice-body { padding: 12pt 0 0 !important; }
-      .invoice-purpose { margin-bottom: 9pt !important; font-size: 8.5pt !important; }
+      .invoice-body { padding: 0 !important; }
+      .invoice-purpose { margin-bottom: 10pt !important; font-size: 8.5pt !important; color: #37436b !important; }
       .table-wrap { overflow: visible !important; border: none !important; }
 
       /* Ten columns sized to fit the portrait page width */
-      .invoice-table { width: 100% !important; min-width: 0 !important; table-layout: fixed !important; font-size: 8pt !important; }
-      .invoice-table th, .invoice-table td { padding: 4pt 3pt !important; word-break: break-word; border: .6pt solid #cfc8b8 !important; }
-      .invoice-table th { font-size: 7pt !important; letter-spacing: .1pt; color: #fff !important; background: #111318 !important; }
-      .invoice-table tbody tr:nth-child(even) td { background: #fbf9f5 !important; }
-      .invoice-table tfoot td { background: #f4efe6 !important; border-top: 1.5pt solid #111318 !important; }
+      .invoice-table { width: 100% !important; min-width: 0 !important; margin-top: 0 !important; table-layout: fixed !important; border-collapse: collapse !important; font-size: 8pt !important; }
+      .invoice-table th, .invoice-table td { padding: 4pt 3pt !important; text-align: left; word-break: break-word; border: .6pt solid #b9c3da !important; }
+      .invoice-table th { font-size: 7.5pt !important; font-weight: 700 !important; letter-spacing: .2pt; text-transform: uppercase; color: #fff !important; background: #0d2a5c !important; }
+      .invoice-table tbody tr:nth-child(even) td { background: #f4f8f7 !important; }
       .invoice-table thead { display: table-header-group; }
-      .invoice-table tfoot { display: table-row-group; }
+      .invoice-table tfoot { display: table-footer-group; }
 
       .invoice-table th:nth-child(1), .invoice-table td:nth-child(1) { width: 5%; text-align: center; }
-      .invoice-table th:nth-child(2), .invoice-table td:nth-child(2) { width: 10%; text-align: left; }
-      .invoice-table th:nth-child(3), .invoice-table td:nth-child(3) { width: 13%; text-align: left; }
-      .invoice-table th:nth-child(4), .invoice-table td:nth-child(4) { width: 10%; text-align: left; }
+      .invoice-table th:nth-child(2), .invoice-table td:nth-child(2) { width: 10%; }
+      .invoice-table th:nth-child(3), .invoice-table td:nth-child(3) { width: 13%; }
+      .invoice-table th:nth-child(4), .invoice-table td:nth-child(4) { width: 10%; }
       .invoice-table th:nth-child(5), .invoice-table td:nth-child(5),
       .invoice-table th:nth-child(7), .invoice-table td:nth-child(7),
       .invoice-table th:nth-child(8), .invoice-table td:nth-child(8),
@@ -621,21 +609,18 @@
       .invoice-table th:nth-child(10), .invoice-table td:nth-child(10) { width: 10.4%; text-align: right; }
       .invoice-table th:nth-child(6), .invoice-table td:nth-child(6) { width: 7%; text-align: right; }
 
-      .invoice-bottom { grid-template-columns: 1fr 250pt !important; gap: 16pt !important; margin-top: 12pt !important; }
-      .inv-words { padding: 7pt 9pt !important; margin-bottom: 9pt !important; }
-      .inv-words > div:last-child { font-size: 8.5pt !important; }
-      .invoice-notes { font-size: 7.8pt !important; line-height: 1.55 !important; }
-      .invoice-summary { border: .75pt solid #d9d2c3 !important; }
-      .invoice-summary-row { padding: 5.5pt 8pt !important; font-size: 8.5pt !important; background: #fff !important; border-bottom: .5pt solid #e6e0d3 !important; }
-      .invoice-summary-row.total { font-size: 9.5pt !important; color: #fff !important; background: #111318 !important; }
+      .invoice-summary { width: min(300px, 62%) !important; margin-top: 12pt !important; border: .75pt solid #cfd8ea !important; border-radius: 6pt; }
+      .invoice-summary-row { padding: 6pt 9pt !important; font-size: 8.5pt !important; background: #fff !important; }
+      .invoice-summary-row.total { font-size: 9.5pt !important; color: #0d2a5c !important; background: #eaf2ff !important; }
 
-      .inv-sign { margin-top: 30pt !important; }
-      .inv-sign-space { height: 40pt !important; }
-      .inv-foot { margin-top: 14pt !important; font-size: 7pt !important; }
+      .invoice-notes { margin-top: 12pt !important; padding: 9pt 10pt !important; font-size: 7.8pt !important; font-weight: 500 !important; line-height: 1.55; color: #37436b !important; background: #f8fafc !important; border: .75pt solid #dfe6f2 !important; border-radius: 6pt; }
+
+      .print-signature { display: flex !important; justify-content: flex-end; margin-top: 34pt !important; }
+      .print-footnote { display: block !important; margin-top: 16pt; font-size: 7pt; font-style: italic; text-align: center; color: #8891ac; }
 
       button { display: none !important; }
       tr, td, th { page-break-inside: avoid; }
-      .invoice-bottom, .inv-sign, .invoice-summary { page-break-inside: avoid; }
+      .invoice-summary, .print-signature { page-break-inside: avoid; }
     }
 
     /* ==========================================================
@@ -1055,52 +1040,45 @@
           <img src="laxman-telecom-icon-round.png" alt="">
           <span>LAXMAN TELECOM</span>
         </div>
-
-        <!-- Letterhead -->
         <div class="invoice-header">
-          <div class="inv-brand">
-            <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
-            <div>
-              <h3 id="invoiceShopName">LAXMAN TELECOM</h3>
-              <p id="invoiceShopAddress">Puneet Nagar, Ludhiana, Punjab 141008</p>
-              <p><span id="invoiceShopPhone">+91 9041880370</span> | <span id="invoiceShopEmail">laxmantelecom.help@gmail.com</span></p>
+          <div>
+            <div class="invoice-brand-row">
+              <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+              <h3 id="invoiceShopName" style="margin:0;">LAXMAN TELECOM</h3>
             </div>
+            <p id="invoiceShopAddress">Puneet Nagar, Ludhiana, Punjab 141008</p>
+            <p><span id="invoiceShopPhone">+91 9041880370</span> | <span id="invoiceShopEmail">laxmantelecom.help@gmail.com</span></p>
           </div>
-          <div class="inv-title">
+          <div>
             <span class="invoice-title-badge">Recharge Settlement</span>
-            <h2 class="inv-doc">PURCHASE INVOICE</h2>
-            <table class="inv-meta">
-              <tr><td>Invoice No.</td><td id="invoiceNoText">LTX-RPI-2026-0408</td></tr>
-              <tr><td>Date of Issue</td><td id="invoiceDateIssued">--</td></tr>
-              <tr><td>Statement Period</td><td id="invoiceIssueDate">--</td></tr>
-              <tr><td>Payment Status</td><td><span class="inv-badge paid" id="invoicePaymentStatus">PAID</span></td></tr>
-            </table>
+            <p style="font-size:1.6rem; font-weight:800; margin:0 0 10px;">PURCHASE INVOICE</p>
+            <p><strong>Invoice No.:</strong> <span id="invoiceNoText">LTX-RPI-2026-0408</span></p>
+            <p><strong>Date Range:</strong> <span id="invoiceIssueDate">--</span></p>
+            <p><strong>Payment Status:</strong> <span id="invoicePaymentStatus">PAID</span></p>
           </div>
         </div>
 
-        <!-- Vendor and settlement details -->
         <div class="invoice-meta-grid">
           <div class="invoice-meta-item">
-            <div class="inv-label">Supplier / Vendor</div>
-            <div class="inv-value" id="invoiceVendor">Ankit Gupta</div>
+            <div class="label-small">Supplier / Vendor</div>
+            <div class="value" style="font-size:1.2rem; margin-top:8px;" id="invoiceVendor">Ankit Gupta</div>
           </div>
           <div class="invoice-meta-item">
-            <div class="inv-label">Operator</div>
-            <div class="inv-value" id="invoiceOperator">All Operators</div>
+            <div class="label-small">Operator</div>
+            <div class="value" style="font-size:1.2rem; margin-top:8px;" id="invoiceOperator">All Operators</div>
           </div>
           <div class="invoice-meta-item">
-            <div class="inv-label">Settlement Basis</div>
-            <div class="inv-value" id="invoiceSettlementBasis">After Commission Deduction</div>
+            <div class="label-small">Settlement Basis</div>
+            <div class="value" style="font-size:1rem; margin-top:8px;" id="invoiceSettlementBasis">After Commission Deduction</div>
           </div>
           <div class="invoice-meta-item">
-            <div class="inv-label">Paid Details</div>
-            <div class="inv-value" id="invoicePaidDetails">Paid Amount / Due Amount</div>
+            <div class="label-small">Paid Details</div>
+            <div class="value" style="font-size:1rem; margin-top:8px;" id="invoicePaidDetails">Paid Amount / Due Amount</div>
           </div>
         </div>
 
         <div class="invoice-body">
           <div class="invoice-purpose" id="invoicePurposeText">Statement Purpose: Settlement of recharge entries procured from vendor on behalf of the shop, with commission earned deducted from the gross recharge value.</div>
-
           <div class="table-wrap" style="border:none;">
             <table class="invoice-table">
               <thead>
@@ -1118,53 +1096,25 @@
                 </tr>
               </thead>
               <tbody id="invoiceTableBody"></tbody>
-              <tfoot id="invoiceTableFoot">
-                <tr>
-                  <td colspan="4">Total</td>
-                  <td id="ftAmount">0.00</td>
-                  <td></td>
-                  <td id="ftCommission">0.00</td>
-                  <td id="ftPayable">0.00</td>
-                  <td id="ftPaid">0.00</td>
-                  <td id="ftDue">0.00</td>
-                </tr>
-              </tfoot>
             </table>
           </div>
           <div id="invoiceEmptyState" class="empty-box" style="margin-top:14px; display:none;">No invoice data available for the current filters.</div>
 
-          <div class="invoice-bottom">
-            <div>
-              <div class="inv-words">
-                <div class="inv-label">Balance due (in words)</div>
-                <div id="invoiceWords">Zero Rupees Only</div>
-              </div>
-              <div class="inv-label">Notes</div>
-              <div class="invoice-notes" id="invoiceNotes">
-                - Commission earned is automatically calculated from each line entry.<br>
-                - Final settlement amount is shown after deducting commission from total recharge value.<br>
-                - This document is prepared for vendor settlement and internal accounting reference.
-              </div>
-            </div>
-
-            <div class="invoice-summary">
-              <div class="invoice-summary-row"><span>Total Recharge Value</span><strong id="invoiceGross">INR 0.00</strong></div>
-              <div class="invoice-summary-row"><span>Less: Commission Earned</span><strong id="invoiceCommission">- INR 0.00</strong></div>
-              <div class="invoice-summary-row"><span>Amount Payable to Vendor</span><strong id="invoicePayable">INR 0.00</strong></div>
-              <div class="invoice-summary-row"><span>Total Paid Amount</span><strong id="invoicePaid">INR 0.00</strong></div>
-              <div class="invoice-summary-row total"><span>Total Due Amount</span><strong id="invoiceDue">INR 0.00</strong></div>
-            </div>
+          <div class="invoice-summary">
+            <div class="invoice-summary-row"><span>Total Recharge Value</span><strong id="invoiceGross">INR 0.00</strong></div>
+            <div class="invoice-summary-row"><span>Less: Commission Earned</span><strong id="invoiceCommission">- INR 0.00</strong></div>
+            <div class="invoice-summary-row"><span>Amount Payable to Vendor</span><strong id="invoicePayable">INR 0.00</strong></div>
+            <div class="invoice-summary-row"><span>Total Paid Amount</span><strong id="invoicePaid">INR 0.00</strong></div>
+            <div class="invoice-summary-row total"><span>Total Due Amount</span><strong id="invoiceDue">INR 0.00</strong></div>
           </div>
 
-          <div class="inv-sign">
-            <div class="inv-sign-box">
-              <div class="inv-sign-space"></div>
-              <div class="inv-sign-line">Authorised Signatory</div>
-              <div class="inv-sign-name" id="invoiceSignName">LAXMAN TELECOM</div>
-            </div>
+          <div class="invoice-notes" id="invoiceNotes">
+            - Commission earned is automatically calculated from each line entry.<br>
+            - Final settlement amount is shown after deducting commission from total recharge value.<br>
+            - This document is prepared for vendor settlement and internal accounting reference.
           </div>
 
-          <div class="inv-foot">This is a computer-generated invoice.</div>
+          <div class="print-footnote">This is a computer-generated invoice.</div>
         </div>
       </div>
     </div>
@@ -1647,40 +1597,6 @@
       return total / records.length;
     }
 
-    /** Writes a rupee amount in words, using the Indian system (thousand, lakh, crore). */
-    function amountInWords(value) {
-      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
-        'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-      const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-      const twoDigits = (n) => n < 20 ? ones[n] : tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
-      const threeDigits = (n) => {
-        const hundreds = Math.floor(n / 100);
-        const rest = n % 100;
-        return (hundreds ? ones[hundreds] + ' Hundred' + (rest ? ' ' : '') : '') + (rest ? twoDigits(rest) : '');
-      };
-
-      const paiseTotal = Math.round(Number(value || 0) * 100);
-      const rupees = Math.floor(paiseTotal / 100);
-      const paise = paiseTotal % 100;
-      if (rupees === 0 && paise === 0) return 'Zero Rupees Only';
-
-      const crore = Math.floor(rupees / 10000000);
-      const lakh = Math.floor((rupees % 10000000) / 100000);
-      const thousand = Math.floor((rupees % 100000) / 1000);
-      const rest = rupees % 1000;
-
-      const parts = [];
-      if (crore) parts.push(threeDigits(crore) + ' Crore');
-      if (lakh) parts.push(twoDigits(lakh) + ' Lakh');
-      if (thousand) parts.push(twoDigits(thousand) + ' Thousand');
-      if (rest) parts.push(threeDigits(rest));
-
-      let text = rupees ? parts.join(' ') + ' Rupees' : '';
-      if (paise) text += (rupees ? ' and ' : '') + twoDigits(paise) + ' Paise';
-      return text + ' Only';
-    }
-
     function refreshInvoicePreview() {
       const records = getReportRecords();
       const tableBody = document.getElementById('invoiceTableBody');
@@ -1708,11 +1624,7 @@
       document.getElementById('invoiceSettlementBasis').textContent = settlementBasis;
       document.getElementById('invoicePaidDetails').textContent = `Paid: INR ${formatMoneyNoSymbol(totals.paid)} | Due: INR ${formatMoneyNoSymbol(totals.due)}`;
       document.getElementById('invoiceNoText').textContent = invoiceNo;
-      const statusBadge = document.getElementById('invoicePaymentStatus');
-      statusBadge.textContent = paymentStatusText;
-      statusBadge.className = 'inv-badge ' + paymentStatusText.toLowerCase();
-      document.getElementById('invoiceDateIssued').textContent = formatDateDDMMYYYY(getTodayIso());
-      document.getElementById('invoiceSignName').textContent = shopName.value.trim() || 'LAXMAN TELECOM';
+      document.getElementById('invoicePaymentStatus').textContent = paymentStatusText;
       document.getElementById('invoicePurposeText').textContent =
         `Statement Purpose: Settlement of ${operatorText.toLowerCase()} recharge entries procured from ${vendorName} on behalf of ${shopName.value.trim() || 'the shop'}, with commission earned deducted from the gross recharge value.`;
 
@@ -1744,15 +1656,6 @@
       document.getElementById('invoicePayable').textContent = 'INR ' + formatMoneyNoSymbol(totals.payable);
       document.getElementById('invoicePaid').textContent = 'INR ' + formatMoneyNoSymbol(totals.paid);
       document.getElementById('invoiceDue').textContent = 'INR ' + formatMoneyNoSymbol(totals.due);
-
-      // Totals row under the table and the balance written in words
-      document.getElementById('ftAmount').textContent = formatMoneyNoSymbol(totals.gross);
-      document.getElementById('ftCommission').textContent = formatMoneyNoSymbol(totals.commission);
-      document.getElementById('ftPayable').textContent = formatMoneyNoSymbol(totals.payable);
-      document.getElementById('ftPaid').textContent = formatMoneyNoSymbol(totals.paid);
-      document.getElementById('ftDue').textContent = formatMoneyNoSymbol(totals.due);
-      document.getElementById('invoiceTableFoot').style.display = records.length ? '' : 'none';
-      document.getElementById('invoiceWords').textContent = amountInWords(totals.due);
 
       document.getElementById('invoiceNotes').innerHTML = `
         - Commission earned is automatically calculated from each line entry.<br>
