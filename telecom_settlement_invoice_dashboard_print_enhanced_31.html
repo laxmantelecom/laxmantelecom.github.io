@@ -505,7 +505,7 @@
     /* Four detail boxes under the letterhead */
     .invoice-meta-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       margin: 22px 32px 0;
       overflow: hidden;
       border: 1px solid var(--line);
@@ -552,7 +552,10 @@
 
     .inv-sign { display: flex; justify-content: flex-end; margin-top: 34px; }
     .inv-sign-box { width: 230px; text-align: center; }
-    .inv-sign-space { height: 54px; }
+    .inv-sign-area { display: flex; align-items: flex-end; justify-content: center; height: 58px; }
+    .inv-sign-img { max-width: 100%; max-height: 56px; object-fit: contain; }
+    .inv-sign-shop { font-size: .8rem; color: #6b6f7b; }
+    .inv-sign-stamp { margin-top: 6px; font-size: .74rem; color: #8a8f9c; }
     .inv-sign-line { padding-top: 6px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #6b6f7b; border-top: 1px solid var(--ink); }
     .inv-sign-name { font-size: .9rem; font-weight: 700; }
 
@@ -592,7 +595,7 @@
       .inv-meta { font-size: 8.5pt !important; }
       .invoice-title-badge { font-size: 7pt !important; }
 
-      .invoice-meta-grid { grid-template-columns: repeat(4, 1fr) !important; margin: 10pt 0 0 !important; border: .75pt solid #d9d2c3 !important; }
+      .invoice-meta-grid { grid-template-columns: repeat(3, 1fr) !important; margin: 10pt 0 0 !important; border: .75pt solid #d9d2c3 !important; }
       .invoice-meta-item { padding: 7pt 9pt !important; background: #faf7f2 !important; border-right: .75pt solid #e6e0d3 !important; }
       .inv-label { font-size: 7pt !important; }
       .inv-value { font-size: 9pt !important; }
@@ -630,7 +633,10 @@
       .invoice-summary-row.total { font-size: 9.5pt !important; color: #fff !important; background: #111318 !important; }
 
       .inv-sign { margin-top: 30pt !important; }
-      .inv-sign-space { height: 40pt !important; }
+      .inv-sign-area { height: 44pt !important; }
+      .inv-sign-img { max-height: 42pt !important; }
+      .inv-sign-shop { font-size: 7.5pt !important; }
+      .inv-sign-stamp { font-size: 7pt !important; }
       .inv-foot { margin-top: 14pt !important; font-size: 7pt !important; }
 
       button { display: none !important; }
@@ -765,6 +771,8 @@
               <input id="shopPhone" type="text" value="+91 9041880370" placeholder="Enter phone" />
               <label for="shopEmail" style="margin-top:12px;">Email</label>
               <input id="shopEmail" type="text" value="laxmantelecom.help@gmail.com" placeholder="Enter email" />
+              <label for="shopSignatory" style="margin-top:12px;">Authorised Signatory (name on invoice)</label>
+              <input id="shopSignatory" type="text" value="Vikas Kumar Gupta" placeholder="Enter signatory name" />
               <div class="button-row">
                 <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
                 <button class="btn-secondary" id="resetDashboardBtn">Reset Dashboard</button>
@@ -1089,10 +1097,6 @@
             <div class="inv-value" id="invoiceOperator">All Operators</div>
           </div>
           <div class="invoice-meta-item">
-            <div class="inv-label">Settlement Basis</div>
-            <div class="inv-value" id="invoiceSettlementBasis">After Commission Deduction</div>
-          </div>
-          <div class="invoice-meta-item">
             <div class="inv-label">Paid Details</div>
             <div class="inv-value" id="invoicePaidDetails">Paid Amount / Due Amount</div>
           </div>
@@ -1156,11 +1160,16 @@
             </div>
           </div>
 
+          <!-- Signature: put a scanned signature named signature.png next to this page to show it here -->
           <div class="inv-sign">
             <div class="inv-sign-box">
-              <div class="inv-sign-space"></div>
+              <div class="inv-sign-area">
+                <img class="inv-sign-img" id="invoiceSignImg" src="signature.png" alt="" onerror="this.style.display='none'">
+              </div>
               <div class="inv-sign-line">Authorised Signatory</div>
-              <div class="inv-sign-name" id="invoiceSignName">LAXMAN TELECOM</div>
+              <div class="inv-sign-name" id="invoiceSignName">Vikas Kumar Gupta</div>
+              <div class="inv-sign-shop">for LAXMAN TELECOM</div>
+              <div class="inv-sign-stamp" id="invoiceStamp">Generated on --</div>
             </div>
           </div>
 
@@ -1196,6 +1205,7 @@
     const shopAddress = document.getElementById('shopAddress');
     const shopPhone = document.getElementById('shopPhone');
     const shopEmail = document.getElementById('shopEmail');
+    const shopSignatory = document.getElementById('shopSignatory');
 
     const entryDate = document.getElementById('entryDate');
     const entryMobile = document.getElementById('entryMobile');
@@ -1317,6 +1327,7 @@
       shopAddress.value = profile.shopAddress || '';
       shopPhone.value = profile.shopPhone || '';
       shopEmail.value = profile.shopEmail || '';
+      shopSignatory.value = profile.shopSignatory || 'Vikas Kumar Gupta';
       updateProfileTitle();
     }
 
@@ -1325,7 +1336,8 @@
         shopName: shopName.value.trim(),
         shopAddress: shopAddress.value.trim(),
         shopPhone: shopPhone.value.trim(),
-        shopEmail: shopEmail.value.trim()
+        shopEmail: shopEmail.value.trim(),
+        shopSignatory: shopSignatory.value.trim()
       };
       db.ref(FIREBASE_DATA_PATH + '/profile').set(profile)
         .then(() => alert('Profile saved to your account (synced to the cloud).'))
@@ -1495,21 +1507,30 @@
       });
     }
 
+    /**
+     * The entries for the invoice, with the report filters applied, oldest date first.
+     * Vendor names are compared the same way they are stored (capital letters, extra spaces
+     * and symbols do not matter). An entry with no payment status counts as UNPAID.
+     */
     function getReportRecords() {
-      const vendor = reportVendor.value.trim().toLowerCase();
+      const vendorText = reportVendor.value.trim();
+      const vendorKey = vendorText ? sanitizeVendorKey(vendorText) : '';
       const fromDate = reportFromDate.value;
       const toDate = reportToDate.value;
       const operator = reportOperator.value;
       const paymentStatus = reportPaymentStatus.value;
 
-      return getRecords().filter(record => {
-        const matchesVendor = !vendor || record.vendor.toLowerCase() === vendor;
-        const matchesFrom = !fromDate || record.date >= fromDate;
-        const matchesTo = !toDate || record.date <= toDate;
-        const matchesOperator = operator === 'All' || record.operator === operator;
-        const matchesStatus = paymentStatus === 'ALL' || record.paymentStatus === paymentStatus;
-        return matchesVendor && matchesFrom && matchesTo && matchesOperator && matchesStatus;
-      });
+      return getRecords()
+        .filter(record => {
+          const status = String(record.paymentStatus || 'UNPAID').toUpperCase();
+          const matchesVendor = !vendorKey || sanitizeVendorKey(record.vendor) === vendorKey;
+          const matchesFrom = !fromDate || record.date >= fromDate;
+          const matchesTo = !toDate || record.date <= toDate;
+          const matchesOperator = operator === 'All' || record.operator === operator;
+          const matchesStatus = paymentStatus === 'ALL' || status === paymentStatus;
+          return matchesVendor && matchesFrom && matchesTo && matchesOperator && matchesStatus;
+        })
+        .sort((a, b) => (a.date === b.date ? (a.id > b.id ? 1 : -1) : (a.date > b.date ? 1 : -1)));
     }
 
     /* ==========================================================
@@ -1641,10 +1662,32 @@
       });
     }
 
-    function averageCommission(records) {
-      if (!records.length) return 0;
-      const total = records.reduce((sum, record) => sum + Number(record.commissionPercent), 0);
-      return total / records.length;
+    /** The date range shown on the invoice and in the WhatsApp message. */
+    function getPeriodText() {
+      const from = reportFromDate.value ? formatDateDDMMYYYY(reportFromDate.value) : '';
+      const to = reportToDate.value ? formatDateDDMMYYYY(reportToDate.value) : '';
+      if (from && to) return `${from} to ${to}`;
+      if (from) return `From ${from}`;
+      if (to) return `Up to ${to}`;
+      return 'All dates';
+    }
+
+    /* Date and time in India, used for the "Date of Issue" and the generated-on stamp */
+    function formatIndiaDate(date) {
+      return new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' })
+        .format(date).replaceAll('/', '-');
+    }
+
+    function formatIndiaTime(date) {
+      return new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true })
+        .format(date).replace(/\u202f/g, ' ');
+    }
+
+    /** Puts the current date and time on the invoice. It runs again just before every print. */
+    function stampInvoice() {
+      const now = new Date();
+      document.getElementById('invoiceDateIssued').textContent = formatIndiaDate(now);
+      document.getElementById('invoiceStamp').textContent = 'Generated on ' + formatIndiaDate(now) + ', ' + formatIndiaTime(now);
     }
 
     /** Writes a rupee amount in words, using the Indian system (thousand, lakh, crore). */
@@ -1692,27 +1735,21 @@
       const paymentStatusText = reportInvoiceStatus.value !== 'AUTO'
         ? reportInvoiceStatus.value
         : (reportPaymentStatus.value === 'ALL' ? 'MIXED' : reportPaymentStatus.value);
-      const invoiceFromDate = reportFromDate.value ? formatDateDDMMYYYY(reportFromDate.value) : 'DD-MM-YYYY';
-      const invoiceToDate = reportToDate.value ? formatDateDDMMYYYY(reportToDate.value) : 'DD-MM-YYYY';
-      const settlementBasis = records.length
-        ? `${(100 - averageCommission(records)).toFixed(2)}% After Commission`
-        : 'After Commission Deduction';
 
       document.getElementById('invoiceShopName').textContent = shopName.value.trim() || 'LAXMAN TELECOM';
       document.getElementById('invoiceShopAddress').textContent = shopAddress.value.trim() || '-';
       document.getElementById('invoiceShopPhone').textContent = shopPhone.value.trim() || '-';
       document.getElementById('invoiceShopEmail').textContent = shopEmail.value.trim() || '-';
       document.getElementById('invoiceVendor').textContent = vendorName;
-      document.getElementById('invoiceIssueDate').textContent = `${invoiceFromDate} to ${invoiceToDate}`;
+      document.getElementById('invoiceIssueDate').textContent = getPeriodText();
       document.getElementById('invoiceOperator').textContent = operatorText;
-      document.getElementById('invoiceSettlementBasis').textContent = settlementBasis;
       document.getElementById('invoicePaidDetails').textContent = `Paid: INR ${formatMoneyNoSymbol(totals.paid)} | Due: INR ${formatMoneyNoSymbol(totals.due)}`;
       document.getElementById('invoiceNoText').textContent = invoiceNo;
       const statusBadge = document.getElementById('invoicePaymentStatus');
       statusBadge.textContent = paymentStatusText;
       statusBadge.className = 'inv-badge ' + paymentStatusText.toLowerCase();
-      document.getElementById('invoiceDateIssued').textContent = formatDateDDMMYYYY(getTodayIso());
-      document.getElementById('invoiceSignName').textContent = shopName.value.trim() || 'LAXMAN TELECOM';
+      stampInvoice();
+      document.getElementById('invoiceSignName').textContent = shopSignatory.value.trim() || 'Vikas Kumar Gupta';
       document.getElementById('invoicePurposeText').textContent =
         `Statement Purpose: Settlement of ${operatorText.toLowerCase()} recharge entries procured from ${vendorName} on behalf of ${shopName.value.trim() || 'the shop'}, with commission earned deducted from the gross recharge value.`;
 
@@ -1834,15 +1871,14 @@
     function buildWhatsAppText() {
       const vendorName = reportVendor.value.trim() || 'Vendor';
       const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
-      const fromDate = reportFromDate.value ? formatDateDDMMYYYY(reportFromDate.value) : 'DD-MM-YYYY';
-      const toDate = reportToDate.value ? formatDateDDMMYYYY(reportToDate.value) : 'DD-MM-YYYY';
+      const period = getPeriodText();
 
       const shopNumberDigits = (shopPhone.value || '').replace(/[^0-9]/g, '');
       const confirmBaseUrl = shopNumberDigits ? `https://wa.me/${shopNumberDigits}` : 'https://wa.me/';
       const okLink = `${confirmBaseUrl}?text=${encodeURIComponent(`Invoice ${invoiceNo} - Confirmed, everything is correct.`)}`;
       const wrongLink = `${confirmBaseUrl}?text=${encodeURIComponent(`Invoice ${invoiceNo} - There is a mismatch, please check.`)}`;
 
-      return `Hi ${vendorName}, your recharge settlement invoice ${invoiceNo} for ${fromDate} to ${toDate} is ready. Download to view your invoice.\n\n` +
+      return `Hi ${vendorName}, your recharge settlement invoice ${invoiceNo} (${period}) is ready. Download to view your invoice.\n\n` +
         `Kindly verify the details and tap the relevant option below:\n\n` +
         `✅ Correct - No Issue: ${okLink}\n` +
         `❌ Incorrect - There's a Mismatch: ${wrongLink}`;
@@ -1980,6 +2016,10 @@
     reportPaymentStatus.addEventListener('change', refreshInvoicePreview);
     reportInvoiceStatus.addEventListener('change', refreshInvoicePreview);
     reportInvoiceNo.addEventListener('input', () => { syncInvoiceCounterFromField(); refreshInvoicePreview(); });
+
+    // Keyboard print (Ctrl + P) also gets a fresh date and time on the invoice
+    window.addEventListener('beforeprint', stampInvoice);
+    shopSignatory.addEventListener('input', refreshInvoicePreview);
 
     /* ==========================================================
        Scroll reveal for the dashboard cards and headings
