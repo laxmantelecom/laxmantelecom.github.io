@@ -10,9 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ==========================================================
-       Design tokens
-       ========================================================== */
     :root {
       --ink: #111318;
       --accent: #ff8a00;
@@ -27,9 +24,6 @@
       --font-head: 'Bricolage Grotesque', Georgia, sans-serif;
     }
 
-    /* ==========================================================
-       Base
-       ========================================================== */
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; scroll-padding-top: 84px; }
 
@@ -51,13 +45,9 @@
     @keyframes rise { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
     @keyframes drift { to { transform: translate(60px, 40px) scale(1.15); } }
 
-    /* Scroll reveal (switched on by the small script at the end of the page) */
     .js .rv { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1); }
     .js .rv.in { opacity: 1; transform: none; }
 
-    /* ==========================================================
-       Header and navigation
-       ========================================================== */
     header {
       position: sticky;
       top: 0;
@@ -102,9 +92,6 @@
 
     .nav-backdrop { display: none; }
 
-    /* ==========================================================
-       Hero
-       ========================================================== */
     .hero { padding: 26px 0 18px; }
 
     .hero-box {
@@ -182,9 +169,6 @@
     .hero-card h3 { display: none; }
     .hero-card label { color: #dfe3ee; }
 
-    /* ==========================================================
-       Layout helpers and section headings
-       ========================================================== */
     section { padding: 14px 0 24px; }
 
     .grid-5, .grid-4, .grid-3, .grid-2 { display: grid; gap: 18px; }
@@ -207,9 +191,6 @@
       background: var(--accent);
     }
 
-    /* ==========================================================
-       Cards
-       ========================================================== */
     .card {
       --c1: var(--accent);
       --c2: var(--accent-light);
@@ -238,7 +219,6 @@
 
     .card:hover::before { transform: scaleX(1); }
 
-    /* Cards in the summary rows cycle through five colour pairs */
     .tinted > .card:nth-child(5n+1) { --c1: #7c3aed; --c2: #c026d3; }
     .tinted > .card:nth-child(5n+2) { --c1: #0f766e; --c2: #14b8a6; }
     .tinted > .card:nth-child(5n+3) { --c1: #ea580c; --c2: #fb923c; }
@@ -268,9 +248,6 @@
     .value { margin: 6px 0 4px; font-family: var(--font-head); font-size: 1.8rem; font-weight: 800; color: var(--ink); }
     .label-small { font-size: .9rem; font-weight: 600; color: var(--muted); }
 
-    /* ==========================================================
-       Forms
-       ========================================================== */
     label { display: block; margin-bottom: 6px; font-size: .9rem; font-weight: 600; color: var(--ink); }
 
     input, select, textarea {
@@ -293,9 +270,6 @@
 
     textarea { min-height: 114px; resize: vertical; }
 
-    /* ==========================================================
-       Buttons
-       ========================================================== */
     .button-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
 
     button {
@@ -321,9 +295,6 @@
     .nav-toggle:hover { transform: none; }
     .nav-toggle:active { transform: scale(.92); }
 
-    /* ==========================================================
-       Summary lists, notes and tables
-       ========================================================== */
     .summary-list, .analysis-grid { display: grid; gap: 10px; }
 
     .summary-row, .analysis-item {
@@ -389,9 +360,6 @@
 
     footer { padding: 26px 0 40px; text-align: center; font-size: .92rem; color: var(--muted); }
 
-    /* ==========================================================
-       Admin check screen
-       ========================================================== */
     .gate {
       position: fixed;
       inset: 0;
@@ -422,7 +390,7 @@
     .gate-status { margin-top: 18px; font-size: .9rem; color: var(--ink); }
 
     /* ==========================================================
-       Invoice (this is the printed and PDF document)
+       Invoice (printed and PDF document)
        ========================================================== */
     .invoice-preview {
       --navy: #0d2a5c;
@@ -458,7 +426,6 @@
 
     .invoice-header, .invoice-stripe, .invoice-meta-grid, .invoice-body { position: relative; z-index: 1; }
 
-    /* Letterhead */
     .invoice-header {
       overflow: hidden;
       display: grid;
@@ -515,10 +482,8 @@
     .inv-badge.partial { color: #fde68a; background: rgba(245, 158, 11, .2); }
     .inv-badge.mixed { color: #e5e7eb; background: rgba(255, 255, 255, .12); }
 
-    /* Brand colour stripe under the letterhead */
     .invoice-stripe { height: 5px; background: linear-gradient(90deg, var(--sky), #0099ff 55%, var(--accent)); }
 
-    /* Vendor details */
     .invoice-meta-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -534,7 +499,6 @@
 
     .invoice-purpose { margin-bottom: 16px; padding-left: 12px; font-size: .88rem; font-style: italic; color: #4b5877; border-left: 3px solid var(--sky); }
 
-    /* Entries table */
     .invoice-table { width: 100%; min-width: 880px; border-collapse: collapse; font-size: .88rem; page-break-inside: auto; }
     .invoice-table th { padding: 10px; font-size: .72rem; letter-spacing: .06em; text-align: left; text-transform: uppercase; white-space: nowrap; color: #fff; background: var(--navy); }
     .invoice-table td { padding: 9px 10px; border-bottom: 1px solid var(--rule); }
@@ -545,7 +509,6 @@
     .invoice-table tfoot td { padding: 11px 10px; font-weight: 800; text-align: right; color: var(--navy); background: #e3edfb; border-top: 2px solid var(--navy); border-bottom: none; }
     .invoice-table tfoot td:first-child { text-align: left; letter-spacing: .06em; text-transform: uppercase; font-size: .78rem; }
 
-    /* Words, notes and totals */
     .invoice-bottom { display: grid; grid-template-columns: 1fr 380px; gap: 28px; align-items: start; margin-top: 22px; }
     .inv-words { margin-bottom: 14px; padding: 12px 14px; background: var(--tint); border: 1px solid var(--rule); border-left: 4px solid var(--sky); border-radius: 10px; }
     .inv-words > div:last-child { font-size: .92rem; font-weight: 700; color: var(--navy); }
@@ -556,7 +519,6 @@
     .invoice-summary-row strong { white-space: nowrap; }
     .invoice-summary-row.total { font-size: 1.05rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--navy), #123a7a); border-bottom: none; }
 
-    /* Signature */
     .inv-sign { display: flex; justify-content: flex-end; margin-top: 32px; }
     .inv-sign-box { width: 240px; text-align: center; }
     .inv-sign-area { display: flex; align-items: flex-end; justify-content: center; height: 60px; }
@@ -566,7 +528,6 @@
     .inv-sign-shop { font-size: .8rem; color: #5b6b9c; }
     .inv-sign-stamp { margin-top: 6px; font-size: .74rem; color: #8a94b0; }
 
-    /* Footer band */
     .inv-foot { margin: 26px -34px 0; padding: 13px 34px; font-size: .82rem; text-align: center; color: #cfe0ff; background: var(--navy); }
 
     @media (max-width: 1100px) {
@@ -576,9 +537,7 @@
       .inv-meta td { padding: 3px 18px 3px 0; text-align: left; }
     }
 
-    /* ==========================================================
-       Print layout (A4 portrait)
-       ========================================================== */
+    /* Print layout (A4 portrait) */
     @page { size: A4 portrait; margin: 12mm; }
 
     @media print {
@@ -611,7 +570,6 @@
       .invoice-purpose { margin-bottom: 9pt !important; font-size: 8.5pt !important; }
       .table-wrap { overflow: visible !important; border: none !important; }
 
-      /* Ten columns sized to fit the portrait page width */
       .invoice-table { width: 100% !important; min-width: 0 !important; table-layout: fixed !important; font-size: 8pt !important; }
       .invoice-table th, .invoice-table td { padding: 4pt 3pt !important; word-break: break-word; border: .6pt solid #c5d3ea !important; }
       .invoice-table th { font-size: 7pt !important; letter-spacing: .1pt; color: #fff !important; background: #0d2a5c !important; }
@@ -650,15 +608,12 @@
       .invoice-bottom, .inv-sign, .invoice-summary { page-break-inside: avoid; }
     }
 
-    /* ==========================================================
-       Responsive
-       ========================================================== */
+    /* Responsive */
     @media (max-width: 1100px) {
       .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr 1fr; }
       .invoice-header, .invoice-meta-grid { grid-template-columns: 1fr; }
     }
 
-    /* Tablet and phone: the links move into a slide-in drawer */
     @media (max-width: 900px) {
       .nav-toggle { display: inline-flex; order: 2; }
 
@@ -715,6 +670,89 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .js .rv { opacity: 1; transform: none; }
+    }
+
+    /* ==========================================================
+       PROFESSIONAL INVOICE OVERRIDE (fix merged)
+       ========================================================== */
+    .invoice-preview {
+      --navy: #0b2447;
+      --tint: #f6f8fc;
+      --rule: #dfe5ef;
+      border-radius: 6px;
+      box-shadow: 0 10px 30px -12px rgba(11, 36, 71, .25);
+    }
+
+    .invoice-header {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 30px;
+      padding: 28px 34px 22px;
+      color: var(--navy);
+      background: #fff;
+      border-top: 6px solid var(--navy);
+    }
+    .invoice-header::after { display: none; }
+
+    .inv-brand { gap: 14px; }
+    .inv-brand img { width: 64px; height: 64px; border: 1px solid var(--rule); box-shadow: none; }
+    .inv-brand h3 { margin-bottom: 6px; font-size: 1.5rem; letter-spacing: .03em; color: var(--navy); }
+    .inv-brand p { margin: 2px 0; font-size: .85rem; color: #5a6478; }
+
+    .inv-title { text-align: right; }
+    .invoice-title-badge { display: none; }
+    .inv-doc { margin: 0 0 12px; font-size: 1.6rem; letter-spacing: .1em; color: var(--navy); }
+
+    .invoice-preview table.inv-meta {
+      width: auto;
+      min-width: 0;
+      margin-left: auto;
+      padding: 0;
+      background: none;
+      border: 0;
+      border-collapse: collapse;
+    }
+    .invoice-preview .inv-meta td,
+    .invoice-preview .inv-meta tr:nth-child(even) td,
+    .invoice-preview .inv-meta tr:hover td {
+      padding: 6px 0 6px 28px;
+      font-size: .86rem;
+      vertical-align: middle;
+      text-align: right;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--rule);
+      color: #1c2540;
+    }
+    .invoice-preview .inv-meta td:first-child { padding-left: 0; text-align: left; font-weight: 500; color: #6b7690; }
+    .invoice-preview .inv-meta td:last-child { font-weight: 700; color: var(--navy); }
+    .invoice-preview .inv-meta tr:last-child td { border-bottom: 0; }
+
+    .inv-badge { padding: 2px 12px; font-size: .72rem; }
+    .inv-badge.paid    { color: #166534; background: #e8f7ee; }
+    .inv-badge.unpaid  { color: #b91c1c; background: #fdecec; }
+    .inv-badge.partial { color: #9a580a; background: #fff4e0; }
+    .inv-badge.mixed   { color: #475569; background: #eef1f6; }
+
+    .invoice-stripe { height: 2px; background: var(--navy); }
+
+    .invoice-meta-grid { margin-top: 22px; }
+    .invoice-meta-item { background: var(--tint); border-left-color: var(--navy); border-radius: 4px; }
+    .inv-label { color: #6b7690; }
+
+    .invoice-table thead th { border-bottom: 0; }
+    .invoice-table th { background: var(--navy); }
+    .invoice-table td { font-size: .86rem; }
+    .invoice-table tfoot td { background: #eaf0f9; border-top: 2px solid var(--navy); }
+    .invoice-summary { border-radius: 6px; }
+    .invoice-summary-row.total { background: var(--navy); }
+    .inv-words { border-left-color: var(--navy); border-radius: 4px; }
+    .inv-foot { background: var(--navy); color: #d6e2f4; }
+
+    @media (max-width: 760px) {
+      .invoice-header { grid-template-columns: 1fr; padding: 22px 18px; }
+      .inv-title { text-align: left; }
+      .invoice-preview table.inv-meta { margin-left: 0; width: 100%; }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1167,7 +1205,6 @@
             </div>
           </div>
 
-          <!-- Signature: the scanned image signature.png is loaded by the script at the end of the page -->
           <div class="inv-sign">
             <div class="inv-sign-box">
               <div class="inv-sign-area">
@@ -1193,9 +1230,6 @@
   </footer>
 
   <script>
-    /* ==========================================================
-       Navigation drawer
-       ========================================================== */
     function toggleNav() {
       document.getElementById('navLinks').classList.toggle('nav-open');
       document.getElementById('navBackdrop').classList.toggle('nav-open');
@@ -1205,9 +1239,6 @@
       document.getElementById('navBackdrop').classList.remove('nav-open');
     }
 
-    /* ==========================================================
-       Element references
-       ========================================================== */
     const shopName = document.getElementById('shopName');
     const shopAddress = document.getElementById('shopAddress');
     const shopPhone = document.getElementById('shopPhone');
@@ -1243,9 +1274,7 @@
     const recordsTableBody = document.getElementById('recordsTableBody');
     const emptyState = document.getElementById('emptyState');
 
-    /* ==========================================================
-       Invoice numbers
-       ========================================================== */
+    /* Invoice numbers */
     const INVOICE_COUNTER_KEY = 'telecomInvoiceCounter';
 
     function generateInvoiceNumber() {
@@ -1262,7 +1291,6 @@
       }
     }
 
-    /** Keeps the counter in step when the invoice number is edited by hand. */
     function syncInvoiceCounterFromField() {
       const match = reportInvoiceNo.value.match(/(\d+)\s*$/);
       if (match) {
@@ -1273,9 +1301,7 @@
       }
     }
 
-    /* ==========================================================
-       Formatting helpers
-       ========================================================== */
+    /* Formatting helpers */
     function formatMoney(value) {
       return '₹' + Number(value || 0).toFixed(2);
     }
@@ -1314,9 +1340,7 @@
         .replace(/^-+|-+$/g, '') || 'vendor';
     }
 
-    /* ==========================================================
-       Cloud data (Firebase Realtime Database)
-       ========================================================== */
+    /* Cloud data (Firebase Realtime Database) */
     const FIREBASE_DATA_PATH = 'telecomSettlement';
     let cachedRecords = [];
     let cachedProfile = {};
@@ -1352,9 +1376,7 @@
     }
 
     function startFirebaseSync() {
-      // The legacy migration (telecomSettlement/records -> telecomSettlement/vendorView)
-      // is intentionally NOT run on page load. It used to copy deleted entries back
-      // into vendorView on every refresh. See migrateLegacyRecordsIfNeeded() below.
+      // The legacy migration is intentionally NOT run on page load.
       db.ref(FIREBASE_DATA_PATH + '/vendorView').on('value', (snap) => {
         const val = snap.val() || {};
         const flat = [];
@@ -1375,11 +1397,7 @@
       });
     }
 
-    /**
-     * Manual recovery tool: run it from the browser console to copy old
-     * telecomSettlement/records entries into vendorView when they are missing there.
-     * Do not call it automatically.
-     */
+    /** Manual recovery tool: run from the browser console only. */
     function migrateLegacyRecordsIfNeeded() {
       db.ref(FIREBASE_DATA_PATH + '/records').once('value').then((legacySnap) => {
         const legacyVal = legacySnap.val();
@@ -1403,9 +1421,7 @@
       });
     }
 
-    /* ==========================================================
-       Entry form
-       ========================================================== */
+    /* Entry form */
     function clearForm() {
       entryDate.value = getTodayIso();
       entryMobile.value = '';
@@ -1489,9 +1505,7 @@
       window.open(`https://wa.me/${NOTIFY_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
-    /* ==========================================================
-       Filters
-       ========================================================== */
+    /* Filters */
     function getFilteredTableRecords() {
       const search = searchInput.value.trim().toLowerCase();
       const operator = tableOperatorFilter.value;
@@ -1514,11 +1528,6 @@
       });
     }
 
-    /**
-     * The entries for the invoice, with the report filters applied, oldest date first.
-     * Vendor names are compared the same way they are stored (capital letters, extra spaces
-     * and symbols do not matter). An entry with no payment status counts as UNPAID.
-     */
     function getReportRecords() {
       const vendorText = reportVendor.value.trim();
       const vendorKey = vendorText ? sanitizeVendorKey(vendorText) : '';
@@ -1540,9 +1549,7 @@
         .sort((a, b) => (a.date === b.date ? (a.id > b.id ? 1 : -1) : (a.date > b.date ? 1 : -1)));
     }
 
-    /* ==========================================================
-       Rendering
-       ========================================================== */
+    /* Rendering */
     function getStatusTag(status) {
       if (status === 'PAID') return '<span class="tag paid">PAID</span>';
       if (status === 'PARTIAL') return '<span class="tag partial">PARTIAL</span>';
@@ -1669,7 +1676,6 @@
       });
     }
 
-    /** The date range shown on the invoice and in the WhatsApp message. */
     function getPeriodText() {
       const from = reportFromDate.value ? formatDateDDMMYYYY(reportFromDate.value) : '';
       const to = reportToDate.value ? formatDateDDMMYYYY(reportToDate.value) : '';
@@ -1679,7 +1685,6 @@
       return 'All dates';
     }
 
-    /* Date and time in India, used for the "Date of Issue" and the generated-on stamp */
     function formatIndiaDate(date) {
       return new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' })
         .format(date).replaceAll('/', '-');
@@ -1690,14 +1695,12 @@
         .format(date).replace(/\u202f/g, ' ');
     }
 
-    /** Puts the current date and time on the invoice. It runs again just before every print. */
     function stampInvoice() {
       const now = new Date();
       document.getElementById('invoiceDateIssued').textContent = formatIndiaDate(now);
       document.getElementById('invoiceStamp').textContent = 'Generated on ' + formatIndiaDate(now) + ', ' + formatIndiaTime(now);
     }
 
-    /** Writes a rupee amount in words, using the Indian system (thousand, lakh, crore). */
     function amountInWords(value) {
       const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
         'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
@@ -1789,7 +1792,6 @@
       document.getElementById('invoicePaid').textContent = 'INR ' + formatMoneyNoSymbol(totals.paid);
       document.getElementById('invoiceDue').textContent = 'INR ' + formatMoneyNoSymbol(totals.due);
 
-      // Totals row under the table and the balance written in words
       document.getElementById('ftAmount').textContent = formatMoneyNoSymbol(totals.gross);
       document.getElementById('ftCommission').textContent = formatMoneyNoSymbol(totals.commission);
       document.getElementById('ftPayable').textContent = formatMoneyNoSymbol(totals.payable);
@@ -1820,9 +1822,7 @@
       refreshInvoicePreview();
     }
 
-    /* ==========================================================
-       Backup: export and import
-       ========================================================== */
+    /* Backup: export and import */
     function exportJson() {
       const data = { profile: cachedProfile, records: getRecords() };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1872,9 +1872,7 @@
       reader.readAsText(file);
     }
 
-    /* ==========================================================
-       WhatsApp message and PDF
-       ========================================================== */
+    /* WhatsApp message and PDF */
     function buildWhatsAppText() {
       const vendorName = reportVendor.value.trim() || 'Vendor';
       const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
@@ -1930,7 +1928,6 @@
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({ files: [file], title: fileName, text: text });
         } else {
-          // Sharing a file is not supported here: download it and open WhatsApp instead.
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -1947,7 +1944,6 @@
           openWhatsAppMessage();
         }
       } catch (err) {
-        // A cancelled share sheet is not an error.
         if (!err || err.name !== 'AbortError') {
           alert('Something went wrong while preparing the PDF. Please use the Print / Save as PDF button instead.');
         }
@@ -1957,23 +1953,17 @@
       }
     }
 
-    /* ==========================================================
-       Delete
-       ========================================================== */
+    /* Delete */
     window.deleteEntry = function (id) {
       const record = cachedRecords.find(r => r.id === id);
       if (!record) return;
       const vendorKey = sanitizeVendorKey(record.vendor);
-      // Also remove any copy under the legacy path so the entry cannot come back
-      // if the legacy migration is ever run manually.
       db.ref(FIREBASE_DATA_PATH + '/vendorView/' + vendorKey + '/' + id).remove()
         .catch((err) => alert('Could not delete this entry: ' + err.message));
       db.ref(FIREBASE_DATA_PATH + '/records/' + id).remove().catch(() => {});
     };
 
-    /* ==========================================================
-       Event listeners
-       ========================================================== */
+    /* Event listeners */
     document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
     document.getElementById('resetDashboardBtn').addEventListener('click', () => {
       if (!confirm('Reset profile and all dashboard data? This deletes your cloud data permanently.')) return;
@@ -2024,13 +2014,10 @@
     reportInvoiceStatus.addEventListener('change', refreshInvoicePreview);
     reportInvoiceNo.addEventListener('input', () => { syncInvoiceCounterFromField(); refreshInvoicePreview(); });
 
-    // Keyboard print (Ctrl + P) also gets a fresh date and time on the invoice
     window.addEventListener('beforeprint', stampInvoice);
     shopSignatory.addEventListener('input', refreshInvoicePreview);
 
-    /* ==========================================================
-       Signature image: tries the usual file names and hides itself when none is found
-       ========================================================== */
+    /* Signature image */
     (function loadSignature() {
       const img = document.getElementById('invoiceSignImg');
       const names = ['signature.png', 'Signature.png', 'signature.jpg', 'signature.jpeg', 'signature.webp'];
@@ -2047,9 +2034,7 @@
       img.src = names[0];
     })();
 
-    /* ==========================================================
-       Scroll reveal for the dashboard cards and headings
-       ========================================================== */
+    /* Scroll reveal */
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
