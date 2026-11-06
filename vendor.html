@@ -134,6 +134,23 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 .birthday-btn{background:#ff4757;color:#fff;border:0;padding:12px 30px;border-radius:25px;font-size:16px;cursor:pointer;font-weight:bold;box-shadow:0 5px 15px rgba(255,71,87,.4);transition:.3s}
 .birthday-btn:hover{background:#e84118;transform:scale(1.05)}
 
+/* Diwali greeting pop-up */
+.diwali-overlay{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;padding:16px;background:radial-gradient(circle at 50% 20%,rgba(255,138,0,.35),transparent 55%),rgba(10,8,20,.88);backdrop-filter:blur(8px);overflow:hidden}
+.diwali-card{position:relative;max-width:440px;width:100%;padding:34px 26px 28px;text-align:center;border-radius:24px;background:linear-gradient(180deg,#fffaf0,#fff1d6);border:3px solid #ffb347;box-shadow:0 0 60px rgba(255,138,0,.55),0 20px 50px rgba(0,0,0,.5);animation:diwaliPop .7s cubic-bezier(.175,.885,.32,1.275) both}
+@keyframes diwaliPop{0%{transform:scale(.3) translateY(60px);opacity:0}100%{transform:none;opacity:1}}
+.diwali-diyas{font-size:2rem;letter-spacing:6px;margin-bottom:6px}
+.diwali-diyas span{display:inline-block;animation:diyaFlicker 1.4s ease-in-out infinite}
+.diwali-diyas span:nth-child(2n){animation-delay:.35s}
+.diwali-diyas span:nth-child(3n){animation-delay:.7s}
+@keyframes diyaFlicker{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #ffb347)}50%{transform:scale(1.15) translateY(-2px);filter:drop-shadow(0 0 14px #ff8a00)}}
+.diwali-card h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.7rem;line-height:1.25;color:#b23a00;margin-bottom:6px}
+.diwali-name{font-weight:700;color:#7c3aed;font-size:1.1rem;margin-bottom:12px}
+.diwali-card p{color:#4a3b2a;font-size:1rem;line-height:1.7;margin-bottom:18px}
+.diwali-sign{font-weight:700;color:#b23a00;margin-bottom:20px}
+.diwali-btn{background:linear-gradient(135deg,#ff8a00,#ffb347);color:#111318;border:0;padding:13px 30px;border-radius:999px;font:inherit;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.45);transition:transform .2s}
+.diwali-btn:hover{transform:translateY(-3px) scale(1.04)}
+.diwali-lamp-row{position:absolute;top:-18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 22px;font-size:1.6rem;pointer-events:none}
+
 @media(max-width:520px){.logo p{display:none}.auth-wrapper{padding:28px 20px}.dash-card{padding:20px 16px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -633,6 +650,9 @@ function revealVendorDashboard(vendorAccount) {
 
   // Show the birthday wish right away if today qualifies
   showBirthdayWishIfNeeded(auth.currentUser ? auth.currentUser.email : '', vendorAccount.name);
+
+  // Show the Diwali greeting (only on the festival dates)
+  showDiwaliGreetingIfNeeded(vendorAccount.name);
 }
 
 /** Opens the dashboard when the signed-in account is a registered vendor, otherwise signs out. */
@@ -948,6 +968,112 @@ function startLiveCelebration() {
 function closeBirthdayWish() {
   const overlay = document.querySelector('.birthday-overlay');
   if (overlay) overlay.remove();
+}
+
+// ======================= DIWALI GREETING =======================
+// Shown to every vendor, once per day, only between these dates (inclusive).
+// Diwali 2026 = 8 November.
+const DIWALI_START = '2026-11-07';
+const DIWALI_END = '2026-11-12';
+
+function showDiwaliGreetingIfNeeded(name) {
+  const todayIso = getTodayIso();
+
+  // Outside the festival dates: do nothing
+  if (todayIso < DIWALI_START || todayIso > DIWALI_END) return;
+  // Already open: do not create it twice
+  if (document.querySelector('.diwali-overlay')) return;
+
+  // Show once per vendor per day
+  const storageKey = 'diwali2026_' + todayIso + '_' + (name || 'vendor');
+  try { if (localStorage.getItem(storageKey)) return; } catch (e) {}
+
+  const overlay = document.createElement('div');
+  overlay.className = 'diwali-overlay';
+
+  const card = document.createElement('div');
+  card.className = 'diwali-card';
+
+  const lamps = document.createElement('div');
+  lamps.className = 'diwali-lamp-row';
+  lamps.textContent = '🏮🏮🏮';
+  card.appendChild(lamps);
+
+  const diyas = document.createElement('div');
+  diyas.className = 'diwali-diyas';
+  for (let i = 0; i < 5; i++) {
+    const sp = document.createElement('span');
+    sp.textContent = '🪔';
+    diyas.appendChild(sp);
+  }
+  card.appendChild(diyas);
+
+  const h2 = document.createElement('h2');
+  h2.textContent = '✨ शुभ दीपावली! ✨';
+  card.appendChild(h2);
+
+  const nm = document.createElement('div');
+  nm.className = 'diwali-name';
+  nm.textContent = name ? name + ' जी' : 'आदरणीय वेंडर साथी';
+  card.appendChild(nm);
+
+  const p = document.createElement('p');
+  p.innerHTML = '<strong>लक्ष्मण टेलीकॉम</strong> परिवार की तरफ से आपको और आपके परिवार को दीपावली की हार्दिक शुभकामनाएं। ' +
+    'आपके भरोसे और साथ के लिए दिल से धन्यवाद। माँ लक्ष्मी की कृपा से आपके घर और व्यापार में सुख, समृद्धि और ढेर सारी तरक्की आए। 🙏';
+  card.appendChild(p);
+
+  const sign = document.createElement('div');
+  sign.className = 'diwali-sign';
+  sign.textContent = '— लक्ष्मण टेलीकॉम परिवार';
+  card.appendChild(sign);
+
+  const btn = document.createElement('button');
+  btn.className = 'diwali-btn';
+  btn.textContent = '🪔 धन्यवाद, आपको भी शुभ दीपावली';
+  btn.onclick = function () {
+    overlay.remove();
+    try { localStorage.setItem(storageKey, '1'); } catch (e) {}
+  };
+  card.appendChild(btn);
+
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  startDiwaliCelebration();
+}
+
+function startDiwaliCelebration() {
+  if (typeof confetti === 'undefined') return; // If the confetti library fails to load, the greeting still shows
+
+  const base = {
+    zIndex: 100001,
+    scalar: 1.2,
+    colors: ['#ff8a00', '#ffb347', '#ffd700', '#ff4757', '#a55eea', '#2ed573']
+  };
+
+  // Big burst at the start
+  confetti({ ...base, particleCount: 140, spread: 100, startVelocity: 50, origin: { x: 0.5, y: 0.65 } });
+
+  // Fireworks-style bursts for 5 seconds
+  const end = Date.now() + 5000;
+  const timer = setInterval(() => {
+    if (Date.now() > end || !document.querySelector('.diwali-overlay')) { clearInterval(timer); return; }
+    confetti({
+      ...base,
+      particleCount: 55,
+      spread: 360,
+      startVelocity: 28,
+      ticks: 70,
+      gravity: 0.6,
+      origin: { x: 0.1 + Math.random() * 0.8, y: 0.1 + Math.random() * 0.4 }
+    });
+  }, 500);
+
+  // Golden rain
+  setTimeout(() => {
+    confetti({ ...base, particleCount: 110, spread: 160, startVelocity: 22, gravity: 0.7,
+               colors: ['#ffd700', '#ffec99', '#ffa502'], origin: { x: 0.5, y: 0 } });
+  }, 2500);
 }
 </script>
 
