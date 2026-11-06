@@ -971,7 +971,7 @@ function closeBirthdayWish() {
 }
 
 // ======================= DIWALI GREETING =======================
-// Shown to every vendor, once per day, only between these dates (inclusive).
+// Shown to every vendor on every page load/refresh, only between these dates (inclusive).
 // Diwali 2026 = 8 November.
 const DIWALI_START = '2026-11-07';
 const DIWALI_END = '2026-11-12';
@@ -983,10 +983,6 @@ function showDiwaliGreetingIfNeeded(name) {
   if (todayIso < DIWALI_START || todayIso > DIWALI_END) return;
   // Already open: do not create it twice
   if (document.querySelector('.diwali-overlay')) return;
-
-  // Show once per vendor per day
-  const storageKey = 'diwali2026_' + todayIso + '_' + (name || 'vendor');
-  try { if (localStorage.getItem(storageKey)) return; } catch (e) {}
 
   const overlay = document.createElement('div');
   overlay.className = 'diwali-overlay';
@@ -1032,7 +1028,6 @@ function showDiwaliGreetingIfNeeded(name) {
   btn.textContent = '🪔 धन्यवाद, आपको भी शुभ दीपावली';
   btn.onclick = function () {
     overlay.remove();
-    try { localStorage.setItem(storageKey, '1'); } catch (e) {}
   };
   card.appendChild(btn);
 
