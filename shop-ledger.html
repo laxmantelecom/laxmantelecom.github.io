@@ -164,10 +164,16 @@
     /* ---------- App layout: sidebar on desktop, bottom tabs on phones ---------- */
     .sidebar {
       position: fixed; top: 0; bottom: 0; left: 0; z-index: 30; display: flex; flex-direction: column; width: 252px;
-      padding: 20px 14px; overflow-y: auto; color: #fff;
+      padding: 20px 14px; overflow-x: hidden; overflow-y: auto; color: #fff; transition: width .2s ease, padding .2s ease;
       background: radial-gradient(circle at 10% 0%, rgba(255,138,0,.28), transparent 45%), var(--ink);
     }
-    .side-brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px 14px; }
+    .side-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 0 14px; }
+    .side-brand { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 2px 8px; }
+    .side-toggle {
+      flex: none; display: grid; place-items: center; width: 34px; height: 34px; font: inherit; font-size: 1.15rem; font-weight: 700; line-height: 1;
+      color: #fff; background: rgba(255,255,255,.1); border: 0; border-radius: 10px; cursor: pointer; transition: background .15s;
+    }
+    .side-toggle:hover { background: rgba(255,255,255,.22); }
     .side-brand img { width: 42px; height: 42px; border-radius: 50%; }
     .side-brand h1 { font-size: 1.02rem; color: #fff; }
     .side-brand p { font-size: .72rem; color: rgba(255,255,255,.55); }
@@ -183,7 +189,19 @@
     .side-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); }
     .side-link.logout { color: #fda4af; }
 
-    .main { min-width: 0; margin-left: 252px; }
+    .main { min-width: 0; margin-left: 252px; transition: margin-left .2s ease; }
+
+    /* Collapsed menu: icons only */
+    body.side-collapsed .sidebar { width: 76px; padding: 20px 10px; }
+    body.side-collapsed .main { margin-left: 76px; }
+    body.side-collapsed .side-head { flex-direction: column; gap: 10px; }
+    body.side-collapsed .side-brand { padding: 2px 0; }
+    body.side-collapsed .side-brand div,
+    body.side-collapsed .side-label,
+    body.side-collapsed .side-text { display: none; }
+    body.side-collapsed .side-nav a,
+    body.side-collapsed .side-link { justify-content: center; padding: 12px 0; }
+    body.side-collapsed .side-nav { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
     .topbar { display: none; }
     .page { display: grid; gap: 20px; max-width: 1020px; margin: 0 auto; padding: 30px 26px 90px; }
     .page-head h2 { font-size: 1.9rem; }
@@ -215,7 +233,7 @@
 
     @media (max-width: 900px) {
       .sidebar { display: none; }
-      .main { margin-left: 0; }
+      .main, body.side-collapsed .main { margin-left: 0; }
       .topbar {
         position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px;
         color: #fff; background: var(--ink);
@@ -266,26 +284,29 @@
 
     <!-- Desktop sidebar -->
     <aside class="sidebar">
-      <a class="side-brand" href="#/home">
-        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
-        <div><h1>LAXMAN TELECOM</h1><p>Daily Ledger</p></div>
-      </a>
+      <div class="side-head">
+        <a class="side-brand" href="#/home" title="Home">
+          <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+          <div><h1>LAXMAN TELECOM</h1><p>Daily Ledger</p></div>
+        </a>
+        <button type="button" class="side-toggle" id="sideToggle" aria-label="Collapse menu" title="Collapse menu">«</button>
+      </div>
       <nav class="side-nav" aria-label="Main menu">
         <p class="side-label admin-only">Daily work</p>
-        <a href="#/home" data-view="home" class="admin-only"><span class="ni">🏠</span>Home</a>
-        <a href="#/add" data-view="add"><span class="ni">➕</span>Add Entry</a>
-        <a href="#/entries" data-view="entries" class="admin-only"><span class="ni">📋</span>All Entries</a>
+        <a href="#/home" data-view="home" class="admin-only" title="Home"><span class="ni">🏠</span><span class="side-text">Home</span></a>
+        <a href="#/add" data-view="add" title="Add Entry"><span class="ni">➕</span><span class="side-text">Add Entry</span></a>
+        <a href="#/entries" data-view="entries" class="admin-only" title="All Entries"><span class="ni">📋</span><span class="side-text">All Entries</span></a>
         <p class="side-label admin-only">Money</p>
-        <a href="#/report" data-view="report" class="admin-only"><span class="ni">📊</span>Monthly Report</a>
-        <a href="#/expenses" data-view="expenses" class="admin-only"><span class="ni">💸</span>Expenses</a>
-        <a href="#/credit" data-view="credit" class="admin-only"><span class="ni">📒</span>Credit</a>
+        <a href="#/report" data-view="report" class="admin-only" title="Monthly Report"><span class="ni">📊</span><span class="side-text">Monthly Report</span></a>
+        <a href="#/expenses" data-view="expenses" class="admin-only" title="Expenses"><span class="ni">💸</span><span class="side-text">Expenses</span></a>
+        <a href="#/credit" data-view="credit" class="admin-only" title="Credit"><span class="ni">📒</span><span class="side-text">Credit</span></a>
         <p class="side-label admin-only">Setup</p>
-        <a href="#/services" data-view="services" class="admin-only"><span class="ni">🏷️</span>Services &amp; Prices</a>
-        <a href="#/settings" data-view="settings" class="admin-only"><span class="ni">⚙️</span>Settings</a>
+        <a href="#/services" data-view="services" class="admin-only" title="Services & Prices"><span class="ni">🏷️</span><span class="side-text">Services &amp; Prices</span></a>
+        <a href="#/settings" data-view="settings" class="admin-only" title="Settings"><span class="ni">⚙️</span><span class="side-text">Settings</span></a>
       </nav>
       <div class="side-foot">
-        <a href="admin.html" class="side-link admin-only"><span class="ni">←</span>Admin Panel</a>
-        <button type="button" class="side-link logout" data-logout><span class="ni">⏻</span>Logout</button>
+        <a href="admin.html" class="side-link admin-only" title="Admin Panel"><span class="ni">←</span><span class="side-text">Admin Panel</span></a>
+        <button type="button" class="side-link logout" data-logout title="Logout"><span class="ni">⏻</span><span class="side-text">Logout</span></button>
       </div>
     </aside>
 
@@ -715,6 +736,27 @@
       window.scrollTo(0, 0);
     }
     window.addEventListener('hashchange', showView);
+
+    /* Collapse / expand the side menu (remembered on this device) */
+    (function initSideToggle() {
+      const key = 'ledgerSideCollapsed';
+      let saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) { /* storage blocked */ }
+      const apply = (collapsed) => {
+        document.body.classList.toggle('side-collapsed', collapsed);
+        const btn = $('sideToggle');
+        btn.textContent = collapsed ? '»' : '«';
+        btn.title = collapsed ? 'Expand menu' : 'Collapse menu';
+        btn.setAttribute('aria-label', btn.title);
+      };
+      // First visit: start collapsed on narrower windows so the page has room
+      apply(saved === null ? window.innerWidth < 1150 : saved === '1');
+      $('sideToggle').addEventListener('click', () => {
+        const collapsed = !document.body.classList.contains('side-collapsed');
+        apply(collapsed);
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch (err) { /* ignore */ }
+      });
+    })();
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('[data-logout]')) return;
