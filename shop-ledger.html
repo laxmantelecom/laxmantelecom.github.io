@@ -185,6 +185,7 @@
     }
     .side-nav a:hover, .side-link:hover { background: rgba(255,255,255,.09); color: #fff; }
     .side-nav a.active { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .ico { display: inline-block; vertical-align: -.14em; }
     .ni { flex: none; width: 24px; text-align: center; font-size: 1.12rem; }
     .side-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); }
     .side-link.logout { color: #fda4af; }
@@ -306,7 +307,7 @@
       </nav>
       <div class="side-foot">
         <a href="admin.html" class="side-link admin-only" title="Admin Panel"><span class="ni">←</span><span class="side-text">Admin Panel</span></a>
-        <button type="button" class="side-link logout" data-logout title="Logout"><span class="ni">⏻</span><span class="side-text">Logout</span></button>
+        <button type="button" class="side-link logout" data-logout title="Logout"><span class="ni"><svg class="ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span><span class="side-text">Logout</span></button>
       </div>
     </aside>
 
@@ -572,7 +573,7 @@
             <a class="quick-btn" href="#/services"><span>🏷️</span>Services &amp; Prices</a>
             <a class="quick-btn" href="#/settings"><span>⚙️</span>Settings</a>
             <a class="quick-btn" href="admin.html"><span>←</span>Admin Panel</a>
-            <button type="button" class="quick-btn danger" data-logout><span>⏻</span>Logout</button>
+            <button type="button" class="quick-btn danger" data-logout><span><svg class="ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span>Logout</button>
           </div>
         </section>
 
@@ -586,7 +587,7 @@
       <a href="#/report" data-view="report" class="admin-only"><span class="ni">📊</span>Report</a>
       <a href="#/credit" data-view="credit" class="admin-only"><span class="ni">📒</span>Credit</a>
       <a href="#/more" data-view="more" data-group="more" class="admin-only"><span class="ni">☰</span>More</a>
-      <button type="button" class="staff-only" data-logout><span class="ni">⏻</span>Logout</button>
+      <button type="button" class="staff-only" data-logout><span class="ni"><svg class="ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span>Logout</button>
     </nav>
 
   </div>
