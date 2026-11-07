@@ -247,7 +247,7 @@
         <a href="#todaySection">Today</a>
         <a href="#monthSection" class="admin-only">Monthly Report</a>
         <a href="#expenseSection" class="admin-only">Expenses</a>
-        <a href="#udhaarSection" class="admin-only">Udhaar</a>
+        <a href="#udhaarSection" class="admin-only">Credit</a>
         <a href="#settingsSection" class="admin-only">Settings</a>
         <a href="#" class="menu-logout-link" id="logoutLink">Logout</a>
       </nav>
@@ -275,10 +275,10 @@
         <form id="entryForm" autocomplete="off">
           <div class="form-grid">
             <div class="form-group"><label>Date</label><input type="date" id="eDate" required></div>
-            <div class="form-group"><label id="eAmountLabel">Amount received (₹)</label><input type="number" id="eAmount" min="0" step="0.01" inputmode="decimal" required></div>
-            <div class="form-group" id="eCostGroup"><label>Your cost (₹) <small style="font-weight:400;color:var(--muted);">parts / charges you paid</small></label><input type="number" id="eCost" min="0" step="0.01" inputmode="decimal" value="0"></div>
+            <div class="form-group"><label id="eAmountLabel">Amount received (₹)</label><input type="number" id="eAmount" min="0" step="any" inputmode="decimal" required></div>
+            <div class="form-group" id="eCostGroup"><label>Your cost (₹) <small style="font-weight:400;color:var(--muted);">parts / charges you paid</small></label><input type="number" id="eCost" min="0" step="any" inputmode="decimal" value="0"></div>
             <div class="form-group"><label>Payment mode</label>
-              <select id="eMode"><option>Cash</option><option>UPI</option><option>Udhaar</option></select>
+              <select id="eMode"><option>Cash</option><option>UPI</option><option>Credit</option></select>
             </div>
             <div class="form-group"><label id="eCustomerLabel">Customer name (optional)</label><input type="text" id="eCustomer" placeholder="e.g. Rohit Kumar"></div>
             <div class="form-group"><label>Customer mobile (optional)</label><input type="text" id="eMobile" inputmode="numeric" maxlength="10" placeholder="10 digit number"></div>
@@ -336,7 +336,7 @@
                 <option>Stock Purchase</option><option>Transport</option><option>Maintenance</option><option>Other</option>
               </select>
             </div>
-            <div class="form-group"><label>Amount (₹)</label><input type="number" id="xAmount" min="0" step="0.01" inputmode="decimal" required></div>
+            <div class="form-group"><label>Amount (₹)</label><input type="number" id="xAmount" min="0" step="any" inputmode="decimal" required></div>
             <div class="form-group"><label>Note (optional)</label><input type="text" id="xNote"></div>
           </div>
           <div class="form-actions" style="margin-top:14px;"><button type="submit" class="auth-btn">Add Expense</button></div>
@@ -350,7 +350,7 @@
             <div class="form-group"><label>Category</label>
               <select id="rCategory"><option>Rent</option><option>Electricity</option><option>Internet</option><option>Salary</option><option>Other</option></select>
             </div>
-            <div class="form-group"><label>Monthly amount (₹)</label><input type="number" id="rAmount" min="0" step="0.01" inputmode="decimal" required></div>
+            <div class="form-group"><label>Monthly amount (₹)</label><input type="number" id="rAmount" min="0" step="any" inputmode="decimal" required></div>
             <div class="form-group"><label>Note (optional)</label><input type="text" id="rNote"></div>
           </div>
           <div class="form-actions" style="margin-top:14px;"><button type="submit" class="btn btn-warn">Add Recurring Expense</button></div>
@@ -361,10 +361,10 @@
       <!-- ============ UDHAAR ============ -->
       <section class="dash-card rose admin-only" id="udhaarSection">
         <div class="card-top">
-          <div class="card-title"><span class="chip">📒</span><h2>Udhaar (Credit) Tracker</h2></div>
+          <div class="card-title"><span class="chip">📒</span><h2>Credit Tracker</h2></div>
           <span class="tag udhaar" id="udhaarTotal"></span>
         </div>
-        <p class="card-note">Any entry saved with payment mode "Udhaar" appears here automatically. Tap "Mark Received" when the customer pays.</p>
+        <p class="card-note">Any entry saved with payment mode "Credit" appears here automatically. Tap "Mark Received" when the customer pays.</p>
         <div id="udhaarList"><p class="empty">Loading...</p></div>
       </section>
 
@@ -377,8 +377,8 @@
         <h3 class="section-heading" style="margin-top:0;">General</h3>
         <form id="generalForm">
           <div class="form-grid">
-            <div class="form-group"><label>Daily profit target (₹)</label><input type="number" id="sTarget" min="0" step="1" inputmode="numeric"></div>
-            <div class="form-group"><label>Recharge commission (%)</label><input type="number" id="sRechargeRate" min="0" max="100" step="0.01" inputmode="decimal"></div>
+            <div class="form-group"><label>Daily profit target (₹)</label><input type="number" id="sTarget" min="0" step="any" inputmode="numeric"></div>
+            <div class="form-group"><label>Recharge commission (%)</label><input type="number" id="sRechargeRate" min="0" max="100" step="any" inputmode="decimal"></div>
             <div class="form-group"><label>Auto-add Recharge Settlement data</label>
               <select id="sRechargeSync"><option value="1">On - count settlement recharges</option><option value="0">Off - I add recharges manually</option></select>
             </div>
@@ -398,9 +398,9 @@
             <div class="form-group"><label>Type</label>
               <select id="vType"><option value="fixed">Fixed price</option><option value="commission">Commission %</option></select>
             </div>
-            <div class="form-group" id="vRateGroup" style="display:none;"><label>Commission (%)</label><input type="number" id="vRate" min="0" max="100" step="0.01" value="3"></div>
-            <div class="form-group" id="vPriceGroup"><label>Default price (₹)</label><input type="number" id="vPrice" min="0" step="0.01" value="0"></div>
-            <div class="form-group" id="vCostGroup"><label>Default cost (₹)</label><input type="number" id="vCost" min="0" step="0.01" value="0"></div>
+            <div class="form-group" id="vRateGroup" style="display:none;"><label>Commission (%)</label><input type="number" id="vRate" min="0" max="100" step="any" value="3"></div>
+            <div class="form-group" id="vPriceGroup"><label>Default price (₹)</label><input type="number" id="vPrice" min="0" step="any" value="0"></div>
+            <div class="form-group" id="vCostGroup"><label>Default cost (₹)</label><input type="number" id="vCost" min="0" step="any" value="0"></div>
           </div>
           <div class="form-actions" style="margin-top:14px;">
             <button type="submit" class="auth-btn" id="serviceSaveBtn">Add Service</button>
@@ -410,7 +410,7 @@
         <div id="serviceList" style="margin-top:16px;"></div>
 
         <h3 class="section-heading">Staff Access (optional)</h3>
-        <p class="card-note">Create a login for a staff member. Staff can only add entries and see their own entries for today. They cannot see profit, reports, expenses or udhaar.</p>
+        <p class="card-note">Create a login for a staff member. Staff can only add entries and see their own entries for today. They cannot see profit, reports, expenses or credit.</p>
         <form id="staffForm" autocomplete="off">
           <div class="form-grid">
             <div class="form-group"><label>Staff name</label><input type="text" id="stName" required></div>
@@ -471,6 +471,8 @@
     const pad = (n) => String(n).padStart(2, '0');
     const num = (v) => { const n = parseFloat(v); return isFinite(n) ? n : 0; };
     const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+    const round4 = (n) => Math.round((n + Number.EPSILON) * 10000) / 10000;
+    const normMode = (m) => (m === 'Udhaar' ? 'Credit' : (m || 'Cash'));  // old entries used the Hindi word
     const dateStr = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     const monthOf = (s) => String(s).slice(0, 7);
     const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
@@ -627,13 +629,13 @@
         db.ref(ROOT + '/settings').on('value', (snap) => {
           state.settings = snap.val() || {};
           fillSettingsForm();
-          Object.keys(state.watched).forEach(loadRecharge);
           renderAll();
         });
         db.ref(ROOT + '/recurring').on('value', (snap) => { state.recurring = snap.val() || {}; renderAll(); });
         db.ref(ROOT + '/udhaar').on('value', (snap) => { state.udhaar = snap.val() || {}; renderAll(); });
         db.ref(ROOT + '/staff').on('value', (snap) => { state.staff = snap.val() || {}; renderStaff(); });
         watchMonth(state.month);
+        startRechargeWatch();
       }
     }
 
@@ -664,37 +666,75 @@
           state.expenses[mk] = snap.val() || {};
           renderAll();
         });
-        loadRecharge(mk);
       }
     }
 
-    /** Reads recharge records from the Recharge Settlement data and keeps only this month. */
-    function loadRecharge(mk) {
-      if (state.role !== 'admin') return;
-      if (!rechargeOn()) { state.recharge[mk] = []; renderAll(); return; }
+    /* ----------------------------------------------------------
+       Recharge Settlement sync
+       Reads the master list (telecomSettlement/records) AND the vendor
+       copies (telecomSettlement/vendorView). If the same recharge is in
+       both, it is counted once, so nothing is missed and nothing doubles.
+       ---------------------------------------------------------- */
+    const rcSources = { records: null, view: null };
 
-      db.ref(RECHARGE_SYNC.path).once('value').then((snap) => {
-        const out = [];
-        const byVendor = snap.val() || {};
-        Object.values(byVendor).forEach((records) => {
-          Object.values(records || {}).forEach((r) => {
-            if (!r || typeof r !== 'object') return;
-            const d = String(r[RECHARGE_SYNC.dateField] || '');
-            if (monthOf(d) !== mk) return;
-            const txn = num(r[RECHARGE_SYNC.amountField]);
-            const profit = RECHARGE_SYNC.commissionField && r[RECHARGE_SYNC.commissionField] != null
-              ? num(r[RECHARGE_SYNC.commissionField])
-              : round2(txn * rechargeRate() / 100);
-            out.push({ date: d, txn, profit });
-          });
+    function collectRecords(node, out, idHint) {
+      if (!node || typeof node !== 'object') return;
+      if (typeof node[RECHARGE_SYNC.dateField] === 'string' && node[RECHARGE_SYNC.amountField] !== undefined) {
+        let d = node[RECHARGE_SYNC.dateField];
+        if (/^\d{2}-\d{2}-\d{4}$/.test(d)) d = d.split('-').reverse().join('-');
+        const txn = num(node[RECHARGE_SYNC.amountField]);
+        out.push({
+          id: idHint, date: d, txn,
+          vendor: node.vendor || '', mobile: node.mobile || '', operator: node.operator || '', purpose: node.purpose || '',
+          commission: RECHARGE_SYNC.commissionField && node[RECHARGE_SYNC.commissionField] != null ? num(node[RECHARGE_SYNC.commissionField]) : null,
+          sig: [d, node.mobile, node.operator, txn, node.vendor].join('|')
         });
-        state.recharge[mk] = out;
-        renderAll();
-      }).catch(() => {
-        state.recharge[mk] = [];
-        state.rechargeError = true;
-        renderAll();
+        return;
+      }
+      Object.entries(node).forEach(([k, v]) => collectRecords(v, out, k));
+    }
+
+    function rebuildRecharge() {
+      const bySig = (list) => list.reduce((m, r) => { (m[r.sig] = m[r.sig] || []).push(r); return m; }, {});
+      const a = [], b = [];
+      collectRecords(rcSources.records, a, '');
+      collectRecords(rcSources.view, b, '');
+      const ga = bySig(a), gb = bySig(b), merged = [];
+      new Set([...Object.keys(ga), ...Object.keys(gb)]).forEach((sig) => {
+        const la = ga[sig] || [], lb = gb[sig] || [];
+        merged.push(...(la.length >= lb.length ? la : lb));
       });
+      state.rechargeAll = merged;
+      renderAll();
+    }
+
+    function startRechargeWatch() {
+      if (state.role !== 'admin') return;
+      let failed = 0;
+      const onFail = (key) => () => {
+        rcSources[key] = null;
+        if (++failed >= 2) state.rechargeError = true;
+        rebuildRecharge();
+      };
+      db.ref('telecomSettlement/records').on('value', (snap) => { rcSources.records = snap.val(); state.rechargeError = false; rebuildRecharge(); }, onFail('records'));
+      db.ref(RECHARGE_SYNC.path).on('value', (snap) => { rcSources.view = snap.val(); state.rechargeError = false; rebuildRecharge(); }, onFail('view'));
+    }
+
+    /** Recharge records of one month, with profit worked out at the current commission %. */
+    function rechargeOf(mk) {
+      if (!rechargeOn()) return [];
+      return (state.rechargeAll || [])
+        .filter((r) => monthOf(r.date) === mk)
+        .map((r) => ({ ...r, profit: r.commission != null ? r.commission : round4(r.txn * rechargeRate() / 100) }));
+    }
+
+    /** Recharge records shaped like ledger rows so they can sit in the entries tables. */
+    function rechargeRows(mk, onlyDate) {
+      return rechargeOf(mk).filter((r) => !onlyDate || r.date === onlyDate).map((r, i) => ({
+        id: 'auto-' + i, auto: true, date: r.date, service: 'Recharge (auto)',
+        note: [r.operator, r.purpose].filter(Boolean).join(' · '),
+        customer: r.vendor, mobile: r.mobile, amount: r.txn, cost: 0, profit: r.profit, mode: 'Auto'
+      }));
     }
 
     /* ==========================================================
@@ -707,28 +747,28 @@
     /** Works out the income, cost and profit for an entry. */
     function calcEntry(svc, amount, cost) {
       if (svc.type === 'commission') {
-        const profit = round2(amount * num(svc.rate != null ? svc.rate : DEFAULT_RATE) / 100);
+        const profit = round4(amount * num(svc.rate != null ? svc.rate : DEFAULT_RATE) / 100);
         return { income: profit, cost: 0, profit };
       }
-      return { income: amount, cost, profit: round2(amount - cost) };
+      return { income: amount, cost, profit: round4(amount - cost) };
     }
 
     /** Adds up one month: totals, per-day figures and per-service profit. */
     function aggregate(mk) {
       const days = {}, services = {};
-      const total = { income: 0, cost: 0, profit: 0, count: 0, Cash: 0, UPI: 0, Udhaar: 0, Auto: 0 };
-      const day = (d) => days[d] || (days[d] = { date: d, count: 0, income: 0, cost: 0, profit: 0, Cash: 0, UPI: 0, Udhaar: 0, Auto: 0 });
+      const total = { income: 0, cost: 0, profit: 0, count: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 };
+      const day = (d) => days[d] || (days[d] = { date: d, count: 0, income: 0, cost: 0, profit: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 });
       const svc = (n) => services[n] || (services[n] = { name: n, profit: 0, income: 0, count: 0 });
 
       entriesOf(mk).forEach((e) => {
         const d = day(e.date), income = num(e.income), cost = num(e.cost), profit = num(e.profit);
-        const mode = ['Cash', 'UPI', 'Udhaar'].includes(e.mode) ? e.mode : 'Cash';
+        const mode = ['Cash', 'UPI', 'Credit'].includes(normMode(e.mode)) ? normMode(e.mode) : 'Cash';
         [d, total].forEach((t) => { t.count++; t.income += income; t.cost += cost; t.profit += profit; t[mode] += income; });
         const s = svc(e.service || 'Other'); s.profit += profit; s.income += income; s.count++;
       });
 
       if (rechargeOn()) {
-        (state.recharge[mk] || []).forEach((r) => {
+        rechargeOf(mk).forEach((r) => {
           const d = day(r.date);
           [d, total].forEach((t) => { t.count++; t.income += r.profit; t.profit += r.profit; t.Auto += r.profit; });
           const s = svc('Recharge (auto)'); s.profit += r.profit; s.income += r.profit; s.count++;
@@ -798,7 +838,7 @@
     ['eAmount', 'eCost'].forEach((id) => $(id).addEventListener('input', updatePreview));
 
     $('eMode').addEventListener('change', () => {
-      $('eCustomerLabel').textContent = $('eMode').value === 'Udhaar' ? 'Customer name (required for Udhaar)' : 'Customer name (optional)';
+      $('eCustomerLabel').textContent = $('eMode').value === 'Credit' ? 'Customer name (required for Credit)' : 'Customer name (optional)';
     });
 
     function resetEntryForm() {
@@ -829,7 +869,7 @@
       const mobile = $('eMobile').value.trim();
 
       if (!date) { showMsg('entry', 'error', 'Please choose a date.'); return; }
-      if (mode === 'Udhaar' && !customer) { showMsg('entry', 'error', 'Customer name is required for Udhaar entries.'); return; }
+      if (mode === 'Credit' && !customer) { showMsg('entry', 'error', 'Customer name is required for Credit entries.'); return; }
       if (mobile && !/^\d{10}$/.test(mobile)) { showMsg('entry', 'error', 'Mobile number must be 10 digits.'); return; }
 
       const calc = calcEntry(svc, amount, cost);
@@ -851,7 +891,7 @@
       if (editing && editing.mk !== mk) updates['entries/' + editing.mk + '/' + id] = null;
       updates['entries/' + mk + '/' + id] = doc;
 
-      if (mode === 'Udhaar') {
+      if (mode === 'Credit') {
         const prev = state.udhaar[id];
         updates['udhaar/' + id] = {
           customer, mobile, amount, date, note: doc.note, service: svc.name,
@@ -884,11 +924,11 @@
       $('eDate').value = e.date;
       $('eAmount').value = e.amount;
       $('eCost').value = e.cost || 0;
-      $('eMode').value = e.mode || 'Cash';
+      $('eMode').value = normMode(e.mode);
       $('eCustomer').value = e.customer || '';
       $('eMobile').value = e.mobile || '';
       $('eNote').value = e.note || '';
-      $('eCustomerLabel').textContent = e.mode === 'Udhaar' ? 'Customer name (required for Udhaar)' : 'Customer name (optional)';
+      $('eCustomerLabel').textContent = normMode(e.mode) === 'Credit' ? 'Customer name (required for Credit)' : 'Customer name (optional)';
       $('entryHeading').textContent = 'Edit Entry';
       $('entrySaveBtn').textContent = 'Update Entry';
       $('entryCancelBtn').style.display = '';
@@ -899,7 +939,7 @@
     }
 
     async function deleteEntry(mk, id) {
-      if (!confirm('Delete this entry? This also removes its Udhaar record, if any.')) return;
+      if (!confirm('Delete this entry? This also removes its Credit record, if any.')) return;
       const updates = {};
       updates['entries/' + mk + '/' + id] = null;
       updates['udhaar/' + id] = null;
@@ -917,13 +957,14 @@
         const timeStr = e.createdAt ? new Date(e.createdAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }) : '';
         const who = [e.customer, e.mobile].filter(Boolean).map(esc).join('<br>');
         return `<tr>
-          <td>${opts.showDate ? fmtDate(e.date) : esc(timeStr)}</td>
+          <td>${opts.showDate ? fmtDate(e.date) : esc(timeStr || '-')}</td>
           <td>${esc(e.service)}${e.note ? `<br><small style="color:var(--muted)">${esc(e.note)}</small>` : ''}</td>
           <td>${who || '-'}</td>
           <td class="num">${money(e.amount)}</td>
           ${admin ? `<td class="num">${money(e.cost)}</td><td class="num ${clsOf(num(e.profit))}">${money(e.profit)}</td>` : ''}
-          <td><span class="tag ${e.mode === 'Udhaar' ? 'udhaar' : ''}">${esc(e.mode)}</span></td>
-          ${admin ? `<td class="actions">
+          <td><span class="tag ${normMode(e.mode) === 'Credit' ? 'udhaar' : ''}">${esc(normMode(e.mode))}</span></td>
+          ${admin && e.auto ? '<td><small style="color:var(--muted)">From Recharge Settlement</small></td>' : ''}
+          ${admin && !e.auto ? `<td class="actions">
             <button class="btn btn-small btn-ghost" data-act="edit" data-mk="${esc(monthOf(e.date))}" data-id="${esc(e.id)}">Edit</button>
             <button class="btn btn-small btn-danger" data-act="del" data-mk="${esc(monthOf(e.date))}" data-id="${esc(e.id)}">Delete</button>
           </td>` : ''}
@@ -959,18 +1000,19 @@
       const admin = state.role === 'admin';
       let list = entriesOf(currentMonth).filter((e) => e.date === todayKey);
       if (!admin) list = list.filter((e) => e.by === state.user.uid);
+      if (admin) list = list.concat(rechargeRows(currentMonth, todayKey));
       list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       $('todayEntries').innerHTML = entriesTable(list, { showDate: false });
       if (!admin) return;
 
       const agg = aggregate(currentMonth);
-      const t = agg.days[todayKey] || { income: 0, cost: 0, profit: 0, count: 0, Cash: 0, UPI: 0, Udhaar: 0, Auto: 0 };
+      const t = agg.days[todayKey] || { income: 0, cost: 0, profit: 0, count: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 };
       $('todayStats').innerHTML = `
         <div class="stat"><small>Income</small><b>${money(t.income)}</b></div>
         <div class="stat"><small>Cost</small><b>${money(t.cost)}</b></div>
         <div class="stat profit"><small>Profit</small><b class="${clsOf(t.profit)}">${money(t.profit)}</b></div>
         <div class="stat"><small>Entries</small><b>${t.count}</b></div>`;
-      $('todayBreakdown').innerHTML = `Cash ${money(t.Cash)} · UPI ${money(t.UPI)} · Udhaar ${money(t.Udhaar)}` +
+      $('todayBreakdown').innerHTML = `Cash ${money(t.Cash)} · UPI ${money(t.UPI)} · Credit ${money(t.Credit)}` +
         (rechargeOn() ? ` · Recharge (auto) ${money(t.Auto)}` : '') +
         (state.rechargeError ? ' · <span class="neg">Recharge sync could not read the settlement data</span>' : '');
 
@@ -1006,7 +1048,7 @@
         <div class="stat profit"><small>Net Profit</small><b class="${clsOf(net)}">${money(net)}</b></div>
         <div class="stat"><small>Avg profit / day</small><b>${money(Math.round(avg))}</b></div>`;
       $('monthBreakdown').innerHTML =
-        `Entries ${t.count} · Cash ${money(t.Cash)} · UPI ${money(t.UPI)} · Udhaar ${money(t.Udhaar)}` +
+        `Entries ${t.count} · Cash ${money(t.Cash)} · UPI ${money(t.UPI)} · Credit ${money(t.Credit)}` +
         (rechargeOn() ? ` · Recharge (auto) ${money(t.Auto)}` : '') +
         (best ? `<br>Best day: ${fmtDate(best.date)} (${money(best.profit)}) · Weakest day: ${fmtDate(worst.date)} (${money(worst.profit)})` : '');
 
@@ -1021,16 +1063,16 @@
           <td>${fmtDate(d.date)}</td><td class="num">${d.count}</td>
           <td class="num">${money(d.income)}</td><td class="num">${money(d.cost)}</td>
           <td class="num ${clsOf(d.profit)}">${money(d.profit)}${target > 0 && d.profit >= target ? ' ✓' : ''}</td>
-          <td class="num">${money(d.Cash)}</td><td class="num">${money(d.UPI)}</td><td class="num">${money(d.Udhaar)}</td>
+          <td class="num">${money(d.Cash)}</td><td class="num">${money(d.UPI)}</td><td class="num">${money(d.Credit)}</td>
         </tr>`).join('');
         const foot = `<tr><td>Total</td><td class="num">${t.count}</td><td class="num">${money(t.income)}</td><td class="num">${money(t.cost)}</td>
-          <td class="num ${clsOf(t.profit)}">${money(t.profit)}</td><td class="num">${money(t.Cash)}</td><td class="num">${money(t.UPI)}</td><td class="num">${money(t.Udhaar)}</td></tr>`;
+          <td class="num ${clsOf(t.profit)}">${money(t.profit)}</td><td class="num">${money(t.Cash)}</td><td class="num">${money(t.UPI)}</td><td class="num">${money(t.Credit)}</td></tr>`;
         $('dailyTable').innerHTML = buildTable(
-          ['Date', { label: 'Entries', num: true }, { label: 'Income', num: true }, { label: 'Cost', num: true }, { label: 'Profit', num: true }, { label: 'Cash', num: true }, { label: 'UPI', num: true }, { label: 'Udhaar', num: true }],
+          ['Date', { label: 'Entries', num: true }, { label: 'Income', num: true }, { label: 'Cost', num: true }, { label: 'Profit', num: true }, { label: 'Cash', num: true }, { label: 'UPI', num: true }, { label: 'Credit', num: true }],
           rows, foot);
       }
 
-      const list = entriesOf(mk).sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+      const list = entriesOf(mk).concat(rechargeRows(mk)).sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
       $('monthEntries').innerHTML = entriesTable(list, { showDate: true });
     }
 
@@ -1081,7 +1123,7 @@
       const header = ['Date', 'Service', 'Amount', 'Income', 'Cost', 'Profit', 'Mode', 'Customer', 'Mobile', 'Note', 'Entered by'];
       const rows = entriesOf(mk).sort((a, b) => a.date.localeCompare(b.date))
         .map((e) => [e.date, e.service, e.amount, e.income, e.cost, e.profit, e.mode, e.customer, e.mobile, e.note, e.byName]);
-      (state.recharge[mk] || []).forEach((r) => rows.push([r.date, 'Recharge (auto)', r.txn, r.profit, 0, r.profit, 'Auto', '', '', '', '']));
+      rechargeOf(mk).forEach((r) => rows.push([r.date, 'Recharge (auto)', r.txn, r.profit, 0, r.profit, 'Auto', r.vendor, r.mobile, r.operator, '']));
       expensesOf(mk).forEach((x) => rows.push([x.date, 'EXPENSE: ' + x.category, -num(x.amount), '', '', -num(x.amount), '', '', '', x.note, '']));
       Object.values(state.recurring).forEach((r) => rows.push([mk + '-01', 'RECURRING EXPENSE: ' + r.category, -num(r.amount), '', '', -num(r.amount), '', '', '', r.note, '']));
       const csv = [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n');
@@ -1156,7 +1198,7 @@
     }
 
     /* ==========================================================
-       Udhaar
+       Credit
        ========================================================== */
     function renderUdhaar() {
       if (state.role !== 'admin') return;
@@ -1176,7 +1218,7 @@
       const heads = ['Customer', 'Mobile', 'Service', 'Date', { label: 'Amount', num: true }, 'Action'];
 
       $('udhaarList').innerHTML =
-        (pending.length ? buildTable(heads, pending.map((u) => row(u, false)).join('')) : '<p class="empty">No pending udhaar. 🎉</p>') +
+        (pending.length ? buildTable(heads, pending.map((u) => row(u, false)).join('')) : '<p class="empty">No pending credit. 🎉</p>') +
         (received.length ? `<h3 class="section-heading">Recently Received</h3>${buildTable(heads, received.map((u) => row(u, true)).join(''))}` : '');
     }
 
@@ -1188,7 +1230,7 @@
     }
 
     async function deleteUdhaar(id) {
-      if (!confirm('Delete this udhaar record? (The ledger entry itself is not deleted.)')) return;
+      if (!confirm('Delete this credit record? (The ledger entry itself is not deleted.)')) return;
       try { await db.ref(ROOT + '/udhaar/' + id).remove(); } catch (err) { toast(err.message); }
     }
 
