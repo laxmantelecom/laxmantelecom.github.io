@@ -732,8 +732,8 @@
     function rechargeRows(mk, onlyDate) {
       return rechargeOf(mk).filter((r) => !onlyDate || r.date === onlyDate).map((r, i) => ({
         id: 'auto-' + i, auto: true, date: r.date, service: 'Recharge (auto)',
-        note: [r.operator, r.purpose].filter(Boolean).join(' · '),
-        customer: r.vendor, mobile: r.mobile, amount: r.txn, cost: 0, profit: r.profit, mode: 'Auto'
+        note: [r.vendor ? 'Vendor: ' + r.vendor : '', r.operator, r.purpose].filter(Boolean).join(' · '),
+        customer: '', mobile: r.mobile, amount: r.txn, cost: 0, profit: r.profit, mode: 'Auto'
       }));
     }
 
