@@ -28,40 +28,11 @@
       font-family: Figtree, system-ui, sans-serif; line-height: 1.6;
       color: var(--text); background: var(--cream); -webkit-font-smoothing: antialiased;
     }
-    body::before {
-      content: ''; position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: 330px;
-      background:
-        radial-gradient(circle at 12% 10%, rgba(255,138,0,.32), transparent 38%),
-        radial-gradient(circle at 92% 90%, rgba(124,58,237,.28), transparent 40%),
-        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 56px 56px,
-        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 56px 56px,
-        var(--ink);
-    }
     h1, h2, h3 { font-family: 'Bricolage Grotesque', system-ui, sans-serif; line-height: 1.15; color: var(--ink); }
     a { color: inherit; text-decoration: none; }
     :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-    @keyframes rise { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
-
-    /* Header */
-    .header {
-      position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between;
-      height: 70px; padding: 0 max(20px, calc((100% - 1140px) / 2));
-      background: rgba(251,247,240,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
-    }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand img { width: 40px; height: 40px; border-radius: 50%; }
-    .brand h1 { font-size: 1.15rem; }
-    .brand p { margin-top: 2px; font-size: .68rem; color: var(--muted); }
-    nav { display: flex; align-items: center; gap: 2px; font-size: .9rem; font-weight: 500; }
-    nav a { padding: 8px 12px; border-radius: 999px; transition: background .2s; }
-    nav a:hover { background: rgba(255,138,0,.13); }
-    nav a.menu-logout-link { margin-left: 6px; color: #fff; background: #be123c; }
-    .nav-toggle {
-      display: none; place-items: center; width: 42px; height: 42px; color: var(--ink);
-      background: none; border: 1.5px solid var(--line); border-radius: 10px; cursor: pointer;
-    }
-    .nav-backdrop { display: none; position: fixed; inset: 0; z-index: 40; background: rgba(17,19,24,.45); }
-    .nav-backdrop.nav-open { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    [hidden] { display: none !important; }
 
     /* Buttons */
     .btn, .auth-btn {
@@ -83,12 +54,10 @@
     .auth-btn:disabled { opacity: .6; cursor: wait; transform: none; }
 
     /* Cards */
-    .dash-wrapper { display: grid; gap: 22px; max-width: 1140px; margin: 40px auto 70px; padding: 0 16px; }
-    .dash-wrapper > * { min-width: 0; }
     .dash-card {
       position: relative; overflow-x: auto; padding: 28px; background: #fff; border: 1px solid var(--line);
-      border-radius: 24px; box-shadow: 0 24px 50px -20px rgba(17,19,24,.3); scroll-margin-top: 100px;
-      animation: rise .8s cubic-bezier(.2,.8,.2,1) both;
+      border-radius: 22px; box-shadow: 0 18px 40px -22px rgba(17,19,24,.35);
+      animation: rise .3s ease both;
     }
     .violet { --c1: #7c3aed; --c2: #c026d3; }
     .teal   { --c1: #0f766e; --c2: #14b8a6; }
@@ -101,7 +70,7 @@
     }
     .card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
     .card-title { display: flex; align-items: center; gap: 14px; }
-    .card-title h2 { font-size: 1.5rem; }
+    .card-title h2 { font-size: 1.3rem; }
     .chip {
       display: grid; place-items: center; flex: none; width: 48px; height: 48px; font-size: 1.3rem; border-radius: 50%;
       background: linear-gradient(135deg, var(--c1), var(--c2)); box-shadow: 0 12px 22px -6px var(--c1);
@@ -192,23 +161,85 @@
     #mpinError { min-height: 18px; margin-top: 10px; font-size: .85rem; color: #be123c; }
     #mpinForgotLink { font-size: .82rem; color: var(--muted); }
 
+    /* ---------- App layout: sidebar on desktop, bottom tabs on phones ---------- */
+    .sidebar {
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 30; display: flex; flex-direction: column; width: 252px;
+      padding: 20px 14px; overflow-y: auto; color: #fff;
+      background: radial-gradient(circle at 10% 0%, rgba(255,138,0,.28), transparent 45%), var(--ink);
+    }
+    .side-brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px 14px; }
+    .side-brand img { width: 42px; height: 42px; border-radius: 50%; }
+    .side-brand h1 { font-size: 1.02rem; color: #fff; }
+    .side-brand p { font-size: .72rem; color: rgba(255,255,255,.55); }
+    .side-label { margin: 16px 12px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: rgba(255,255,255,.42); }
+    .side-nav a, .side-link {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border: 0; border-radius: 12px;
+      font: inherit; font-size: .94rem; font-weight: 600; color: rgba(255,255,255,.78); background: none; cursor: pointer; text-align: left;
+      transition: background .15s, color .15s;
+    }
+    .side-nav a:hover, .side-link:hover { background: rgba(255,255,255,.09); color: #fff; }
+    .side-nav a.active { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .ni { flex: none; width: 24px; text-align: center; font-size: 1.12rem; }
+    .side-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); }
+    .side-link.logout { color: #fda4af; }
+
+    .main { min-width: 0; margin-left: 252px; }
+    .topbar { display: none; }
+    .page { display: grid; gap: 20px; max-width: 1020px; margin: 0 auto; padding: 30px 26px 90px; }
+    .page-head h2 { font-size: 1.9rem; }
+    .page-head p { margin-top: 2px; color: var(--muted); font-size: .95rem; }
+    .view { display: grid; gap: 20px; min-width: 0; }
+    .tabbar { display: none; }
+
+    .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .quick-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 92px; padding: 14px 8px;
+      font: inherit; font-weight: 700; color: var(--ink); text-align: center; background: #fff; border: 1.5px solid var(--line);
+      border-radius: 18px; box-shadow: 0 10px 24px -16px rgba(17,19,24,.4); cursor: pointer; transition: transform .2s, border-color .2s;
+    }
+    .quick-btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .quick-btn > span { font-size: 1.6rem; line-height: 1.2; }
+    .quick-btn small { font-size: .74rem; font-weight: 600; color: var(--muted); }
+    .quick-btn.primary { border-color: transparent; background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .quick-btn.danger { color: var(--bad); }
+    .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    .step { margin: 2px 0 12px; font-weight: 700; color: var(--ink); }
+    .step b { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 8px; font-size: .8rem; color: #fff; background: var(--accent); border-radius: 50%; }
+    .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .link-more { display: inline-block; margin-top: 4px; font-weight: 700; color: var(--accent); }
+
     /* Staff accounts only see the entry form and their own entries */
     body.staff .admin-only { display: none !important; }
+    body:not(.staff) .staff-only { display: none !important; }
 
-    @media (max-width: 1100px) {
-      .nav-toggle { display: grid; }
-      nav {
-        display: none; position: absolute; top: 70px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0;
-        padding: 8px 20px 18px; background: var(--cream); border-bottom: 1px solid var(--line); box-shadow: 0 14px 24px rgba(17,19,24,.12);
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .topbar {
+        position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px;
+        color: #fff; background: var(--ink);
       }
-      nav.nav-open { display: flex; }
-      nav a { padding: 13px 8px; border-bottom: 1px solid var(--line); border-radius: 0; }
-      nav a.menu-logout-link { margin: 14px 0 0; text-align: center; border: 0; border-radius: 999px; }
+      .topbar img { width: 32px; height: 32px; border-radius: 50%; }
+      .topbar b { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.02rem; }
+      .page { gap: 16px; padding: 18px 14px 110px; }
+      .page-head h2 { font-size: 1.5rem; }
+      .tabbar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; gap: 2px;
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line);
+        box-shadow: 0 -10px 26px rgba(17,19,24,.1);
+      }
+      .tabbar a, .tabbar button {
+        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 2px; border: 0; border-radius: 12px;
+        font: inherit; font-size: .7rem; font-weight: 700; color: var(--muted); background: none; cursor: pointer;
+      }
+      .tabbar .ni { font-size: 1.3rem; }
+      .tabbar a.active { color: var(--ink); background: rgba(255,138,0,.18); }
     }
     @media (max-width: 520px) {
-      .brand p { display: none; }
       .dash-card { padding: 20px 16px; }
-      .card-title h2 { font-size: 1.25rem; }
+      .card-title h2 { font-size: 1.15rem; }
+      .quick { grid-template-columns: repeat(2, 1fr); }
       .hbar { grid-template-columns: 90px 1fr 76px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -233,196 +264,310 @@
 
   <div id="appRoot" style="display: none;">
 
-    <header class="header">
-      <div class="brand">
+    <!-- Desktop sidebar -->
+    <aside class="sidebar">
+      <a class="side-brand" href="#/home">
         <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
         <div><h1>LAXMAN TELECOM</h1><p>Daily Ledger</p></div>
-      </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="nav-backdrop" id="navBackdrop"></div>
-      <nav id="mainNav">
-        <a href="admin.html" class="admin-only">Admin Home</a>
-        <a href="#todaySection">Today</a>
-        <a href="#monthSection" class="admin-only">Monthly Report</a>
-        <a href="#expenseSection" class="admin-only">Expenses</a>
-        <a href="#udhaarSection" class="admin-only">Credit</a>
-        <a href="#settingsSection" class="admin-only">Settings</a>
-        <a href="#" class="menu-logout-link" id="logoutLink">Logout</a>
+      </a>
+      <nav class="side-nav" aria-label="Main menu">
+        <p class="side-label admin-only">Daily work</p>
+        <a href="#/home" data-view="home" class="admin-only"><span class="ni">🏠</span>Home</a>
+        <a href="#/add" data-view="add"><span class="ni">➕</span>Add Entry</a>
+        <a href="#/entries" data-view="entries" class="admin-only"><span class="ni">📋</span>All Entries</a>
+        <p class="side-label admin-only">Money</p>
+        <a href="#/report" data-view="report" class="admin-only"><span class="ni">📊</span>Monthly Report</a>
+        <a href="#/expenses" data-view="expenses" class="admin-only"><span class="ni">💸</span>Expenses</a>
+        <a href="#/credit" data-view="credit" class="admin-only"><span class="ni">📒</span>Credit</a>
+        <p class="side-label admin-only">Setup</p>
+        <a href="#/services" data-view="services" class="admin-only"><span class="ni">🏷️</span>Services &amp; Prices</a>
+        <a href="#/settings" data-view="settings" class="admin-only"><span class="ni">⚙️</span>Settings</a>
       </nav>
-    </header>
+      <div class="side-foot">
+        <a href="admin.html" class="side-link admin-only"><span class="ni">←</span>Admin Panel</a>
+        <button type="button" class="side-link logout" data-logout><span class="ni">⏻</span>Logout</button>
+      </div>
+    </aside>
 
-    <main class="dash-wrapper">
+    <div class="main">
+      <!-- Phone top bar -->
+      <header class="topbar">
+        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+        <b>LAXMAN TELECOM</b>
+      </header>
 
-      <!-- ============ TODAY ============ -->
-      <section class="dash-card violet" id="todaySection">
-        <div class="card-top">
-          <div class="card-title"><span class="chip">📝</span><h2>Today's Work</h2></div>
-          <span class="tag" id="todayLabel"></span>
+      <div class="page">
+        <div class="page-head">
+          <h2 id="pageTitle">Home</h2>
+          <p id="pageSub"></p>
         </div>
 
-        <div class="admin-only">
-          <div class="stats" id="todayStats"></div>
-          <div class="breakdown" id="todayBreakdown"></div>
-          <div id="targetBox" style="margin-bottom: 18px;"></div>
-        </div>
+        <!-- ================= HOME ================= -->
+        <section class="view" id="view-home" hidden>
+          <div class="quick">
+            <a class="quick-btn primary" href="#/add"><span>➕</span>Add Entry</a>
+            <a class="quick-btn" href="#/credit"><span>📒</span>Credit<small id="homeCredit"></small></a>
+            <a class="quick-btn" href="#/report"><span>📊</span>Report</a>
+            <a class="quick-btn" href="#/expenses"><span>💸</span>Expenses</a>
+          </div>
 
-        <h3 class="section-heading" style="margin-top: 4px;" id="entryHeading">Add Entry</h3>
-        <div class="error-msg" id="entryErrorMsg"></div>
-        <div class="svc-chips" id="svcChips"></div>
-
-        <form id="entryForm" autocomplete="off">
-          <div class="form-grid">
-            <div class="form-group"><label>Date</label><input type="date" id="eDate" required></div>
-            <div class="form-group"><label id="eAmountLabel">Amount received (₹)</label><input type="number" id="eAmount" min="0" step="any" inputmode="decimal" required></div>
-            <div class="form-group" id="eCostGroup"><label>Your cost (₹) <small style="font-weight:400;color:var(--muted);">parts / charges you paid</small></label><input type="number" id="eCost" min="0" step="any" inputmode="decimal" value="0"></div>
-            <div class="form-group"><label>Payment mode</label>
-              <select id="eMode"><option>Cash</option><option>UPI</option><option>Credit</option></select>
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">☀️</span><h2>Today</h2></div>
+              <span class="tag" id="todayLabel"></span>
             </div>
-            <div class="form-group"><label id="eCustomerLabel">Customer name (optional)</label><input type="text" id="eCustomer" placeholder="e.g. Rohit Kumar"></div>
-            <div class="form-group"><label>Customer mobile (optional)</label><input type="text" id="eMobile" inputmode="numeric" maxlength="10" placeholder="10 digit number"></div>
-            <div class="form-group" style="grid-column: 1 / -1;"><label>Note (optional)</label><input type="text" id="eNote" placeholder="e.g. Redmi Note 11 display"></div>
+            <div class="stats" id="todayStats"></div>
+            <div class="breakdown" id="todayBreakdown"></div>
+            <div id="targetBox"></div>
           </div>
-          <div class="preview" id="entryPreview">Select a service to begin.</div>
-          <div class="form-actions">
-            <button type="submit" class="auth-btn" id="entrySaveBtn">Save Entry</button>
-            <button type="button" class="btn btn-ghost" id="entryCancelBtn" style="display:none;">Cancel edit</button>
+
+          <div class="dash-card teal">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📅</span><h2>This Month</h2></div>
+              <span class="tag" id="monthSnapLabel"></span>
+            </div>
+            <div id="monthSnap"></div>
+            <a class="link-more" href="#/report">Open full report →</a>
           </div>
-        </form>
 
-        <h3 class="section-heading">Entries Today</h3>
-        <div id="todayEntries"><p class="empty">Loading...</p></div>
-      </section>
-
-      <!-- ============ MONTHLY ============ -->
-      <section class="dash-card teal admin-only" id="monthSection">
-        <div class="card-top">
-          <div class="card-title"><span class="chip">📅</span><h2>Monthly Report</h2></div>
-          <div class="toolbar">
-            <input type="month" id="monthPicker" style="width:auto;">
-            <button class="btn btn-small btn-ghost" id="exportBtn">Download CSV</button>
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🧾</span><h2>Today's Entries</h2></div></div>
+            <div id="todayEntries"><p class="empty">Loading...</p></div>
           </div>
-        </div>
-        <div class="stats" id="monthStats"></div>
-        <div class="breakdown" id="monthBreakdown"></div>
+        </section>
 
-        <h3 class="section-heading">Daily Profit</h3>
-        <div class="chart-box" id="dailyChart"></div>
+        <!-- ================= ADD ENTRY ================= -->
+        <section class="view" id="view-add" hidden>
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📝</span><h2 id="entryHeading">Add Entry</h2></div>
+            </div>
+            <div class="error-msg" id="entryErrorMsg"></div>
 
-        <h3 class="section-heading">Profit by Service</h3>
-        <div class="chart-box" id="serviceChart"></div>
+            <p class="step"><b>1</b>What work did you do?</p>
+            <div class="svc-chips" id="svcChips"></div>
 
-        <h3 class="section-heading">Day-by-Day Table</h3>
-        <div id="dailyTable"></div>
+            <p class="step"><b>2</b>Enter the details</p>
+            <form id="entryForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Date</label><input type="date" id="eDate" required></div>
+                <div class="form-group"><label id="eAmountLabel">Amount received (₹)</label><input type="number" id="eAmount" min="0" step="any" inputmode="decimal" required></div>
+                <div class="form-group" id="eCostGroup"><label>Your cost (₹) <small style="font-weight:400;color:var(--muted);">parts / charges you paid</small></label><input type="number" id="eCost" min="0" step="any" inputmode="decimal" value="0"></div>
+                <div class="form-group"><label>Payment mode</label>
+                  <select id="eMode"><option>Cash</option><option>UPI</option><option>Credit</option></select>
+                </div>
+                <div class="form-group"><label id="eCustomerLabel">Customer name (optional)</label><input type="text" id="eCustomer" placeholder="e.g. Rohit Kumar"></div>
+                <div class="form-group"><label>Customer mobile (optional)</label><input type="text" id="eMobile" inputmode="numeric" maxlength="10" placeholder="10 digit number"></div>
+                <div class="form-group" style="grid-column: 1 / -1;"><label>Note (optional)</label><input type="text" id="eNote" placeholder="e.g. Redmi Note 11 display"></div>
+              </div>
+              <div class="preview" id="entryPreview">Select a service to begin.</div>
+              <div class="form-actions">
+                <button type="submit" class="auth-btn" id="entrySaveBtn">Save Entry</button>
+                <button type="button" class="btn btn-ghost" id="entryCancelBtn" style="display:none;">Cancel</button>
+              </div>
+            </form>
+          </div>
 
-        <h3 class="section-heading">All Entries This Month</h3>
-        <div id="monthEntries"></div>
-      </section>
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🧾</span><h2>Added Today</h2></div></div>
+            <div id="addRecent"><p class="empty">Loading...</p></div>
+          </div>
+        </section>
 
-      <!-- ============ EXPENSES ============ -->
-      <section class="dash-card orange admin-only" id="expenseSection">
-        <div class="card-top">
-          <div class="card-title"><span class="chip">💸</span><h2>Shop Expenses</h2></div>
-          <span class="tag" id="expenseMonthLabel"></span>
-        </div>
-        <p class="card-note">Rent, electricity, salary and other shop costs. These are subtracted from profit to give your <b>Net Profit</b>. Expenses shown here belong to the month selected in Monthly Report.</p>
-        <form id="expenseForm" autocomplete="off">
-          <div class="form-grid">
-            <div class="form-group"><label>Date</label><input type="date" id="xDate" required></div>
-            <div class="form-group"><label>Category</label>
-              <select id="xCategory">
-                <option>Rent</option><option>Electricity</option><option>Internet</option><option>Salary</option>
-                <option>Stock Purchase</option><option>Transport</option><option>Maintenance</option><option>Other</option>
+        <!-- ================= ALL ENTRIES ================= -->
+        <section class="view" id="view-entries" hidden>
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📋</span><h2>All Entries</h2></div>
+              <span class="tag" id="entriesSummary"></span>
+            </div>
+            <div class="filters">
+              <input type="month" class="month-picker" aria-label="Month">
+              <input type="text" id="entrySearch" placeholder="Search service, customer, mobile, note...">
+              <select id="entryModeFilter" aria-label="Payment mode">
+                <option value="">All payment modes</option><option>Cash</option><option>UPI</option><option>Credit</option><option>Auto</option>
               </select>
             </div>
-            <div class="form-group"><label>Amount (₹)</label><input type="number" id="xAmount" min="0" step="any" inputmode="decimal" required></div>
-            <div class="form-group"><label>Note (optional)</label><input type="text" id="xNote"></div>
+            <div id="monthEntries"></div>
           </div>
-          <div class="form-actions" style="margin-top:14px;"><button type="submit" class="auth-btn">Add Expense</button></div>
-        </form>
-        <div id="expenseList" style="margin-top:18px;"></div>
+        </section>
 
-        <h3 class="section-heading">Recurring Monthly Expenses</h3>
-        <p class="card-note">Added automatically to every month (for example shop rent). No need to enter them again each month.</p>
-        <form id="recurringForm" autocomplete="off">
-          <div class="form-grid">
-            <div class="form-group"><label>Category</label>
-              <select id="rCategory"><option>Rent</option><option>Electricity</option><option>Internet</option><option>Salary</option><option>Other</option></select>
+        <!-- ================= MONTHLY REPORT ================= -->
+        <section class="view" id="view-report" hidden>
+          <div class="dash-card teal">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📅</span><h2>Summary</h2></div>
+              <div class="toolbar">
+                <input type="month" class="month-picker" aria-label="Month" style="width:auto;">
+                <button class="btn btn-small btn-ghost" id="exportBtn">Download CSV</button>
+              </div>
             </div>
-            <div class="form-group"><label>Monthly amount (₹)</label><input type="number" id="rAmount" min="0" step="any" inputmode="decimal" required></div>
-            <div class="form-group"><label>Note (optional)</label><input type="text" id="rNote"></div>
+            <div class="stats" id="monthStats"></div>
+            <div class="breakdown" id="monthBreakdown"></div>
           </div>
-          <div class="form-actions" style="margin-top:14px;"><button type="submit" class="btn btn-warn">Add Recurring Expense</button></div>
-        </form>
-        <div id="recurringList" style="margin-top:14px;"></div>
-      </section>
+          <div class="dash-card orange">
+            <div class="card-top"><div class="card-title"><span class="chip">📈</span><h2>Daily Profit</h2></div></div>
+            <div class="chart-box" id="dailyChart"></div>
+          </div>
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🏆</span><h2>Profit by Service</h2></div></div>
+            <div class="chart-box" id="serviceChart"></div>
+          </div>
+          <div class="dash-card violet">
+            <div class="card-top"><div class="card-title"><span class="chip">🗓️</span><h2>Day-by-Day</h2></div></div>
+            <div id="dailyTable"></div>
+          </div>
+        </section>
 
-      <!-- ============ UDHAAR ============ -->
-      <section class="dash-card rose admin-only" id="udhaarSection">
-        <div class="card-top">
-          <div class="card-title"><span class="chip">📒</span><h2>Credit Tracker</h2></div>
-          <span class="tag udhaar" id="udhaarTotal"></span>
-        </div>
-        <p class="card-note">Any entry saved with payment mode "Credit" appears here automatically. Tap "Mark Received" when the customer pays.</p>
-        <div id="udhaarList"><p class="empty">Loading...</p></div>
-      </section>
-
-      <!-- ============ SETTINGS ============ -->
-      <section class="dash-card indigo admin-only" id="settingsSection">
-        <div class="card-top"><div class="card-title"><span class="chip">⚙️</span><h2>Ledger Settings</h2></div></div>
-        <div class="error-msg" id="settingsErrorMsg"></div>
-        <div class="success-msg" id="settingsSuccessMsg"></div>
-
-        <h3 class="section-heading" style="margin-top:0;">General</h3>
-        <form id="generalForm">
-          <div class="form-grid">
-            <div class="form-group"><label>Daily profit target (₹)</label><input type="number" id="sTarget" min="0" step="any" inputmode="numeric"></div>
-            <div class="form-group"><label>Recharge commission (%)</label><input type="number" id="sRechargeRate" min="0" max="100" step="any" inputmode="decimal"></div>
-            <div class="form-group"><label>Auto-add Recharge Settlement data</label>
-              <select id="sRechargeSync"><option value="1">On - count settlement recharges</option><option value="0">Off - I add recharges manually</option></select>
+        <!-- ================= EXPENSES ================= -->
+        <section class="view" id="view-expenses" hidden>
+          <div class="dash-card orange">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">💸</span><h2>Add Expense</h2></div>
+              <input type="month" class="month-picker" aria-label="Month" style="width:auto;">
             </div>
+            <p class="card-note">Rent, electricity, salary and other shop costs are subtracted from profit to give your <b>Net Profit</b>. The list below belongs to the month selected above.</p>
+            <form id="expenseForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Date</label><input type="date" id="xDate" required></div>
+                <div class="form-group"><label>Category</label>
+                  <select id="xCategory">
+                    <option>Rent</option><option>Electricity</option><option>Internet</option><option>Salary</option>
+                    <option>Stock Purchase</option><option>Transport</option><option>Maintenance</option><option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>Amount (₹)</label><input type="number" id="xAmount" min="0" step="any" inputmode="decimal" required></div>
+                <div class="form-group"><label>Note (optional)</label><input type="text" id="xNote"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="auth-btn">Add Expense</button></div>
+            </form>
           </div>
-          <div class="form-actions" style="margin-top:14px;"><button type="submit" class="auth-btn">Save Settings</button></div>
-        </form>
-
-        <h3 class="section-heading">Services</h3>
-        <p class="card-note">
-          <b>Fixed price</b> services: profit = amount received − your cost.
-          <b>Commission</b> services (Recharge, AEPS): you enter the transaction amount and profit = commission % of it.
-          Default price and cost are filled in automatically when you pick the service.
-        </p>
-        <form id="serviceForm" autocomplete="off">
-          <div class="form-grid">
-            <div class="form-group"><label>Service name</label><input type="text" id="vName" required></div>
-            <div class="form-group"><label>Type</label>
-              <select id="vType"><option value="fixed">Fixed price</option><option value="commission">Commission %</option></select>
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">🧾</span><h2>This Month's Expenses</h2></div>
+              <span class="tag" id="expenseMonthLabel"></span>
             </div>
-            <div class="form-group" id="vRateGroup" style="display:none;"><label>Commission (%)</label><input type="number" id="vRate" min="0" max="100" step="any" value="3"></div>
-            <div class="form-group" id="vPriceGroup"><label>Default price (₹)</label><input type="number" id="vPrice" min="0" step="any" value="0"></div>
-            <div class="form-group" id="vCostGroup"><label>Default cost (₹)</label><input type="number" id="vCost" min="0" step="any" value="0"></div>
+            <div id="expenseList"></div>
           </div>
-          <div class="form-actions" style="margin-top:14px;">
-            <button type="submit" class="auth-btn" id="serviceSaveBtn">Add Service</button>
-            <button type="button" class="btn btn-ghost" id="serviceCancelBtn" style="display:none;">Cancel</button>
+          <div class="dash-card teal">
+            <div class="card-top"><div class="card-title"><span class="chip">🔁</span><h2>Recurring Monthly Expenses</h2></div></div>
+            <p class="card-note">Added automatically to every month (for example shop rent). No need to enter them again each month.</p>
+            <form id="recurringForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Category</label>
+                  <select id="rCategory"><option>Rent</option><option>Electricity</option><option>Internet</option><option>Salary</option><option>Other</option></select>
+                </div>
+                <div class="form-group"><label>Monthly amount (₹)</label><input type="number" id="rAmount" min="0" step="any" inputmode="decimal" required></div>
+                <div class="form-group"><label>Note (optional)</label><input type="text" id="rNote"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="btn btn-warn">Add Recurring Expense</button></div>
+            </form>
+            <div id="recurringList" style="margin-top:14px;"></div>
           </div>
-        </form>
-        <div id="serviceList" style="margin-top:16px;"></div>
+        </section>
 
-        <h3 class="section-heading">Staff Access (optional)</h3>
-        <p class="card-note">Create a login for a staff member. Staff can only add entries and see their own entries for today. They cannot see profit, reports, expenses or credit.</p>
-        <form id="staffForm" autocomplete="off">
-          <div class="form-grid">
-            <div class="form-group"><label>Staff name</label><input type="text" id="stName" required></div>
-            <div class="form-group"><label>Staff email (login)</label><input type="email" id="stEmail" required></div>
-            <div class="form-group"><label>Password</label><input type="text" id="stPassword" required minlength="6"></div>
+        <!-- ================= CREDIT ================= -->
+        <section class="view" id="view-credit" hidden>
+          <div class="dash-card rose">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📒</span><h2>Credit Tracker</h2></div>
+              <span class="tag udhaar" id="udhaarTotal"></span>
+            </div>
+            <p class="card-note">Any entry saved with payment mode "Credit" appears here automatically. Tap "Mark Received" when the customer pays.</p>
+            <div id="udhaarList"><p class="empty">Loading...</p></div>
           </div>
-          <div class="form-actions" style="margin-top:14px;"><button type="submit" class="btn btn-warn" id="staffBtn">Create Staff Login</button></div>
-        </form>
-        <div id="staffList" style="margin-top:14px;"></div>
-      </section>
+        </section>
 
-    </main>
+        <!-- ================= SERVICES & PRICES ================= -->
+        <section class="view" id="view-services" hidden>
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🏷️</span><h2>Your Services</h2></div></div>
+            <div class="error-msg" id="servicesErrorMsg"></div>
+            <div class="success-msg" id="servicesSuccessMsg"></div>
+            <div id="serviceList"></div>
+          </div>
+          <div class="dash-card orange">
+            <div class="card-top"><div class="card-title"><span class="chip">➕</span><h2 id="serviceFormTitle">Add / Edit Service</h2></div></div>
+            <p class="card-note">
+              <b>Fixed price</b> services: profit = amount received − your cost.
+              <b>Commission</b> services (Recharge, AEPS): you enter the transaction amount and profit = commission % of it.
+              Default price and cost are filled in automatically when you pick the service.
+            </p>
+            <form id="serviceForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Service name</label><input type="text" id="vName" required></div>
+                <div class="form-group"><label>Type</label>
+                  <select id="vType"><option value="fixed">Fixed price</option><option value="commission">Commission %</option></select>
+                </div>
+                <div class="form-group" id="vRateGroup" style="display:none;"><label>Commission (%)</label><input type="number" id="vRate" min="0" max="100" step="any" value="3" inputmode="decimal"></div>
+                <div class="form-group" id="vPriceGroup"><label>Default price (₹)</label><input type="number" id="vPrice" min="0" step="any" value="0" inputmode="decimal"></div>
+                <div class="form-group" id="vCostGroup"><label>Default cost (₹)</label><input type="number" id="vCost" min="0" step="any" value="0" inputmode="decimal"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;">
+                <button type="submit" class="auth-btn" id="serviceSaveBtn">Add Service</button>
+                <button type="button" class="btn btn-ghost" id="serviceCancelBtn" style="display:none;">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================= SETTINGS ================= -->
+        <section class="view" id="view-settings" hidden>
+          <div class="dash-card violet">
+            <div class="card-top"><div class="card-title"><span class="chip">🎯</span><h2>General</h2></div></div>
+            <div class="error-msg" id="settingsErrorMsg"></div>
+            <div class="success-msg" id="settingsSuccessMsg"></div>
+            <form id="generalForm">
+              <div class="form-grid">
+                <div class="form-group"><label>Daily profit target (₹)</label><input type="number" id="sTarget" min="0" step="any" inputmode="decimal"></div>
+                <div class="form-group"><label>Recharge commission (%)</label><input type="number" id="sRechargeRate" min="0" max="100" step="any" inputmode="decimal"></div>
+                <div class="form-group"><label>Auto-add Recharge Settlement data</label>
+                  <select id="sRechargeSync"><option value="1">On - count settlement recharges</option><option value="0">Off - I add recharges manually</option></select>
+                </div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="auth-btn">Save Settings</button></div>
+            </form>
+          </div>
+          <div class="dash-card teal">
+            <div class="card-top"><div class="card-title"><span class="chip">👥</span><h2>Staff Access</h2></div></div>
+            <p class="card-note">Create a login for a staff member. Staff can only add entries and see their own entries for today. They cannot see profit, reports, expenses or credit.</p>
+            <form id="staffForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Staff name</label><input type="text" id="stName" required></div>
+                <div class="form-group"><label>Staff email (login)</label><input type="email" id="stEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="text" id="stPassword" required minlength="6"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="btn btn-warn" id="staffBtn">Create Staff Login</button></div>
+            </form>
+            <div id="staffList" style="margin-top:14px;"></div>
+          </div>
+        </section>
+
+        <!-- ================= MORE (phone menu) ================= -->
+        <section class="view" id="view-more" hidden>
+          <div class="tiles">
+            <a class="quick-btn" href="#/entries"><span>📋</span>All Entries</a>
+            <a class="quick-btn" href="#/expenses"><span>💸</span>Expenses</a>
+            <a class="quick-btn" href="#/services"><span>🏷️</span>Services &amp; Prices</a>
+            <a class="quick-btn" href="#/settings"><span>⚙️</span>Settings</a>
+            <a class="quick-btn" href="admin.html"><span>←</span>Admin Panel</a>
+            <button type="button" class="quick-btn danger" data-logout><span>⏻</span>Logout</button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Phone bottom tabs -->
+    <nav class="tabbar" aria-label="Quick menu">
+      <a href="#/home" data-view="home" class="admin-only"><span class="ni">🏠</span>Home</a>
+      <a href="#/add" data-view="add"><span class="ni">➕</span>Add</a>
+      <a href="#/report" data-view="report" class="admin-only"><span class="ni">📊</span>Report</a>
+      <a href="#/credit" data-view="credit" class="admin-only"><span class="ni">📒</span>Credit</a>
+      <a href="#/more" data-view="more" data-group="more" class="admin-only"><span class="ni">☰</span>More</a>
+      <button type="button" class="staff-only" data-logout><span class="ni">⏻</span>Logout</button>
+    </nav>
+
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -530,19 +675,49 @@
     const rechargeRate = () => (state.settings.rechargeRate != null ? num(state.settings.rechargeRate) : DEFAULT_RATE);
 
     /* ==========================================================
-       Navigation and session
+       Navigation: every menu item opens its own page
        ========================================================== */
-    function closeNav() {
-      $('mainNav').classList.remove('nav-open');
-      $('navBackdrop').classList.remove('nav-open');
+    const VIEW_INFO = {
+      home:     ['Home', 'Today at a glance'],
+      add:      ['Add Entry', 'Record the work you just did'],
+      entries:  ['All Entries', 'Search and review every entry'],
+      report:   ['Monthly Report', 'Profit, charts and day-by-day totals'],
+      expenses: ['Expenses', 'Rent, salary and other shop costs'],
+      credit:   ['Credit', 'Customers who still have to pay you'],
+      services: ['Services & Prices', 'Your service list, default prices and commission'],
+      settings: ['Settings', 'Daily target, recharge sync and staff access'],
+      more:     ['More', 'Everything else in one place']
+    };
+    const MORE_GROUP = ['more', 'entries', 'expenses', 'services', 'settings'];
+
+    function currentView() {
+      const wanted = location.hash.replace(/^#\/?/, '');
+      const allowed = state.role === 'staff' ? ['add'] : Object.keys(VIEW_INFO);
+      return allowed.includes(wanted) ? wanted : (state.role === 'staff' ? 'add' : 'home');
     }
-    $('navToggle').addEventListener('click', () => {
-      $('mainNav').classList.toggle('nav-open');
-      $('navBackdrop').classList.toggle('nav-open');
-    });
-    $('navBackdrop').addEventListener('click', closeNav);
-    $('mainNav').addEventListener('click', (e) => { if (e.target.tagName === 'A') closeNav(); });
-    $('logoutLink').addEventListener('click', (e) => {
+
+    function goTo(view) { location.hash = '#/' + view; }
+
+    function showView() {
+      if (!state.role) return;
+      const v = currentView();
+      if (location.hash !== '#/' + v) history.replaceState(null, '', '#/' + v);
+
+      document.querySelectorAll('.view').forEach((el) => { el.hidden = el.id !== 'view-' + v; });
+      document.querySelectorAll('[data-view]').forEach((a) => {
+        const on = a.dataset.view === v || (a.dataset.group === 'more' && MORE_GROUP.includes(v));
+        a.classList.toggle('active', on);
+        if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      });
+      $('pageTitle').textContent = VIEW_INFO[v][0];
+      $('pageSub').textContent = VIEW_INFO[v][1];
+      document.title = VIEW_INFO[v][0] + ' | LAXMAN TELECOM';
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', showView);
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-logout]')) return;
       e.preventDefault();
       auth.signOut().then(() => { window.location.href = 'login.html'; });
     });
@@ -613,8 +788,9 @@
       $('appRoot').style.display = 'block';
       $('eDate').value = todayKey;
       $('xDate').value = todayKey;
-      $('monthPicker').value = state.month;
+      document.querySelectorAll('.month-picker').forEach((i) => { i.value = state.month; });
       $('todayLabel').textContent = fmtDate(todayKey);
+      showView();
 
       db.ref(ROOT + '/services').on('value', (snap) => {
         state.services = snap.val() || {};
@@ -841,7 +1017,8 @@
       $('eCustomerLabel').textContent = $('eMode').value === 'Credit' ? 'Customer name (required for Credit)' : 'Customer name (optional)';
     });
 
-    function resetEntryForm() {
+    function resetEntryForm(keepService) {
+      const keep = keepService ? state.chosen : null;
       state.editing = null;
       $('entryForm').reset();
       $('eDate').value = todayKey;
@@ -850,11 +1027,24 @@
       $('entrySaveBtn').textContent = 'Save Entry';
       $('entryCancelBtn').style.display = 'none';
       $('eCustomerLabel').textContent = 'Customer name (optional)';
-      state.chosen = null;
+      state.chosen = keep;
+      const svc = keep ? state.services[keep] : null;
+      if (svc) {
+        $('eAmount').value = num(svc.price) ? svc.price : '';
+        $('eCost').value = num(svc.cost) || 0;
+      }
       renderChips();
       applyServiceUI();
+      if (svc) $('eAmount').focus();
     }
-    $('entryCancelBtn').addEventListener('click', resetEntryForm);
+
+    /** After editing from another page (for example All Entries), return there. */
+    function leaveEdit() {
+      const back = state.editFrom;
+      state.editFrom = null;
+      if (back && back !== 'add') goTo(back);
+    }
+    $('entryCancelBtn').addEventListener('click', () => { resetEntryForm(); leaveEdit(); });
 
     $('entryForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -907,8 +1097,8 @@
       try {
         await db.ref(ROOT).update(updates);
         watchMonth(mk);
-        toast(editing ? 'Entry updated' : 'Entry saved: profit ' + money(calc.profit));
-        resetEntryForm();
+        toast(editing ? 'Entry updated' : 'Entry saved. Profit ' + money(calc.profit));
+        if (editing) { resetEntryForm(); leaveEdit(); } else { resetEntryForm(true); }
       } catch (err) {
         showMsg('entry', 'error', 'Could not save: ' + err.message);
       }
@@ -934,7 +1124,8 @@
       $('entryCancelBtn').style.display = '';
       renderChips();
       applyServiceUI();
-      $('todaySection').scrollIntoView({ behavior: 'smooth' });
+      state.editFrom = currentView();
+      goTo('add');
       if (!svcId) showMsg('entry', 'error', 'The service of this entry no longer exists. Please pick a service again before saving.');
     }
 
@@ -998,12 +1189,18 @@
        ========================================================== */
     function renderToday() {
       const admin = state.role === 'admin';
-      let list = entriesOf(currentMonth).filter((e) => e.date === todayKey);
-      if (!admin) list = list.filter((e) => e.by === state.user.uid);
-      if (admin) list = list.concat(rechargeRows(currentMonth, todayKey));
-      list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-      $('todayEntries').innerHTML = entriesTable(list, { showDate: false });
+
+      // "Added Today" on the Add Entry page: your own manual entries (staff see only theirs)
+      let mine = entriesOf(currentMonth).filter((e) => e.date === todayKey);
+      if (!admin) mine = mine.filter((e) => e.by === state.user.uid);
+      mine.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      $('addRecent').innerHTML = entriesTable(mine, { showDate: false });
       if (!admin) return;
+
+      // Home page: everything today, including recharges from the settlement dashboard
+      const all = mine.concat(rechargeRows(currentMonth, todayKey));
+      all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      $('todayEntries').innerHTML = entriesTable(all, { showDate: false });
 
       const agg = aggregate(currentMonth);
       const t = agg.days[todayKey] || { income: 0, cost: 0, profit: 0, count: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 };
@@ -1022,8 +1219,16 @@
         $('targetBox').innerHTML = `<small style="font-weight:600;">Daily target: ${money(t.profit)} of ${money(target)} (${pct}%)${t.profit >= target ? ' - target reached! 🎉' : ''}</small>
           <div class="progress"><i class="${t.profit >= target ? 'done' : ''}" style="width:${pct}%"></i></div>`;
       } else {
-        $('targetBox').innerHTML = '';
+        $('targetBox').innerHTML = '<small style="color:var(--muted);">Set a daily target in Settings to see your progress here.</small>';
       }
+
+      // This month at a glance
+      const mn = monthNet(currentMonth);
+      $('monthSnapLabel').textContent = currentMonth.split('-').reverse().join('-');
+      $('monthSnap').innerHTML = `<div class="stats">
+        <div class="stat profit"><small>Gross Profit</small><b class="${clsOf(mn.agg.total.profit)}">${money(mn.agg.total.profit)}</b></div>
+        <div class="stat"><small>Expenses</small><b>${money(mn.expenses)}</b></div>
+        <div class="stat profit"><small>Net Profit</small><b class="${clsOf(mn.net)}">${money(mn.net)}</b></div></div>`;
     }
 
     /* ==========================================================
@@ -1071,10 +1276,28 @@
           ['Date', { label: 'Entries', num: true }, { label: 'Income', num: true }, { label: 'Cost', num: true }, { label: 'Profit', num: true }, { label: 'Cash', num: true }, { label: 'UPI', num: true }, { label: 'Credit', num: true }],
           rows, foot);
       }
+    }
 
-      const list = entriesOf(mk).concat(rechargeRows(mk)).sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+    /** All Entries page: one month, with search and a payment-mode filter. */
+    function renderEntriesPage() {
+      if (state.role !== 'admin') return;
+      const mk = state.month;
+      const q = $('entrySearch').value.trim().toLowerCase();
+      const mode = $('entryModeFilter').value;
+
+      let list = entriesOf(mk).concat(rechargeRows(mk));
+      if (mode) list = list.filter((e) => normMode(e.mode) === mode);
+      if (q) {
+        list = list.filter((e) => [e.service, e.customer, e.mobile, e.note, e.amount, fmtDate(e.date)].join(' ').toLowerCase().includes(q));
+      }
+      list.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+
+      const profit = list.reduce((sum, e) => sum + num(e.profit), 0);
+      $('entriesSummary').textContent = `${list.length} entries · profit ${money(profit)}`;
       $('monthEntries').innerHTML = entriesTable(list, { showDate: true });
     }
+    $('entrySearch').addEventListener('input', renderEntriesPage);
+    $('entryModeFilter').addEventListener('change', renderEntriesPage);
 
     function dailyChartSvg(mk, days) {
       const [y, m] = mk.split('-').map(Number);
@@ -1109,11 +1332,14 @@
         <span class="${clsOf(s.profit)}">${money(s.profit)}</span></div>`).join('')}</div>`;
     }
 
-    $('monthPicker').addEventListener('change', () => {
-      if (!$('monthPicker').value) return;
-      state.month = $('monthPicker').value;
-      watchMonth(state.month);
-      renderAll();
+    document.querySelectorAll('.month-picker').forEach((picker) => {
+      picker.addEventListener('change', () => {
+        if (!picker.value) return;
+        state.month = picker.value;
+        document.querySelectorAll('.month-picker').forEach((i) => { i.value = state.month; });
+        watchMonth(state.month);
+        renderAll();
+      });
     });
 
     /* CSV download of the selected month */
@@ -1207,6 +1433,7 @@
       const received = list.filter((u) => u.status === 'Received').sort((a, b) => (b.receivedAt || 0) - (a.receivedAt || 0)).slice(0, 15);
       const totalPending = pending.reduce((s, u) => s + num(u.amount), 0);
       $('udhaarTotal').textContent = 'Pending: ' + money(totalPending);
+      $('homeCredit').textContent = pending.length ? money(totalPending) + ' pending' : 'All clear';
 
       const row = (u, done) => `<tr>
         <td>${esc(u.customer)}</td><td>${esc(u.mobile) || '-'}</td><td>${esc(u.service) || '-'}</td>
@@ -1318,15 +1545,15 @@
       };
       try {
         await db.ref(ROOT + '/services/' + id).set(doc);
-        showMsg('settings', 'success', state.editingService ? 'Service updated.' : 'Service added.');
+        showMsg('services', 'success', state.editingService ? 'Service updated.' : 'Service added.');
         resetServiceForm();
-      } catch (err) { showMsg('settings', 'error', err.message); }
+      } catch (err) { showMsg('services', 'error', err.message); }
     });
 
     async function deleteService(id) {
       const s = state.services[id];
       if (!s || !confirm(`Delete "${s.name}"? Old entries keep their data; only the quick-select button is removed.`)) return;
-      try { await db.ref(ROOT + '/services/' + id).remove(); } catch (err) { showMsg('settings', 'error', err.message); }
+      try { await db.ref(ROOT + '/services/' + id).remove(); } catch (err) { showMsg('services', 'error', err.message); }
     }
 
     /* Staff */
@@ -1378,6 +1605,7 @@
       applyServiceUI();
       renderToday();
       renderMonth();
+      renderEntriesPage();
       renderExpenses();
       renderUdhaar();
       renderServices();
