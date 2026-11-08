@@ -47,23 +47,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Dark banner behind the top of every page */
-    body::before {
-      content: '';
-      position: absolute;
-      z-index: -1;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 330px;
-      background:
-        radial-gradient(circle at 12% 10%, rgba(255, 138, 0, .32), transparent 38%),
-        radial-gradient(circle at 92% 90%, rgba(124, 58, 237, .28), transparent 40%),
-        linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px) 0 0 / 56px 56px,
-        linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px) 0 0 / 56px 56px,
-        var(--ink);
-    }
-
     h1, h2, h3 {
       font-family: 'Bricolage Grotesque', system-ui, sans-serif;
       line-height: 1.15;
@@ -82,65 +65,83 @@
     /* ==========================================================
        Header and navigation
        ========================================================== */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-      padding: 0 max(20px, calc((100% - 1140px) / 2));
-      background: rgba(251, 247, 240, .92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
+
+    /* ===== App shell: sidebar on desktop, bottom tabs on phone ===== */
+    .sidebar { position: fixed; top: 0; bottom: 0; left: 0; z-index: 30; display: flex; flex-direction: column; width: 252px; padding: 20px 14px; overflow-x: hidden; overflow-y: auto; color: #fff; transition: width .2s ease, padding .2s ease; background: radial-gradient(circle at 10% 0%, rgba(255,138,0,.28), transparent 45%), var(--ink); }
+    .side-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 0 14px; }
+    .side-brand { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 2px 8px; }
+    .side-brand img { width: 42px; height: 42px; border-radius: 50%; }
+    .side-brand h1 { margin: 0; font-size: 1.02rem; color: #fff; }
+    .side-brand p { font-size: .72rem; color: rgba(255,255,255,.55); }
+    .side-toggle { flex: none; display: grid; place-items: center; width: 34px; height: 34px; font: inherit; font-size: 1.15rem; font-weight: 700; line-height: 1; color: #fff; background: rgba(255,255,255,.1); border: 0; border-radius: 10px; cursor: pointer; transition: background .15s; }
+    .side-toggle:hover { background: rgba(255,255,255,.22); }
+    .side-label { margin: 16px 12px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: rgba(255,255,255,.42); }
+    .side-nav a, .side-link { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border: 0; border-radius: 12px; font: inherit; font-size: .94rem; font-weight: 600; color: rgba(255,255,255,.78); background: none; cursor: pointer; text-align: left; transition: background .15s, color .15s; }
+    .side-nav a:hover, .side-link:hover { background: rgba(255,255,255,.09); color: #fff; }
+    .side-nav a.active { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .ni { flex: none; width: 24px; text-align: center; font-size: 1.12rem; }
+    .ico { display: inline-block; vertical-align: -.14em; }
+    .side-text { flex: 1; }
+    .badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; font-size: .72rem; font-weight: 800; color: #fff; background: #e11d48; border-radius: 99px; }
+    .badge[hidden] { display: none; }
+    .ext { font-size: .8rem; opacity: .6; }
+    .side-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); }
+    .side-link.logout { color: #fda4af; }
+    .main { min-width: 0; margin-left: 252px; transition: margin-left .2s ease; }
+    body.side-collapsed .sidebar { width: 76px; padding: 20px 10px; }
+    body.side-collapsed .main { margin-left: 76px; }
+    body.side-collapsed .side-head { flex-direction: column; gap: 10px; }
+    body.side-collapsed .side-brand { padding: 2px 0; }
+    body.side-collapsed .side-brand div, body.side-collapsed .side-label, body.side-collapsed .side-text, body.side-collapsed .ext { display: none; }
+    body.side-collapsed .side-nav a, body.side-collapsed .side-link { justify-content: center; padding: 12px 0; }
+    body.side-collapsed .side-nav { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
+    .topbar, .tabbar { display: none; }
+    .page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; max-width: 1060px; margin: 0 auto; padding: 30px 26px 90px; }
+    .view { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; min-width: 0; }
+    .view[hidden] { display: none !important; }
+    .page-head h2 { font-size: 1.9rem; }
+    .page-head p { margin-top: 2px; font-size: .95rem; color: var(--muted); }
+    .dash-card { animation: none; }
+    .dash-card > :last-child { margin-bottom: 0; }
+
+    /* Home */
+    .hero { position: relative; overflow: hidden; padding: 28px; color: #fff; border-radius: 24px; background: radial-gradient(circle at 10% 0%, rgba(255,138,0,.4), transparent 50%), radial-gradient(circle at 100% 100%, rgba(124,58,237,.4), transparent 45%), var(--ink); }
+    .hero h2 { color: #fff; font-size: 1.6rem; }
+    .hero p { margin-top: 4px; color: rgba(255,255,255,.65); }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+    .stat { display: block; padding: 16px 18px; background: #fff; border: 1px solid var(--line); border-radius: 18px; transition: transform .2s, border-color .2s; }
+    a.stat:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .stat small { display: block; font-size: .72rem; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); }
+    .stat b { display: block; margin-top: 2px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 1.7rem; color: var(--ink); }
+    .stat.s1 { border-top: 4px solid #7c3aed; } .stat.s2 { border-top: 4px solid #14b8a6; } .stat.s3 { border-top: 4px solid #fb923c; }
+    .quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+    .quick a { display: flex; align-items: center; gap: 12px; padding: 16px; font-weight: 700; color: var(--ink); background: #fff; border: 1.5px solid var(--line); border-radius: 18px; box-shadow: 0 10px 24px -16px rgba(17,19,24,.4); transition: transform .2s, border-color .2s; }
+    .quick a:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .quick .ic { display: grid; place-items: center; flex: none; width: 42px; height: 42px; font-size: 1.2rem; background: rgba(255,138,0,.16); border-radius: 12px; }
+    .quick small { display: block; font-weight: 500; font-size: .8rem; color: var(--muted); }
+    .quick a.dark { color: #fff; background: var(--ink); border-color: var(--ink); }
+    .quick a.dark small { color: rgba(255,255,255,.6); }
+    .quick a.dark .ic { background: rgba(255,255,255,.14); }
+    .h-sub { margin: 4px 0 -6px; font-size: 1.05rem; }
+
+    .topbar { position: sticky; top: 0; z-index: 30; align-items: center; gap: 10px; height: 56px; padding: 0 12px 0 16px; color: #fff; background: var(--ink); }
+    .topbar img { width: 32px; height: 32px; border-radius: 50%; }
+    .topbar b { flex: 1; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 1.02rem; }
+    .topbar button { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 12px; color: #fda4af; background: rgba(255,255,255,.1); cursor: pointer; }
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main, body.side-collapsed .main { margin-left: 0; }
+      .topbar { display: flex; }
+      .page { gap: 16px; padding: 16px 14px 110px; }
+      .page-head h2 { font-size: 1.5rem; }
+      .hero { padding: 22px 20px; }
+      .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; gap: 2px; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -10px 26px rgba(17,19,24,.1); }
+      .tabbar a { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 2px; border-radius: 12px; font-size: .7rem; font-weight: 700; color: var(--muted); }
+      .tabbar .ni { width: auto; font-size: 1.3rem; }
+      .tabbar a.active { color: var(--ink); background: rgba(255,138,0,.18); }
+      .tabbar .badge { position: absolute; top: 0; right: 14%; min-width: 17px; height: 17px; font-size: .64rem; }
     }
 
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand img { width: 40px; height: 40px; border-radius: 50%; }
-    .brand h1 { font-size: 1.15rem; }
-    .brand p { margin-top: 2px; font-size: .68rem; color: var(--muted); }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      font-size: .9rem;
-      font-weight: 500;
-    }
-
-    nav a {
-      padding: 8px 12px;
-      border-radius: 999px;
-      transition: background .2s;
-    }
-
-    nav a:hover { background: rgba(255, 138, 0, .13); }
-
-    nav a.menu-logout-link { margin-left: 6px; color: #fff; background: #be123c; }
-    nav a.menu-logout-link:hover { background: #9f1239; }
-
-    .nav-toggle {
-      display: none;
-      place-items: center;
-      width: 42px;
-      height: 42px;
-      color: var(--ink);
-      background: none;
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .nav-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 40;
-      background: rgba(17, 19, 24, .45);
-    }
-
-    .nav-backdrop.nav-open { display: block; }
 
     /* ==========================================================
        Buttons
@@ -274,6 +275,7 @@
        Forms and messages
        ========================================================== */
     form { max-width: 420px; }
+    .page form { max-width: 420px; }
 
     .form-group { margin-bottom: 14px; }
 
@@ -398,42 +400,7 @@
     /* ==========================================================
        Responsive
        ========================================================== */
-    @media (max-width: 1100px) {
-      .nav-toggle { display: grid; }
-
-      nav {
-        display: none;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        padding: 8px 20px 18px;
-        background: var(--cream);
-        border-bottom: 1px solid var(--line);
-        box-shadow: 0 14px 24px rgba(17, 19, 24, .12);
-      }
-
-      nav.nav-open { display: flex; }
-
-      nav a {
-        padding: 13px 8px;
-        border-bottom: 1px solid var(--line);
-        border-radius: 0;
-      }
-
-      nav a.menu-logout-link {
-        margin: 14px 0 0;
-        text-align: center;
-        border: 0;
-        border-radius: 999px;
-      }
-    }
-
     @media (max-width: 520px) {
-      .brand p { display: none; }
       .dash-card { padding: 20px 16px; }
       .card-title h2 { font-size: 1.25rem; }
     }
@@ -463,57 +430,76 @@
   <!-- ========== Admin app (hidden until the admin is verified) ========== -->
   <div id="adminAppRoot" style="display: none;">
 
-    <header class="header">
-      <div class="brand">
-        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
-        <div>
-          <h1>LAXMAN TELECOM</h1>
-          <p>Admin Dashboard</p>
-        </div>
+    <aside class="sidebar">
+      <div class="side-head">
+        <a class="side-brand" href="#/home" title="Home">
+          <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+          <div><h1>LAXMAN TELECOM</h1><p>Admin Dashboard</p></div>
+        </a>
+        <button type="button" class="side-toggle" id="sideToggle" aria-label="Collapse menu" title="Collapse menu">«</button>
+      </div>
+      <div class="side-nav" role="navigation" aria-label="Main menu">
+        <p class="side-label">Overview</p>
+        <a href="#/home" data-route="home" title="Home"><span class="ni">🏠</span><span class="side-text">Home</span></a>
+        <p class="side-label">Manage</p>
+        <a href="#/requests" data-route="requests" title="Service Requests"><span class="ni">📋</span><span class="side-text">Service Requests</span><span class="badge" data-count="req" hidden>0</span></a>
+        <a href="#/vendors" data-route="vendors" title="Vendor Accounts"><span class="ni">🤝</span><span class="side-text">Vendor Accounts</span></a>
+        <a href="#/concerns" data-route="concerns" title="Payment Concerns"><span class="ni">⚠️</span><span class="side-text">Payment Concerns</span><span class="badge" data-count="conc" hidden>0</span></a>
+        <p class="side-label">Other dashboards</p>
+        <a href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" target="_blank" rel="noopener" title="Recharge Settlement"><span class="ni">🧾</span><span class="side-text">Recharge Settlement</span><span class="ext">↗</span></a>
+        <a href="shop-ledger.html" target="_blank" rel="noopener" title="Daily Ledger"><span class="ni">📒</span><span class="side-text">Daily Ledger</span><span class="ext">↗</span></a>
+        <p class="side-label">Account</p>
+        <a href="#/settings" data-route="settings" title="Account Settings"><span class="ni">⚙️</span><span class="side-text">Account Settings</span></a>
+      </div>
+      <div class="side-foot">
+        <a href="index.html#home" class="side-link" title="Website Home"><span class="ni">🌐</span><span class="side-text">Website Home</span></a>
+        <button type="button" class="side-link logout" data-logout title="Logout"><span class="ni"><svg class="ico" viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span><span class="side-text">Logout</span></button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <img src="laxman-telecom-icon-round.png" alt=""><b>LAXMAN TELECOM</b>
+        <button type="button" data-logout aria-label="Logout" title="Logout"><svg class="ico" viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></button>
       </div>
 
-      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      <main class="page">
 
-      <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
-
-      <nav>
-        <a href="index.html#home">Home</a>
-        <a href="#requestsSection" onclick="closeNav()">Service Requests</a>
-        <a href="#vendorSection" onclick="closeNav()">Vendor Accounts</a>
-        <a href="#concernsSection" onclick="closeNav()">Payment Concerns</a>
-        <a href="#settingsSection" onclick="closeNav()">Account Settings</a>
-        <a href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" target="_blank" rel="noopener" onclick="closeNav()">Recharge Settlement</a>
-        <a href="shop-ledger.html" target="_blank" rel="noopener" onclick="closeNav()">Daily Ledger</a>
-        <a href="#" class="menu-logout-link" onclick="closeNav(); doLogout(); return false;">Logout</a>
-      </nav>
-    </header>
-
-    <main class="dash-wrapper">
-
-      <!-- Service requests -->
-      <section class="dash-card violet" id="requestsSection">
-        <div class="card-top">
-          <div class="card-title">
-            <span class="chip">📋</span>
-            <h2>All Service Requests</h2>
+        <!-- PAGE: Home -->
+        <section class="view" data-view="home">
+          <div class="hero"><h2>Welcome back</h2><p>Everything for LAXMAN TELECOM in one place.</p></div>
+          <div class="stats">
+            <a class="stat s1" href="#/requests"><small>Open service requests</small><b data-count="req">–</b></a>
+            <a class="stat s2" href="#/vendors"><small>Vendor accounts</small><b data-count="vend">–</b></a>
+            <a class="stat s3" href="#/concerns"><small>Pending payment concerns</small><b data-count="conc">–</b></a>
           </div>
-        </div>
-        <div id="adminContent"><p class="empty">Loading...</p></div>
-      </section>
-
-      <!-- Vendor accounts -->
-      <section class="dash-card teal" id="vendorSection">
-        <div class="card-top">
-          <div class="card-title">
-            <span class="chip">🤝</span>
-            <h2>Vendor Accounts</h2>
+          <h3 class="h-sub">Other dashboards</h3>
+          <div class="quick">
+            <a class="dark" href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" target="_blank" rel="noopener"><span class="ic">🧾</span><span>Recharge Settlement<small>Vendor invoices ↗</small></span></a>
+            <a class="dark" href="shop-ledger.html" target="_blank" rel="noopener"><span class="ic">📒</span><span>Daily Ledger<small>Daily work &amp; profit ↗</small></span></a>
           </div>
-        </div>
-        <p class="card-note">
+          <h3 class="h-sub">Manage</h3>
+          <div class="quick">
+            <a href="#/requests"><span class="ic">📋</span><span>Service Requests<small>Customer requests</small></span></a>
+            <a href="#/vendors"><span class="ic">🤝</span><span>Vendor Accounts<small>Create or remove logins</small></span></a>
+            <a href="#/concerns"><span class="ic">⚠️</span><span>Payment Concerns<small>Review vendor concerns</small></span></a>
+            <a href="#/settings"><span class="ic">⚙️</span><span>Account Settings<small>Password &amp; MPIN</small></span></a>
+          </div>
+        </section>
+
+        <!-- PAGE: Service requests -->
+        <section class="view" data-view="requests" hidden>
+          <div class="page-head"><h2>Service Requests</h2><p>All requests sent by customers.</p></div>
+          <div class="dash-card violet" id="requestsSection">
+            <div id="adminContent"><p class="empty">Loading...</p></div>
+          </div>
+        </section>
+
+        <!-- PAGE: Vendor accounts -->
+        <section class="view" data-view="vendors" hidden>
+          <div class="page-head"><h2>Vendor Accounts</h2><p>Create logins for vendors and manage their access.</p></div>
+          <div class="dash-card teal" id="vendorSection">
+            <p class="card-note">
           Create a login for a vendor (for example Ankit Gupta) so they can view their own recharge settlement statement at <code>vendor.html</code>.
           The Vendor Name must exactly match the vendor name used in the Recharge Settlement Dashboard.
         </p>
@@ -535,33 +521,26 @@
           <button type="submit" class="auth-btn" id="addVendorBtn">Create Vendor Login</button>
         </form>
         <div id="vendorAccountsList" style="margin-top: 24px;"><p class="empty">Loading vendor accounts...</p></div>
-      </section>
-
-      <!-- Payment concerns raised by vendors -->
-      <section class="dash-card orange" id="concernsSection">
-        <div class="card-top">
-          <div class="card-title">
-            <span class="chip">⚠️</span>
-            <h2>Payment Concerns</h2>
           </div>
-        </div>
-        <p class="card-note">When a vendor raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
+        </section>
+
+        <!-- PAGE: Payment concerns -->
+        <section class="view" data-view="concerns" hidden>
+          <div class="page-head"><h2>Payment Concerns</h2><p>Concerns raised by vendors about entries marked Paid.</p></div>
+          <div class="dash-card orange" id="concernsSection">
+            <p class="card-note">When a vendor raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
         <div id="paymentConcernsList"><p class="empty">Loading...</p></div>
-      </section>
-
-      <!-- Account settings -->
-      <section class="dash-card indigo" id="settingsSection">
-        <div class="card-top">
-          <div class="card-title">
-            <span class="chip">⚙️</span>
-            <h2>Account Settings</h2>
           </div>
-        </div>
-        <div class="error-msg" id="settingsErrorMsg"></div>
-        <div class="success-msg" id="settingsSuccessMsg"></div>
+        </section>
 
-        <h3 class="section-heading">Change Password</h3>
-        <form id="changePasswordForm">
+        <!-- PAGE: Account settings -->
+        <section class="view" data-view="settings" hidden>
+          <div class="page-head"><h2>Account Settings</h2><p>Change your password and set a quick-unlock MPIN.</p></div>
+          <div class="error-msg" id="settingsErrorMsg"></div>
+        <div class="success-msg" id="settingsSuccessMsg"></div>
+          <div class="dash-card indigo" id="settingsSection">
+            <h3 class="section-heading">Change Password</h3>
+            <form id="changePasswordForm">
           <div class="form-group">
             <label>Current Password</label>
             <input type="password" id="currentPasswordInput" required>
@@ -576,9 +555,10 @@
           </div>
           <button type="submit" class="auth-btn">Update Password</button>
         </form>
-
-        <h3 class="section-heading" style="margin-top: 32px;">App MPIN (Quick Unlock)</h3>
-        <p class="card-note" style="margin-bottom: 12px;">
+          </div>
+          <div class="dash-card indigo">
+            <h3 class="section-heading">App MPIN (Quick Unlock)</h3>
+            <p class="card-note" style="margin-bottom: 12px;">
           Set a 4-6 digit MPIN so you do not have to type your password every time you open the admin panel on this device.
         </p>
         <form id="setMpinForm">
@@ -593,9 +573,15 @@
           <button type="submit" class="auth-btn">Save MPIN</button>
         </form>
         <button type="button" class="btn btn-danger" id="removeMpinBtn" style="margin-top: 14px;">Remove MPIN from this device</button>
-      </section>
+          </div>
+        </section>
 
-    </main>
+      </main>
+    </div>
+
+    <div class="tabbar" role="navigation" aria-label="Menu">
+      <a href="#/home" data-route="home"><span class="ni">🏠</span>Home</a><a href="#/requests" data-route="requests"><span class="ni">📋</span>Requests<span class="badge" data-count="req" hidden>0</span></a><a href="#/vendors" data-route="vendors"><span class="ni">🤝</span>Vendors</a><a href="#/concerns" data-route="concerns"><span class="ni">⚠️</span>Concerns<span class="badge" data-count="conc" hidden>0</span></a><a href="#/settings" data-route="settings"><span class="ni">⚙️</span>Settings</a>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -645,15 +631,54 @@
     /* ==========================================================
        Navigation and session
        ========================================================== */
-    function toggleNav() {
-      document.querySelector('nav').classList.toggle('nav-open');
-      $('navBackdrop').classList.toggle('nav-open');
+    /* Page-wise navigation (hash router) */
+    const VIEWS = ['home', 'requests', 'vendors', 'concerns', 'settings'];
+
+    function renderRoute() {
+      const hash = (location.hash || '').replace(/^#\/?/, '');
+      const route = VIEWS.includes(hash) ? hash : 'home';
+      document.querySelectorAll('.view').forEach((v) => { v.hidden = v.dataset.view !== route; });
+      document.querySelectorAll('.side-nav [data-route], .tabbar [data-route]').forEach((a) => {
+        a.classList.toggle('active', a.dataset.route === route);
+      });
+      ['settingsErrorMsg', 'settingsSuccessMsg', 'vendorErrorMsg', 'vendorSuccessMsg'].forEach((id) => { $(id).style.display = 'none'; });
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', renderRoute);
+
+    /** Updates every counter / badge that shows this number. */
+    function setCount(key, n) {
+      document.querySelectorAll('[data-count="' + key + '"]').forEach((el) => {
+        el.textContent = n;
+        if (el.classList.contains('badge')) el.hidden = !n;
+      });
     }
 
-    function closeNav() {
-      document.querySelector('nav').classList.remove('nav-open');
-      $('navBackdrop').classList.remove('nav-open');
-    }
+    /* Collapse / expand the side menu (remembered on this device) */
+    (function initSideToggle() {
+      const key = 'adminSideCollapsed';
+      let saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) { /* storage blocked */ }
+      const btn = $('sideToggle');
+      const apply = (collapsed) => {
+        document.body.classList.toggle('side-collapsed', collapsed);
+        btn.textContent = collapsed ? '»' : '«';
+        btn.title = collapsed ? 'Expand menu' : 'Collapse menu';
+        btn.setAttribute('aria-label', btn.title);
+      };
+      apply(saved === '1');
+      btn.addEventListener('click', () => {
+        const collapsed = !document.body.classList.contains('side-collapsed');
+        apply(collapsed);
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch (err) { /* ignore */ }
+      });
+    })();
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-logout]')) return;
+      e.preventDefault();
+      doLogout();
+    });
 
     function doLogout() {
       auth.signOut().then(() => { window.location.href = 'login.html'; });
@@ -712,6 +737,7 @@
        ========================================================== */
     function startAdminPanel() {
       $('adminAppRoot').style.display = 'block';
+      renderRoute();
       loadAllRequests();
       loadVendorAccounts();
       loadPaymentConcerns();
@@ -807,8 +833,10 @@
           });
 
           rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          setCount('req', rows.filter((r) => r.status !== 'Done').length);
 
           if (!rows.length) {
+            setCount('req', 0);
             $('adminContent').innerHTML = '<p class="empty">No requests yet.</p>';
             return;
           }
@@ -859,6 +887,7 @@
           });
         });
 
+        setCount('conc', rows.length);
         if (!rows.length) {
           $('paymentConcernsList').innerHTML = '<p class="empty">No pending concerns.</p>';
           return;
@@ -944,6 +973,7 @@
       db.ref('vendorAccounts').on('value', (snap) => {
         const entries = Object.entries(snap.val() || {});
 
+        setCount('vend', entries.length);
         if (!entries.length) {
           $('vendorAccountsList').innerHTML = '<p class="empty">No vendor accounts yet.</p>';
           return;
