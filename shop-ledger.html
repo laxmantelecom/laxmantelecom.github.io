@@ -373,8 +373,9 @@
             <form id="entryForm" autocomplete="off">
               <div class="form-grid">
                 <div class="form-group"><label>Date</label><input type="date" id="eDate" required></div>
-                <div class="form-group"><label id="eAmountLabel">Amount received (₹)</label><input type="number" id="eAmount" min="0" step="any" inputmode="decimal" required></div>
+                <div class="form-group"><label id="eAmountLabel">Price / bill amount (₹)</label><input type="number" id="eAmount" min="0" step="any" inputmode="decimal" required></div>
                 <div class="form-group" id="eCostGroup"><label>Your cost (₹) <small style="font-weight:400;color:var(--muted);">parts / charges you paid</small></label><input type="number" id="eCost" min="0" step="any" inputmode="decimal" value="0"></div>
+                <div class="form-group"><label>Discount given (₹) <small style="font-weight:400;color:var(--muted);">optional, taken off the price</small></label><input type="number" id="eDiscount" min="0" step="any" inputmode="decimal" value="0"></div>
                 <div class="form-group"><label>Payment mode</label>
                   <select id="eMode"><option>Cash</option><option>UPI</option><option>Credit</option></select>
                 </div>
@@ -542,7 +543,7 @@
             <form id="generalForm">
               <div class="form-grid">
                 <div class="form-group"><label>Daily profit target (₹)</label><input type="number" id="sTarget" min="0" step="any" inputmode="decimal"></div>
-                <div class="form-group"><label>Recharge commission (%)</label><input type="number" id="sRechargeRate" min="0" max="100" step="any" inputmode="decimal"></div>
+                <div class="form-group"><label>Recharge commission % <small style="font-weight:400;color:var(--muted);">(used only if a settlement entry has no commission)</small></label><input type="number" id="sRechargeRate" min="0" max="100" step="any" inputmode="decimal"></div>
                 <div class="form-group"><label>Auto-add Recharge Settlement data</label>
                   <select id="sRechargeSync"><option value="1">On - count settlement recharges</option><option value="0">Off - I add recharges manually</option></select>
                 </div>
@@ -603,15 +604,14 @@
        ----------------------------------------------------------
        RECHARGE_SYNC tells this page where your Recharge Settlement
        dashboard stores its records, so recharge commission is added
-       to the ledger automatically.
-       If the numbers do not match your settlement dashboard, change
-       the three field names below.
+       to the ledger automatically. These names match what the
+       Recharge Settlement dashboard saves.
        ========================================================== */
     const RECHARGE_SYNC = {
       path: 'telecomSettlement/vendorView', // vendorKey / recordId / record
       dateField: 'date',                    // YYYY-MM-DD
       amountField: 'amount',                // recharge amount
-      commissionField: null                 // null = profit is always amount x recharge commission % (Settings)
+      commissionField: 'commissionEarned'   // your earning on that recharge, exactly as shown in Recharge Settlement
     };
 
     const ROOT = 'shopLedger';
@@ -890,53 +890,37 @@
 
     /* ----------------------------------------------------------
        Recharge Settlement sync
-       Reads the master list (telecomSettlement/records) AND the vendor
-       copies (telecomSettlement/vendorView). If the same recharge is in
-       both, it is counted once, so nothing is missed and nothing doubles.
+       The Recharge Settlement dashboard saves every recharge under
+       telecomSettlement/vendorView/<vendor>/<id>. We read the same place,
+       so the ledger and that dashboard always agree.
        ---------------------------------------------------------- */
-    const rcSources = { records: null, view: null };
-
-    function collectRecords(node, out, idHint) {
+    function collectRecords(node, out) {
       if (!node || typeof node !== 'object') return;
       if (typeof node[RECHARGE_SYNC.dateField] === 'string' && node[RECHARGE_SYNC.amountField] !== undefined) {
-        let d = node[RECHARGE_SYNC.dateField];
-        if (/^\d{2}-\d{2}-\d{4}$/.test(d)) d = d.split('-').reverse().join('-');
-        const txn = num(node[RECHARGE_SYNC.amountField]);
+        const d = node[RECHARGE_SYNC.dateField];
         out.push({
-          id: idHint, date: d, txn,
+          date: d, txn: num(node[RECHARGE_SYNC.amountField]),
           vendor: node.vendor || '', mobile: node.mobile || '', operator: node.operator || '', purpose: node.purpose || '',
-          commission: RECHARGE_SYNC.commissionField && node[RECHARGE_SYNC.commissionField] != null ? num(node[RECHARGE_SYNC.commissionField]) : null,
-          sig: [d, node.mobile, node.operator, txn, node.vendor].join('|')
+          commission: RECHARGE_SYNC.commissionField && node[RECHARGE_SYNC.commissionField] != null ? num(node[RECHARGE_SYNC.commissionField]) : null
         });
         return;
       }
-      Object.entries(node).forEach(([k, v]) => collectRecords(v, out, k));
-    }
-
-    function rebuildRecharge() {
-      const bySig = (list) => list.reduce((m, r) => { (m[r.sig] = m[r.sig] || []).push(r); return m; }, {});
-      const a = [], b = [];
-      collectRecords(rcSources.records, a, '');
-      collectRecords(rcSources.view, b, '');
-      const ga = bySig(a), gb = bySig(b), merged = [];
-      new Set([...Object.keys(ga), ...Object.keys(gb)]).forEach((sig) => {
-        const la = ga[sig] || [], lb = gb[sig] || [];
-        merged.push(...(la.length >= lb.length ? la : lb));
-      });
-      state.rechargeAll = merged;
-      renderAll();
+      Object.values(node).forEach((v) => collectRecords(v, out));
     }
 
     function startRechargeWatch() {
       if (state.role !== 'admin') return;
-      let failed = 0;
-      const onFail = (key) => () => {
-        rcSources[key] = null;
-        if (++failed >= 2) state.rechargeError = true;
-        rebuildRecharge();
-      };
-      db.ref('telecomSettlement/records').on('value', (snap) => { rcSources.records = snap.val(); state.rechargeError = false; rebuildRecharge(); }, onFail('records'));
-      db.ref(RECHARGE_SYNC.path).on('value', (snap) => { rcSources.view = snap.val(); state.rechargeError = false; rebuildRecharge(); }, onFail('view'));
+      db.ref(RECHARGE_SYNC.path).on('value', (snap) => {
+        const list = [];
+        collectRecords(snap.val(), list);
+        state.rechargeAll = list;
+        state.rechargeError = false;
+        renderAll();
+      }, () => {
+        state.rechargeAll = [];
+        state.rechargeError = true;
+        renderAll();
+      });
     }
 
     /** Recharge records of one month, with profit worked out at the current commission %. */
@@ -964,25 +948,29 @@
     const recurringTotal = () => Object.values(state.recurring).reduce((s, r) => s + num(r.amount), 0);
 
     /** Works out the income, cost and profit for an entry. */
-    function calcEntry(svc, amount, cost) {
+    function calcEntry(svc, amount, cost, discount) {
+      discount = num(discount);
+      const customerPays = round4(amount - discount);
       if (svc.type === 'commission') {
-        const profit = round4(amount * num(svc.rate != null ? svc.rate : DEFAULT_RATE) / 100);
-        return { income: profit, cost: 0, profit };
+        // The discount comes out of your commission
+        const commission = round4(amount * num(svc.rate != null ? svc.rate : DEFAULT_RATE) / 100);
+        const profit = round4(commission - discount);
+        return { income: profit, cost: 0, profit, commission, discount, customerPays };
       }
-      return { income: amount, cost, profit: round4(amount - cost) };
+      return { income: customerPays, cost, profit: round4(customerPays - cost), commission: 0, discount, customerPays };
     }
 
     /** Adds up one month: totals, per-day figures and per-service profit. */
     function aggregate(mk) {
       const days = {}, services = {};
-      const total = { income: 0, cost: 0, profit: 0, count: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 };
-      const day = (d) => days[d] || (days[d] = { date: d, count: 0, income: 0, cost: 0, profit: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 });
+      const total = { income: 0, cost: 0, profit: 0, discount: 0, count: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 };
+      const day = (d) => days[d] || (days[d] = { date: d, count: 0, income: 0, cost: 0, profit: 0, discount: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 });
       const svc = (n) => services[n] || (services[n] = { name: n, profit: 0, income: 0, count: 0 });
 
       entriesOf(mk).forEach((e) => {
         const d = day(e.date), income = num(e.income), cost = num(e.cost), profit = num(e.profit);
         const mode = ['Cash', 'UPI', 'Credit'].includes(normMode(e.mode)) ? normMode(e.mode) : 'Cash';
-        [d, total].forEach((t) => { t.count++; t.income += income; t.cost += cost; t.profit += profit; t[mode] += income; });
+        [d, total].forEach((t) => { t.count++; t.income += income; t.cost += cost; t.profit += profit; t.discount += num(e.discount); t[mode] += income; });
         const s = svc(e.service || 'Other'); s.profit += profit; s.income += income; s.count++;
       });
 
@@ -1025,7 +1013,7 @@
       $('eCostGroup').style.display = isComm ? 'none' : '';
       $('eAmountLabel').textContent = isComm
         ? `Transaction amount (₹) - you earn ${svc.rate != null ? svc.rate : DEFAULT_RATE}%`
-        : 'Amount received (₹)';
+        : 'Price / bill amount (₹)';
       updatePreview();
     }
 
@@ -1033,11 +1021,19 @@
       const svc = state.services[state.chosen];
       const box = $('entryPreview');
       if (!svc) { box.textContent = 'Select a service to begin.'; return; }
-      const amount = num($('eAmount').value), cost = num($('eCost').value);
-      const c = calcEntry(svc, amount, cost);
-      box.innerHTML = svc.type === 'commission'
-        ? `<b>${esc(svc.name)}</b> · Transaction ${money(amount)} → Your commission (profit): <b>${money(c.profit)}</b>`
-        : `<b>${esc(svc.name)}</b> · Received ${money(amount)} − Cost ${money(cost)} → Profit: <b class="${clsOf(c.profit)}">${money(c.profit)}</b>`;
+      const amount = num($('eAmount').value), cost = num($('eCost').value), discount = num($('eDiscount').value);
+      const c = calcEntry(svc, amount, cost, discount);
+      const warn = discount > amount ? ' <span class="neg">· Discount is more than the amount</span>' : '';
+      if (svc.type === 'commission') {
+        box.innerHTML = `<b>${esc(svc.name)}</b> · Transaction ${money(amount)} → Commission ${money(c.commission)}` +
+          (discount ? ` − Discount ${money(discount)}` : '') +
+          ` → Profit: <b class="${clsOf(c.profit)}">${money(c.profit)}</b>` +
+          (discount ? ` · Customer pays <b>${money(c.customerPays)}</b>` : '') + warn;
+      } else {
+        box.innerHTML = `<b>${esc(svc.name)}</b> · ` +
+          (discount ? `Price ${money(amount)} − Discount ${money(discount)} = Customer pays <b>${money(c.customerPays)}</b>` : `Received ${money(amount)}`) +
+          ` − Cost ${money(cost)} → Profit: <b class="${clsOf(c.profit)}">${money(c.profit)}</b>` + warn;
+      }
     }
 
     $('svcChips').addEventListener('click', (e) => {
@@ -1048,13 +1044,14 @@
       if (!state.editing) {
         $('eAmount').value = num(svc.price) ? svc.price : '';
         $('eCost').value = num(svc.cost) || 0;
+        $('eDiscount').value = 0;
       }
       renderChips();
       applyServiceUI();
       $('eAmount').focus();
     });
 
-    ['eAmount', 'eCost'].forEach((id) => $(id).addEventListener('input', updatePreview));
+    ['eAmount', 'eCost', 'eDiscount'].forEach((id) => $(id).addEventListener('input', updatePreview));
 
     $('eMode').addEventListener('change', () => {
       $('eCustomerLabel').textContent = $('eMode').value === 'Credit' ? 'Customer name (required for Credit)' : 'Customer name (optional)';
@@ -1066,6 +1063,7 @@
       $('entryForm').reset();
       $('eDate').value = todayKey;
       $('eCost').value = 0;
+      $('eDiscount').value = 0;
       $('entryHeading').textContent = 'Add Entry';
       $('entrySaveBtn').textContent = 'Save Entry';
       $('entryCancelBtn').style.display = 'none';
@@ -1097,6 +1095,7 @@
       const date = $('eDate').value;
       const amount = num($('eAmount').value);
       const cost = svc.type === 'commission' ? 0 : num($('eCost').value);
+      const discount = num($('eDiscount').value);
       const mode = $('eMode').value;
       const customer = $('eCustomer').value.trim();
       const mobile = $('eMobile').value.trim();
@@ -1104,15 +1103,17 @@
       if (!date) { showMsg('entry', 'error', 'Please choose a date.'); return; }
       if (mode === 'Credit' && !customer) { showMsg('entry', 'error', 'Customer name is required for Credit entries.'); return; }
       if (mobile && !/^\d{10}$/.test(mobile)) { showMsg('entry', 'error', 'Mobile number must be 10 digits.'); return; }
+      if (discount < 0) { showMsg('entry', 'error', 'Discount cannot be negative.'); return; }
+      if (discount > amount) { showMsg('entry', 'error', 'Discount cannot be more than the amount.'); return; }
 
-      const calc = calcEntry(svc, amount, cost);
+      const calc = calcEntry(svc, amount, cost, discount);
       const editing = state.editing;
       const old = editing ? (state.entries[editing.mk] || {})[editing.id] : null;
       const id = editing ? editing.id : db.ref().push().key;
       const mk = monthOf(date);
 
       const doc = {
-        date, service: svc.name, type: svc.type, amount,
+        date, service: svc.name, type: svc.type, amount, discount,
         income: calc.income, cost: calc.cost, profit: calc.profit,
         mode, customer, mobile, note: $('eNote').value.trim(),
         createdAt: old ? old.createdAt : Date.now(),
@@ -1127,7 +1128,7 @@
       if (mode === 'Credit') {
         const prev = state.udhaar[id];
         updates['udhaar/' + id] = {
-          customer, mobile, amount, date, note: doc.note, service: svc.name,
+          customer, mobile, amount: calc.customerPays, date, note: doc.note, service: svc.name,
           status: prev ? prev.status : 'Pending',
           receivedAt: prev && prev.receivedAt ? prev.receivedAt : null
         };
@@ -1157,6 +1158,7 @@
       $('eDate').value = e.date;
       $('eAmount').value = e.amount;
       $('eCost').value = e.cost || 0;
+      $('eDiscount').value = e.discount || 0;
       $('eMode').value = normMode(e.mode);
       $('eCustomer').value = e.customer || '';
       $('eMobile').value = e.mobile || '';
@@ -1195,7 +1197,7 @@
           <td>${esc(e.service)}${e.note ? `<br><small style="color:var(--muted)">${esc(e.note)}</small>` : ''}</td>
           <td>${who || '-'}</td>
           <td class="num">${money(e.amount)}</td>
-          ${admin ? `<td class="num">${money(e.cost)}</td><td class="num ${clsOf(num(e.profit))}">${money(e.profit)}</td>` : ''}
+          ${admin ? `<td class="num">${num(e.discount) ? money(e.discount) : '<span style="color:var(--muted)">-</span>'}</td><td class="num">${money(e.cost)}</td><td class="num ${clsOf(num(e.profit))}">${money(e.profit)}</td>` : ''}
           <td><span class="tag ${normMode(e.mode) === 'Credit' ? 'udhaar' : ''}">${esc(normMode(e.mode))}</span></td>
           ${admin && e.auto ? '<td><small style="color:var(--muted)">From Recharge Settlement</small></td>' : ''}
           ${admin && !e.auto ? `<td class="actions">
@@ -1205,7 +1207,7 @@
         </tr>`;
       }).join('');
       const head = [opts.showDate ? 'Date' : 'Time', 'Service', 'Customer', { label: 'Amount', num: true }];
-      if (admin) head.push({ label: 'Cost', num: true }, { label: 'Profit', num: true });
+      if (admin) head.push({ label: 'Discount', num: true }, { label: 'Cost', num: true }, { label: 'Profit', num: true });
       head.push('Mode');
       if (admin) head.push('Action');
       return buildTable(head, rows);
@@ -1253,6 +1255,7 @@
         <div class="stat profit"><small>Profit</small><b class="${clsOf(t.profit)}">${money(t.profit)}</b></div>
         <div class="stat"><small>Entries</small><b>${t.count}</b></div>`;
       $('todayBreakdown').innerHTML = `Cash ${money(t.Cash)} · UPI ${money(t.UPI)} · Credit ${money(t.Credit)}` +
+        (t.discount > 0 ? ` · Discounts ${money(t.discount)}` : '') +
         (rechargeOn() ? ` · Recharge (auto) ${money(t.Auto)}` : '') +
         (state.rechargeError ? ' · <span class="neg">Recharge sync could not read the settlement data</span>' : '');
 
@@ -1291,6 +1294,7 @@
       $('monthStats').innerHTML = `
         <div class="stat"><small>Total Income</small><b>${money(t.income)}</b></div>
         <div class="stat"><small>Total Cost</small><b>${money(t.cost)}</b></div>
+        <div class="stat"><small>Discounts Given</small><b>${money(t.discount)}</b></div>
         <div class="stat profit"><small>Gross Profit</small><b class="${clsOf(t.profit)}">${money(t.profit)}</b></div>
         <div class="stat"><small>Expenses</small><b>${money(expenses)}</b></div>
         <div class="stat profit"><small>Net Profit</small><b class="${clsOf(net)}">${money(net)}</b></div>
@@ -1389,12 +1393,12 @@
     function csvCell(v) { return '"' + String(v ?? '').replace(/"/g, '""') + '"'; }
     $('exportBtn').addEventListener('click', () => {
       const mk = state.month;
-      const header = ['Date', 'Service', 'Amount', 'Income', 'Cost', 'Profit', 'Mode', 'Customer', 'Mobile', 'Note', 'Entered by'];
+      const header = ['Date', 'Service', 'Amount', 'Discount', 'Income', 'Cost', 'Profit', 'Mode', 'Customer', 'Mobile', 'Note', 'Entered by'];
       const rows = entriesOf(mk).sort((a, b) => a.date.localeCompare(b.date))
-        .map((e) => [e.date, e.service, e.amount, e.income, e.cost, e.profit, e.mode, e.customer, e.mobile, e.note, e.byName]);
-      rechargeOf(mk).forEach((r) => rows.push([r.date, 'Recharge (auto)', r.txn, r.profit, 0, r.profit, 'Auto', r.vendor, r.mobile, r.operator, '']));
-      expensesOf(mk).forEach((x) => rows.push([x.date, 'EXPENSE: ' + x.category, -num(x.amount), '', '', -num(x.amount), '', '', '', x.note, '']));
-      Object.values(state.recurring).forEach((r) => rows.push([mk + '-01', 'RECURRING EXPENSE: ' + r.category, -num(r.amount), '', '', -num(r.amount), '', '', '', r.note, '']));
+        .map((e) => [e.date, e.service, e.amount, e.discount || 0, e.income, e.cost, e.profit, e.mode, e.customer, e.mobile, e.note, e.byName]);
+      rechargeOf(mk).forEach((r) => rows.push([r.date, 'Recharge (auto)', r.txn, 0, r.profit, 0, r.profit, 'Auto', r.vendor, r.mobile, r.operator, '']));
+      expensesOf(mk).forEach((x) => rows.push([x.date, 'EXPENSE: ' + x.category, -num(x.amount), '', '', '', -num(x.amount), '', '', '', x.note, '']));
+      Object.values(state.recurring).forEach((r) => rows.push([mk + '-01', 'RECURRING EXPENSE: ' + r.category, -num(r.amount), '', '', '', -num(r.amount), '', '', '', r.note, '']));
       const csv = [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n');
       const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
