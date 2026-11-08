@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#111318" />
   <title>Telecom Settlement & Invoice Dashboard</title>
-  <script>document.documentElement.className = 'js';</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -25,7 +24,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -40,136 +39,9 @@
     h1, h2, h3, h4 { font-family: var(--font-head); line-height: 1.15; color: var(--ink); }
     a { color: inherit; text-decoration: none; }
     :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-    .container { width: min(1260px, 94%); margin: auto; }
 
     @keyframes rise { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
-    @keyframes drift { to { transform: translate(60px, 40px) scale(1.15); } }
 
-    .js .rv { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1); }
-    .js .rv.in { opacity: 1; transform: none; }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background: rgba(251, 247, 240, .92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .nav { display: flex; align-items: center; justify-content: space-between; gap: 14px; height: 70px; }
-    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .brand-mark { width: 42px; height: 42px; flex: none; border-radius: 50%; object-fit: cover; }
-    .brand h1 { margin: 0; font-size: 1.15rem; }
-    .brand p { margin: 2px 0 0; font-size: .72rem; color: var(--muted); }
-
-    .nav-links { display: flex; align-items: center; gap: 4px; }
-
-    .nav-links a {
-      padding: 8px 14px;
-      font-size: .93rem;
-      font-weight: 600;
-      border-radius: 999px;
-      transition: background .2s;
-    }
-
-    .nav-links a:hover { background: rgba(255, 138, 0, .13); }
-    .nav-links a.back-link { margin-left: 6px; color: #fff; background: var(--ink); }
-    .nav-links a.back-link:hover { background: var(--accent); color: var(--ink); }
-
-    .nav-toggle {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      width: 42px;
-      height: 42px;
-      padding: 0;
-      color: var(--ink);
-      background: none;
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-    }
-
-    .nav-backdrop { display: none; }
-
-    .hero { padding: 26px 0 18px; }
-
-    .hero-box {
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      padding: 38px;
-      color: #c5cad6;
-      background: var(--ink);
-      border-radius: 32px;
-      box-shadow: 0 24px 60px -20px rgba(17, 19, 24, .5);
-      animation: rise .8s cubic-bezier(.2, .8, .2, 1) both;
-    }
-
-    .hero-box::before,
-    .hero-box::after {
-      content: '';
-      position: absolute;
-      z-index: -1;
-      border-radius: 50%;
-      filter: blur(80px);
-      animation: drift 12s ease-in-out infinite alternate;
-    }
-
-    .hero-box::before { width: 340px; height: 340px; left: -90px; top: -90px; background: rgba(255, 138, 0, .3); }
-    .hero-box::after { width: 320px; height: 320px; right: -70px; bottom: -100px; background: rgba(124, 58, 237, .28); animation-delay: -5s; }
-
-    .hero-wrap { display: flex; flex-direction: column; align-items: flex-start; }
-
-    .badge {
-      display: inline-block;
-      padding: 7px 14px;
-      font-size: .85rem;
-      font-weight: 600;
-      color: #fff;
-      background: rgba(255, 255, 255, .08);
-      border: 1px solid rgba(255, 255, 255, .15);
-      border-radius: 999px;
-    }
-
-    .hero h2 { margin: 16px 0 6px; color: #fff; font-size: clamp(1.8rem, 3.6vw, 2.8rem); font-weight: 800; letter-spacing: -.02em; }
-    .hero-sub { margin: 0; }
-
-    .profile-details { width: 100%; margin-top: 22px; }
-
-    .profile-details summary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 18px;
-      font-size: .92rem;
-      font-weight: 600;
-      color: #fff;
-      list-style: none;
-      cursor: pointer;
-      user-select: none;
-      background: rgba(255, 255, 255, .08);
-      border: 1px solid rgba(255, 255, 255, .2);
-      border-radius: 999px;
-      transition: background .2s;
-    }
-
-    .profile-details summary:hover { background: rgba(255, 138, 0, .25); }
-    .profile-details summary::-webkit-details-marker { display: none; }
-    .profile-details[open] summary { margin-bottom: 14px; }
-
-    .hero-card {
-      max-width: 560px;
-      padding: 22px;
-      background: rgba(255, 255, 255, .07);
-      border: 1px solid rgba(255, 255, 255, .15);
-      border-radius: 22px;
-    }
-
-    .hero-card h3 { display: none; }
-    .hero-card label { color: #dfe3ee; }
-
-    section { padding: 14px 0 24px; }
 
     .grid-5, .grid-4, .grid-3, .grid-2 { display: grid; gap: 18px; }
     .grid-5 > *, .grid-4 > *, .grid-3 > *, .grid-2 > * { min-width: 0; }
@@ -177,19 +49,6 @@
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
     .grid-2 { grid-template-columns: 1fr 1fr; }
-
-    .section-head { text-align: center; margin-bottom: 20px; }
-    .section-head h3 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -.015em; }
-
-    .section-head h3::after {
-      content: '';
-      display: block;
-      width: 60px;
-      height: 4px;
-      margin: 12px auto 0;
-      border-radius: 4px;
-      background: var(--accent);
-    }
 
     .card {
       --c1: var(--accent);
@@ -292,9 +151,6 @@
     .btn-danger { color: #fff; background: linear-gradient(135deg, #be123c, #f43f5e); }
     .btn-small { padding: 7px 14px; font-size: .82rem; }
 
-    .nav-toggle:hover { transform: none; }
-    .nav-toggle:active { transform: scale(.92); }
-
     .summary-list, .analysis-grid { display: grid; gap: 10px; }
 
     .summary-row, .analysis-item {
@@ -357,8 +213,6 @@
     .paid { color: #166534; background: rgba(22, 163, 74, .12); }
     .unpaid { color: #b91c1c; background: rgba(239, 68, 68, .12); }
     .partial { color: #9a580a; background: rgba(245, 158, 11, .15); }
-
-    footer { padding: 26px 0 40px; text-align: center; font-size: .92rem; color: var(--muted); }
 
     .gate {
       position: fixed;
@@ -537,15 +391,136 @@
       .inv-meta td { padding: 3px 18px 3px 0; text-align: left; }
     }
 
+
+    /* ==========================================================
+       App shell: sidebar on desktop, bottom tabs on phones
+       ========================================================== */
+    [hidden] { display: none !important; }
+
+    .badge { display: inline-block; padding: 7px 14px; font-size: .85rem; font-weight: 600; color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 999px; }
+
+    .sidebar {
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 30; display: flex; flex-direction: column; width: 252px;
+      padding: 20px 14px; overflow-x: hidden; overflow-y: auto; color: #fff;
+      background: radial-gradient(circle at 10% 0%, rgba(255,138,0,.28), transparent 45%), var(--ink);
+      transition: width .2s ease, padding .2s ease;
+    }
+    .side-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 0 14px; }
+    .side-brand { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 2px 8px; }
+    .side-brand img { flex: none; width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+    .side-brand h1 { margin: 0; font-size: 1.02rem; color: #fff; }
+    .side-brand p { margin: 0; font-size: .72rem; color: rgba(255,255,255,.55); }
+    .side-toggle {
+      flex: none; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; font: inherit; font-size: 1.15rem; font-weight: 700; line-height: 1;
+      color: #fff; background: rgba(255,255,255,.1); border: 0; border-radius: 10px; cursor: pointer; transition: background .15s;
+    }
+    .side-toggle:hover { background: rgba(255,255,255,.22); transform: none; }
+    .side-label { margin: 16px 12px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: rgba(255,255,255,.42); }
+    .side-nav a, .side-link {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border-radius: 12px;
+      font-size: .94rem; font-weight: 600; color: rgba(255,255,255,.78); transition: background .15s, color .15s;
+    }
+    .side-nav a:hover, .side-link:hover { background: rgba(255,255,255,.09); color: #fff; }
+    .side-nav a.active { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .ni { flex: none; width: 24px; text-align: center; font-size: 1.12rem; }
+    .side-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); }
+
+    .main { min-width: 0; margin-left: 252px; transition: margin-left .2s ease; }
+    .topbar { display: none; }
+    .page { display: grid; gap: 20px; max-width: 1060px; margin: 0 auto; padding: 30px 24px 90px; }
+    .page-head h2 { margin: 0; font-size: 1.9rem; }
+    .page-head p { margin: 2px 0 0; color: var(--muted); font-size: .95rem; }
+    .view { display: grid; gap: 20px; min-width: 0; }
+    .view > * { min-width: 0; }
+    .tabbar { display: none; }
+
+    /* Collapsed menu: icons only */
+    body.side-collapsed .sidebar { width: 76px; padding: 20px 10px; }
+    body.side-collapsed .main { margin-left: 76px; }
+    body.side-collapsed .side-head { flex-direction: column; gap: 10px; }
+    body.side-collapsed .side-brand { padding: 2px 0; }
+    body.side-collapsed .side-brand div,
+    body.side-collapsed .side-label,
+    body.side-collapsed .side-text { display: none; }
+    body.side-collapsed .side-nav a,
+    body.side-collapsed .side-link { justify-content: center; padding: 12px 0; }
+    body.side-collapsed .side-nav { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
+
+    .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .quick-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 92px; padding: 14px 8px;
+      font-weight: 700; color: var(--ink); text-align: center; background: #fff; border: 1.5px solid var(--line);
+      border-radius: 18px; box-shadow: 0 10px 24px -16px rgba(17,19,24,.4); transition: transform .2s, border-color .2s;
+    }
+    .quick-btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .quick-btn > span { font-size: 1.6rem; line-height: 1.2; }
+    .quick-btn small { font-size: .74rem; font-weight: 600; color: var(--muted); }
+    .quick-btn.primary { border-color: transparent; background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .stat { padding: 14px 16px; background: var(--cream); border: 1px solid var(--line); border-radius: 16px; }
+    .stat small { display: block; font-size: .74rem; letter-spacing: .4px; text-transform: uppercase; color: var(--muted); }
+    .stat b { display: block; margin-top: 2px; font-family: var(--font-head); font-size: 1.35rem; color: var(--ink); overflow-wrap: anywhere; }
+    .stat.due b { color: #b91c1c; }
+
+    .card-note { margin: 0 0 14px; font-size: .9rem; color: var(--muted); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+    .form-grid .wide { grid-column: 1 / -1; }
+    .step { margin: 4px 0 12px; font-weight: 700; color: var(--ink); }
+    .step b { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 8px; font-size: .8rem; color: #fff; background: var(--accent); border-radius: 50%; }
+    .preview { margin: 16px 0 0; padding: 12px 14px; font-size: .95rem; background: #fff7ea; border: 1px dashed var(--accent); border-radius: 12px; }
+    .status-line { margin-top: 16px; font-size: .92rem; color: var(--muted); }
+    .status-line b { color: var(--ink); }
+    .danger-zone { border-color: #fecdd3; }
+    #recordsTableBody td:first-child { white-space: nowrap; }
+    .mini-table { min-width: 0; }
+    .mini-table td, .mini-table th { white-space: nowrap; }
+    .card .table-wrap + .empty-box, .card .empty-box { margin-top: 14px; }
+
+    #toast {
+      position: fixed; left: 50%; bottom: 26px; z-index: 9998; max-width: 90%; padding: 12px 20px; font-weight: 600; font-size: .92rem;
+      color: #fff; background: var(--ink); border-radius: 999px; transform: translate(-50%, 90px); opacity: 0;
+      transition: transform .3s, opacity .3s; pointer-events: none;
+    }
+    #toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main, body.side-collapsed .main { margin-left: 0; }
+      .topbar {
+        position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px;
+        color: #fff; background: var(--ink);
+      }
+      .topbar img { width: 32px; height: 32px; border-radius: 50%; }
+      .topbar b { font-family: var(--font-head); font-size: 1.02rem; }
+      .page { gap: 16px; padding: 18px 14px 110px; }
+      .page-head h2 { font-size: 1.5rem; }
+      .tabbar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; gap: 2px;
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line);
+        box-shadow: 0 -10px 26px rgba(17,19,24,.1);
+      }
+      .tabbar a {
+        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 2px; border-radius: 12px;
+        font-size: .7rem; font-weight: 700; color: var(--muted);
+      }
+      .tabbar .ni { font-size: 1.3rem; }
+      .tabbar a.active { color: var(--ink); background: rgba(255,138,0,.18); }
+    }
+    @media (max-width: 520px) {
+      .quick { grid-template-columns: repeat(2, 1fr); }
+    }
+
     /* Print layout (A4 portrait) */
     @page { size: A4 portrait; margin: 12mm; }
 
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       html, body { background: #fff !important; font-family: var(--font-body) !important; font-size: 10px; color: #1c2540 !important; }
-      header, .hero, #overview, .hide-while-printing, footer, .section-head { display: none !important; }
-      .rv { opacity: 1 !important; transform: none !important; }
-      .container { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+      .sidebar, .topbar, .tabbar, .page-head, .hide-while-printing, #toast { display: none !important; }
+      .main { margin-left: 0 !important; }
+      .page { display: block !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
       #invoiceSection { display: block !important; padding: 0 !important; }
 
       .invoice-preview { max-width: none !important; overflow: visible !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
@@ -614,53 +589,9 @@
       .invoice-header, .invoice-meta-grid { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 900px) {
-      .nav-toggle { display: inline-flex; order: 2; }
-
-      .nav-backdrop {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 50;
-        background: rgba(17, 19, 24, .45);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity .3s ease;
-      }
-
-      .nav-backdrop.nav-open { opacity: 1; pointer-events: auto; }
-
-      .nav-links {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 60;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        width: 78%;
-        max-width: 320px;
-        height: 100%;
-        padding: 90px 0 30px;
-        overflow-y: auto;
-        background: var(--cream);
-        box-shadow: 6px 0 24px rgba(0, 0, 0, .25);
-        transform: translateX(-100%);
-        transition: transform .3s ease;
-      }
-
-      .nav-links.nav-open { transform: translateX(0); }
-      .nav-links a { padding: 16px 24px; border-bottom: 1px solid var(--line); border-radius: 0; }
-      .nav-links a.back-link { margin: 14px 18px 0; text-align: center; border: 0; border-radius: 999px; }
-    }
-
     @media (max-width: 720px) {
       .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
-      .hero { padding: 18px 0 12px; }
-      .hero-box { padding: 24px 18px; border-radius: 26px; }
-      .brand p { display: none; }
       .card { padding: 20px 16px; border-radius: 20px; }
-      .value { font-size: 1.55rem; }
       .button-row button { width: 100%; }
       .invoice-header h3 { font-size: 1.5rem; }
       .invoice-header > div { padding: 20px; }
@@ -669,7 +600,6 @@
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
-      .js .rv { opacity: 1; transform: none; }
     }
 
     /* ==========================================================
@@ -771,337 +701,255 @@
 
   <div id="appRoot" style="display:none;">
 
-  <header>
-    <div class="container nav">
-      <div class="brand">
-        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" class="brand-mark">
-        <div>
-          <h1>LAXMAN TELECOM</h1>
-          <p>Settlement &amp; Invoice Dashboard</p>
-        </div>
+  <!-- Desktop sidebar -->
+    <aside class="sidebar">
+      <div class="side-head">
+        <a class="side-brand" href="#/overview" title="Overview">
+          <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+          <div><h1 id="brandName">LAXMAN TELECOM</h1><p>Settlement &amp; Invoice</p></div>
+        </a>
+        <button type="button" class="side-toggle" id="sideToggle" aria-label="Collapse menu" title="Collapse menu">«</button>
       </div>
-      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
-      <nav class="nav-links" id="navLinks">
-        <a href="#overview" onclick="closeNav()">Overview</a>
-        <a href="#entry" onclick="closeNav()">Add Entry</a>
-        <a href="#records" onclick="closeNav()">Records</a>
-        <a href="#invoiceSection" onclick="closeNav()">Invoice</a>
-        <a href="admin.html" class="back-link">&larr; Admin Dashboard</a>
+      <nav class="side-nav" aria-label="Main menu">
+        <p class="side-label">Daily work</p>
+        <a href="#/overview" data-view="overview" title="Overview"><span class="ni">🏠</span><span class="side-text">Overview</span></a>
+        <a href="#/add" data-view="add" title="Add Entry"><span class="ni">➕</span><span class="side-text">Add Entry</span></a>
+        <a href="#/records" data-view="records" title="Records"><span class="ni">📋</span><span class="side-text">Records</span></a>
+        <p class="side-label">Billing</p>
+        <a href="#/invoice" data-view="invoice" title="Invoice"><span class="ni">🧾</span><span class="side-text">Invoice</span></a>
+        <a href="#/analysis" data-view="analysis" title="Analysis"><span class="ni">📊</span><span class="side-text">Analysis</span></a>
+        <p class="side-label">Setup</p>
+        <a href="#/profile" data-view="profile" title="Shop Profile"><span class="ni">⚙️</span><span class="side-text">Shop Profile</span></a>
       </nav>
-    </div>
-  </header>
+      <div class="side-foot">
+        <a href="shop-ledger.html" class="side-link" title="Daily Ledger"><span class="ni">📒</span><span class="side-text">Daily Ledger</span></a>
+        <a href="admin.html" class="side-link" title="Admin Dashboard"><span class="ni">←</span><span class="side-text">Admin Dashboard</span></a>
+      </div>
+    </aside>
 
-  <section class="hero">
-    <div class="container">
-      <div class="hero-box">
-        <div class="hero-wrap">
-          <span class="badge">Jio • Airtel • BSNL • VI</span>
-          <h2 id="dashboardTitle">Laxman Telecom Settlement Dashboard</h2>
-          <p class="hero-sub">Recharge settlement, commission &amp; invoice tracker</p>
-          <details class="profile-details">
-            <summary>⚙️ Shop Profile — tap to edit</summary>
-            <div class="hero-card">
-              <h3>Profile Setup</h3>
-              <label for="shopName">Shop Name</label>
-              <input id="shopName" type="text" value="LAXMAN TELECOM" placeholder="Enter shop name" />
-              <label for="shopAddress" style="margin-top:12px;">Shop Address</label>
-              <input id="shopAddress" type="text" value="Puneet Nagar, Ludhiana, Punjab 141008" placeholder="Enter address" />
-              <label for="shopPhone" style="margin-top:12px;">Phone</label>
-              <input id="shopPhone" type="text" value="+91 9041880370" placeholder="Enter phone" />
-              <label for="shopEmail" style="margin-top:12px;">Email</label>
-              <input id="shopEmail" type="text" value="laxmantelecom.help@gmail.com" placeholder="Enter email" />
-              <label for="shopSignatory" style="margin-top:12px;">Authorised Signatory (name on invoice)</label>
-              <input id="shopSignatory" type="text" value="Vikash Kumar Gupta" placeholder="Enter signatory name" />
-              <div class="button-row">
-                <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
-                <button class="btn-secondary" id="resetDashboardBtn">Reset Dashboard</button>
+    <div class="main">
+      <!-- Phone top bar -->
+      <div class="topbar">
+        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+        <b id="brandNameTop">LAXMAN TELECOM</b>
+      </div>
+
+      <div class="page">
+        <div class="page-head">
+          <h2 id="pageTitle">Overview</h2>
+          <p id="pageSub"></p>
+        </div>
+
+        <!-- ================= OVERVIEW ================= -->
+        <section class="view" id="view-overview" hidden>
+          <div class="quick">
+            <a class="quick-btn primary" href="#/add"><span>➕</span>Add Entry</a>
+            <a class="quick-btn" href="#/records"><span>📋</span>Records<small id="qRecords"></small></a>
+            <a class="quick-btn" href="#/invoice"><span>🧾</span>Invoice<small id="qDue"></small></a>
+            <a class="quick-btn" href="shop-ledger.html"><span>📒</span>Daily Ledger</a>
+          </div>
+
+          <div class="card">
+            <h4>All-time totals</h4>
+            <div class="stats">
+              <div class="stat"><small>Gross recharge</small><b id="grossValue">₹0.00</b></div>
+              <div class="stat"><small>Commission earned</small><b id="commissionValue">₹0.00</b></div>
+              <div class="stat"><small>Payable to vendor</small><b id="payableValue">₹0.00</b></div>
+              <div class="stat"><small>Paid</small><b id="paidValue">₹0.00</b></div>
+              <div class="stat due"><small>Due</small><b id="dueValue">₹0.00</b></div>
+            </div>
+          </div>
+
+          <div class="grid-3 tinted">
+            <div class="card">
+              <h4>Operator-wise Count</h4>
+              <div class="summary-list" id="operatorCountSummary"></div>
+            </div>
+            <div class="card">
+              <h4>Operator-wise Gross</h4>
+              <div class="summary-list" id="operatorGrossSummary"></div>
+            </div>
+            <div class="card">
+              <h4>Operator-wise Commission</h4>
+              <div class="summary-list" id="operatorCommissionSummary"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= ADD ENTRY ================= -->
+        <section class="view" id="view-add" hidden>
+          <div class="card">
+            <p class="step"><b>1</b>Recharge details</p>
+            <div class="form-grid">
+              <div class="form-group"><label for="entryDate">Date</label><input id="entryDate" type="date" /></div>
+              <div class="form-group"><label for="entryMobile">Mobile Number</label><input id="entryMobile" type="text" inputmode="numeric" placeholder="Enter mobile number" /></div>
+              <div class="form-group"><label for="entryOperator">Operator</label>
+                <select id="entryOperator">
+                  <option value="Jio">Jio</option>
+                  <option value="Airtel">Airtel</option>
+                  <option value="BSNL">BSNL</option>
+                  <option value="VI">VI</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group"><label for="entryAmount">Recharge Amount (₹)</label><input id="entryAmount" type="number" min="0" step="any" inputmode="decimal" placeholder="Enter amount" /></div>
+              <div class="form-group"><label for="entryVendor">Supplier / Vendor</label><input id="entryVendor" type="text" placeholder="Example: Ankit" /></div>
+              <div class="form-group"><label for="entryCommission">Commission %</label><input id="entryCommission" type="number" min="0" max="100" step="any" inputmode="decimal" value="3" placeholder="Enter commission percent" /></div>
+            </div>
+
+            <p class="step" style="margin-top:22px;"><b>2</b>Payment to the vendor</p>
+            <div class="form-grid">
+              <div class="form-group"><label for="entryPaymentStatus">Payment Status</label>
+                <select id="entryPaymentStatus">
+                  <option value="PAID">PAID</option>
+                  <option value="UNPAID">UNPAID</option>
+                  <option value="PARTIAL">PARTIAL</option>
+                </select>
+              </div>
+              <div class="form-group" id="paidAmountGroup" hidden><label for="entryPaidAmount">Paid Amount (₹)</label><input id="entryPaidAmount" type="number" min="0" step="any" inputmode="decimal" value="0" placeholder="Enter paid amount" /></div>
+              <div class="form-group" id="paidDateGroup"><label for="entryPaidDate">Paid Date</label><input id="entryPaidDate" type="date" /></div>
+              <div class="form-group"><label for="entryPaymentMode">Payment Mode</label>
+                <select id="entryPaymentMode">
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Mixed">Mixed</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group wide"><label for="entryPurpose">Description / Work Note</label><input id="entryPurpose" type="text" placeholder="Example: Recharge procured from vendor" /></div>
+              <div class="form-group wide"><label for="entryPaymentNote">Payment Note</label><input id="entryPaymentNote" type="text" placeholder="Example: Paid in full by UPI" /></div>
+            </div>
+
+            <div class="preview" id="entryPreview">Enter the amount to see the calculation.</div>
+            <div class="button-row">
+              <button class="btn-primary" id="addEntryBtn">Add Entry</button>
+              <button class="btn-secondary" id="clearFormBtn" type="button">Clear Form</button>
+            </div>
+            <div class="mini-note">Formula used: Commission Earned = Amount × Commission%. Vendor Payable = Amount − Commission Earned. Due = Payable − Paid Amount.</div>
+          </div>
+
+          <div class="card">
+            <h4>Latest entries</h4>
+            <div id="recentEntries"></div>
+            <p class="card-note" style="margin:12px 0 0;">See everything in <a href="#/records" style="color:var(--accent);font-weight:700;">Records</a>.</p>
+          </div>
+        </section>
+
+        <!-- ================= RECORDS ================= -->
+        <section class="view" id="view-records" hidden>
+          <div class="card">
+            <p class="card-note" id="recordsSummary"></p>
+            <div class="grid-4">
+              <div>
+                <label for="searchInput">Search</label>
+                <input id="searchInput" type="text" placeholder="Search mobile / vendor / note" />
+              </div>
+              <div>
+                <label for="tableOperatorFilter">Operator Filter</label>
+                <select id="tableOperatorFilter">
+                  <option value="All">All Operators</option>
+                  <option value="Jio">Jio</option>
+                  <option value="Airtel">Airtel</option>
+                  <option value="BSNL">BSNL</option>
+                  <option value="VI">VI</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label for="tableFromDate">From Date</label>
+                <input id="tableFromDate" type="date" />
+              </div>
+              <div>
+                <label for="tableToDate">To Date</label>
+                <input id="tableToDate" type="date" />
               </div>
             </div>
-          </details>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="overview" class="hide-while-printing">
-    <div class="container">
-      <div class="section-head">
-        <h3>Overview</h3>
-      </div>
-      <div class="grid-5 tinted">
-        <div class="card">
-          <div class="icon-box">₹</div>
-          <div class="value" id="grossValue">₹0.00</div>
-          <div class="label-small">Gross recharge value</div>
-        </div>
-        <div class="card">
-          <div class="icon-box">%</div>
-          <div class="value" id="commissionValue">₹0.00</div>
-          <div class="label-small">Total commission earned</div>
-        </div>
-        <div class="card">
-          <div class="icon-box">=</div>
-          <div class="value" id="payableValue">₹0.00</div>
-          <div class="label-small">Total payable to vendor</div>
-        </div>
-        <div class="card">
-          <div class="icon-box">✓</div>
-          <div class="value" id="paidValue">₹0.00</div>
-          <div class="label-small">Total paid amount</div>
-        </div>
-        <div class="card">
-          <div class="icon-box">!</div>
-          <div class="value" id="dueValue">₹0.00</div>
-          <div class="label-small">Total due amount</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="hide-while-printing">
-    <div class="container">
-      <div class="grid-4 tinted">
-        <div class="card">
-          <h4>Operator-wise Count</h4>
-          <div class="summary-list" id="operatorCountSummary"></div>
-        </div>
-        <div class="card">
-          <h4>Operator-wise Gross</h4>
-          <div class="summary-list" id="operatorGrossSummary"></div>
-        </div>
-        <div class="card">
-          <h4>Operator-wise Commission</h4>
-          <div class="summary-list" id="operatorCommissionSummary"></div>
-        </div>
-        <div class="card">
-          <h4>Report Status</h4>
-          <div class="value" id="reportStatusValue">Ready</div>
-          <div class="label-small" id="reportStatusLabel">Filtered records will be used for the invoice and WhatsApp message.</div>
-          <div class="warn-note">WhatsApp send works as a prefilled message opener. PDF/file attachment still needs to be added manually in WhatsApp.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="entry" class="hide-while-printing">
-    <div class="container">
-      <div class="section-head">
-        <h3>Add Recharge / Settlement Entry</h3>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <h4>Entry Form</h4>
-          <label for="entryDate">Date</label>
-          <input id="entryDate" type="date" />
-
-          <label for="entryMobile" style="margin-top:12px;">Mobile Number</label>
-          <input id="entryMobile" type="text" placeholder="Enter mobile number" />
-
-          <label for="entryOperator" style="margin-top:12px;">Operator</label>
-          <select id="entryOperator">
-            <option value="Jio">Jio</option>
-            <option value="Airtel">Airtel</option>
-            <option value="BSNL">BSNL</option>
-            <option value="VI">VI</option>
-            <option value="Other">Other</option>
-          </select>
-
-          <label for="entryAmount" style="margin-top:12px;">Recharge Amount (₹)</label>
-          <input id="entryAmount" type="number" min="0" step="0.01" placeholder="Enter amount" />
-
-          <label for="entryVendor" style="margin-top:12px;">Supplier / Vendor</label>
-          <input id="entryVendor" type="text" placeholder="Example: Ankit" />
-
-          <label for="entryCommission" style="margin-top:12px;">Commission %</label>
-          <input id="entryCommission" type="number" min="0" max="100" step="0.01" value="3" placeholder="Enter commission percent" />
-
-          <label for="entryPaymentStatus" style="margin-top:12px;">Payment Status</label>
-          <select id="entryPaymentStatus">
-            <option value="PAID">PAID</option>
-            <option value="UNPAID">UNPAID</option>
-            <option value="PARTIAL">PARTIAL</option>
-          </select>
-
-          <label for="entryPaidAmount" style="margin-top:12px;">Paid Amount (₹)</label>
-          <input id="entryPaidAmount" type="number" min="0" step="0.01" value="0" placeholder="Enter paid amount" />
-
-          <label for="entryPaidDate" style="margin-top:12px;">Paid Date</label>
-          <input id="entryPaidDate" type="date" />
-
-          <label for="entryPaymentMode" style="margin-top:12px;">Payment Mode</label>
-          <select id="entryPaymentMode">
-            <option value="Cash">Cash</option>
-            <option value="UPI">UPI</option>
-            <option value="Bank Transfer">Bank Transfer</option>
-            <option value="Mixed">Mixed</option>
-            <option value="Other">Other</option>
-          </select>
-
-          <label for="entryPurpose" style="margin-top:12px;">Description / Work Note</label>
-          <input id="entryPurpose" type="text" placeholder="Example: Recharge procured from vendor" />
-
-          <label for="entryPaymentNote" style="margin-top:12px;">Payment Note</label>
-          <input id="entryPaymentNote" type="text" placeholder="Example: Paid in full by UPI" />
-
-          <div class="button-row">
-            <button class="btn-primary" id="addEntryBtn">Add Entry</button>
-            <button class="btn-secondary" id="clearFormBtn" type="button">Clear Form</button>
+            <div class="button-row">
+              <button class="btn-secondary" id="clearTableFiltersBtn" type="button">Clear Table Filters</button>
+              <button class="btn-alert" id="exportJsonBtn" type="button">Export Backup</button>
+              <button class="btn-secondary" id="importJsonBtn" type="button">Import Backup</button>
+              <input type="file" id="importJsonInput" accept="application/json" style="display:none;" />
+              <button class="btn-danger" id="deleteAllBtn" type="button">Delete All Entries</button>
+            </div>
+            <div style="margin-top:18px;" class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Mobile Number</th>
+                    <th>Operator</th>
+                    <th>Vendor</th>
+                    <th>Amount</th>
+                    <th>Commission %</th>
+                    <th>Commission Earned</th>
+                    <th>Vendor Payable</th>
+                    <th>Paid Amount</th>
+                    <th>Due Amount</th>
+                    <th>Status</th>
+                    <th>Paid Date</th>
+                    <th>Mode</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsTableBody"></tbody>
+              </table>
+            </div>
+            <div id="emptyState" class="empty-box" style="display:none;">No records found. Add recharge entries to start tracking.</div>
           </div>
-          <div class="mini-note">Formula used: Commission Earned = Amount × Commission%. Vendor Payable = Amount − Commission Earned. Due = Payable − Paid Amount.</div>
-        </div>
+        </section>
 
-        <div class="card">
-          <h4>Report & Invoice Filters</h4>
-          <label for="reportVendor">Vendor Name</label>
-          <input id="reportVendor" type="text" value="Ankit Gupta" placeholder="Enter vendor name for invoice/report" />
-
-          <label for="reportFromDate" style="margin-top:12px;">From Date</label>
-          <input id="reportFromDate" type="date" />
-
-          <label for="reportToDate" style="margin-top:12px;">To Date</label>
-          <input id="reportToDate" type="date" />
-
-          <label for="reportOperator" style="margin-top:12px;">Operator Filter</label>
-          <select id="reportOperator">
-            <option value="All">All Operators</option>
-            <option value="Jio">Jio</option>
-            <option value="Airtel">Airtel</option>
-            <option value="BSNL">BSNL</option>
-            <option value="VI">VI</option>
-            <option value="Other">Other</option>
-          </select>
-
-          <label for="reportPaymentStatus" style="margin-top:12px;">Payment Status</label>
-          <select id="reportPaymentStatus">
-            <option value="ALL">All Status</option>
-            <option value="PAID">PAID</option>
-            <option value="UNPAID">UNPAID</option>
-            <option value="PARTIAL">PARTIAL</option>
-          </select>
-
-          <label for="reportInvoiceNo" style="margin-top:12px;">Invoice Number (auto-generated)</label>
-          <input id="reportInvoiceNo" type="text" placeholder="Auto-filled - edit only if you want a custom number" />
-
-          <label for="reportInvoiceStatus" style="margin-top:12px;">Invoice Status (shown on invoice)</label>
-          <select id="reportInvoiceStatus">
-            <option value="AUTO">Auto (based on Payment Status filter above)</option>
-            <option value="PAID">PAID</option>
-            <option value="UNPAID">UNPAID</option>
-            <option value="PARTIAL">PARTIAL</option>
-          </select>
-
-          <div class="button-row">
-            <button class="btn-primary" id="applyReportBtn">Apply Report Filters</button>
-            <button class="btn-alert" id="generateInvoiceBtn">Refresh Invoice Preview</button>
+        <!-- ================= INVOICE ================= -->
+        <section class="view" id="view-invoice" hidden>
+          <div class="card hide-while-printing">
+            <h4>Invoice filters</h4>
+            <div class="form-grid">
+              <div class="form-group"><label for="reportVendor">Vendor Name</label><input id="reportVendor" type="text" value="Ankit Gupta" placeholder="Enter vendor name for invoice/report" /></div>
+              <div class="form-group"><label for="reportFromDate">From Date</label><input id="reportFromDate" type="date" /></div>
+              <div class="form-group"><label for="reportToDate">To Date</label><input id="reportToDate" type="date" /></div>
+              <div class="form-group"><label for="reportOperator">Operator Filter</label>
+                <select id="reportOperator">
+                  <option value="All">All Operators</option>
+                  <option value="Jio">Jio</option>
+                  <option value="Airtel">Airtel</option>
+                  <option value="BSNL">BSNL</option>
+                  <option value="VI">VI</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group"><label for="reportPaymentStatus">Payment Status</label>
+                <select id="reportPaymentStatus">
+                  <option value="ALL">All Status</option>
+                  <option value="PAID">PAID</option>
+                  <option value="UNPAID">UNPAID</option>
+                  <option value="PARTIAL">PARTIAL</option>
+                </select>
+              </div>
+              <div class="form-group"><label for="reportInvoiceNo">Invoice Number</label><input id="reportInvoiceNo" type="text" placeholder="Auto-filled - edit only if you want a custom number" /></div>
+              <div class="form-group wide"><label for="reportInvoiceStatus">Invoice Status (shown on invoice)</label>
+                <select id="reportInvoiceStatus">
+                  <option value="AUTO">Auto (based on Payment Status filter above)</option>
+                  <option value="PAID">PAID</option>
+                  <option value="UNPAID">UNPAID</option>
+                  <option value="PARTIAL">PARTIAL</option>
+                </select>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn-primary" id="applyReportBtn">Apply Report Filters</button>
+              <button class="btn-alert" id="generateInvoiceBtn">Refresh Invoice Preview</button>
+            </div>
+            <div class="status-line"><b id="reportStatusValue">Ready</b> · <span id="reportStatusLabel">Filtered records will be used for the invoice and WhatsApp message.</span></div>
+            <div class="warn-note">WhatsApp send works as a prefilled message opener. PDF/file attachment still needs to be added manually in WhatsApp.</div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="records" class="hide-while-printing">
-    <div class="container">
-      <div class="section-head">
-        <h3>Date-wise Recharge Records</h3>
-      </div>
-      <div class="card">
-        <div class="grid-4">
-          <div>
-            <label for="searchInput">Search</label>
-            <input id="searchInput" type="text" placeholder="Search mobile / vendor / note" />
+          <div class="button-row hide-while-printing" style="justify-content:center; margin:0;">
+            <button class="btn-primary" id="printInvoiceBtn">Print / Save as PDF</button>
+            <button class="btn-alert" id="whatsappInvoiceBtn">Save PDF &amp; Send on WhatsApp</button>
           </div>
-          <div>
-            <label for="tableOperatorFilter">Operator Filter</label>
-            <select id="tableOperatorFilter">
-              <option value="All">All Operators</option>
-              <option value="Jio">Jio</option>
-              <option value="Airtel">Airtel</option>
-              <option value="BSNL">BSNL</option>
-              <option value="VI">VI</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label for="tableFromDate">From Date</label>
-            <input id="tableFromDate" type="date" />
-          </div>
-          <div>
-            <label for="tableToDate">To Date</label>
-            <input id="tableToDate" type="date" />
-          </div>
-        </div>
-        <div class="button-row">
-          <button class="btn-secondary" id="clearTableFiltersBtn" type="button">Clear Table Filters</button>
-          <button class="btn-alert" id="exportJsonBtn" type="button">Export Backup</button>
-          <button class="btn-secondary" id="importJsonBtn" type="button">Import Backup</button>
-          <input type="file" id="importJsonInput" accept="application/json" style="display:none;" />
-          <button class="btn-danger" id="deleteAllBtn" type="button">Delete All Entries</button>
-        </div>
-        <div style="margin-top:18px;" class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Mobile Number</th>
-                <th>Operator</th>
-                <th>Vendor</th>
-                <th>Amount</th>
-                <th>Commission %</th>
-                <th>Commission Earned</th>
-                <th>Vendor Payable</th>
-                <th>Paid Amount</th>
-                <th>Due Amount</th>
-                <th>Status</th>
-                <th>Paid Date</th>
-                <th>Mode</th>
-                <th>Description</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="recordsTableBody"></tbody>
-          </table>
-        </div>
-        <div id="emptyState" class="empty-box" style="margin-top:14px; display:none;">No records found. Add recharge entries to start tracking.</div>
-      </div>
-    </div>
-  </section>
 
-  <section id="analysis" class="hide-while-printing">
-    <div class="container">
-      <div class="section-head">
-        <h3>Analysis</h3>
-      </div>
-      <div class="grid-3 tinted">
-        <div class="card">
-          <h4>Commission by Operator</h4>
-          <div class="analysis-grid" id="commissionAnalysis"></div>
-        </div>
-        <div class="card">
-          <h4>Gross Recharge by Operator</h4>
-          <div class="analysis-grid" id="grossAnalysis"></div>
-        </div>
-        <div class="card">
-          <h4>Due by Operator</h4>
-          <div class="analysis-grid" id="dueAnalysis"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="invoiceSection">
-    <div class="container">
-      <div class="section-head">
-        <h3>Invoice Preview</h3>
-      </div>
-      <div class="button-row hide-while-printing" style="justify-content:center; margin-bottom:16px;">
-        <button class="btn-primary" id="printInvoiceBtn">Print / Save as PDF</button>
-        <button class="btn-alert" id="whatsappInvoiceBtn">Save PDF &amp; Send on WhatsApp</button>
-      </div>
+          <div id="invoiceSection">
       <div class="invoice-preview" id="invoicePreview">
         <div class="invoice-watermark">
           <img src="laxman-telecom-icon-round.png" alt="">
@@ -1220,24 +1068,143 @@
           <div class="inv-foot">Thank you for your business. This is a computer-generated invoice.</div>
         </div>
       </div>
-    </div>
-  </section>
+          </div>
+        </section>
 
-  <footer>
-    <div class="container">
-      © LAXMAN TELECOM • Settlement &amp; Invoice Dashboard
+        <!-- ================= ANALYSIS ================= -->
+        <section class="view" id="view-analysis" hidden>
+          <div class="grid-3 tinted">
+            <div class="card">
+              <h4>Commission by Operator</h4>
+              <div class="analysis-grid" id="commissionAnalysis"></div>
+            </div>
+            <div class="card">
+              <h4>Gross Recharge by Operator</h4>
+              <div class="analysis-grid" id="grossAnalysis"></div>
+            </div>
+            <div class="card">
+              <h4>Due by Operator</h4>
+              <div class="analysis-grid" id="dueAnalysis"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SHOP PROFILE ================= -->
+        <section class="view" id="view-profile" hidden>
+          <div class="card">
+            <h4>Shop details shown on invoices</h4>
+            <div class="form-grid">
+              <div class="form-group"><label for="shopName">Shop Name</label><input id="shopName" type="text" value="LAXMAN TELECOM" placeholder="Enter shop name" /></div>
+              <div class="form-group"><label for="shopPhone">Phone</label><input id="shopPhone" type="text" value="+91 9041880370" placeholder="Enter phone" /></div>
+              <div class="form-group wide"><label for="shopAddress">Shop Address</label><input id="shopAddress" type="text" value="Puneet Nagar, Ludhiana, Punjab 141008" placeholder="Enter address" /></div>
+              <div class="form-group"><label for="shopEmail">Email</label><input id="shopEmail" type="text" value="laxmantelecom.help@gmail.com" placeholder="Enter email" /></div>
+              <div class="form-group"><label for="shopSignatory">Authorised Signatory (name on invoice)</label><input id="shopSignatory" type="text" value="Vikash Kumar Gupta" placeholder="Enter signatory name" /></div>
+            </div>
+            <div class="button-row">
+              <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
+            </div>
+          </div>
+
+          <div class="card danger-zone">
+            <h4>Danger zone</h4>
+            <p class="card-note">Reset deletes the shop profile and every recharge entry from the cloud. This cannot be undone. Use "Export Backup" in Records first.</p>
+            <button class="btn-danger" id="resetDashboardBtn">Reset Dashboard</button>
+          </div>
+        </section>
+
+        <!-- ================= MORE (phone menu) ================= -->
+        <section class="view" id="view-more" hidden>
+          <div class="tiles">
+            <a class="quick-btn" href="#/analysis"><span>📊</span>Analysis</a>
+            <a class="quick-btn" href="#/profile"><span>⚙️</span>Shop Profile</a>
+            <a class="quick-btn" href="shop-ledger.html"><span>📒</span>Daily Ledger</a>
+            <a class="quick-btn" href="admin.html"><span>←</span>Admin Dashboard</a>
+          </div>
+        </section>
+
+      </div>
     </div>
-  </footer>
+
+    <!-- Phone bottom tabs -->
+    <nav class="tabbar" aria-label="Quick menu">
+      <a href="#/overview" data-view="overview"><span class="ni">🏠</span>Overview</a>
+      <a href="#/add" data-view="add"><span class="ni">➕</span>Add</a>
+      <a href="#/records" data-view="records"><span class="ni">📋</span>Records</a>
+      <a href="#/invoice" data-view="invoice"><span class="ni">🧾</span>Invoice</a>
+      <a href="#/more" data-view="more" data-group="more"><span class="ni">☰</span>More</a>
+    </nav>
+
+    <div id="toast"></div>
 
   <script>
-    function toggleNav() {
-      document.getElementById('navLinks').classList.toggle('nav-open');
-      document.getElementById('navBackdrop').classList.toggle('nav-open');
+    function $(id) { return document.getElementById(id); }
+
+    function toast(text) {
+      const el = $('toast');
+      el.textContent = text;
+      el.classList.add('show');
+      clearTimeout(toast.t);
+      toast.t = setTimeout(() => el.classList.remove('show'), 2600);
     }
-    function closeNav() {
-      document.getElementById('navLinks').classList.remove('nav-open');
-      document.getElementById('navBackdrop').classList.remove('nav-open');
+
+    /* ==========================================================
+       Navigation: every menu item opens its own page
+       ========================================================== */
+    const VIEW_INFO = {
+      overview: ['Overview', 'Totals across all your recharge entries'],
+      add:      ['Add Entry', 'Record a recharge you bought from a vendor'],
+      records:  ['Records', 'Search, filter and manage every entry'],
+      invoice:  ['Invoice', 'Choose a vendor and period, then print or send it'],
+      analysis: ['Analysis', 'Operator-wise breakdown'],
+      profile:  ['Shop Profile', 'The details printed on every invoice'],
+      more:     ['More', 'Everything else in one place']
+    };
+    const MORE_GROUP = ['more', 'analysis', 'profile'];
+    const OLD_HASHES = { entry: 'add', records: 'records', invoicesection: 'invoice', overview: 'overview', analysis: 'analysis' };
+
+    function currentView() {
+      const raw = location.hash.replace(/^#\/?/, '');
+      if (VIEW_INFO[raw]) return raw;
+      return OLD_HASHES[raw.toLowerCase()] || 'overview';
     }
+
+    function showView() {
+      const v = currentView();
+      if (location.hash !== '#/' + v) history.replaceState(null, '', '#/' + v);
+
+      document.querySelectorAll('.view').forEach((el) => { el.hidden = el.id !== 'view-' + v; });
+      document.querySelectorAll('[data-view]').forEach((a) => {
+        const on = a.dataset.view === v || (a.dataset.group === 'more' && MORE_GROUP.includes(v));
+        a.classList.toggle('active', on);
+        if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      });
+      $('pageTitle').textContent = VIEW_INFO[v][0];
+      $('pageSub').textContent = VIEW_INFO[v][1];
+      document.title = VIEW_INFO[v][0] + ' | Settlement & Invoice';
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    window.addEventListener('hashchange', showView);
+
+    /* Collapse / expand the side menu (remembered on this device) */
+    (function initSideToggle() {
+      const key = 'settlementSideCollapsed';
+      let saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) { /* storage blocked */ }
+      const apply = (collapsed) => {
+        document.body.classList.toggle('side-collapsed', collapsed);
+        const btn = $('sideToggle');
+        btn.textContent = collapsed ? '»' : '«';
+        btn.title = collapsed ? 'Expand menu' : 'Collapse menu';
+        btn.setAttribute('aria-label', btn.title);
+      };
+      apply(saved === null ? window.innerWidth < 1150 : saved === '1');
+      $('sideToggle').addEventListener('click', () => {
+        const collapsed = !document.body.classList.contains('side-collapsed');
+        apply(collapsed);
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch (err) { /* ignore */ }
+      });
+    })();
+
 
     const shopName = document.getElementById('shopName');
     const shopAddress = document.getElementById('shopAddress');
@@ -1350,7 +1317,9 @@
     }
 
     function updateProfileTitle() {
-      document.getElementById('dashboardTitle').textContent = (shopName.value.trim() || 'Telecom') + ' Settlement Dashboard';
+      const name = shopName.value.trim() || 'LAXMAN TELECOM';
+      document.getElementById('brandName').textContent = name;
+      document.getElementById('brandNameTop').textContent = name;
     }
 
     function applyProfileToForm(profile) {
@@ -1435,6 +1404,30 @@
       entryPaymentMode.value = 'Cash';
       entryPurpose.value = 'Recharge procured from vendor';
       entryPaymentNote.value = '';
+      syncPaymentFields();
+    }
+
+    /** Paid Amount only matters for PARTIAL; Paid Date is not needed for UNPAID. */
+    function syncPaymentFields() {
+      const status = entryPaymentStatus.value;
+      document.getElementById('paidAmountGroup').hidden = status !== 'PARTIAL';
+      document.getElementById('paidDateGroup').hidden = status === 'UNPAID';
+      updateEntryPreview();
+    }
+
+    function updateEntryPreview() {
+      const box = document.getElementById('entryPreview');
+      const amount = parseFloat(entryAmount.value);
+      const percent = parseFloat(entryCommission.value);
+      if (isNaN(amount) || amount <= 0 || isNaN(percent) || percent < 0) {
+        box.textContent = 'Enter the amount to see the calculation.';
+        return;
+      }
+      const pre = calculateLine(amount, percent, 0);
+      const paid = normalizePaidAmount(entryPaymentStatus.value, pre.payable, parseFloat(entryPaidAmount.value || '0'));
+      const line = calculateLine(amount, percent, paid);
+      box.innerHTML = `Commission <b>${formatMoney(line.commissionEarned)}</b> · Payable to vendor <b>${formatMoney(line.payable)}</b> · ` +
+        `Paid <b>${formatMoney(paid)}</b> · Due <b>${formatMoney(line.due)}</b>`;
     }
 
     function calculateLine(amount, commissionPercent, paidAmount) {
@@ -1497,6 +1490,7 @@
 
       sendEntryToWhatsApp({ mobile, operator, amount });
       clearForm();
+      toast('Entry added');
     }
 
     function sendEntryToWhatsApp(entry) {
@@ -1558,6 +1552,9 @@
 
     function renderTable() {
       const records = getFilteredTableRecords();
+      const shown = calculateTotals(records);
+      document.getElementById('recordsSummary').textContent =
+        `${records.length} of ${getRecords().length} entries shown · Commission ${formatMoney(shown.commission)} · Due ${formatMoney(shown.due)}`;
       recordsTableBody.innerHTML = '';
       if (!records.length) {
         emptyState.style.display = 'block';
@@ -1611,6 +1608,22 @@
       document.getElementById('payableValue').textContent = formatMoney(totals.payable);
       document.getElementById('paidValue').textContent = formatMoney(totals.paid);
       document.getElementById('dueValue').textContent = formatMoney(totals.due);
+      document.getElementById('qRecords').textContent = getRecords().length + ' entries';
+      document.getElementById('qDue').textContent = totals.due > 0 ? formatMoney(totals.due) + ' due' : 'All paid';
+    }
+
+    function renderRecent() {
+      const box = document.getElementById('recentEntries');
+      const list = getRecords().slice(0, 5);
+      if (!list.length) {
+        box.innerHTML = '<div class="empty-box">No entries yet.</div>';
+        return;
+      }
+      box.innerHTML = '<div class="table-wrap"><table class="mini-table"><thead><tr>' +
+        '<th>Date</th><th>Mobile</th><th>Operator</th><th>Vendor</th><th>Amount</th><th>Status</th></tr></thead><tbody>' +
+        list.map((r) => `<tr><td>${formatDateDDMMYYYY(r.date)}</td><td>${escapeHtml(r.mobile)}</td><td>${escapeHtml(r.operator)}</td>` +
+          `<td>${escapeHtml(r.vendor)}</td><td>${formatMoney(r.amount)}</td><td>${getStatusTag(r.paymentStatus)}</td></tr>`).join('') +
+        '</tbody></table></div>';
     }
 
     function buildOperatorStats(records) {
@@ -1815,6 +1828,7 @@
     }
 
     function renderAll() {
+      renderRecent();
       renderTable();
       renderOverview();
       renderSummaryBoxes();
@@ -1957,6 +1971,7 @@
     window.deleteEntry = function (id) {
       const record = cachedRecords.find(r => r.id === id);
       if (!record) return;
+      if (!confirm('Delete this entry (' + record.mobile + ', ' + formatMoney(record.amount) + ')? This cannot be undone.')) return;
       const vendorKey = sanitizeVendorKey(record.vendor);
       db.ref(FIREBASE_DATA_PATH + '/vendorView/' + vendorKey + '/' + id).remove()
         .catch((err) => alert('Could not delete this entry: ' + err.message));
@@ -2014,6 +2029,11 @@
     reportInvoiceStatus.addEventListener('change', refreshInvoicePreview);
     reportInvoiceNo.addEventListener('input', () => { syncInvoiceCounterFromField(); refreshInvoicePreview(); });
 
+    [entryAmount, entryCommission, entryPaidAmount].forEach((el) => {
+      el.addEventListener('input', updateEntryPreview);
+    });
+    entryPaymentStatus.addEventListener('change', syncPaymentFields);
+
     window.addEventListener('beforeprint', stampInvoice);
     shopSignatory.addEventListener('input', refreshInvoicePreview);
 
@@ -2034,20 +2054,7 @@
       img.src = names[0];
     })();
 
-    /* Scroll reveal */
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.hide-while-printing .card, .section-head').forEach((el) => {
-      el.classList.add('rv');
-      revealObserver.observe(el);
-    });
+    showView();
   </script>
   </div>
 
