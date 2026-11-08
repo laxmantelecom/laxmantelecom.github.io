@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111318" />
+  <title>Telecom Settlement & Invoice Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111318;
+      --accent: #ff8a00;
+      --accent-light: #ffb347;
+      --cream: #fbf7f0;
+      --line: #e9e1d3;
+      --text: #2c2f38;
+      --muted: #6b6f7b;
+      --shadow: 0 18px 40px -16px rgba(17, 19, 24, .22);
+      --radius: 24px;
+      --font-body: 'Figtree', 'Segoe UI', Arial, sans-serif;
+      --font-head: 'Bricolage Grotesque', Georgia, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--cream);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 { font-family: var(--font-head); line-height: 1.15; color: var(--ink); }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+
+
+    .grid-5, .grid-4, .grid-3, .grid-2 { display: grid; gap: 18px; }
+    .grid-5 > *, .grid-4 > *, .grid-3 > *, .grid-2 > * { min-width: 0; }
+    .grid-5 { grid-template-columns: repeat(5, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+
+    .card {
+      --c1: var(--accent);
+      --c2: var(--accent-light);
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: transform .3s, box-shadow .3s;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--c1), var(--c2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .card:hover::before { transform: scaleX(1); }
+
+    .tinted > .card:nth-child(5n+1) { --c1: #7c3aed; --c2: #c026d3; }
+    .tinted > .card:nth-child(5n+2) { --c1: #0f766e; --c2: #14b8a6; }
+    .tinted > .card:nth-child(5n+3) { --c1: #ea580c; --c2: #fb923c; }
+    .tinted > .card:nth-child(5n+4) { --c1: #15803d; --c2: #4ade80; }
+    .tinted > .card:nth-child(5n+5) { --c1: #be123c; --c2: #f43f5e; }
+    .tinted > .card:hover { transform: translateY(-5px); }
+
+    .card h4 { margin: 0 0 14px; font-size: 1.15rem; }
+
+    .icon-box {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 14px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      box-shadow: 0 12px 22px -6px var(--c1);
+      transition: transform .35s;
+    }
+
+    .card:hover .icon-box { transform: rotate(-10deg) scale(1.1); }
+
+    .value { margin: 6px 0 4px; font-family: var(--font-head); font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+    .label-small { font-size: .9rem; font-weight: 600; color: var(--muted); }
+
+    label { display: block; margin-bottom: 6px; font-size: .9rem; font-weight: 600; color: var(--ink); }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: .95rem;
+      color: var(--ink);
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255, 138, 0, .15);
+    }
+
+    textarea { min-height: 114px; resize: vertical; }
+
+    .button-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+
+    button {
+      padding: 12px 22px;
+      font: inherit;
+      font-size: .93rem;
+      font-weight: 700;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    button:hover { transform: translateY(-2px); }
+    button:disabled { opacity: .6; cursor: wait; transform: none; }
+
+    .btn-primary { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); box-shadow: 0 10px 22px rgba(255, 138, 0, .32); }
+    .btn-secondary { color: var(--ink); background: #fff; border: 1.5px solid var(--line); }
+    .btn-alert { color: #fff; background: var(--ink); }
+    .btn-danger { color: #fff; background: linear-gradient(135deg, #be123c, #f43f5e); }
+    .btn-small { padding: 7px 14px; font-size: .82rem; }
+
+    .summary-list, .analysis-grid { display: grid; gap: 10px; }
+
+    .summary-row, .analysis-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      font-weight: 600;
+      background: var(--cream);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .mini-note, .warn-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      font-size: .9rem;
+      font-weight: 600;
+      border-radius: 14px;
+    }
+
+    .mini-note { color: #166534; background: #ecfdf3; border: 1px solid #bbf7d0; }
+    .warn-note { color: #9a580a; background: #fff6e6; border: 1px solid #fde0ae; }
+
+    .empty-box {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--cream);
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    table { width: 100%; min-width: 1280px; border-collapse: collapse; background: #fff; }
+
+    thead th {
+      padding: 14px 12px;
+      font-size: .76rem;
+      letter-spacing: .5px;
+      text-align: left;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--ink);
+      border-bottom: 3px solid var(--accent);
+    }
+
+    tbody td { padding: 12px; font-size: .92rem; vertical-align: top; border-bottom: 1px solid var(--line); }
+    tbody tr:nth-child(even) td { background: #fdfaf4; }
+    tbody tr:hover td { background: rgba(255, 138, 0, .08); }
+
+    .tag { display: inline-block; padding: 6px 12px; font-size: .8rem; font-weight: 800; white-space: nowrap; border-radius: 999px; }
+    .paid { color: #166534; background: rgba(22, 163, 74, .12); }
+    .unpaid { color: #b91c1c; background: rgba(239, 68, 68, .12); }
+    .partial { color: #9a580a; background: rgba(245, 158, 11, .15); }
+
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 138, 0, .3), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(124, 58, 237, .3), transparent 40%),
+        var(--ink);
+    }
+
+    .gate-card {
+      width: 100%;
+      max-width: 360px;
+      padding: 36px 30px;
+      text-align: center;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+      animation: rise .6s both;
+    }
+
+    .gate-title { margin-bottom: 4px; font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; color: var(--ink); }
+    .gate-sub { font-size: .88rem; color: var(--muted); }
+    .gate-status { margin-top: 18px; font-size: .9rem; color: var(--ink); }
+
+    /* ==========================================================
+       Invoice (printed and PDF document)
+       ========================================================== */
+    .invoice-preview {
+      --navy: #0d2a5c;
+      --navy-dark: #0a1a3d;
+      --sky: #38bdf8;
+      --tint: #f4f8ff;
+      --rule: #d6e2f4;
+      position: relative;
+      overflow: hidden;
+      max-width: 1000px;
+      margin: 0 auto;
+      color: #1c2540;
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 16px;
+      box-shadow: 0 24px 50px -20px rgba(13, 42, 92, .38);
+    }
+
+    .invoice-watermark {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: .06;
+      pointer-events: none;
+    }
+
+    .invoice-watermark img { width: 260px; height: 260px; margin-bottom: 10px; }
+    .invoice-watermark span { font-family: var(--font-head); font-size: 2.6rem; font-weight: 800; letter-spacing: 5px; color: var(--navy); }
+
+    .invoice-header, .invoice-stripe, .invoice-meta-grid, .invoice-body { position: relative; z-index: 1; }
+
+    .invoice-header {
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 24px;
+      padding: 30px 34px;
+      color: #fff;
+      background: linear-gradient(135deg, #12275a, var(--navy-dark));
+    }
+
+    .invoice-header::after {
+      content: '';
+      position: absolute;
+      top: -70px;
+      right: -60px;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, .28), transparent 70%);
+    }
+
+    .invoice-header > div { position: relative; z-index: 1; }
+
+    .inv-brand { display: flex; align-items: center; gap: 16px; }
+    .inv-brand img { flex: none; width: 70px; height: 70px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, .85); box-shadow: 0 8px 20px rgba(0, 0, 0, .3); }
+    .inv-brand h3 { margin-bottom: 4px; font-size: 1.75rem; letter-spacing: .02em; color: #fff; }
+    .inv-brand p { margin: 2px 0; font-size: .9rem; color: rgba(255, 255, 255, .82); }
+
+    .inv-title { text-align: right; }
+
+    .invoice-title-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, .16);
+      border: 1px solid rgba(56, 189, 248, .4);
+      border-radius: 999px;
+    }
+
+    .inv-doc { margin: 10px 0 12px; font-family: var(--font-head); font-size: 1.85rem; font-weight: 800; letter-spacing: .04em; color: #fff; }
+
+    .inv-meta { margin-left: auto; border-collapse: separate; font-size: .88rem; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .18); border-radius: 10px; padding: 6px 14px; }
+    .inv-meta td { padding: 3px 0 3px 18px; text-align: right; }
+    .inv-meta td:first-child { color: rgba(255, 255, 255, .7); }
+    .inv-meta td:last-child { font-weight: 700; color: #fff; }
+
+    .inv-badge { display: inline-block; padding: 2px 12px; font-size: .76rem; font-weight: 800; letter-spacing: .06em; border: 1.5px solid currentColor; border-radius: 999px; }
+    .inv-badge.paid { color: #86efac; background: rgba(34, 197, 94, .18); }
+    .inv-badge.unpaid { color: #fecaca; background: rgba(239, 68, 68, .22); }
+    .inv-badge.partial { color: #fde68a; background: rgba(245, 158, 11, .2); }
+    .inv-badge.mixed { color: #e5e7eb; background: rgba(255, 255, 255, .12); }
+
+    .invoice-stripe { height: 5px; background: linear-gradient(90deg, var(--sky), #0099ff 55%, var(--accent)); }
+
+    .invoice-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px 34px 0;
+    }
+
+    .invoice-meta-item { padding: 12px 16px; background: var(--tint); border: 1px solid var(--rule); border-left: 4px solid var(--sky); border-radius: 10px; }
+    .inv-label { margin-bottom: 4px; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #5b6b9c; }
+    .inv-value { font-size: 1rem; font-weight: 700; color: var(--navy); }
+
+    .invoice-body { padding: 22px 34px 0; }
+
+    .invoice-purpose { margin-bottom: 16px; padding-left: 12px; font-size: .88rem; font-style: italic; color: #4b5877; border-left: 3px solid var(--sky); }
+
+    .invoice-table { width: 100%; min-width: 880px; border-collapse: collapse; font-size: .88rem; page-break-inside: auto; }
+    .invoice-table th { padding: 10px; font-size: .72rem; letter-spacing: .06em; text-align: left; text-transform: uppercase; white-space: nowrap; color: #fff; background: var(--navy); }
+    .invoice-table td { padding: 9px 10px; border-bottom: 1px solid var(--rule); }
+    .invoice-table th:nth-child(n+5), .invoice-table td:nth-child(n+5) { text-align: right; }
+    .invoice-table th:nth-child(1), .invoice-table td:nth-child(1) { width: 46px; text-align: center; }
+    .invoice-table tbody tr:nth-child(even) td { background: var(--tint); }
+    .invoice-table tbody tr:hover td { background: var(--tint); }
+    .invoice-table tfoot td { padding: 11px 10px; font-weight: 800; text-align: right; color: var(--navy); background: #e3edfb; border-top: 2px solid var(--navy); border-bottom: none; }
+    .invoice-table tfoot td:first-child { text-align: left; letter-spacing: .06em; text-transform: uppercase; font-size: .78rem; }
+
+    .invoice-bottom { display: grid; grid-template-columns: 1fr 380px; gap: 28px; align-items: start; margin-top: 22px; }
+    .inv-words { margin-bottom: 14px; padding: 12px 14px; background: var(--tint); border: 1px solid var(--rule); border-left: 4px solid var(--sky); border-radius: 10px; }
+    .inv-words > div:last-child { font-size: .92rem; font-weight: 700; color: var(--navy); }
+    .invoice-notes { font-size: .82rem; line-height: 1.7; color: #4b5877; }
+
+    .invoice-summary { overflow: hidden; border: 1px solid var(--rule); border-radius: 12px; }
+    .invoice-summary-row { display: flex; justify-content: space-between; gap: 10px; padding: 10px 16px; font-size: .9rem; color: #29335c; border-bottom: 1px solid var(--rule); }
+    .invoice-summary-row strong { white-space: nowrap; }
+    .invoice-summary-row.total { font-size: 1.05rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--navy), #123a7a); border-bottom: none; }
+
+    .inv-sign { display: flex; justify-content: flex-end; margin-top: 32px; }
+    .inv-sign-box { width: 240px; text-align: center; }
+    .inv-sign-area { display: flex; align-items: flex-end; justify-content: center; height: 60px; }
+    .inv-sign-img { max-width: 100%; max-height: 58px; object-fit: contain; }
+    .inv-sign-line { padding-top: 6px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #5b6b9c; border-top: 1px solid var(--navy); }
+    .inv-sign-name { font-size: .95rem; font-weight: 700; color: var(--navy); }
+    .inv-sign-shop { font-size: .8rem; color: #5b6b9c; }
+    .inv-sign-stamp { margin-top: 6px; font-size: .74rem; color: #8a94b0; }
+
+    .inv-foot { margin: 26px -34px 0; padding: 13px 34px; font-size: .82rem; text-align: center; color: #cfe0ff; background: var(--navy); }
+
+    @media (max-width: 1100px) {
+      .invoice-header, .invoice-meta-grid, .invoice-bottom { grid-template-columns: 1fr; }
+      .inv-title { text-align: left; }
+      .inv-meta { margin-left: 0; }
+      .inv-meta td { padding: 3px 18px 3px 0; text-align: left; }
+    }
+
+
+    /* ==========================================================
+       App shell: sidebar on desktop, bottom tabs on phones
+       ========================================================== */
+    [hidden] { display: none !important; }
+
+    .badge { display: inline-block; padding: 7px 14px; font-size: .85rem; font-weight: 600; color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 999px; }
+
+    .sidebar {
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 30; display: flex; flex-direction: column; width: 252px;
+      padding: 20px 14px; overflow-x: hidden; overflow-y: auto; color: #fff;
+      background: radial-gradient(circle at 10% 0%, rgba(255,138,0,.28), transparent 45%), var(--ink);
+      transition: width .2s ease, padding .2s ease;
+    }
+    .side-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 0 14px; }
+    .side-brand { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 2px 8px; }
+    .side-brand img { flex: none; width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+    .side-brand h1 { margin: 0; font-size: 1.02rem; color: #fff; }
+    .side-brand p { margin: 0; font-size: .72rem; color: rgba(255,255,255,.55); }
+    .side-toggle {
+      flex: none; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; font: inherit; font-size: 1.15rem; font-weight: 700; line-height: 1;
+      color: #fff; background: rgba(255,255,255,.1); border: 0; border-radius: 10px; cursor: pointer; transition: background .15s;
+    }
+    .side-toggle:hover { background: rgba(255,255,255,.22); transform: none; }
+    .side-label { margin: 16px 12px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: rgba(255,255,255,.42); }
+    .side-nav a, .side-link {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border-radius: 12px;
+      font-size: .94rem; font-weight: 600; color: rgba(255,255,255,.78); transition: background .15s, color .15s;
+    }
+    .side-nav a:hover, .side-link:hover { background: rgba(255,255,255,.09); color: #fff; }
+    .side-nav a.active { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .ni { flex: none; width: 24px; text-align: center; font-size: 1.12rem; }
+    .side-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); }
+
+    .main { min-width: 0; margin-left: 252px; transition: margin-left .2s ease; }
+    .topbar { display: none; }
+    .page { display: grid; gap: 20px; max-width: 1060px; margin: 0 auto; padding: 30px 24px 90px; }
+    .page-head h2 { margin: 0; font-size: 1.9rem; }
+    .page-head p { margin: 2px 0 0; color: var(--muted); font-size: .95rem; }
+    .view { display: grid; gap: 20px; min-width: 0; }
+    .view > * { min-width: 0; }
+    .tabbar { display: none; }
+
+    /* Collapsed menu: icons only */
+    body.side-collapsed .sidebar { width: 76px; padding: 20px 10px; }
+    body.side-collapsed .main { margin-left: 76px; }
+    body.side-collapsed .side-head { flex-direction: column; gap: 10px; }
+    body.side-collapsed .side-brand { padding: 2px 0; }
+    body.side-collapsed .side-brand div,
+    body.side-collapsed .side-label,
+    body.side-collapsed .side-text { display: none; }
+    body.side-collapsed .side-nav a,
+    body.side-collapsed .side-link { justify-content: center; padding: 12px 0; }
+    body.side-collapsed .side-nav { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
+
+    .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .quick-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 92px; padding: 14px 8px;
+      font-weight: 700; color: var(--ink); text-align: center; background: #fff; border: 1.5px solid var(--line);
+      border-radius: 18px; box-shadow: 0 10px 24px -16px rgba(17,19,24,.4); transition: transform .2s, border-color .2s;
+    }
+    .quick-btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .quick-btn > span { font-size: 1.6rem; line-height: 1.2; }
+    .quick-btn small { font-size: .74rem; font-weight: 600; color: var(--muted); }
+    .quick-btn.primary { border-color: transparent; background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .stat { padding: 14px 16px; background: var(--cream); border: 1px solid var(--line); border-radius: 16px; }
+    .stat small { display: block; font-size: .74rem; letter-spacing: .4px; text-transform: uppercase; color: var(--muted); }
+    .stat b { display: block; margin-top: 2px; font-family: var(--font-head); font-size: 1.35rem; color: var(--ink); overflow-wrap: anywhere; }
+    .stat.due b { color: #b91c1c; }
+
+    .card-note { margin: 0 0 14px; font-size: .9rem; color: var(--muted); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+    .form-grid .wide { grid-column: 1 / -1; }
+    .step { margin: 4px 0 12px; font-weight: 700; color: var(--ink); }
+    .step b { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 8px; font-size: .8rem; color: #fff; background: var(--accent); border-radius: 50%; }
+    .preview { margin: 16px 0 0; padding: 12px 14px; font-size: .95rem; background: #fff7ea; border: 1px dashed var(--accent); border-radius: 12px; }
+    .status-line { margin-top: 16px; font-size: .92rem; color: var(--muted); }
+    .status-line b { color: var(--ink); }
+    .danger-zone { border-color: #fecdd3; }
+    #recordsTableBody td:first-child { white-space: nowrap; }
+    .mini-table { min-width: 0; }
+    .mini-table td, .mini-table th { white-space: nowrap; }
+    .card .table-wrap + .empty-box, .card .empty-box { margin-top: 14px; }
+
+    #toast {
+      position: fixed; left: 50%; bottom: 26px; z-index: 9998; max-width: 90%; padding: 12px 20px; font-weight: 600; font-size: .92rem;
+      color: #fff; background: var(--ink); border-radius: 999px; transform: translate(-50%, 90px); opacity: 0;
+      transition: transform .3s, opacity .3s; pointer-events: none;
+    }
+    #toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main, body.side-collapsed .main { margin-left: 0; }
+      .topbar {
+        position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px;
+        color: #fff; background: var(--ink);
+      }
+      .topbar img { width: 32px; height: 32px; border-radius: 50%; }
+      .topbar b { font-family: var(--font-head); font-size: 1.02rem; }
+      .page { gap: 16px; padding: 18px 14px 110px; }
+      .page-head h2 { font-size: 1.5rem; }
+      .tabbar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; gap: 2px;
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line);
+        box-shadow: 0 -10px 26px rgba(17,19,24,.1);
+      }
+      .tabbar a {
+        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 2px; border-radius: 12px;
+        font-size: .7rem; font-weight: 700; color: var(--muted);
+      }
+      .tabbar .ni { font-size: 1.3rem; }
+      .tabbar a.active { color: var(--ink); background: rgba(255,138,0,.18); }
+    }
+    @media (max-width: 520px) {
+      .quick { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Print layout (A4 portrait) */
+    @page { size: A4 portrait; margin: 12mm; }
+
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      html, body { background: #fff !important; font-family: var(--font-body) !important; font-size: 10px; color: #1c2540 !important; }
+      .sidebar, .topbar, .tabbar, .page-head, .hide-while-printing, #toast { display: none !important; }
+      .main { margin-left: 0 !important; }
+      .page { display: block !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+      #invoiceSection { display: block !important; padding: 0 !important; }
+
+      .invoice-preview { max-width: none !important; overflow: visible !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
+      .invoice-watermark { position: fixed !important; inset: 0 !important; opacity: .06 !important; }
+      .invoice-watermark img { width: 170pt !important; height: 170pt !important; }
+      .invoice-watermark span { font-size: 22pt !important; }
+
+      .invoice-header { grid-template-columns: 1.15fr .85fr !important; gap: 12pt !important; padding: 14pt 16pt !important; border-radius: 6pt 6pt 0 0; }
+      .inv-brand img { width: 44pt !important; height: 44pt !important; }
+      .inv-brand h3 { font-size: 17pt !important; }
+      .inv-brand p { font-size: 8.5pt !important; }
+      .inv-doc { margin: 6pt 0 7pt !important; font-size: 15pt !important; }
+      .inv-meta { font-size: 8.5pt !important; padding: 4pt 10pt !important; }
+      .invoice-title-badge { font-size: 7pt !important; }
+
+      .invoice-meta-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8pt !important; margin: 10pt 0 0 !important; }
+      .invoice-meta-item { padding: 6pt 9pt !important; background: #f4f8ff !important; }
+      .inv-label { font-size: 7pt !important; }
+      .inv-value { font-size: 9.5pt !important; }
+
+      .invoice-body { padding: 10pt 0 0 !important; }
+      .invoice-purpose { margin-bottom: 9pt !important; font-size: 8.5pt !important; }
+      .table-wrap { overflow: visible !important; border: none !important; }
+
+      .invoice-table { width: 100% !important; min-width: 0 !important; table-layout: fixed !important; font-size: 8pt !important; }
+      .invoice-table th, .invoice-table td { padding: 4pt 3pt !important; word-break: break-word; border: .6pt solid #c5d3ea !important; }
+      .invoice-table th { font-size: 7pt !important; letter-spacing: .1pt; color: #fff !important; background: #0d2a5c !important; }
+      .invoice-table tbody tr:nth-child(even) td { background: #f4f8ff !important; }
+      .invoice-table tfoot td { background: #e3edfb !important; border-top: 1.5pt solid #0d2a5c !important; }
+      .invoice-table thead { display: table-header-group; }
+      .invoice-table tfoot { display: table-row-group; }
+
+      .invoice-table th:nth-child(1), .invoice-table td:nth-child(1) { width: 5%; text-align: center; }
+      .invoice-table th:nth-child(2), .invoice-table td:nth-child(2) { width: 10%; text-align: left; }
+      .invoice-table th:nth-child(3), .invoice-table td:nth-child(3) { width: 13%; text-align: left; }
+      .invoice-table th:nth-child(4), .invoice-table td:nth-child(4) { width: 10%; text-align: left; }
+      .invoice-table th:nth-child(5), .invoice-table td:nth-child(5),
+      .invoice-table th:nth-child(7), .invoice-table td:nth-child(7),
+      .invoice-table th:nth-child(8), .invoice-table td:nth-child(8),
+      .invoice-table th:nth-child(9), .invoice-table td:nth-child(9),
+      .invoice-table th:nth-child(10), .invoice-table td:nth-child(10) { width: 10.4%; text-align: right; }
+      .invoice-table th:nth-child(6), .invoice-table td:nth-child(6) { width: 7%; text-align: right; }
+
+      .invoice-bottom { grid-template-columns: 1fr 250pt !important; gap: 16pt !important; margin-top: 12pt !important; }
+      .inv-words { padding: 7pt 9pt !important; margin-bottom: 9pt !important; }
+      .inv-words > div:last-child { font-size: 8.5pt !important; }
+      .invoice-notes { font-size: 7.8pt !important; line-height: 1.55 !important; }
+      .invoice-summary-row { padding: 5.5pt 9pt !important; font-size: 8.5pt !important; }
+      .invoice-summary-row.total { font-size: 9.5pt !important; color: #fff !important; background: #0d2a5c !important; }
+
+      .inv-sign { margin-top: 24pt !important; }
+      .inv-sign-area { height: 46pt !important; }
+      .inv-sign-img { max-height: 44pt !important; }
+      .inv-sign-shop { font-size: 7.5pt !important; }
+      .inv-sign-stamp { font-size: 7pt !important; }
+      .inv-foot { margin: 14pt 0 0 !important; padding: 8pt 12pt !important; font-size: 7.5pt !important; border-radius: 0 0 6pt 6pt; }
+
+      button { display: none !important; }
+      tr, td, th { page-break-inside: avoid; }
+      .invoice-bottom, .inv-sign, .invoice-summary { page-break-inside: avoid; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr 1fr; }
+      .invoice-header, .invoice-meta-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .card { padding: 20px 16px; border-radius: 20px; }
+      .button-row button { width: 100%; }
+      .invoice-header h3 { font-size: 1.5rem; }
+      .invoice-header > div { padding: 20px; }
+      .invoice-body { padding: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+
+    /* ==========================================================
+       PROFESSIONAL INVOICE OVERRIDE (fix merged)
+       ========================================================== */
+    .invoice-preview {
+      --navy: #0b2447;
+      --tint: #f6f8fc;
+      --rule: #dfe5ef;
+      border-radius: 6px;
+      box-shadow: 0 10px 30px -12px rgba(11, 36, 71, .25);
+    }
+
+    .invoice-header {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 30px;
+      padding: 28px 34px 22px;
+      color: var(--navy);
+      background: #fff;
+      border-top: 6px solid var(--navy);
+    }
+    .invoice-header::after { display: none; }
+
+    .inv-brand { gap: 14px; }
+    .inv-brand img { width: 64px; height: 64px; border: 1px solid var(--rule); box-shadow: none; }
+    .inv-brand h3 { margin-bottom: 6px; font-size: 1.5rem; letter-spacing: .03em; color: var(--navy); }
+    .inv-brand p { margin: 2px 0; font-size: .85rem; color: #5a6478; }
+
+    .inv-title { text-align: right; }
+    .invoice-title-badge { display: none; }
+    .inv-doc { margin: 0 0 12px; font-size: 1.6rem; letter-spacing: .1em; color: var(--navy); }
+
+    .invoice-preview table.inv-meta {
+      width: auto;
+      min-width: 0;
+      margin-left: auto;
+      padding: 0;
+      background: none;
+      border: 0;
+      border-collapse: collapse;
+    }
+    .invoice-preview .inv-meta td,
+    .invoice-preview .inv-meta tr:nth-child(even) td,
+    .invoice-preview .inv-meta tr:hover td {
+      padding: 6px 0 6px 28px;
+      font-size: .86rem;
+      vertical-align: middle;
+      text-align: right;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--rule);
+      color: #1c2540;
+    }
+    .invoice-preview .inv-meta td:first-child { padding-left: 0; text-align: left; font-weight: 500; color: #6b7690; }
+    .invoice-preview .inv-meta td:last-child { font-weight: 700; color: var(--navy); }
+    .invoice-preview .inv-meta tr:last-child td { border-bottom: 0; }
+
+    .inv-badge { padding: 2px 12px; font-size: .72rem; }
+    .inv-badge.paid    { color: #166534; background: #e8f7ee; }
+    .inv-badge.unpaid  { color: #b91c1c; background: #fdecec; }
+    .inv-badge.partial { color: #9a580a; background: #fff4e0; }
+    .inv-badge.mixed   { color: #475569; background: #eef1f6; }
+
+    .invoice-stripe { height: 2px; background: var(--navy); }
+
+    .invoice-meta-grid { margin-top: 22px; }
+    .invoice-meta-item { background: var(--tint); border-left-color: var(--navy); border-radius: 4px; }
+    .inv-label { color: #6b7690; }
+
+    .invoice-table thead th { border-bottom: 0; }
+    .invoice-table th { background: var(--navy); }
+    .invoice-table td { font-size: .86rem; }
+    .invoice-table tfoot td { background: #eaf0f9; border-top: 2px solid var(--navy); }
+    .invoice-summary { border-radius: 6px; }
+    .invoice-summary-row.total { background: var(--navy); }
+    .inv-words { border-left-color: var(--navy); border-radius: 4px; }
+    .inv-foot { background: var(--navy); color: #d6e2f4; }
+
+    @media (max-width: 760px) {
+      .invoice-header { grid-template-columns: 1fr; padding: 22px 18px; }
+      .inv-title { text-align: left; }
+      .invoice-preview table.inv-meta { margin-left: 0; width: 100%; }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Admin check screen: shown until the admin login is confirmed -->
+  <div id="adminLoginOverlay" class="gate">
+    <div class="gate-card">
+      <div class="gate-title">LAXMAN TELECOM</div>
+      <div class="gate-sub">Settlement Dashboard</div>
+      <div id="adminAuthStatus" class="gate-status">Checking admin login...</div>
+    </div>
+  </div>
+
+  <div id="appRoot" style="display:none;">
+
+  <!-- Desktop sidebar -->
+    <aside class="sidebar">
+      <div class="side-head">
+        <a class="side-brand" href="#/overview" title="Overview">
+          <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+          <div><h1 id="brandName">LAXMAN TELECOM</h1><p>Settlement &amp; Invoice</p></div>
+        </a>
+        <button type="button" class="side-toggle" id="sideToggle" aria-label="Collapse menu" title="Collapse menu">«</button>
+      </div>
+      <nav class="side-nav" aria-label="Main menu">
+        <p class="side-label">Daily work</p>
+        <a href="#/overview" data-view="overview" title="Overview"><span class="ni">🏠</span><span class="side-text">Overview</span></a>
+        <a href="#/add" data-view="add" title="Add Entry"><span class="ni">➕</span><span class="side-text">Add Entry</span></a>
+        <a href="#/records" data-view="records" title="Records"><span class="ni">📋</span><span class="side-text">Records</span></a>
+        <p class="side-label">Billing</p>
+        <a href="#/invoice" data-view="invoice" title="Invoice"><span class="ni">🧾</span><span class="side-text">Invoice</span></a>
+        <a href="#/analysis" data-view="analysis" title="Analysis"><span class="ni">📊</span><span class="side-text">Analysis</span></a>
+        <p class="side-label">Setup</p>
+        <a href="#/profile" data-view="profile" title="Shop Profile"><span class="ni">⚙️</span><span class="side-text">Shop Profile</span></a>
+      </nav>
+      <div class="side-foot">
+        <a href="shop-ledger.html" class="side-link" title="Daily Ledger"><span class="ni">📒</span><span class="side-text">Daily Ledger</span></a>
+        <a href="admin.html" class="side-link" title="Admin Dashboard"><span class="ni">←</span><span class="side-text">Admin Dashboard</span></a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <!-- Phone top bar -->
+      <div class="topbar">
+        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+        <b id="brandNameTop">LAXMAN TELECOM</b>
+      </div>
+
+      <div class="page">
+        <div class="page-head">
+          <h2 id="pageTitle">Overview</h2>
+          <p id="pageSub"></p>
+        </div>
+
+        <!-- ================= OVERVIEW ================= -->
+        <section class="view" id="view-overview" hidden>
+          <div class="quick">
+            <a class="quick-btn primary" href="#/add"><span>➕</span>Add Entry</a>
+            <a class="quick-btn" href="#/records"><span>📋</span>Records<small id="qRecords"></small></a>
+            <a class="quick-btn" href="#/invoice"><span>🧾</span>Invoice<small id="qDue"></small></a>
+            <a class="quick-btn" href="shop-ledger.html"><span>📒</span>Daily Ledger</a>
+          </div>
+
+          <div class="card">
+            <h4>All-time totals</h4>
+            <div class="stats">
+              <div class="stat"><small>Gross recharge</small><b id="grossValue">₹0.00</b></div>
+              <div class="stat"><small>Commission earned</small><b id="commissionValue">₹0.00</b></div>
+              <div class="stat"><small>Payable to supplier</small><b id="payableValue">₹0.00</b></div>
+              <div class="stat"><small>Paid</small><b id="paidValue">₹0.00</b></div>
+              <div class="stat due"><small>Due</small><b id="dueValue">₹0.00</b></div>
+            </div>
+          </div>
+
+          <div class="grid-3 tinted">
+            <div class="card">
+              <h4>Operator-wise Count</h4>
+              <div class="summary-list" id="operatorCountSummary"></div>
+            </div>
+            <div class="card">
+              <h4>Operator-wise Gross</h4>
+              <div class="summary-list" id="operatorGrossSummary"></div>
+            </div>
+            <div class="card">
+              <h4>Operator-wise Commission</h4>
+              <div class="summary-list" id="operatorCommissionSummary"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= ADD ENTRY ================= -->
+        <section class="view" id="view-add" hidden>
+          <div class="card">
+            <p class="step"><b>1</b>Recharge details</p>
+            <div class="form-grid">
+              <div class="form-group"><label for="entryDate">Date</label><input id="entryDate" type="date" /></div>
+              <div class="form-group"><label for="entryMobile">Mobile Number</label><input id="entryMobile" type="text" inputmode="numeric" placeholder="Enter mobile number" /></div>
+              <div class="form-group"><label for="entryOperator">Operator</label>
+                <select id="entryOperator">
+                  <option value="Jio">Jio</option>
+                  <option value="Airtel">Airtel</option>
+                  <option value="BSNL">BSNL</option>
+                  <option value="VI">VI</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group"><label for="entryAmount">Recharge Amount (₹)</label><input id="entryAmount" type="number" min="0" step="any" inputmode="decimal" placeholder="Enter amount" /></div>
+              <div class="form-group"><label for="entryVendor">Supplier</label><input id="entryVendor" type="text" placeholder="Example: Ankit" /></div>
+              <div class="form-group"><label for="entryCommission">Commission %</label><input id="entryCommission" type="number" min="0" max="100" step="any" inputmode="decimal" value="3" placeholder="Enter commission percent" /></div>
+            </div>
+
+            <p class="step" style="margin-top:22px;"><b>2</b>Payment to the supplier</p>
+            <div class="form-grid">
+              <div class="form-group"><label for="entryPaymentStatus">Payment Status</label>
+                <select id="entryPaymentStatus">
+                  <option value="PAID">PAID</option>
+                  <option value="UNPAID">UNPAID</option>
+                  <option value="PARTIAL">PARTIAL</option>
+                </select>
+              </div>
+              <div class="form-group" id="paidAmountGroup" hidden><label for="entryPaidAmount">Paid Amount (₹)</label><input id="entryPaidAmount" type="number" min="0" step="any" inputmode="decimal" value="0" placeholder="Enter paid amount" /></div>
+              <div class="form-group" id="paidDateGroup"><label for="entryPaidDate">Paid Date</label><input id="entryPaidDate" type="date" /></div>
+              <div class="form-group"><label for="entryPaymentMode">Payment Mode</label>
+                <select id="entryPaymentMode">
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Mixed">Mixed</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group wide"><label for="entryPurpose">Description / Work Note</label><input id="entryPurpose" type="text" placeholder="Example: Recharge procured from supplier" /></div>
+              <div class="form-group wide"><label for="entryPaymentNote">Payment Note</label><input id="entryPaymentNote" type="text" placeholder="Example: Paid in full by UPI" /></div>
+            </div>
+
+            <div class="preview" id="entryPreview">Enter the amount to see the calculation.</div>
+            <div class="button-row">
+              <button class="btn-primary" id="addEntryBtn">Add Entry</button>
+              <button class="btn-secondary" id="clearFormBtn" type="button">Clear Form</button>
+            </div>
+            <div class="mini-note">Formula used: Commission Earned = Amount × Commission%. Supplier Payable = Amount − Commission Earned. Due = Payable − Paid Amount.</div>
+          </div>
+
+          <div class="card">
+            <h4>Latest entries</h4>
+            <div id="recentEntries"></div>
+            <p class="card-note" style="margin:12px 0 0;">See everything in <a href="#/records" style="color:var(--accent);font-weight:700;">Records</a>.</p>
+          </div>
+        </section>
+
+        <!-- ================= RECORDS ================= -->
+        <section class="view" id="view-records" hidden>
+          <div class="card">
+            <p class="card-note" id="recordsSummary"></p>
+            <div class="grid-4">
+              <div>
+                <label for="searchInput">Search</label>
+                <input id="searchInput" type="text" placeholder="Search mobile / supplier / note" />
+              </div>
+              <div>
+                <label for="tableOperatorFilter">Operator Filter</label>
+                <select id="tableOperatorFilter">
+                  <option value="All">All Operators</option>
+                  <option value="Jio">Jio</option>
+                  <option value="Airtel">Airtel</option>
+                  <option value="BSNL">BSNL</option>
+                  <option value="VI">VI</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label for="tableFromDate">From Date</label>
+                <input id="tableFromDate" type="date" />
+              </div>
+              <div>
+                <label for="tableToDate">To Date</label>
+                <input id="tableToDate" type="date" />
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn-secondary" id="clearTableFiltersBtn" type="button">Clear Table Filters</button>
+              <button class="btn-alert" id="exportJsonBtn" type="button">Export Backup</button>
+              <button class="btn-secondary" id="importJsonBtn" type="button">Import Backup</button>
+              <input type="file" id="importJsonInput" accept="application/json" style="display:none;" />
+              <button class="btn-danger" id="deleteAllBtn" type="button">Delete All Entries</button>
+            </div>
+            <div style="margin-top:18px;" class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Mobile Number</th>
+                    <th>Operator</th>
+                    <th>Supplier</th>
+                    <th>Amount</th>
+                    <th>Commission %</th>
+                    <th>Commission Earned</th>
+                    <th>Supplier Payable</th>
+                    <th>Paid Amount</th>
+                    <th>Due Amount</th>
+                    <th>Status</th>
+                    <th>Paid Date</th>
+                    <th>Mode</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsTableBody"></tbody>
+              </table>
+            </div>
+            <div id="emptyState" class="empty-box" style="display:none;">No records found. Add recharge entries to start tracking.</div>
+          </div>
+        </section>
+
+        <!-- ================= INVOICE ================= -->
+        <section class="view" id="view-invoice" hidden>
+          <div class="card hide-while-printing">
+            <h4>Invoice filters</h4>
+            <div class="form-grid">
+              <div class="form-group"><label for="reportVendor">Supplier Name</label><input id="reportVendor" type="text" value="Ankit Gupta" placeholder="Enter supplier name for invoice/report" /></div>
+              <div class="form-group"><label for="reportFromDate">From Date</label><input id="reportFromDate" type="date" /></div>
+              <div class="form-group"><label for="reportToDate">To Date</label><input id="reportToDate" type="date" /></div>
+              <div class="form-group"><label for="reportOperator">Operator Filter</label>
+                <select id="reportOperator">
+                  <option value="All">All Operators</option>
+                  <option value="Jio">Jio</option>
+                  <option value="Airtel">Airtel</option>
+                  <option value="BSNL">BSNL</option>
+                  <option value="VI">VI</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group"><label for="reportPaymentStatus">Payment Status</label>
+                <select id="reportPaymentStatus">
+                  <option value="ALL">All Status</option>
+                  <option value="PAID">PAID</option>
+                  <option value="UNPAID">UNPAID</option>
+                  <option value="PARTIAL">PARTIAL</option>
+                </select>
+              </div>
+              <div class="form-group"><label for="reportInvoiceNo">Invoice Number</label><input id="reportInvoiceNo" type="text" placeholder="Auto-filled - edit only if you want a custom number" /></div>
+              <div class="form-group wide"><label for="reportInvoiceStatus">Invoice Status (shown on invoice)</label>
+                <select id="reportInvoiceStatus">
+                  <option value="AUTO">Auto (based on Payment Status filter above)</option>
+                  <option value="PAID">PAID</option>
+                  <option value="UNPAID">UNPAID</option>
+                  <option value="PARTIAL">PARTIAL</option>
+                </select>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn-primary" id="applyReportBtn">Apply Report Filters</button>
+              <button class="btn-alert" id="generateInvoiceBtn">Refresh Invoice Preview</button>
+            </div>
+            <div class="status-line"><b id="reportStatusValue">Ready</b> · <span id="reportStatusLabel">Filtered records will be used for the invoice and WhatsApp message.</span></div>
+            <div class="warn-note">WhatsApp send works as a prefilled message opener. PDF/file attachment still needs to be added manually in WhatsApp.</div>
+          </div>
+
+          <div class="button-row hide-while-printing" style="justify-content:center; margin:0;">
+            <button class="btn-primary" id="printInvoiceBtn">Print / Save as PDF</button>
+            <button class="btn-alert" id="whatsappInvoiceBtn">Save PDF &amp; Send on WhatsApp</button>
+          </div>
+
+          <div id="invoiceSection">
+      <div class="invoice-preview" id="invoicePreview">
+        <div class="invoice-watermark">
+          <img src="laxman-telecom-icon-round.png" alt="">
+          <span>LAXMAN TELECOM</span>
+        </div>
+
+        <!-- Letterhead -->
+        <div class="invoice-header">
+          <div class="inv-brand">
+            <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+            <div>
+              <h3 id="invoiceShopName">LAXMAN TELECOM</h3>
+              <p id="invoiceShopAddress">Puneet Nagar, Ludhiana, Punjab 141008</p>
+              <p><span id="invoiceShopPhone">+91 9041880370</span> | <span id="invoiceShopEmail">laxmantelecom.help@gmail.com</span></p>
+            </div>
+          </div>
+          <div class="inv-title">
+            <span class="invoice-title-badge">Recharge Settlement</span>
+            <h2 class="inv-doc">PURCHASE INVOICE</h2>
+            <table class="inv-meta">
+              <tr><td>Invoice No.</td><td id="invoiceNoText">LTX-RPI-2026-0408</td></tr>
+              <tr><td>Date of Issue</td><td id="invoiceDateIssued">--</td></tr>
+              <tr><td>Statement Period</td><td id="invoiceIssueDate">--</td></tr>
+              <tr><td>Payment Status</td><td><span class="inv-badge paid" id="invoicePaymentStatus">PAID</span></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="invoice-stripe"></div>
+
+        <!-- Supplier details -->
+        <div class="invoice-meta-grid">
+          <div class="invoice-meta-item">
+            <div class="inv-label">Supplier</div>
+            <div class="inv-value" id="invoiceVendor">Ankit Gupta</div>
+          </div>
+          <div class="invoice-meta-item">
+            <div class="inv-label">Operator</div>
+            <div class="inv-value" id="invoiceOperator">All Operators</div>
+          </div>
+          <div class="invoice-meta-item">
+            <div class="inv-label">Paid Details</div>
+            <div class="inv-value" id="invoicePaidDetails">Paid Amount / Due Amount</div>
+          </div>
+        </div>
+
+        <div class="invoice-body">
+          <div class="invoice-purpose" id="invoicePurposeText">Statement Purpose: Settlement of recharge entries procured from supplier on behalf of the shop, with commission earned deducted from the gross recharge value.</div>
+
+          <div class="table-wrap" style="border:none;">
+            <table class="invoice-table">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Date</th>
+                  <th>Mobile Number</th>
+                  <th>Operator</th>
+                  <th>Amount (INR)</th>
+                  <th>Commission %</th>
+                  <th>Commission Earned</th>
+                  <th>Payable</th>
+                  <th>Paid</th>
+                  <th>Due</th>
+                </tr>
+              </thead>
+              <tbody id="invoiceTableBody"></tbody>
+              <tfoot id="invoiceTableFoot">
+                <tr>
+                  <td colspan="4">Total</td>
+                  <td id="ftAmount">0.00</td>
+                  <td></td>
+                  <td id="ftCommission">0.00</td>
+                  <td id="ftPayable">0.00</td>
+                  <td id="ftPaid">0.00</td>
+                  <td id="ftDue">0.00</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div id="invoiceEmptyState" class="empty-box" style="margin-top:14px; display:none;">No invoice data available for the current filters.</div>
+
+          <div class="invoice-bottom">
+            <div>
+              <div class="inv-words">
+                <div class="inv-label">Balance due (in words)</div>
+                <div id="invoiceWords">Zero Rupees Only</div>
+              </div>
+              <div class="inv-label">Notes</div>
+              <div class="invoice-notes" id="invoiceNotes">
+                - Commission earned is automatically calculated from each line entry.<br>
+                - Final settlement amount is shown after deducting commission from total recharge value.<br>
+                - This document is prepared for supplier settlement and internal accounting reference.
+              </div>
+            </div>
+
+            <div class="invoice-summary">
+              <div class="invoice-summary-row"><span>Total Recharge Value</span><strong id="invoiceGross">INR 0.00</strong></div>
+              <div class="invoice-summary-row"><span>Less: Commission Earned</span><strong id="invoiceCommission">- INR 0.00</strong></div>
+              <div class="invoice-summary-row"><span>Amount Payable to Supplier</span><strong id="invoicePayable">INR 0.00</strong></div>
+              <div class="invoice-summary-row"><span>Total Paid Amount</span><strong id="invoicePaid">INR 0.00</strong></div>
+              <div class="invoice-summary-row total"><span>Total Due Amount</span><strong id="invoiceDue">INR 0.00</strong></div>
+            </div>
+          </div>
+
+          <div class="inv-sign">
+            <div class="inv-sign-box">
+              <div class="inv-sign-area">
+                <img class="inv-sign-img" id="invoiceSignImg" alt="Signature">
+              </div>
+              <div class="inv-sign-line">Authorised Signatory</div>
+              <div class="inv-sign-name" id="invoiceSignName">Vikash Kumar Gupta</div>
+              <div class="inv-sign-shop">for LAXMAN TELECOM</div>
+              <div class="inv-sign-stamp" id="invoiceStamp">Generated on --</div>
+            </div>
+          </div>
+
+          <div class="inv-foot">Thank you for your business. This is a computer-generated invoice.</div>
+        </div>
+      </div>
+          </div>
+        </section>
+
+        <!-- ================= ANALYSIS ================= -->
+        <section class="view" id="view-analysis" hidden>
+          <div class="grid-3 tinted">
+            <div class="card">
+              <h4>Commission by Operator</h4>
+              <div class="analysis-grid" id="commissionAnalysis"></div>
+            </div>
+            <div class="card">
+              <h4>Gross Recharge by Operator</h4>
+              <div class="analysis-grid" id="grossAnalysis"></div>
+            </div>
+            <div class="card">
+              <h4>Due by Operator</h4>
+              <div class="analysis-grid" id="dueAnalysis"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SHOP PROFILE ================= -->
+        <section class="view" id="view-profile" hidden>
+          <div class="card">
+            <h4>Shop details shown on invoices</h4>
+            <div class="form-grid">
+              <div class="form-group"><label for="shopName">Shop Name</label><input id="shopName" type="text" value="LAXMAN TELECOM" placeholder="Enter shop name" /></div>
+              <div class="form-group"><label for="shopPhone">Phone</label><input id="shopPhone" type="text" value="+91 9041880370" placeholder="Enter phone" /></div>
+              <div class="form-group wide"><label for="shopAddress">Shop Address</label><input id="shopAddress" type="text" value="Puneet Nagar, Ludhiana, Punjab 141008" placeholder="Enter address" /></div>
+              <div class="form-group"><label for="shopEmail">Email</label><input id="shopEmail" type="text" value="laxmantelecom.help@gmail.com" placeholder="Enter email" /></div>
+              <div class="form-group"><label for="shopSignatory">Authorised Signatory (name on invoice)</label><input id="shopSignatory" type="text" value="Vikash Kumar Gupta" placeholder="Enter signatory name" /></div>
+            </div>
+            <div class="button-row">
+              <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
+            </div>
+          </div>
+
+          <div class="card danger-zone">
+            <h4>Danger zone</h4>
+            <p class="card-note">Reset deletes the shop profile and every recharge entry from the cloud. This cannot be undone. Use "Export Backup" in Records first.</p>
+            <button class="btn-danger" id="resetDashboardBtn">Reset Dashboard</button>
+          </div>
+        </section>
+
+        <!-- ================= MORE (phone menu) ================= -->
+        <section class="view" id="view-more" hidden>
+          <div class="tiles">
+            <a class="quick-btn" href="#/analysis"><span>📊</span>Analysis</a>
+            <a class="quick-btn" href="#/profile"><span>⚙️</span>Shop Profile</a>
+            <a class="quick-btn" href="shop-ledger.html"><span>📒</span>Daily Ledger</a>
+            <a class="quick-btn" href="admin.html"><span>←</span>Admin Dashboard</a>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Phone bottom tabs -->
+    <nav class="tabbar" aria-label="Quick menu">
+      <a href="#/overview" data-view="overview"><span class="ni">🏠</span>Overview</a>
+      <a href="#/add" data-view="add"><span class="ni">➕</span>Add</a>
+      <a href="#/records" data-view="records"><span class="ni">📋</span>Records</a>
+      <a href="#/invoice" data-view="invoice"><span class="ni">🧾</span>Invoice</a>
+      <a href="#/more" data-view="more" data-group="more"><span class="ni">☰</span>More</a>
+    </nav>
+
+    <div id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+
+    function toast(text) {
+      const el = $('toast');
+      el.textContent = text;
+      el.classList.add('show');
+      clearTimeout(toast.t);
+      toast.t = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    /* ==========================================================
+       Navigation: every menu item opens its own page
+       ========================================================== */
+    const VIEW_INFO = {
+      overview: ['Overview', 'Totals across all your recharge entries'],
+      add:      ['Add Entry', 'Record a recharge you bought from a supplier'],
+      records:  ['Records', 'Search, filter and manage every entry'],
+      invoice:  ['Invoice', 'Choose a supplier and period, then print or send it'],
+      analysis: ['Analysis', 'Operator-wise breakdown'],
+      profile:  ['Shop Profile', 'The details printed on every invoice'],
+      more:     ['More', 'Everything else in one place']
+    };
+    const MORE_GROUP = ['more', 'analysis', 'profile'];
+    const OLD_HASHES = { entry: 'add', records: 'records', invoicesection: 'invoice', overview: 'overview', analysis: 'analysis' };
+
+    function currentView() {
+      const raw = location.hash.replace(/^#\/?/, '');
+      if (VIEW_INFO[raw]) return raw;
+      return OLD_HASHES[raw.toLowerCase()] || 'overview';
+    }
+
+    function showView() {
+      const v = currentView();
+      if (location.hash !== '#/' + v) history.replaceState(null, '', '#/' + v);
+
+      document.querySelectorAll('.view').forEach((el) => { el.hidden = el.id !== 'view-' + v; });
+      document.querySelectorAll('[data-view]').forEach((a) => {
+        const on = a.dataset.view === v || (a.dataset.group === 'more' && MORE_GROUP.includes(v));
+        a.classList.toggle('active', on);
+        if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      });
+      $('pageTitle').textContent = VIEW_INFO[v][0];
+      $('pageSub').textContent = VIEW_INFO[v][1];
+      document.title = VIEW_INFO[v][0] + ' | Settlement & Invoice';
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    window.addEventListener('hashchange', showView);
+
+    /* Collapse / expand the side menu (remembered on this device) */
+    (function initSideToggle() {
+      const key = 'settlementSideCollapsed';
+      let saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) { /* storage blocked */ }
+      const apply = (collapsed) => {
+        document.body.classList.toggle('side-collapsed', collapsed);
+        const btn = $('sideToggle');
+        btn.textContent = collapsed ? '»' : '«';
+        btn.title = collapsed ? 'Expand menu' : 'Collapse menu';
+        btn.setAttribute('aria-label', btn.title);
+      };
+      apply(saved === null ? window.innerWidth < 1150 : saved === '1');
+      $('sideToggle').addEventListener('click', () => {
+        const collapsed = !document.body.classList.contains('side-collapsed');
+        apply(collapsed);
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch (err) { /* ignore */ }
+      });
+    })();
+
+
+    const shopName = document.getElementById('shopName');
+    const shopAddress = document.getElementById('shopAddress');
+    const shopPhone = document.getElementById('shopPhone');
+    const shopEmail = document.getElementById('shopEmail');
+    const shopSignatory = document.getElementById('shopSignatory');
+
+    const entryDate = document.getElementById('entryDate');
+    const entryMobile = document.getElementById('entryMobile');
+    const entryOperator = document.getElementById('entryOperator');
+    const entryAmount = document.getElementById('entryAmount');
+    const entryVendor = document.getElementById('entryVendor');
+    const entryCommission = document.getElementById('entryCommission');
+    const entryPaymentStatus = document.getElementById('entryPaymentStatus');
+    const entryPaidAmount = document.getElementById('entryPaidAmount');
+    const entryPaidDate = document.getElementById('entryPaidDate');
+    const entryPaymentMode = document.getElementById('entryPaymentMode');
+    const entryPurpose = document.getElementById('entryPurpose');
+    const entryPaymentNote = document.getElementById('entryPaymentNote');
+
+    const reportVendor = document.getElementById('reportVendor');
+    const reportFromDate = document.getElementById('reportFromDate');
+    const reportToDate = document.getElementById('reportToDate');
+    const reportOperator = document.getElementById('reportOperator');
+    const reportPaymentStatus = document.getElementById('reportPaymentStatus');
+    const reportInvoiceStatus = document.getElementById('reportInvoiceStatus');
+    const reportInvoiceNo = document.getElementById('reportInvoiceNo');
+
+    const searchInput = document.getElementById('searchInput');
+    const tableOperatorFilter = document.getElementById('tableOperatorFilter');
+    const tableFromDate = document.getElementById('tableFromDate');
+    const tableToDate = document.getElementById('tableToDate');
+
+    const recordsTableBody = document.getElementById('recordsTableBody');
+    const emptyState = document.getElementById('emptyState');
+
+    /* Invoice numbers */
+    const INVOICE_COUNTER_KEY = 'telecomInvoiceCounter';
+
+    function generateInvoiceNumber() {
+      let seq = parseInt(localStorage.getItem(INVOICE_COUNTER_KEY) || '0', 10);
+      if (isNaN(seq)) seq = 0;
+      seq += 1;
+      localStorage.setItem(INVOICE_COUNTER_KEY, String(seq));
+      return `LTRPI${String(seq).padStart(4, '0')}`;
+    }
+
+    function ensureInvoiceNumber() {
+      if (!reportInvoiceNo.value.trim()) {
+        reportInvoiceNo.value = generateInvoiceNumber();
+      }
+    }
+
+    function syncInvoiceCounterFromField() {
+      const match = reportInvoiceNo.value.match(/(\d+)\s*$/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num)) {
+          localStorage.setItem(INVOICE_COUNTER_KEY, String(num));
+        }
+      }
+    }
+
+    /* Formatting helpers */
+    function formatMoney(value) {
+      return '₹' + Number(value || 0).toFixed(2);
+    }
+
+    function formatMoneyNoSymbol(value) {
+      return Number(value || 0).toFixed(2);
+    }
+
+    function getTodayIso() {
+      const d = new Date();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return d.getFullYear() + '-' + month + '-' + day;
+    }
+
+    function formatDateDDMMYYYY(isoDate) {
+      if (!isoDate) return '';
+      const [year, month, day] = isoDate.split('-');
+      return `${day}-${month}-${year}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function sanitizeVendorKey(vendorName) {
+      return (vendorName || 'vendor')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'vendor';
+    }
+
+    /* Cloud data (Firebase Realtime Database) */
+    const FIREBASE_DATA_PATH = 'telecomSettlement';
+    let cachedRecords = [];
+    let cachedProfile = {};
+
+    function getRecords() {
+      return cachedRecords;
+    }
+
+    function updateProfileTitle() {
+      const name = shopName.value.trim() || 'LAXMAN TELECOM';
+      document.getElementById('brandName').textContent = name;
+      document.getElementById('brandNameTop').textContent = name;
+    }
+
+    function applyProfileToForm(profile) {
+      shopName.value = profile.shopName || 'LAXMAN TELECOM';
+      shopAddress.value = profile.shopAddress || '';
+      shopPhone.value = profile.shopPhone || '';
+      shopEmail.value = profile.shopEmail || '';
+      shopSignatory.value = profile.shopSignatory || 'Vikash Kumar Gupta';
+      updateProfileTitle();
+    }
+
+    function saveProfile() {
+      const profile = {
+        shopName: shopName.value.trim(),
+        shopAddress: shopAddress.value.trim(),
+        shopPhone: shopPhone.value.trim(),
+        shopEmail: shopEmail.value.trim(),
+        shopSignatory: shopSignatory.value.trim()
+      };
+      db.ref(FIREBASE_DATA_PATH + '/profile').set(profile)
+        .then(() => alert('Profile saved to your account (synced to the cloud).'))
+        .catch((err) => alert('Could not save profile: ' + err.message));
+    }
+
+    function startFirebaseSync() {
+      // The legacy migration is intentionally NOT run on page load.
+      db.ref(FIREBASE_DATA_PATH + '/vendorView').on('value', (snap) => {
+        const val = snap.val() || {};
+        const flat = [];
+        Object.keys(val).forEach((vendorKey) => {
+          const vendorRecords = val[vendorKey] || {};
+          Object.keys(vendorRecords).forEach((id) => {
+            flat.push({ id, ...vendorRecords[id] });
+          });
+        });
+        cachedRecords = flat.sort((a, b) => (b.id > a.id ? 1 : -1));
+        renderAll();
+      });
+
+      db.ref(FIREBASE_DATA_PATH + '/profile').on('value', (snap) => {
+        cachedProfile = snap.val() || {};
+        applyProfileToForm(cachedProfile);
+        refreshInvoicePreview();
+      });
+    }
+
+    /** Manual recovery tool: run from the browser console only. */
+    function migrateLegacyRecordsIfNeeded() {
+      db.ref(FIREBASE_DATA_PATH + '/records').once('value').then((legacySnap) => {
+        const legacyVal = legacySnap.val();
+        if (!legacyVal) return;
+        db.ref(FIREBASE_DATA_PATH + '/vendorView').once('value').then((vendorSnap) => {
+          const vendorVal = vendorSnap.val() || {};
+          const existingIds = new Set();
+          Object.keys(vendorVal).forEach((vk) => {
+            Object.keys(vendorVal[vk] || {}).forEach((id) => existingIds.add(id));
+          });
+          const updates = {};
+          Object.keys(legacyVal).forEach((id) => {
+            if (existingIds.has(id)) return;
+            const rec = legacyVal[id];
+            updates[FIREBASE_DATA_PATH + '/vendorView/' + sanitizeVendorKey(rec.vendor) + '/' + id] = rec;
+          });
+          if (Object.keys(updates).length) {
+            db.ref().update(updates);
+          }
+        });
+      });
+    }
+
+    /* Entry form */
+    function clearForm() {
+      entryDate.value = getTodayIso();
+      entryMobile.value = '';
+      entryOperator.value = 'Jio';
+      entryAmount.value = '';
+      entryVendor.value = reportVendor.value.trim() || 'Ankit Gupta';
+      entryCommission.value = '3';
+      entryPaymentStatus.value = 'PAID';
+      entryPaidAmount.value = '0';
+      entryPaidDate.value = '';
+      entryPaymentMode.value = 'Cash';
+      entryPurpose.value = 'Recharge procured from supplier';
+      entryPaymentNote.value = '';
+      syncPaymentFields();
+    }
+
+    /** Paid Amount only matters for PARTIAL; Paid Date is not needed for UNPAID. */
+    function syncPaymentFields() {
+      const status = entryPaymentStatus.value;
+      document.getElementById('paidAmountGroup').hidden = status !== 'PARTIAL';
+      document.getElementById('paidDateGroup').hidden = status === 'UNPAID';
+      updateEntryPreview();
+    }
+
+    function updateEntryPreview() {
+      const box = document.getElementById('entryPreview');
+      const amount = parseFloat(entryAmount.value);
+      const percent = parseFloat(entryCommission.value);
+      if (isNaN(amount) || amount <= 0 || isNaN(percent) || percent < 0) {
+        box.textContent = 'Enter the amount to see the calculation.';
+        return;
+      }
+      const pre = calculateLine(amount, percent, 0);
+      const paid = normalizePaidAmount(entryPaymentStatus.value, pre.payable, parseFloat(entryPaidAmount.value || '0'));
+      const line = calculateLine(amount, percent, paid);
+      box.innerHTML = `Commission <b>${formatMoney(line.commissionEarned)}</b> · Payable to supplier <b>${formatMoney(line.payable)}</b> · ` +
+        `Paid <b>${formatMoney(paid)}</b> · Due <b>${formatMoney(line.due)}</b>`;
+    }
+
+    function calculateLine(amount, commissionPercent, paidAmount) {
+      const commissionEarned = Number(amount) * Number(commissionPercent) / 100;
+      const payable = Number(amount) - commissionEarned;
+      const due = Math.max(payable - Number(paidAmount || 0), 0);
+      return { commissionEarned, payable, due };
+    }
+
+    function normalizePaidAmount(paymentStatus, payable, paidAmountInput) {
+      const paid = Number(paidAmountInput || 0);
+      if (paymentStatus === 'PAID') return Number(payable.toFixed(2));
+      if (paymentStatus === 'UNPAID') return 0;
+      return Math.min(Math.max(paid, 0), payable);
+    }
+
+    function addEntry() {
+      const date = entryDate.value;
+      const mobile = entryMobile.value.trim();
+      const operator = entryOperator.value;
+      const amount = parseFloat(entryAmount.value);
+      const vendor = entryVendor.value.trim();
+      const commissionPercent = parseFloat(entryCommission.value);
+      const paymentStatus = entryPaymentStatus.value;
+      const paidDate = entryPaidDate.value;
+      const paymentMode = entryPaymentMode.value;
+      const purpose = entryPurpose.value.trim();
+      const paymentNote = entryPaymentNote.value.trim();
+
+      if (!date || !mobile || !vendor || !purpose || isNaN(amount) || amount <= 0 || isNaN(commissionPercent) || commissionPercent < 0) {
+        alert('Please fill all required fields with valid values.');
+        return;
+      }
+
+      const pre = calculateLine(amount, commissionPercent, 0);
+      const paidAmount = normalizePaidAmount(paymentStatus, pre.payable, parseFloat(entryPaidAmount.value || '0'));
+      const line = calculateLine(amount, commissionPercent, paidAmount);
+
+      const id = Date.now().toString();
+      const recordData = {
+        date,
+        mobile,
+        operator,
+        amount,
+        vendor,
+        commissionPercent,
+        commissionEarned: Number(line.commissionEarned.toFixed(2)),
+        payable: Number(line.payable.toFixed(2)),
+        paidAmount: Number(paidAmount.toFixed(2)),
+        dueAmount: Number(line.due.toFixed(2)),
+        paymentStatus,
+        paidDate,
+        paymentMode,
+        purpose,
+        paymentNote
+      };
+
+      db.ref(FIREBASE_DATA_PATH + '/vendorView/' + sanitizeVendorKey(vendor) + '/' + id).set(recordData)
+        .catch((err) => alert('Could not save this entry to the cloud: ' + err.message));
+
+      sendEntryToWhatsApp({ mobile, operator, amount });
+      clearForm();
+      toast('Entry added');
+    }
+
+    function sendEntryToWhatsApp(entry) {
+      const NOTIFY_NUMBER = '919056548781';
+      const text = `Mobile Number: ${entry.mobile}\nOperator: ${entry.operator}\nRecharge Amount: ₹${entry.amount}`;
+      window.open(`https://wa.me/${NOTIFY_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    /* Filters */
+    function getFilteredTableRecords() {
+      const search = searchInput.value.trim().toLowerCase();
+      const operator = tableOperatorFilter.value;
+      const fromDate = tableFromDate.value;
+      const toDate = tableToDate.value;
+
+      return getRecords().filter(record => {
+        const hay = [
+          record.mobile,
+          record.vendor,
+          record.purpose,
+          record.paymentNote || '',
+          record.paymentMode || ''
+        ].join(' ').toLowerCase();
+        const matchesSearch = !search || hay.includes(search);
+        const matchesOperator = operator === 'All' || record.operator === operator;
+        const matchesFrom = !fromDate || record.date >= fromDate;
+        const matchesTo = !toDate || record.date <= toDate;
+        return matchesSearch && matchesOperator && matchesFrom && matchesTo;
+      });
+    }
+
+    function getReportRecords() {
+      const vendorText = reportVendor.value.trim();
+      const vendorKey = vendorText ? sanitizeVendorKey(vendorText) : '';
+      const fromDate = reportFromDate.value;
+      const toDate = reportToDate.value;
+      const operator = reportOperator.value;
+      const paymentStatus = reportPaymentStatus.value;
+
+      return getRecords()
+        .filter(record => {
+          const status = String(record.paymentStatus || 'UNPAID').toUpperCase();
+          const matchesVendor = !vendorKey || sanitizeVendorKey(record.vendor) === vendorKey;
+          const matchesFrom = !fromDate || record.date >= fromDate;
+          const matchesTo = !toDate || record.date <= toDate;
+          const matchesOperator = operator === 'All' || record.operator === operator;
+          const matchesStatus = paymentStatus === 'ALL' || status === paymentStatus;
+          return matchesVendor && matchesFrom && matchesTo && matchesOperator && matchesStatus;
+        })
+        .sort((a, b) => (a.date === b.date ? (a.id > b.id ? 1 : -1) : (a.date > b.date ? 1 : -1)));
+    }
+
+    /* Rendering */
+    function getStatusTag(status) {
+      if (status === 'PAID') return '<span class="tag paid">PAID</span>';
+      if (status === 'PARTIAL') return '<span class="tag partial">PARTIAL</span>';
+      return '<span class="tag unpaid">UNPAID</span>';
+    }
+
+    function renderTable() {
+      const records = getFilteredTableRecords();
+      const shown = calculateTotals(records);
+      document.getElementById('recordsSummary').textContent =
+        `${records.length} of ${getRecords().length} entries shown · Commission ${formatMoney(shown.commission)} · Due ${formatMoney(shown.due)}`;
+      recordsTableBody.innerHTML = '';
+      if (!records.length) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      records.forEach(record => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${record.date}</td>
+          <td>${escapeHtml(record.mobile)}</td>
+          <td>${escapeHtml(record.operator)}</td>
+          <td>${escapeHtml(record.vendor)}</td>
+          <td>${formatMoney(record.amount)}</td>
+          <td>${Number(record.commissionPercent).toFixed(2)}%</td>
+          <td>${formatMoney(record.commissionEarned)}</td>
+          <td>${formatMoney(record.payable)}</td>
+          <td>${formatMoney(record.paidAmount)}</td>
+          <td>${formatMoney(record.dueAmount)}</td>
+          <td>${getStatusTag(record.paymentStatus)}</td>
+          <td>${record.paidDate || '-'}</td>
+          <td>${record.paymentMode || '-'}</td>
+          <td>${escapeHtml(record.purpose)}${record.paymentNote ? '<br><span style="color:#6b7280;font-weight:700;">Note: ' + escapeHtml(record.paymentNote) + '</span>' : ''}</td>
+          <td><button class="btn-danger btn-small" onclick="deleteEntry('${record.id}')">Delete</button></td>
+        `;
+        recordsTableBody.appendChild(tr);
+      });
+    }
+
+    function calculateTotals(records) {
+      let gross = 0;
+      let commission = 0;
+      let payable = 0;
+      let paid = 0;
+      let due = 0;
+      records.forEach(record => {
+        gross += Number(record.amount);
+        commission += Number(record.commissionEarned);
+        payable += Number(record.payable);
+        paid += Number(record.paidAmount || 0);
+        due += Number(record.dueAmount || 0);
+      });
+      return { gross, commission, payable, paid, due };
+    }
+
+    function renderOverview() {
+      const totals = calculateTotals(getRecords());
+      document.getElementById('grossValue').textContent = formatMoney(totals.gross);
+      document.getElementById('commissionValue').textContent = formatMoney(totals.commission);
+      document.getElementById('payableValue').textContent = formatMoney(totals.payable);
+      document.getElementById('paidValue').textContent = formatMoney(totals.paid);
+      document.getElementById('dueValue').textContent = formatMoney(totals.due);
+      document.getElementById('qRecords').textContent = getRecords().length + ' entries';
+      document.getElementById('qDue').textContent = totals.due > 0 ? formatMoney(totals.due) + ' due' : 'All paid';
+    }
+
+    function renderRecent() {
+      const box = document.getElementById('recentEntries');
+      const list = getRecords().slice(0, 5);
+      if (!list.length) {
+        box.innerHTML = '<div class="empty-box">No entries yet.</div>';
+        return;
+      }
+      box.innerHTML = '<div class="table-wrap"><table class="mini-table"><thead><tr>' +
+        '<th>Date</th><th>Mobile</th><th>Operator</th><th>Supplier</th><th>Amount</th><th>Status</th></tr></thead><tbody>' +
+        list.map((r) => `<tr><td>${formatDateDDMMYYYY(r.date)}</td><td>${escapeHtml(r.mobile)}</td><td>${escapeHtml(r.operator)}</td>` +
+          `<td>${escapeHtml(r.vendor)}</td><td>${formatMoney(r.amount)}</td><td>${getStatusTag(r.paymentStatus)}</td></tr>`).join('') +
+        '</tbody></table></div>';
+    }
+
+    function buildOperatorStats(records) {
+      const stats = {};
+      records.forEach(record => {
+        if (!stats[record.operator]) {
+          stats[record.operator] = { count: 0, gross: 0, commission: 0, due: 0 };
+        }
+        stats[record.operator].count += 1;
+        stats[record.operator].gross += Number(record.amount);
+        stats[record.operator].commission += Number(record.commissionEarned);
+        stats[record.operator].due += Number(record.dueAmount || 0);
+      });
+      return stats;
+    }
+
+    function renderSummaryBoxes() {
+      const stats = buildOperatorStats(getRecords());
+      const countBox = document.getElementById('operatorCountSummary');
+      const grossBox = document.getElementById('operatorGrossSummary');
+      const commissionBox = document.getElementById('operatorCommissionSummary');
+      countBox.innerHTML = '';
+      grossBox.innerHTML = '';
+      commissionBox.innerHTML = '';
+
+      const keys = Object.keys(stats);
+      if (!keys.length) {
+        countBox.innerHTML = '<div class="empty-box">No operator records yet.</div>';
+        grossBox.innerHTML = '<div class="empty-box">No operator records yet.</div>';
+        commissionBox.innerHTML = '<div class="empty-box">No operator records yet.</div>';
+        return;
+      }
+
+      keys.sort().forEach(operator => {
+        const s = stats[operator];
+        countBox.innerHTML += `<div class="summary-row"><span>${escapeHtml(operator)}</span><strong>${s.count}</strong></div>`;
+        grossBox.innerHTML += `<div class="summary-row"><span>${escapeHtml(operator)}</span><strong>${formatMoney(s.gross)}</strong></div>`;
+        commissionBox.innerHTML += `<div class="summary-row"><span>${escapeHtml(operator)}</span><strong>${formatMoney(s.commission)}</strong></div>`;
+      });
+    }
+
+    function renderAnalysis() {
+      const stats = buildOperatorStats(getRecords());
+      const items = Object.entries(stats);
+      const panels = [
+        { box: document.getElementById('commissionAnalysis'), field: 'commission' },
+        { box: document.getElementById('grossAnalysis'), field: 'gross' },
+        { box: document.getElementById('dueAnalysis'), field: 'due' }
+      ];
+
+      panels.forEach(({ box, field }) => {
+        box.innerHTML = '';
+        if (!items.length) {
+          box.innerHTML = '<div class="empty-box">No data yet.</div>';
+          return;
+        }
+        [...items].sort((a, b) => b[1][field] - a[1][field]).forEach(([operator, stat]) => {
+          const row = document.createElement('div');
+          row.className = 'analysis-item';
+          row.innerHTML = `<span>${escapeHtml(operator)}</span><strong>${formatMoney(stat[field])}</strong>`;
+          box.appendChild(row);
+        });
+      });
+    }
+
+    function getPeriodText() {
+      const from = reportFromDate.value ? formatDateDDMMYYYY(reportFromDate.value) : '';
+      const to = reportToDate.value ? formatDateDDMMYYYY(reportToDate.value) : '';
+      if (from && to) return `${from} to ${to}`;
+      if (from) return `From ${from}`;
+      if (to) return `Up to ${to}`;
+      return 'All dates';
+    }
+
+    function formatIndiaDate(date) {
+      return new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' })
+        .format(date).replaceAll('/', '-');
+    }
+
+    function formatIndiaTime(date) {
+      return new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true })
+        .format(date).replace(/\u202f/g, ' ');
+    }
+
+    function stampInvoice() {
+      const now = new Date();
+      document.getElementById('invoiceDateIssued').textContent = formatIndiaDate(now);
+      document.getElementById('invoiceStamp').textContent = 'Generated on ' + formatIndiaDate(now) + ', ' + formatIndiaTime(now);
+    }
+
+    function amountInWords(value) {
+      const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
+        'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+      const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+      const twoDigits = (n) => n < 20 ? ones[n] : tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+      const threeDigits = (n) => {
+        const hundreds = Math.floor(n / 100);
+        const rest = n % 100;
+        return (hundreds ? ones[hundreds] + ' Hundred' + (rest ? ' ' : '') : '') + (rest ? twoDigits(rest) : '');
+      };
+
+      const paiseTotal = Math.round(Number(value || 0) * 100);
+      const rupees = Math.floor(paiseTotal / 100);
+      const paise = paiseTotal % 100;
+      if (rupees === 0 && paise === 0) return 'Zero Rupees Only';
+
+      const crore = Math.floor(rupees / 10000000);
+      const lakh = Math.floor((rupees % 10000000) / 100000);
+      const thousand = Math.floor((rupees % 100000) / 1000);
+      const rest = rupees % 1000;
+
+      const parts = [];
+      if (crore) parts.push(threeDigits(crore) + ' Crore');
+      if (lakh) parts.push(twoDigits(lakh) + ' Lakh');
+      if (thousand) parts.push(twoDigits(thousand) + ' Thousand');
+      if (rest) parts.push(threeDigits(rest));
+
+      let text = rupees ? parts.join(' ') + ' Rupees' : '';
+      if (paise) text += (rupees ? ' and ' : '') + twoDigits(paise) + ' Paise';
+      return text + ' Only';
+    }
+
+    function refreshInvoicePreview() {
+      const records = getReportRecords();
+      const tableBody = document.getElementById('invoiceTableBody');
+      const invoiceEmptyState = document.getElementById('invoiceEmptyState');
+      const totals = calculateTotals(records);
+      const operatorText = reportOperator.value === 'All' ? 'All Operators' : reportOperator.value;
+      const vendorName = reportVendor.value.trim() || 'Vendor';
+      const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
+      const paymentStatusText = reportInvoiceStatus.value !== 'AUTO'
+        ? reportInvoiceStatus.value
+        : (reportPaymentStatus.value === 'ALL' ? 'MIXED' : reportPaymentStatus.value);
+
+      document.getElementById('invoiceShopName').textContent = shopName.value.trim() || 'LAXMAN TELECOM';
+      document.getElementById('invoiceShopAddress').textContent = shopAddress.value.trim() || '-';
+      document.getElementById('invoiceShopPhone').textContent = shopPhone.value.trim() || '-';
+      document.getElementById('invoiceShopEmail').textContent = shopEmail.value.trim() || '-';
+      document.getElementById('invoiceVendor').textContent = vendorName;
+      document.getElementById('invoiceIssueDate').textContent = getPeriodText();
+      document.getElementById('invoiceOperator').textContent = operatorText;
+      document.getElementById('invoicePaidDetails').textContent = `Paid: INR ${formatMoneyNoSymbol(totals.paid)} | Due: INR ${formatMoneyNoSymbol(totals.due)}`;
+      document.getElementById('invoiceNoText').textContent = invoiceNo;
+      const statusBadge = document.getElementById('invoicePaymentStatus');
+      statusBadge.textContent = paymentStatusText;
+      statusBadge.className = 'inv-badge ' + paymentStatusText.toLowerCase();
+      stampInvoice();
+      document.getElementById('invoiceSignName').textContent = shopSignatory.value.trim() || 'Vikash Kumar Gupta';
+      document.getElementById('invoicePurposeText').textContent =
+        `Statement Purpose: Settlement of ${operatorText.toLowerCase()} recharge entries procured from ${vendorName} on behalf of ${shopName.value.trim() || 'the shop'}, with commission earned deducted from the gross recharge value.`;
+
+      tableBody.innerHTML = '';
+      if (!records.length) {
+        invoiceEmptyState.style.display = 'block';
+      } else {
+        invoiceEmptyState.style.display = 'none';
+        records.forEach((record, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${formatDateDDMMYYYY(record.date)}</td>
+            <td>${escapeHtml(record.mobile)}</td>
+            <td>${escapeHtml(record.operator)}</td>
+            <td>${formatMoneyNoSymbol(record.amount)}</td>
+            <td>${Number(record.commissionPercent).toFixed(2)}%</td>
+            <td>${formatMoneyNoSymbol(record.commissionEarned)}</td>
+            <td>${formatMoneyNoSymbol(record.payable)}</td>
+            <td>${formatMoneyNoSymbol(record.paidAmount)}</td>
+            <td>${formatMoneyNoSymbol(record.dueAmount)}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+
+      document.getElementById('invoiceGross').textContent = 'INR ' + formatMoneyNoSymbol(totals.gross);
+      document.getElementById('invoiceCommission').textContent = '- INR ' + formatMoneyNoSymbol(totals.commission);
+      document.getElementById('invoicePayable').textContent = 'INR ' + formatMoneyNoSymbol(totals.payable);
+      document.getElementById('invoicePaid').textContent = 'INR ' + formatMoneyNoSymbol(totals.paid);
+      document.getElementById('invoiceDue').textContent = 'INR ' + formatMoneyNoSymbol(totals.due);
+
+      document.getElementById('ftAmount').textContent = formatMoneyNoSymbol(totals.gross);
+      document.getElementById('ftCommission').textContent = formatMoneyNoSymbol(totals.commission);
+      document.getElementById('ftPayable').textContent = formatMoneyNoSymbol(totals.payable);
+      document.getElementById('ftPaid').textContent = formatMoneyNoSymbol(totals.paid);
+      document.getElementById('ftDue').textContent = formatMoneyNoSymbol(totals.due);
+      document.getElementById('invoiceTableFoot').style.display = records.length ? '' : 'none';
+      document.getElementById('invoiceWords').textContent = amountInWords(totals.due);
+
+      document.getElementById('invoiceNotes').innerHTML = `
+        - Commission earned is automatically calculated from each line entry.<br>
+        - Final settlement amount is shown after deducting commission from total recharge value.<br>
+        - Paid and due details are based on the paid amount filled in each entry.<br>
+        - Payment status shown here: ${paymentStatusText}.<br>
+        - This document is prepared for supplier settlement and internal accounting reference.
+      `;
+
+      document.getElementById('reportStatusValue').textContent = records.length ? `${records.length} lines` : 'No Data';
+      document.getElementById('reportStatusLabel').textContent = records.length
+        ? `Invoice currently includes ${records.length} filtered entries for ${vendorName}.`
+        : 'No records match the current report filters.';
+    }
+
+    function renderAll() {
+      renderRecent();
+      renderTable();
+      renderOverview();
+      renderSummaryBoxes();
+      renderAnalysis();
+      refreshInvoicePreview();
+    }
+
+    /* Backup: export and import */
+    function exportJson() {
+      const data = { profile: cachedProfile, records: getRecords() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'telecom-settlement-backup.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importJson(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          const importedRecords = Array.isArray(data.records) ? data.records : [];
+          const importedProfile = data.profile && typeof data.profile === 'object' ? data.profile : null;
+
+          if (!importedRecords.length && !importedProfile) {
+            alert('This backup file has no records or profile data.');
+            return;
+          }
+
+          const existingIds = new Set(getRecords().map(r => r.id));
+          const updates = {};
+          let addedCount = 0;
+          importedRecords.forEach((r) => {
+            if (!r.id || existingIds.has(r.id)) return;
+            const { id, ...rest } = r;
+            updates[FIREBASE_DATA_PATH + '/vendorView/' + sanitizeVendorKey(rest.vendor) + '/' + id] = rest;
+            addedCount += 1;
+          });
+
+          if (importedProfile) {
+            updates[FIREBASE_DATA_PATH + '/profile'] = importedProfile;
+          }
+
+          const writePromise = Object.keys(updates).length ? db.ref().update(updates) : Promise.resolve();
+          writePromise
+            .then(() => alert(`Import complete. ${addedCount} record(s) merged into your cloud data.`))
+            .catch((err) => alert('Could not import this backup: ' + err.message));
+        } catch (err) {
+          alert('Could not read this backup file. Please make sure it is a valid exported JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /* WhatsApp message and PDF */
+    function buildWhatsAppText() {
+      const vendorName = reportVendor.value.trim() || 'Vendor';
+      const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
+      const period = getPeriodText();
+
+      const shopNumberDigits = (shopPhone.value || '').replace(/[^0-9]/g, '');
+      const confirmBaseUrl = shopNumberDigits ? `https://wa.me/${shopNumberDigits}` : 'https://wa.me/';
+      const okLink = `${confirmBaseUrl}?text=${encodeURIComponent(`Invoice ${invoiceNo} - Confirmed, everything is correct.`)}`;
+      const wrongLink = `${confirmBaseUrl}?text=${encodeURIComponent(`Invoice ${invoiceNo} - There is a mismatch, please check.`)}`;
+
+      return `Hi ${vendorName}, your recharge settlement invoice ${invoiceNo} (${period}) is ready. Download to view your invoice.\n\n` +
+        `Kindly verify the details and tap the relevant option below:\n\n` +
+        `✅ Correct - No Issue: ${okLink}\n` +
+        `❌ Incorrect - There's a Mismatch: ${wrongLink}`;
+    }
+
+    function openWhatsAppMessage() {
+      window.open('https://wa.me/?text=' + encodeURIComponent(buildWhatsAppText()), '_blank');
+    }
+
+    async function generateInvoicePdfBlob() {
+      const node = document.getElementById('invoicePreview');
+      const canvas = await html2canvas(node, { scale: 1.5, useCORS: true, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+
+      const pageWidthPt = 595.28;
+      const pageHeightPt = (canvas.height * pageWidthPt) / canvas.width;
+
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'pt',
+        format: [pageWidthPt, pageHeightPt],
+        compress: true
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidthPt, pageHeightPt);
+      return pdf.output('blob');
+    }
+
+    async function sendInvoiceOnWhatsApp() {
+      const whatsappBtn = document.getElementById('whatsappInvoiceBtn');
+      const originalLabel = whatsappBtn.textContent;
+      whatsappBtn.disabled = true;
+      whatsappBtn.textContent = 'Preparing PDF...';
+
+      try {
+        const invoiceNo = reportInvoiceNo.value.trim() || 'LTX-RPI-DEMO';
+        const fileName = `Invoice-${invoiceNo}.pdf`;
+        const text = buildWhatsAppText();
+        const blob = await generateInvoicePdfBlob();
+        const file = new File([blob], fileName, { type: 'application/pdf' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: fileName, text: text });
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+
+          const reason = window.location.protocol === 'file:'
+            ? "This page is open directly from your computer (file://), so the browser's Share feature does not work here. It only works on a site hosted over https://."
+            : 'This browser or device cannot attach the file to WhatsApp directly. This is a WhatsApp or browser limitation.';
+          alert(`${reason}\n\nThe invoice PDF has been downloaded. WhatsApp will open now. Attach the PDF and press Send.`);
+          openWhatsAppMessage();
+        }
+      } catch (err) {
+        if (!err || err.name !== 'AbortError') {
+          alert('Something went wrong while preparing the PDF. Please use the Print / Save as PDF button instead.');
+        }
+      } finally {
+        whatsappBtn.disabled = false;
+        whatsappBtn.textContent = originalLabel;
+      }
+    }
+
+    /* Delete */
+    window.deleteEntry = function (id) {
+      const record = cachedRecords.find(r => r.id === id);
+      if (!record) return;
+      if (!confirm('Delete this entry (' + record.mobile + ', ' + formatMoney(record.amount) + ')? This cannot be undone.')) return;
+      const vendorKey = sanitizeVendorKey(record.vendor);
+      db.ref(FIREBASE_DATA_PATH + '/vendorView/' + vendorKey + '/' + id).remove()
+        .catch((err) => alert('Could not delete this entry: ' + err.message));
+      db.ref(FIREBASE_DATA_PATH + '/records/' + id).remove().catch(() => {});
+    };
+
+    /* Event listeners */
+    document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+    document.getElementById('resetDashboardBtn').addEventListener('click', () => {
+      if (!confirm('Reset profile and all dashboard data? This deletes your cloud data permanently.')) return;
+      db.ref(FIREBASE_DATA_PATH).remove()
+        .then(() => location.reload())
+        .catch((err) => alert('Could not reset: ' + err.message));
+    });
+
+    document.getElementById('addEntryBtn').addEventListener('click', addEntry);
+    document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+    document.getElementById('applyReportBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); });
+    document.getElementById('generateInvoiceBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); });
+    document.getElementById('printInvoiceBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); window.print(); });
+    document.getElementById('whatsappInvoiceBtn').addEventListener('click', () => { ensureInvoiceNumber(); refreshInvoicePreview(); sendInvoiceOnWhatsApp(); });
+
+    document.getElementById('exportJsonBtn').addEventListener('click', exportJson);
+    document.getElementById('importJsonBtn').addEventListener('click', () => {
+      document.getElementById('importJsonInput').click();
+    });
+    document.getElementById('importJsonInput').addEventListener('change', (event) => {
+      importJson(event.target.files[0]);
+      event.target.value = '';
+    });
+    document.getElementById('deleteAllBtn').addEventListener('click', () => {
+      if (!confirm('Delete all records? This deletes your cloud data permanently.')) return;
+      db.ref(FIREBASE_DATA_PATH + '/vendorView').remove()
+        .catch((err) => alert('Could not delete records: ' + err.message));
+    });
+
+    document.getElementById('clearTableFiltersBtn').addEventListener('click', () => {
+      searchInput.value = '';
+      tableOperatorFilter.value = 'All';
+      tableFromDate.value = '';
+      tableToDate.value = '';
+      renderTable();
+    });
+
+    searchInput.addEventListener('input', renderTable);
+    tableOperatorFilter.addEventListener('change', renderTable);
+    tableFromDate.addEventListener('change', renderTable);
+    tableToDate.addEventListener('change', renderTable);
+
+    reportVendor.addEventListener('input', refreshInvoicePreview);
+    reportFromDate.addEventListener('change', refreshInvoicePreview);
+    reportToDate.addEventListener('change', refreshInvoicePreview);
+    reportOperator.addEventListener('change', refreshInvoicePreview);
+    reportPaymentStatus.addEventListener('change', refreshInvoicePreview);
+    reportInvoiceStatus.addEventListener('change', refreshInvoicePreview);
+    reportInvoiceNo.addEventListener('input', () => { syncInvoiceCounterFromField(); refreshInvoicePreview(); });
+
+    [entryAmount, entryCommission, entryPaidAmount].forEach((el) => {
+      el.addEventListener('input', updateEntryPreview);
+    });
+    entryPaymentStatus.addEventListener('change', syncPaymentFields);
+
+    window.addEventListener('beforeprint', stampInvoice);
+    shopSignatory.addEventListener('input', refreshInvoicePreview);
+
+    /* Signature image */
+    (function loadSignature() {
+      const img = document.getElementById('invoiceSignImg');
+      const names = ['signature.png', 'Signature.png', 'signature.jpg', 'signature.jpeg', 'signature.webp'];
+      let index = 0;
+
+      img.onerror = () => {
+        index += 1;
+        if (index < names.length) {
+          img.src = names[index];
+        } else {
+          img.style.display = 'none';
+        }
+      };
+      img.src = names[0];
+    })();
+
+    showView();
+  </script>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    /* Only the admin account may open this dashboard */
+    const adminLoginOverlay = document.getElementById('adminLoginOverlay');
+    const adminAuthStatus = document.getElementById('adminAuthStatus');
+    const appRoot = document.getElementById('appRoot');
+
+    function unlockDashboard() {
+      adminLoginOverlay.style.display = 'none';
+      appRoot.style.display = 'block';
+      clearForm();
+      ensureInvoiceNumber();
+      startFirebaseSync();
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (!user || user.email !== ADMIN_EMAIL) {
+        adminAuthStatus.textContent = 'Not logged in - redirecting to login...';
+        window.location.href = 'login.html';
+        return;
+      }
+      unlockDashboard();
+    });
+  </script>
+</body>
+</html>

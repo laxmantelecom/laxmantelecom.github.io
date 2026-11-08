@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Ledger | LAXMAN TELECOM</title>
+  <meta name="theme-color" content="#111318">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #111318; --accent: #ff8a00; --accent-light: #ffb347;
+      --cream: #fbf7f0; --line: #e9e1d3; --text: #2c2f38; --muted: #6b6f7b;
+      --good: #166534; --bad: #be123c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      position: relative; min-height: 100vh; overflow-x: hidden;
+      font-family: Figtree, system-ui, sans-serif; line-height: 1.6;
+      color: var(--text); background: var(--cream); -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: 'Bricolage Grotesque', system-ui, sans-serif; line-height: 1.15; color: var(--ink); }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    [hidden] { display: none !important; }
+
+    /* Buttons */
+    .btn, .auth-btn {
+      display: inline-block; border: 0; border-radius: 999px; font: inherit; font-weight: 700;
+      cursor: pointer; transition: transform .2s;
+    }
+    .btn:hover, .auth-btn:hover { transform: translateY(-2px); }
+    .btn { padding: 9px 20px; font-size: .9rem; }
+    .btn-small { padding: 6px 12px; font-size: .8rem; }
+    .btn-danger { color: #fff; background: linear-gradient(135deg, #be123c, #f43f5e); }
+    .btn-warn { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .btn-good { color: #fff; background: linear-gradient(135deg, #15803d, #22c55e); }
+    .btn-ghost { color: var(--ink); background: #fff; border: 1.5px solid var(--line); }
+    .auth-btn {
+      width: 100%; padding: 14px; font-size: 1rem; color: var(--ink);
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      box-shadow: 0 10px 24px rgba(255,138,0,.35);
+    }
+    .auth-btn:disabled { opacity: .6; cursor: wait; transform: none; }
+
+    /* Cards */
+    .dash-card {
+      position: relative; overflow-x: auto; padding: 28px; background: #fff; border: 1px solid var(--line);
+      border-radius: 22px; box-shadow: 0 18px 40px -22px rgba(17,19,24,.35);
+      animation: rise .3s ease both;
+    }
+    .violet { --c1: #7c3aed; --c2: #c026d3; }
+    .teal   { --c1: #0f766e; --c2: #14b8a6; }
+    .orange { --c1: #ea580c; --c2: #fb923c; }
+    .indigo { --c1: #2563eb; --c2: #6366f1; }
+    .rose   { --c1: #be123c; --c2: #f43f5e; }
+    .dash-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, var(--c1), var(--c2));
+    }
+    .card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+    .card-title { display: flex; align-items: center; gap: 14px; }
+    .card-title h2 { font-size: 1.3rem; }
+    .chip {
+      display: grid; place-items: center; flex: none; width: 48px; height: 48px; font-size: 1.3rem; border-radius: 50%;
+      background: linear-gradient(135deg, var(--c1), var(--c2)); box-shadow: 0 12px 22px -6px var(--c1);
+    }
+    .card-note { margin-bottom: 14px; font-size: .9rem; color: var(--muted); }
+    .section-heading { margin: 22px 0 12px; font-size: 1.05rem; }
+    .empty { padding: 16px 0; color: var(--muted); }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .stat { padding: 14px 16px; background: var(--cream); border: 1px solid var(--line); border-radius: 16px; }
+    .stat small { display: block; font-size: .74rem; letter-spacing: .4px; text-transform: uppercase; color: var(--muted); }
+    .stat b { display: block; margin-top: 2px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.45rem; color: var(--ink); }
+    .stat.profit b.pos { color: var(--good); }
+    .stat.profit b.neg { color: var(--bad); }
+    .breakdown { margin-bottom: 14px; font-size: .88rem; color: var(--muted); }
+    .progress { height: 12px; margin: 6px 0 4px; background: var(--line); border-radius: 999px; overflow: hidden; }
+    .progress > i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); border-radius: 999px; transition: width .5s; }
+    .progress > i.done { background: linear-gradient(90deg, #15803d, #22c55e); }
+
+    /* Forms */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 14px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: .86rem; font-weight: 600; }
+    input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], input[type=month], select, textarea {
+      width: 100%; padding: 11px 13px; font: inherit; color: var(--ink); background: #fff;
+      border: 1.5px solid var(--line); border-radius: 12px; transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,138,0,.15); }
+    .svc-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .svc-chip {
+      padding: 8px 14px; font: inherit; font-size: .86rem; font-weight: 600; color: var(--ink);
+      background: #fff; border: 1.5px solid var(--line); border-radius: 999px; cursor: pointer; transition: all .15s;
+    }
+    .svc-chip:hover { border-color: var(--accent); }
+    .svc-chip.active { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); border-color: var(--accent); }
+    .preview { margin: 14px 0; padding: 12px 14px; font-size: .95rem; background: #fff7ea; border: 1px dashed var(--accent); border-radius: 12px; }
+    .preview b { color: var(--ink); }
+    .form-actions { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+    .form-actions .auth-btn { flex: 1; }
+    .error-msg, .success-msg { display: none; margin-bottom: 14px; padding: 11px 14px; font-size: .9rem; border-radius: 12px; }
+    .error-msg   { color: #be123c; background: #fff1f2; border: 1px solid #fecdd3; }
+    .success-msg { color: #166534; background: #ecfdf3; border: 1px solid #bbf7d0; }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; background: #fff; border: 1px solid var(--line); border-radius: 16px; }
+    .admin-table { width: 100%; min-width: 640px; border-collapse: collapse; }
+    .admin-table th, .admin-table td { padding: 10px 12px; font-size: .88rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+    .admin-table th {
+      font-size: .72rem; letter-spacing: .5px; text-transform: uppercase; color: #fff; background: var(--ink); border-bottom: 3px solid var(--accent);
+    }
+    .admin-table tbody tr:nth-child(even) td { background: #fdfaf4; }
+    .admin-table tbody tr:hover td { background: rgba(255,138,0,.08); }
+    .admin-table tfoot td { font-weight: 700; background: var(--cream); border-top: 2px solid var(--ink); }
+    .admin-table .actions { white-space: nowrap; }
+    .admin-table .num { text-align: right; }
+    .pos { color: var(--good); font-weight: 600; }
+    .neg { color: var(--bad); font-weight: 600; }
+    .tag { display: inline-block; padding: 2px 9px; font-size: .74rem; font-weight: 600; border-radius: 999px; background: var(--cream); border: 1px solid var(--line); }
+    .tag.udhaar { color: #9a3412; background: #fff7ed; border-color: #fed7aa; }
+    .tag.received { color: var(--good); background: #ecfdf3; border-color: #bbf7d0; }
+
+    /* Charts */
+    .chart-box { margin-top: 10px; padding: 14px; background: var(--cream); border: 1px solid var(--line); border-radius: 16px; }
+    .chart-box svg { display: block; width: 100%; height: auto; }
+    .hbar { display: grid; grid-template-columns: 130px 1fr 90px; gap: 10px; align-items: center; margin: 7px 0; font-size: .86rem; }
+    .hbar .track { height: 14px; background: #fff; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+    .hbar .track i { display: block; height: 100%; background: linear-gradient(90deg, var(--c1), var(--c2)); border-radius: 999px; }
+    .hbar span:last-child { text-align: right; font-weight: 600; }
+
+    /* Toast */
+    #toast {
+      position: fixed; left: 50%; bottom: 26px; z-index: 9998; max-width: 90%; padding: 12px 20px; font-weight: 600; font-size: .92rem;
+      color: #fff; background: var(--ink); border-radius: 999px; transform: translate(-50%, 90px); opacity: 0;
+      transition: transform .3s, opacity .3s; pointer-events: none;
+    }
+    #toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    /* MPIN lock */
+    #mpinLockOverlay {
+      position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 20px;
+      background: radial-gradient(circle at 15% 15%, rgba(255,138,0,.3), transparent 40%), radial-gradient(circle at 90% 90%, rgba(124,58,237,.3), transparent 40%), var(--ink);
+    }
+    .mpin-card { width: 100%; max-width: 350px; padding: 36px 30px; text-align: center; background: #fff; border-radius: 24px; box-shadow: 0 24px 60px rgba(0,0,0,.45); animation: rise .6s both; }
+    .mpin-title { margin-bottom: 4px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.45rem; font-weight: 800; color: var(--ink); }
+    .mpin-subtitle { margin-bottom: 20px; font-size: .85rem; color: var(--muted); }
+    #mpinInput { margin-bottom: 12px; font-size: 1.3rem; text-align: center; letter-spacing: 8px; }
+    #mpinError { min-height: 18px; margin-top: 10px; font-size: .85rem; color: #be123c; }
+    #mpinForgotLink { font-size: .82rem; color: var(--muted); }
+
+    /* ---------- App layout: sidebar on desktop, bottom tabs on phones ---------- */
+    .sidebar {
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 30; display: flex; flex-direction: column; width: 252px;
+      padding: 20px 14px; overflow-x: hidden; overflow-y: auto; color: #fff; transition: width .2s ease, padding .2s ease;
+      background: radial-gradient(circle at 10% 0%, rgba(255,138,0,.28), transparent 45%), var(--ink);
+    }
+    .side-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 0 14px; }
+    .side-brand { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 2px 8px; }
+    .side-toggle {
+      flex: none; display: grid; place-items: center; width: 34px; height: 34px; font: inherit; font-size: 1.15rem; font-weight: 700; line-height: 1;
+      color: #fff; background: rgba(255,255,255,.1); border: 0; border-radius: 10px; cursor: pointer; transition: background .15s;
+    }
+    .side-toggle:hover { background: rgba(255,255,255,.22); }
+    .side-brand img { width: 42px; height: 42px; border-radius: 50%; }
+    .side-brand h1 { font-size: 1.02rem; color: #fff; }
+    .side-brand p { font-size: .72rem; color: rgba(255,255,255,.55); }
+    .side-label { margin: 16px 12px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: rgba(255,255,255,.42); }
+    .side-nav a, .side-link {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border: 0; border-radius: 12px;
+      font: inherit; font-size: .94rem; font-weight: 600; color: rgba(255,255,255,.78); background: none; cursor: pointer; text-align: left;
+      transition: background .15s, color .15s;
+    }
+    .side-nav a:hover, .side-link:hover { background: rgba(255,255,255,.09); color: #fff; }
+    .side-nav a.active { color: var(--ink); background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .ico { display: inline-block; vertical-align: -.14em; }
+    .ni { flex: none; width: 24px; text-align: center; font-size: 1.12rem; }
+    .side-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); }
+    .side-link.logout { color: #fda4af; }
+
+    .main { min-width: 0; margin-left: 252px; transition: margin-left .2s ease; }
+
+    /* Collapsed menu: icons only */
+    body.side-collapsed .sidebar { width: 76px; padding: 20px 10px; }
+    body.side-collapsed .main { margin-left: 76px; }
+    body.side-collapsed .side-head { flex-direction: column; gap: 10px; }
+    body.side-collapsed .side-brand { padding: 2px 0; }
+    body.side-collapsed .side-brand div,
+    body.side-collapsed .side-label,
+    body.side-collapsed .side-text { display: none; }
+    body.side-collapsed .side-nav a,
+    body.side-collapsed .side-link { justify-content: center; padding: 12px 0; }
+    body.side-collapsed .side-nav { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
+    .topbar { display: none; }
+    .page { display: grid; gap: 20px; max-width: 1020px; margin: 0 auto; padding: 30px 26px 90px; }
+    .page-head h2 { font-size: 1.9rem; }
+    .page-head p { margin-top: 2px; color: var(--muted); font-size: .95rem; }
+    .view { display: grid; gap: 20px; min-width: 0; }
+    .tabbar { display: none; }
+
+    .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .quick-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 92px; padding: 14px 8px;
+      font: inherit; font-weight: 700; color: var(--ink); text-align: center; background: #fff; border: 1.5px solid var(--line);
+      border-radius: 18px; box-shadow: 0 10px 24px -16px rgba(17,19,24,.4); cursor: pointer; transition: transform .2s, border-color .2s;
+    }
+    .quick-btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .quick-btn > span { font-size: 1.6rem; line-height: 1.2; }
+    .quick-btn small { font-size: .74rem; font-weight: 600; color: var(--muted); }
+    .quick-btn.primary { border-color: transparent; background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+    .quick-btn.danger { color: var(--bad); }
+    .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    .step { margin: 2px 0 12px; font-weight: 700; color: var(--ink); }
+    .step b { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 8px; font-size: .8rem; color: #fff; background: var(--accent); border-radius: 50%; }
+    .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .link-more { display: inline-block; margin-top: 4px; font-weight: 700; color: var(--accent); }
+
+    /* Staff accounts only see the entry form and their own entries */
+    body.staff .admin-only { display: none !important; }
+    body:not(.staff) .staff-only { display: none !important; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main, body.side-collapsed .main { margin-left: 0; }
+      .topbar {
+        position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px;
+        color: #fff; background: var(--ink);
+      }
+      .topbar img { width: 32px; height: 32px; border-radius: 50%; }
+      .topbar b { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.02rem; }
+      .page { gap: 16px; padding: 18px 14px 110px; }
+      .page-head h2 { font-size: 1.5rem; }
+      .tabbar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; gap: 2px;
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line);
+        box-shadow: 0 -10px 26px rgba(17,19,24,.1);
+      }
+      .tabbar a, .tabbar button {
+        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 2px; border: 0; border-radius: 12px;
+        font: inherit; font-size: .7rem; font-weight: 700; color: var(--muted); background: none; cursor: pointer;
+      }
+      .tabbar .ni { font-size: 1.3rem; }
+      .tabbar a.active { color: var(--ink); background: rgba(255,138,0,.18); }
+    }
+    @media (max-width: 520px) {
+      .dash-card { padding: 20px 16px; }
+      .card-title h2 { font-size: 1.15rem; }
+      .quick { grid-template-columns: repeat(2, 1fr); }
+      .hbar { grid-template-columns: 90px 1fr 76px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+
+<body>
+
+  <!-- MPIN lock (uses the same MPIN already set in the admin panel on this device) -->
+  <div id="mpinLockOverlay" style="display: none;">
+    <div class="mpin-card">
+      <div class="mpin-title">Enter MPIN</div>
+      <div class="mpin-subtitle">Quick unlock for LAXMAN TELECOM Ledger</div>
+      <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN">
+      <button class="auth-btn" id="mpinUnlockBtn">Unlock</button>
+      <div id="mpinError"></div>
+      <div style="margin-top: 14px;"><a href="#" id="mpinForgotLink">Forgot MPIN? Logout and login again</a></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <div id="appRoot" style="display: none;">
+
+    <!-- Desktop sidebar -->
+    <aside class="sidebar">
+      <div class="side-head">
+        <a class="side-brand" href="#/home" title="Home">
+          <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+          <div><h1>LAXMAN TELECOM</h1><p>Daily Ledger</p></div>
+        </a>
+        <button type="button" class="side-toggle" id="sideToggle" aria-label="Collapse menu" title="Collapse menu">«</button>
+      </div>
+      <nav class="side-nav" aria-label="Main menu">
+        <p class="side-label admin-only">Daily work</p>
+        <a href="#/home" data-view="home" class="admin-only" title="Home"><span class="ni">🏠</span><span class="side-text">Home</span></a>
+        <a href="#/add" data-view="add" title="Add Entry"><span class="ni">➕</span><span class="side-text">Add Entry</span></a>
+        <a href="#/entries" data-view="entries" class="admin-only" title="All Entries"><span class="ni">📋</span><span class="side-text">All Entries</span></a>
+        <p class="side-label admin-only">Money</p>
+        <a href="#/report" data-view="report" class="admin-only" title="Monthly Report"><span class="ni">📊</span><span class="side-text">Monthly Report</span></a>
+        <a href="#/expenses" data-view="expenses" class="admin-only" title="Expenses"><span class="ni">💸</span><span class="side-text">Expenses</span></a>
+        <a href="#/credit" data-view="credit" class="admin-only" title="Credit"><span class="ni">📒</span><span class="side-text">Credit</span></a>
+        <p class="side-label admin-only">Setup</p>
+        <a href="#/services" data-view="services" class="admin-only" title="Services & Prices"><span class="ni">🏷️</span><span class="side-text">Services &amp; Prices</span></a>
+        <a href="#/settings" data-view="settings" class="admin-only" title="Settings"><span class="ni">⚙️</span><span class="side-text">Settings</span></a>
+      </nav>
+      <div class="side-foot">
+        <a href="admin.html" class="side-link admin-only" title="Admin Panel"><span class="ni">←</span><span class="side-text">Admin Panel</span></a>
+        <button type="button" class="side-link logout" data-logout title="Logout"><span class="ni"><svg class="ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span><span class="side-text">Logout</span></button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <!-- Phone top bar -->
+      <header class="topbar">
+        <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+        <b>LAXMAN TELECOM</b>
+      </header>
+
+      <div class="page">
+        <div class="page-head">
+          <h2 id="pageTitle">Home</h2>
+          <p id="pageSub"></p>
+        </div>
+
+        <!-- ================= HOME ================= -->
+        <section class="view" id="view-home" hidden>
+          <div class="quick">
+            <a class="quick-btn primary" href="#/add"><span>➕</span>Add Entry</a>
+            <a class="quick-btn" href="#/credit"><span>📒</span>Credit<small id="homeCredit"></small></a>
+            <a class="quick-btn" href="#/report"><span>📊</span>Report</a>
+            <a class="quick-btn" href="#/expenses"><span>💸</span>Expenses</a>
+          </div>
+
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">☀️</span><h2>Today</h2></div>
+              <span class="tag" id="todayLabel"></span>
+            </div>
+            <div class="stats" id="todayStats"></div>
+            <div class="breakdown" id="todayBreakdown"></div>
+            <div id="targetBox"></div>
+          </div>
+
+          <div class="dash-card teal">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📅</span><h2>This Month</h2></div>
+              <span class="tag" id="monthSnapLabel"></span>
+            </div>
+            <div id="monthSnap"></div>
+            <a class="link-more" href="#/report">Open full report →</a>
+          </div>
+
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🧾</span><h2>Today's Entries</h2></div></div>
+            <div id="todayEntries"><p class="empty">Loading...</p></div>
+          </div>
+        </section>
+
+        <!-- ================= ADD ENTRY ================= -->
+        <section class="view" id="view-add" hidden>
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📝</span><h2 id="entryHeading">Add Entry</h2></div>
+            </div>
+            <div class="error-msg" id="entryErrorMsg"></div>
+
+            <p class="step"><b>1</b>What work did you do?</p>
+            <div class="svc-chips" id="svcChips"></div>
+
+            <p class="step"><b>2</b>Enter the details</p>
+            <form id="entryForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Date</label><input type="date" id="eDate" required></div>
+                <div class="form-group"><label id="eAmountLabel">Price / bill amount (₹)</label><input type="number" id="eAmount" min="0" step="any" inputmode="decimal" required></div>
+                <div class="form-group" id="eCostGroup"><label>Your cost (₹) <small style="font-weight:400;color:var(--muted);">parts / charges you paid</small></label><input type="number" id="eCost" min="0" step="any" inputmode="decimal" value="0"></div>
+                <div class="form-group"><label>Discount given (₹) <small style="font-weight:400;color:var(--muted);">optional, taken off the price</small></label><input type="number" id="eDiscount" min="0" step="any" inputmode="decimal" value="0"></div>
+                <div class="form-group"><label>Payment mode</label>
+                  <select id="eMode"><option>Cash</option><option>UPI</option><option>Credit</option></select>
+                </div>
+                <div class="form-group"><label id="eCustomerLabel">Customer name (optional)</label><input type="text" id="eCustomer" placeholder="e.g. Rohit Kumar"></div>
+                <div class="form-group"><label>Customer mobile (optional)</label><input type="text" id="eMobile" inputmode="numeric" maxlength="10" placeholder="10 digit number"></div>
+                <div class="form-group" style="grid-column: 1 / -1;"><label>Note (optional)</label><input type="text" id="eNote" placeholder="e.g. Redmi Note 11 display"></div>
+              </div>
+              <div class="preview" id="entryPreview">Select a service to begin.</div>
+              <div class="form-actions">
+                <button type="submit" class="auth-btn" id="entrySaveBtn">Save Entry</button>
+                <button type="button" class="btn btn-ghost" id="entryCancelBtn" style="display:none;">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🧾</span><h2>Added Today</h2></div></div>
+            <div id="addRecent"><p class="empty">Loading...</p></div>
+          </div>
+        </section>
+
+        <!-- ================= ALL ENTRIES ================= -->
+        <section class="view" id="view-entries" hidden>
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📋</span><h2>All Entries</h2></div>
+              <span class="tag" id="entriesSummary"></span>
+            </div>
+            <div class="filters">
+              <input type="month" class="month-picker" aria-label="Month">
+              <input type="text" id="entrySearch" placeholder="Search service, customer, mobile, note...">
+              <select id="entryModeFilter" aria-label="Payment mode">
+                <option value="">All payment modes</option><option>Cash</option><option>UPI</option><option>Credit</option><option>Auto</option>
+              </select>
+            </div>
+            <div id="monthEntries"></div>
+          </div>
+        </section>
+
+        <!-- ================= MONTHLY REPORT ================= -->
+        <section class="view" id="view-report" hidden>
+          <div class="dash-card teal">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📅</span><h2>Summary</h2></div>
+              <div class="toolbar">
+                <input type="month" class="month-picker" aria-label="Month" style="width:auto;">
+                <button class="btn btn-small btn-ghost" id="exportBtn">Download CSV</button>
+              </div>
+            </div>
+            <div class="stats" id="monthStats"></div>
+            <div class="breakdown" id="monthBreakdown"></div>
+          </div>
+          <div class="dash-card orange">
+            <div class="card-top"><div class="card-title"><span class="chip">📈</span><h2>Daily Profit</h2></div></div>
+            <div class="chart-box" id="dailyChart"></div>
+          </div>
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🏆</span><h2>Profit by Service</h2></div></div>
+            <div class="chart-box" id="serviceChart"></div>
+          </div>
+          <div class="dash-card violet">
+            <div class="card-top"><div class="card-title"><span class="chip">🗓️</span><h2>Day-by-Day</h2></div></div>
+            <div id="dailyTable"></div>
+          </div>
+        </section>
+
+        <!-- ================= EXPENSES ================= -->
+        <section class="view" id="view-expenses" hidden>
+          <div class="dash-card orange">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">💸</span><h2>Add Expense</h2></div>
+              <input type="month" class="month-picker" aria-label="Month" style="width:auto;">
+            </div>
+            <p class="card-note">Rent, electricity, salary and other shop costs are subtracted from profit to give your <b>Net Profit</b>. The list below belongs to the month selected above.</p>
+            <form id="expenseForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Date</label><input type="date" id="xDate" required></div>
+                <div class="form-group"><label>Category</label>
+                  <select id="xCategory">
+                    <option>Rent</option><option>Electricity</option><option>Internet</option><option>Salary</option>
+                    <option>Stock Purchase</option><option>Transport</option><option>Maintenance</option><option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>Amount (₹)</label><input type="number" id="xAmount" min="0" step="any" inputmode="decimal" required></div>
+                <div class="form-group"><label>Note (optional)</label><input type="text" id="xNote"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="auth-btn">Add Expense</button></div>
+            </form>
+          </div>
+          <div class="dash-card violet">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">🧾</span><h2>This Month's Expenses</h2></div>
+              <span class="tag" id="expenseMonthLabel"></span>
+            </div>
+            <div id="expenseList"></div>
+          </div>
+          <div class="dash-card teal">
+            <div class="card-top"><div class="card-title"><span class="chip">🔁</span><h2>Recurring Monthly Expenses</h2></div></div>
+            <p class="card-note">Added automatically to every month (for example shop rent). No need to enter them again each month.</p>
+            <form id="recurringForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Category</label>
+                  <select id="rCategory"><option>Rent</option><option>Electricity</option><option>Internet</option><option>Salary</option><option>Other</option></select>
+                </div>
+                <div class="form-group"><label>Monthly amount (₹)</label><input type="number" id="rAmount" min="0" step="any" inputmode="decimal" required></div>
+                <div class="form-group"><label>Note (optional)</label><input type="text" id="rNote"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="btn btn-warn">Add Recurring Expense</button></div>
+            </form>
+            <div id="recurringList" style="margin-top:14px;"></div>
+          </div>
+        </section>
+
+        <!-- ================= CREDIT ================= -->
+        <section class="view" id="view-credit" hidden>
+          <div class="dash-card rose">
+            <div class="card-top">
+              <div class="card-title"><span class="chip">📒</span><h2>Credit Tracker</h2></div>
+              <span class="tag udhaar" id="udhaarTotal"></span>
+            </div>
+            <p class="card-note">Any entry saved with payment mode "Credit" appears here automatically. Tap "Mark Received" when the customer pays.</p>
+            <div id="udhaarList"><p class="empty">Loading...</p></div>
+          </div>
+        </section>
+
+        <!-- ================= SERVICES & PRICES ================= -->
+        <section class="view" id="view-services" hidden>
+          <div class="dash-card indigo">
+            <div class="card-top"><div class="card-title"><span class="chip">🏷️</span><h2>Your Services</h2></div></div>
+            <div class="error-msg" id="servicesErrorMsg"></div>
+            <div class="success-msg" id="servicesSuccessMsg"></div>
+            <div id="serviceList"></div>
+          </div>
+          <div class="dash-card orange">
+            <div class="card-top"><div class="card-title"><span class="chip">➕</span><h2 id="serviceFormTitle">Add / Edit Service</h2></div></div>
+            <p class="card-note">
+              <b>Fixed price</b> services: profit = amount received − your cost.
+              <b>Commission</b> services (Recharge, AEPS): you enter the transaction amount and profit = commission % of it.
+              Default price and cost are filled in automatically when you pick the service.
+            </p>
+            <form id="serviceForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Service name</label><input type="text" id="vName" required></div>
+                <div class="form-group"><label>Type</label>
+                  <select id="vType"><option value="fixed">Fixed price</option><option value="commission">Commission %</option></select>
+                </div>
+                <div class="form-group" id="vRateGroup" style="display:none;"><label>Commission (%)</label><input type="number" id="vRate" min="0" max="100" step="any" value="3" inputmode="decimal"></div>
+                <div class="form-group" id="vPriceGroup"><label>Default price (₹)</label><input type="number" id="vPrice" min="0" step="any" value="0" inputmode="decimal"></div>
+                <div class="form-group" id="vCostGroup"><label>Default cost (₹)</label><input type="number" id="vCost" min="0" step="any" value="0" inputmode="decimal"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;">
+                <button type="submit" class="auth-btn" id="serviceSaveBtn">Add Service</button>
+                <button type="button" class="btn btn-ghost" id="serviceCancelBtn" style="display:none;">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================= SETTINGS ================= -->
+        <section class="view" id="view-settings" hidden>
+          <div class="dash-card violet">
+            <div class="card-top"><div class="card-title"><span class="chip">🎯</span><h2>General</h2></div></div>
+            <div class="error-msg" id="settingsErrorMsg"></div>
+            <div class="success-msg" id="settingsSuccessMsg"></div>
+            <form id="generalForm">
+              <div class="form-grid">
+                <div class="form-group"><label>Daily profit target (₹)</label><input type="number" id="sTarget" min="0" step="any" inputmode="decimal"></div>
+                <div class="form-group"><label>Recharge commission % <small style="font-weight:400;color:var(--muted);">(used only if a settlement entry has no commission)</small></label><input type="number" id="sRechargeRate" min="0" max="100" step="any" inputmode="decimal"></div>
+                <div class="form-group"><label>Auto-add Recharge Settlement data</label>
+                  <select id="sRechargeSync"><option value="1">On - count settlement recharges</option><option value="0">Off - I add recharges manually</option></select>
+                </div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="auth-btn">Save Settings</button></div>
+            </form>
+          </div>
+          <div class="dash-card teal">
+            <div class="card-top"><div class="card-title"><span class="chip">👥</span><h2>Staff Access</h2></div></div>
+            <p class="card-note">Create a login for a staff member. Staff can only add entries and see their own entries for today. They cannot see profit, reports, expenses or credit.</p>
+            <form id="staffForm" autocomplete="off">
+              <div class="form-grid">
+                <div class="form-group"><label>Staff name</label><input type="text" id="stName" required></div>
+                <div class="form-group"><label>Staff email (login)</label><input type="email" id="stEmail" required></div>
+                <div class="form-group"><label>Password</label><input type="text" id="stPassword" required minlength="6"></div>
+              </div>
+              <div class="form-actions" style="margin-top:14px;"><button type="submit" class="btn btn-warn" id="staffBtn">Create Staff Login</button></div>
+            </form>
+            <div id="staffList" style="margin-top:14px;"></div>
+          </div>
+        </section>
+
+        <!-- ================= MORE (phone menu) ================= -->
+        <section class="view" id="view-more" hidden>
+          <div class="tiles">
+            <a class="quick-btn" href="#/entries"><span>📋</span>All Entries</a>
+            <a class="quick-btn" href="#/expenses"><span>💸</span>Expenses</a>
+            <a class="quick-btn" href="#/services"><span>🏷️</span>Services &amp; Prices</a>
+            <a class="quick-btn" href="#/settings"><span>⚙️</span>Settings</a>
+            <a class="quick-btn" href="admin.html"><span>←</span>Admin Panel</a>
+            <button type="button" class="quick-btn danger" data-logout><span><svg class="ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span>Logout</button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Phone bottom tabs -->
+    <nav class="tabbar" aria-label="Quick menu">
+      <a href="#/home" data-view="home" class="admin-only"><span class="ni">🏠</span>Home</a>
+      <a href="#/add" data-view="add"><span class="ni">➕</span>Add</a>
+      <a href="#/report" data-view="report" class="admin-only"><span class="ni">📊</span>Report</a>
+      <a href="#/credit" data-view="credit" class="admin-only"><span class="ni">📒</span>Credit</a>
+      <a href="#/more" data-view="more" data-group="more" class="admin-only"><span class="ni">☰</span>More</a>
+      <button type="button" class="staff-only" data-logout><span class="ni"><svg class="ico" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span>Logout</button>
+    </nav>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    /* ==========================================================
+       Settings you may need to adjust
+       ----------------------------------------------------------
+       RECHARGE_SYNC tells this page where your Recharge Settlement
+       dashboard stores its records, so recharge commission is added
+       to the ledger automatically. These names match what the
+       Recharge Settlement dashboard saves.
+       ========================================================== */
+    const RECHARGE_SYNC = {
+      path: 'telecomSettlement/vendorView', // vendorKey / recordId / record
+      dateField: 'date',                    // YYYY-MM-DD
+      amountField: 'amount',                // recharge amount
+      commissionField: 'commissionEarned'   // your earning on that recharge, exactly as shown in Recharge Settlement
+    };
+
+    const ROOT = 'shopLedger';
+    const DEFAULT_RATE = 3;
+    const DEFAULT_SERVICES = [
+      { name: 'Recharge',             type: 'commission', rate: 3, price: 0, cost: 0 },
+      { name: 'Mobile Repair',        type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'New SIM Activation',   type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'SIM Porting (MNP)',    type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'Banking / AEPS',       type: 'commission', rate: 1, price: 0, cost: 0 },
+      { name: 'Aadhaar & PAN',        type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'Passport',             type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'Certificates & Forms', type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'Printing & Copies',    type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'Mobile Accessories',   type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'Travel Booking',       type: 'fixed', rate: 0, price: 0, cost: 0 },
+      { name: 'Other',                type: 'fixed', rate: 0, price: 0, cost: 0 }
+    ];
+
+    /* ==========================================================
+       Helpers
+       ========================================================== */
+    const $ = (id) => document.getElementById(id);
+    const pad = (n) => String(n).padStart(2, '0');
+    const num = (v) => { const n = parseFloat(v); return isFinite(n) ? n : 0; };
+    const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+    const round4 = (n) => Math.round((n + Number.EPSILON) * 10000) / 10000;
+    const normMode = (m) => (m === 'Udhaar' ? 'Credit' : (m || 'Cash'));  // old entries used the Hindi word
+    const dateStr = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const monthOf = (s) => String(s).slice(0, 7);
+    const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    const fmtDate = (s) => (s ? s.split('-').reverse().join('-') : '');
+    const clsOf = (n) => (n > 0 ? 'pos' : n < 0 ? 'neg' : '');
+
+    function esc(value) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      return String(value ?? '').replace(/[&<>"']/g, (ch) => map[ch]);
+    }
+
+    function toast(text) {
+      const el = $('toast');
+      el.textContent = text;
+      el.classList.add('show');
+      clearTimeout(toast.t);
+      toast.t = setTimeout(() => el.classList.remove('show'), 2400);
+    }
+
+    function showMsg(prefix, type, text) {
+      const shown = $(prefix + (type === 'error' ? 'ErrorMsg' : 'SuccessMsg'));
+      const other = $(prefix + (type === 'error' ? 'SuccessMsg' : 'ErrorMsg'));
+      if (!shown) { toast(text); return; }
+      shown.textContent = text;
+      shown.style.display = 'block';
+      if (other) other.style.display = 'none';
+      clearTimeout(showMsg['t' + prefix]);
+      showMsg['t' + prefix] = setTimeout(() => { shown.style.display = 'none'; }, 5000);
+    }
+
+    function buildTable(headers, rowsHtml, footHtml) {
+      const head = headers.map((h) => `<th${h.num ? ' class="num"' : ''}>${h.label || h}</th>`).join('');
+      return `<div class="table-wrap"><table class="admin-table"><thead><tr>${head}</tr></thead><tbody>${rowsHtml}</tbody>${footHtml ? `<tfoot>${footHtml}</tfoot>` : ''}</table></div>`;
+    }
+
+    /* ==========================================================
+       State
+       ========================================================== */
+    const todayKey = dateStr(new Date());
+    const currentMonth = monthOf(todayKey);
+
+    const state = {
+      role: null, user: null,
+      services: {}, settings: {},
+      entries: {}, expenses: {}, recharge: {},
+      recurring: {}, udhaar: {}, staff: {},
+      month: currentMonth,
+      chosen: null,          // selected service id
+      editing: null,         // { id, mk } when editing an entry
+      editingService: null,  // service id being edited
+      watched: {}
+    };
+
+    const rechargeOn = () => state.settings.rechargeSync !== false && state.role === 'admin';
+    const rechargeRate = () => (state.settings.rechargeRate != null ? num(state.settings.rechargeRate) : DEFAULT_RATE);
+
+    /* ==========================================================
+       Navigation: every menu item opens its own page
+       ========================================================== */
+    const VIEW_INFO = {
+      home:     ['Home', 'Today at a glance'],
+      add:      ['Add Entry', 'Record the work you just did'],
+      entries:  ['All Entries', 'Search and review every entry'],
+      report:   ['Monthly Report', 'Profit, charts and day-by-day totals'],
+      expenses: ['Expenses', 'Rent, salary and other shop costs'],
+      credit:   ['Credit', 'Customers who still have to pay you'],
+      services: ['Services & Prices', 'Your service list, default prices and commission'],
+      settings: ['Settings', 'Daily target, recharge sync and staff access'],
+      more:     ['More', 'Everything else in one place']
+    };
+    const MORE_GROUP = ['more', 'entries', 'expenses', 'services', 'settings'];
+
+    function currentView() {
+      const wanted = location.hash.replace(/^#\/?/, '');
+      const allowed = state.role === 'staff' ? ['add'] : Object.keys(VIEW_INFO);
+      return allowed.includes(wanted) ? wanted : (state.role === 'staff' ? 'add' : 'home');
+    }
+
+    function goTo(view) { location.hash = '#/' + view; }
+
+    function showView() {
+      if (!state.role) return;
+      const v = currentView();
+      if (location.hash !== '#/' + v) history.replaceState(null, '', '#/' + v);
+
+      document.querySelectorAll('.view').forEach((el) => { el.hidden = el.id !== 'view-' + v; });
+      document.querySelectorAll('[data-view]').forEach((a) => {
+        const on = a.dataset.view === v || (a.dataset.group === 'more' && MORE_GROUP.includes(v));
+        a.classList.toggle('active', on);
+        if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      });
+      $('pageTitle').textContent = VIEW_INFO[v][0];
+      $('pageSub').textContent = VIEW_INFO[v][1];
+      document.title = VIEW_INFO[v][0] + ' | LAXMAN TELECOM';
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', showView);
+
+    /* Collapse / expand the side menu (remembered on this device) */
+    (function initSideToggle() {
+      const key = 'ledgerSideCollapsed';
+      let saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) { /* storage blocked */ }
+      const apply = (collapsed) => {
+        document.body.classList.toggle('side-collapsed', collapsed);
+        const btn = $('sideToggle');
+        btn.textContent = collapsed ? '»' : '«';
+        btn.title = collapsed ? 'Expand menu' : 'Collapse menu';
+        btn.setAttribute('aria-label', btn.title);
+      };
+      // First visit: start collapsed on narrower windows so the page has room
+      apply(saved === null ? window.innerWidth < 1150 : saved === '1');
+      $('sideToggle').addEventListener('click', () => {
+        const collapsed = !document.body.classList.contains('side-collapsed');
+        apply(collapsed);
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch (err) { /* ignore */ }
+      });
+    })();
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-logout]')) return;
+      e.preventDefault();
+      auth.signOut().then(() => { window.location.href = 'login.html'; });
+    });
+
+    /* ==========================================================
+       MPIN quick unlock (same hash the admin panel stores)
+       ========================================================== */
+    async function sha256Hex(text) {
+      const bytes = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+    const mpinKey = (uid) => 'mpinHash_' + uid;
+
+    function showMpinLock(uid, onUnlock) {
+      const overlay = $('mpinLockOverlay');
+      const input = $('mpinInput');
+      overlay.style.display = 'flex';
+      input.value = '';
+      $('mpinError').textContent = '';
+      setTimeout(() => input.focus(), 100);
+
+      async function attempt() {
+        const entered = input.value.trim();
+        if (!entered) return;
+        if (await sha256Hex(entered) === localStorage.getItem(mpinKey(uid))) {
+          overlay.style.display = 'none';
+          onUnlock();
+        } else {
+          $('mpinError').textContent = 'Incorrect MPIN. Please try again.';
+          input.value = '';
+          input.focus();
+        }
+      }
+      $('mpinUnlockBtn').onclick = attempt;
+      input.onkeydown = (e) => { if (e.key === 'Enter') attempt(); };
+      $('mpinForgotLink').onclick = (e) => {
+        e.preventDefault();
+        if (confirm('Logout and login again with your password?')) auth.signOut().then(() => location.reload());
+      };
+    }
+
+    /* ==========================================================
+       Start-up: admin, or staff added by the admin
+       ========================================================== */
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) { window.location.href = 'login.html'; return; }
+
+      let role = null;
+      if (user.email === ADMIN_EMAIL) {
+        role = 'admin';
+      } else {
+        try {
+          const snap = await db.ref(ROOT + '/staff/' + user.uid).once('value');
+          if (snap.exists()) role = 'staff';
+        } catch (err) { /* not staff */ }
+      }
+      if (!role) { window.location.href = 'login.html'; return; }
+
+      state.user = user;
+      state.role = role;
+      const launch = () => startApp();
+      if (localStorage.getItem(mpinKey(user.uid))) showMpinLock(user.uid, launch); else launch();
+    });
+
+    function startApp() {
+      document.body.classList.add(state.role);
+      $('appRoot').style.display = 'block';
+      $('eDate').value = todayKey;
+      $('xDate').value = todayKey;
+      document.querySelectorAll('.month-picker').forEach((i) => { i.value = state.month; });
+      $('todayLabel').textContent = fmtDate(todayKey);
+      showView();
+
+      db.ref(ROOT + '/services').on('value', (snap) => {
+        state.services = snap.val() || {};
+        if (!Object.keys(state.services).length && state.role === 'admin') seedServices();
+        if (state.chosen && !state.services[state.chosen]) state.chosen = null;
+        renderAll();
+      });
+
+      watchMonth(currentMonth);
+
+      if (state.role === 'admin') {
+        db.ref(ROOT + '/settings').on('value', (snap) => {
+          state.settings = snap.val() || {};
+          fillSettingsForm();
+          renderAll();
+        });
+        db.ref(ROOT + '/recurring').on('value', (snap) => { state.recurring = snap.val() || {}; renderAll(); });
+        db.ref(ROOT + '/udhaar').on('value', (snap) => { state.udhaar = snap.val() || {}; renderAll(); });
+        db.ref(ROOT + '/staff').on('value', (snap) => { state.staff = snap.val() || {}; renderStaff(); });
+        watchMonth(state.month);
+        startRechargeWatch();
+      }
+    }
+
+    function seedServices() {
+      const updates = {};
+      DEFAULT_SERVICES.forEach((s, i) => {
+        updates['services/' + db.ref().push().key] = { ...s, order: i };
+      });
+      db.ref(ROOT).update(updates);
+    }
+
+    /** Starts listening to one month of entries (and expenses / recharge for the admin). */
+    function watchMonth(mk) {
+      if (state.watched[mk]) return;
+      state.watched[mk] = true;
+
+      // Staff may only read their own entries (the database rules enforce this too).
+      const entriesRef = db.ref(ROOT + '/entries/' + mk);
+      const entriesQuery = state.role === 'admin' ? entriesRef : entriesRef.orderByChild('by').equalTo(state.user.uid);
+
+      entriesQuery.on('value', (snap) => {
+        state.entries[mk] = snap.val() || {};
+        renderAll();
+      }, (err) => toast('Could not load entries: ' + err.message));
+
+      if (state.role === 'admin') {
+        db.ref(ROOT + '/expenses/' + mk).on('value', (snap) => {
+          state.expenses[mk] = snap.val() || {};
+          renderAll();
+        });
+      }
+    }
+
+    /* ----------------------------------------------------------
+       Recharge Settlement sync
+       The Recharge Settlement dashboard saves every recharge under
+       telecomSettlement/vendorView/<vendor>/<id>. We read the same place,
+       so the ledger and that dashboard always agree.
+       ---------------------------------------------------------- */
+    function collectRecords(node, out) {
+      if (!node || typeof node !== 'object') return;
+      if (typeof node[RECHARGE_SYNC.dateField] === 'string' && node[RECHARGE_SYNC.amountField] !== undefined) {
+        const d = node[RECHARGE_SYNC.dateField];
+        out.push({
+          date: d, txn: num(node[RECHARGE_SYNC.amountField]),
+          vendor: node.vendor || '', mobile: node.mobile || '', operator: node.operator || '', purpose: node.purpose || '',
+          commission: RECHARGE_SYNC.commissionField && node[RECHARGE_SYNC.commissionField] != null ? num(node[RECHARGE_SYNC.commissionField]) : null
+        });
+        return;
+      }
+      Object.values(node).forEach((v) => collectRecords(v, out));
+    }
+
+    function startRechargeWatch() {
+      if (state.role !== 'admin') return;
+      db.ref(RECHARGE_SYNC.path).on('value', (snap) => {
+        const list = [];
+        collectRecords(snap.val(), list);
+        state.rechargeAll = list;
+        state.rechargeError = false;
+        renderAll();
+      }, () => {
+        state.rechargeAll = [];
+        state.rechargeError = true;
+        renderAll();
+      });
+    }
+
+    /** Recharge records of one month, with profit worked out at the current commission %. */
+    function rechargeOf(mk) {
+      if (!rechargeOn()) return [];
+      return (state.rechargeAll || [])
+        .filter((r) => monthOf(r.date) === mk)
+        .map((r) => ({ ...r, profit: r.commission != null ? r.commission : round4(r.txn * rechargeRate() / 100) }));
+    }
+
+    /** Recharge records shaped like ledger rows so they can sit in the entries tables. */
+    function rechargeRows(mk, onlyDate) {
+      return rechargeOf(mk).filter((r) => !onlyDate || r.date === onlyDate).map((r, i) => ({
+        id: 'auto-' + i, auto: true, date: r.date, service: 'Recharge (auto)',
+        note: [r.vendor ? 'Supplier: ' + r.vendor : '', r.operator, r.purpose].filter(Boolean).join(' · '),
+        customer: '', mobile: r.mobile, amount: r.txn, cost: 0, profit: r.profit, mode: 'Auto'
+      }));
+    }
+
+    /* ==========================================================
+       Calculations
+       ========================================================== */
+    const entriesOf = (mk) => Object.entries(state.entries[mk] || {}).map(([id, e]) => ({ id, ...e }));
+    const expensesOf = (mk) => Object.entries(state.expenses[mk] || {}).map(([id, e]) => ({ id, ...e }));
+    const recurringTotal = () => Object.values(state.recurring).reduce((s, r) => s + num(r.amount), 0);
+
+    /** Works out the income, cost and profit for an entry. */
+    function calcEntry(svc, amount, cost, discount) {
+      discount = num(discount);
+      const customerPays = round4(amount - discount);
+      if (svc.type === 'commission') {
+        // The discount comes out of your commission
+        const commission = round4(amount * num(svc.rate != null ? svc.rate : DEFAULT_RATE) / 100);
+        const profit = round4(commission - discount);
+        return { income: profit, cost: 0, profit, commission, discount, customerPays };
+      }
+      return { income: customerPays, cost, profit: round4(customerPays - cost), commission: 0, discount, customerPays };
+    }
+
+    /** Adds up one month: totals, per-day figures and per-service profit. */
+    function aggregate(mk) {
+      const days = {}, services = {};
+      const total = { income: 0, cost: 0, profit: 0, discount: 0, count: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 };
+      const day = (d) => days[d] || (days[d] = { date: d, count: 0, income: 0, cost: 0, profit: 0, discount: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 });
+      const svc = (n) => services[n] || (services[n] = { name: n, profit: 0, income: 0, count: 0 });
+
+      entriesOf(mk).forEach((e) => {
+        const d = day(e.date), income = num(e.income), cost = num(e.cost), profit = num(e.profit);
+        const mode = ['Cash', 'UPI', 'Credit'].includes(normMode(e.mode)) ? normMode(e.mode) : 'Cash';
+        [d, total].forEach((t) => { t.count++; t.income += income; t.cost += cost; t.profit += profit; t.discount += num(e.discount); t[mode] += income; });
+        const s = svc(e.service || 'Other'); s.profit += profit; s.income += income; s.count++;
+      });
+
+      if (rechargeOn()) {
+        rechargeOf(mk).forEach((r) => {
+          const d = day(r.date);
+          [d, total].forEach((t) => { t.count++; t.income += r.profit; t.profit += r.profit; t.Auto += r.profit; });
+          const s = svc('Recharge (auto)'); s.profit += r.profit; s.income += r.profit; s.count++;
+        });
+      }
+      return { days, services, total };
+    }
+
+    function monthNet(mk) {
+      const agg = aggregate(mk);
+      const manualExpenses = expensesOf(mk).reduce((s, x) => s + num(x.amount), 0);
+      const expenses = manualExpenses + recurringTotal();
+      return { agg, manualExpenses, recurring: recurringTotal(), expenses, net: agg.total.profit - expenses };
+    }
+
+    /* ==========================================================
+       Entry form
+       ========================================================== */
+    function sortedServices() {
+      return Object.entries(state.services)
+        .map(([id, s]) => ({ id, ...s }))
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || String(a.name).localeCompare(b.name));
+    }
+
+    function renderChips() {
+      const list = sortedServices();
+      $('svcChips').innerHTML = list.length
+        ? list.map((s) => `<button type="button" class="svc-chip${s.id === state.chosen ? ' active' : ''}" data-svc="${esc(s.id)}">${esc(s.name)}</button>`).join('')
+        : '<p class="empty">Loading services...</p>';
+    }
+
+    function applyServiceUI() {
+      const svc = state.services[state.chosen];
+      const isComm = svc && svc.type === 'commission';
+      $('eCostGroup').style.display = isComm ? 'none' : '';
+      $('eAmountLabel').textContent = isComm
+        ? `Transaction amount (₹) - you earn ${svc.rate != null ? svc.rate : DEFAULT_RATE}%`
+        : 'Price / bill amount (₹)';
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const svc = state.services[state.chosen];
+      const box = $('entryPreview');
+      if (!svc) { box.textContent = 'Select a service to begin.'; return; }
+      const amount = num($('eAmount').value), cost = num($('eCost').value), discount = num($('eDiscount').value);
+      const c = calcEntry(svc, amount, cost, discount);
+      const warn = discount > amount ? ' <span class="neg">· Discount is more than the amount</span>' : '';
+      if (svc.type === 'commission') {
+        box.innerHTML = `<b>${esc(svc.name)}</b> · Transaction ${money(amount)} → Commission ${money(c.commission)}` +
+          (discount ? ` − Discount ${money(discount)}` : '') +
+          ` → Profit: <b class="${clsOf(c.profit)}">${money(c.profit)}</b>` +
+          (discount ? ` · Customer pays <b>${money(c.customerPays)}</b>` : '') + warn;
+      } else {
+        box.innerHTML = `<b>${esc(svc.name)}</b> · ` +
+          (discount ? `Price ${money(amount)} − Discount ${money(discount)} = Customer pays <b>${money(c.customerPays)}</b>` : `Received ${money(amount)}`) +
+          ` − Cost ${money(cost)} → Profit: <b class="${clsOf(c.profit)}">${money(c.profit)}</b>` + warn;
+      }
+    }
+
+    $('svcChips').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-svc]');
+      if (!btn) return;
+      state.chosen = btn.dataset.svc;
+      const svc = state.services[state.chosen];
+      if (!state.editing) {
+        $('eAmount').value = num(svc.price) ? svc.price : '';
+        $('eCost').value = num(svc.cost) || 0;
+        $('eDiscount').value = 0;
+      }
+      renderChips();
+      applyServiceUI();
+      $('eAmount').focus();
+    });
+
+    ['eAmount', 'eCost', 'eDiscount'].forEach((id) => $(id).addEventListener('input', updatePreview));
+
+    $('eMode').addEventListener('change', () => {
+      $('eCustomerLabel').textContent = $('eMode').value === 'Credit' ? 'Customer name (required for Credit)' : 'Customer name (optional)';
+    });
+
+    function resetEntryForm(keepService) {
+      const keep = keepService ? state.chosen : null;
+      state.editing = null;
+      $('entryForm').reset();
+      $('eDate').value = todayKey;
+      $('eCost').value = 0;
+      $('eDiscount').value = 0;
+      $('entryHeading').textContent = 'Add Entry';
+      $('entrySaveBtn').textContent = 'Save Entry';
+      $('entryCancelBtn').style.display = 'none';
+      $('eCustomerLabel').textContent = 'Customer name (optional)';
+      state.chosen = keep;
+      const svc = keep ? state.services[keep] : null;
+      if (svc) {
+        $('eAmount').value = num(svc.price) ? svc.price : '';
+        $('eCost').value = num(svc.cost) || 0;
+      }
+      renderChips();
+      applyServiceUI();
+      if (svc) $('eAmount').focus();
+    }
+
+    /** After editing from another page (for example All Entries), return there. */
+    function leaveEdit() {
+      const back = state.editFrom;
+      state.editFrom = null;
+      if (back && back !== 'add') goTo(back);
+    }
+    $('entryCancelBtn').addEventListener('click', () => { resetEntryForm(); leaveEdit(); });
+
+    $('entryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const svc = state.services[state.chosen];
+      if (!svc) { showMsg('entry', 'error', 'Please select a service first.'); return; }
+
+      const date = $('eDate').value;
+      const amount = num($('eAmount').value);
+      const cost = svc.type === 'commission' ? 0 : num($('eCost').value);
+      const discount = num($('eDiscount').value);
+      const mode = $('eMode').value;
+      const customer = $('eCustomer').value.trim();
+      const mobile = $('eMobile').value.trim();
+
+      if (!date) { showMsg('entry', 'error', 'Please choose a date.'); return; }
+      if (mode === 'Credit' && !customer) { showMsg('entry', 'error', 'Customer name is required for Credit entries.'); return; }
+      if (mobile && !/^\d{10}$/.test(mobile)) { showMsg('entry', 'error', 'Mobile number must be 10 digits.'); return; }
+      if (discount < 0) { showMsg('entry', 'error', 'Discount cannot be negative.'); return; }
+      if (discount > amount) { showMsg('entry', 'error', 'Discount cannot be more than the amount.'); return; }
+
+      const calc = calcEntry(svc, amount, cost, discount);
+      const editing = state.editing;
+      const old = editing ? (state.entries[editing.mk] || {})[editing.id] : null;
+      const id = editing ? editing.id : db.ref().push().key;
+      const mk = monthOf(date);
+
+      const doc = {
+        date, service: svc.name, type: svc.type, amount, discount,
+        income: calc.income, cost: calc.cost, profit: calc.profit,
+        mode, customer, mobile, note: $('eNote').value.trim(),
+        createdAt: old ? old.createdAt : Date.now(),
+        by: old ? old.by : state.user.uid,
+        byName: old ? old.byName : (state.user.email || '')
+      };
+
+      const updates = {};
+      if (editing && editing.mk !== mk) updates['entries/' + editing.mk + '/' + id] = null;
+      updates['entries/' + mk + '/' + id] = doc;
+
+      if (mode === 'Credit') {
+        const prev = state.udhaar[id];
+        updates['udhaar/' + id] = {
+          customer, mobile, amount: calc.customerPays, date, note: doc.note, service: svc.name,
+          status: prev ? prev.status : 'Pending',
+          receivedAt: prev && prev.receivedAt ? prev.receivedAt : null
+        };
+      } else if (editing) {
+        updates['udhaar/' + id] = null;
+      }
+
+      const btn = $('entrySaveBtn');
+      btn.disabled = true;
+      try {
+        await db.ref(ROOT).update(updates);
+        watchMonth(mk);
+        toast(editing ? 'Entry updated' : 'Entry saved. Profit ' + money(calc.profit));
+        if (editing) { resetEntryForm(); leaveEdit(); } else { resetEntryForm(true); }
+      } catch (err) {
+        showMsg('entry', 'error', 'Could not save: ' + err.message);
+      }
+      btn.disabled = false;
+    });
+
+    function startEdit(mk, id) {
+      const e = (state.entries[mk] || {})[id];
+      if (!e) return;
+      const svcId = Object.keys(state.services).find((k) => state.services[k].name === e.service);
+      state.editing = { id, mk };
+      state.chosen = svcId || null;
+      $('eDate').value = e.date;
+      $('eAmount').value = e.amount;
+      $('eCost').value = e.cost || 0;
+      $('eDiscount').value = e.discount || 0;
+      $('eMode').value = normMode(e.mode);
+      $('eCustomer').value = e.customer || '';
+      $('eMobile').value = e.mobile || '';
+      $('eNote').value = e.note || '';
+      $('eCustomerLabel').textContent = normMode(e.mode) === 'Credit' ? 'Customer name (required for Credit)' : 'Customer name (optional)';
+      $('entryHeading').textContent = 'Edit Entry';
+      $('entrySaveBtn').textContent = 'Update Entry';
+      $('entryCancelBtn').style.display = '';
+      renderChips();
+      applyServiceUI();
+      state.editFrom = currentView();
+      goTo('add');
+      if (!svcId) showMsg('entry', 'error', 'The service of this entry no longer exists. Please pick a service again before saving.');
+    }
+
+    async function deleteEntry(mk, id) {
+      if (!confirm('Delete this entry? This also removes its Credit record, if any.')) return;
+      const updates = {};
+      updates['entries/' + mk + '/' + id] = null;
+      updates['udhaar/' + id] = null;
+      try { await db.ref(ROOT).update(updates); toast('Entry deleted'); }
+      catch (err) { toast('Could not delete: ' + err.message); }
+    }
+
+    /* ==========================================================
+       Rendering: entries table
+       ========================================================== */
+    function entriesTable(list, opts) {
+      if (!list.length) return '<p class="empty">No entries yet.</p>';
+      const admin = state.role === 'admin';
+      const rows = list.map((e) => {
+        const timeStr = e.createdAt ? new Date(e.createdAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }) : '';
+        const who = [e.customer, e.mobile].filter(Boolean).map(esc).join('<br>');
+        return `<tr>
+          <td>${opts.showDate ? fmtDate(e.date) : esc(timeStr || '-')}</td>
+          <td>${esc(e.service)}${e.note ? `<br><small style="color:var(--muted)">${esc(e.note)}</small>` : ''}</td>
+          <td>${who || '-'}</td>
+          <td class="num">${money(e.amount)}</td>
+          ${admin ? `<td class="num">${num(e.discount) ? money(e.discount) : '<span style="color:var(--muted)">-</span>'}</td><td class="num">${money(e.cost)}</td><td class="num ${clsOf(num(e.profit))}">${money(e.profit)}</td>` : ''}
+          <td><span class="tag ${normMode(e.mode) === 'Credit' ? 'udhaar' : ''}">${esc(normMode(e.mode))}</span></td>
+          ${admin && e.auto ? '<td><small style="color:var(--muted)">From Recharge Settlement</small></td>' : ''}
+          ${admin && !e.auto ? `<td class="actions">
+            <button class="btn btn-small btn-ghost" data-act="edit" data-mk="${esc(monthOf(e.date))}" data-id="${esc(e.id)}">Edit</button>
+            <button class="btn btn-small btn-danger" data-act="del" data-mk="${esc(monthOf(e.date))}" data-id="${esc(e.id)}">Delete</button>
+          </td>` : ''}
+        </tr>`;
+      }).join('');
+      const head = [opts.showDate ? 'Date' : 'Time', 'Service', 'Customer', { label: 'Amount', num: true }];
+      if (admin) head.push({ label: 'Discount', num: true }, { label: 'Cost', num: true }, { label: 'Profit', num: true });
+      head.push('Mode');
+      if (admin) head.push('Action');
+      return buildTable(head, rows);
+    }
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const { act, id, mk } = btn.dataset;
+      if (act === 'edit') startEdit(mk, id);
+      else if (act === 'del') deleteEntry(mk, id);
+      else if (act === 'udhaar-paid') markUdhaar(id, true);
+      else if (act === 'udhaar-undo') markUdhaar(id, false);
+      else if (act === 'udhaar-del') deleteUdhaar(id);
+      else if (act === 'exp-del') deleteExpense(mk, id);
+      else if (act === 'rec-del') deleteRecurring(id);
+      else if (act === 'svc-edit') startServiceEdit(id);
+      else if (act === 'svc-del') deleteService(id);
+      else if (act === 'staff-del') removeStaff(id);
+    });
+
+    /* ==========================================================
+       Rendering: today
+       ========================================================== */
+    function renderToday() {
+      const admin = state.role === 'admin';
+
+      // "Added Today" on the Add Entry page: your own manual entries (staff see only theirs)
+      let mine = entriesOf(currentMonth).filter((e) => e.date === todayKey);
+      if (!admin) mine = mine.filter((e) => e.by === state.user.uid);
+      mine.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      $('addRecent').innerHTML = entriesTable(mine, { showDate: false });
+      if (!admin) return;
+
+      // Home page: everything today, including recharges from the settlement dashboard
+      const all = mine.concat(rechargeRows(currentMonth, todayKey));
+      all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      $('todayEntries').innerHTML = entriesTable(all, { showDate: false });
+
+      const agg = aggregate(currentMonth);
+      const t = agg.days[todayKey] || { income: 0, cost: 0, profit: 0, count: 0, Cash: 0, UPI: 0, Credit: 0, Auto: 0 };
+      $('todayStats').innerHTML = `
+        <div class="stat"><small>Income</small><b>${money(t.income)}</b></div>
+        <div class="stat"><small>Cost</small><b>${money(t.cost)}</b></div>
+        <div class="stat profit"><small>Profit</small><b class="${clsOf(t.profit)}">${money(t.profit)}</b></div>
+        <div class="stat"><small>Entries</small><b>${t.count}</b></div>`;
+      $('todayBreakdown').innerHTML = `Cash ${money(t.Cash)} · UPI ${money(t.UPI)} · Credit ${money(t.Credit)}` +
+        (t.discount > 0 ? ` · Discounts ${money(t.discount)}` : '') +
+        (rechargeOn() ? ` · Recharge (auto) ${money(t.Auto)}` : '') +
+        (state.rechargeError ? ' · <span class="neg">Recharge sync could not read the settlement data</span>' : '');
+
+      const target = num(state.settings.dailyTarget);
+      if (target > 0) {
+        const pct = Math.max(0, Math.min(100, Math.round((t.profit / target) * 100)));
+        $('targetBox').innerHTML = `<small style="font-weight:600;">Daily target: ${money(t.profit)} of ${money(target)} (${pct}%)${t.profit >= target ? ' - target reached! 🎉' : ''}</small>
+          <div class="progress"><i class="${t.profit >= target ? 'done' : ''}" style="width:${pct}%"></i></div>`;
+      } else {
+        $('targetBox').innerHTML = '<small style="color:var(--muted);">Set a daily target in Settings to see your progress here.</small>';
+      }
+
+      // This month at a glance
+      const mn = monthNet(currentMonth);
+      $('monthSnapLabel').textContent = currentMonth.split('-').reverse().join('-');
+      $('monthSnap').innerHTML = `<div class="stats">
+        <div class="stat profit"><small>Gross Profit</small><b class="${clsOf(mn.agg.total.profit)}">${money(mn.agg.total.profit)}</b></div>
+        <div class="stat"><small>Expenses</small><b>${money(mn.expenses)}</b></div>
+        <div class="stat profit"><small>Net Profit</small><b class="${clsOf(mn.net)}">${money(mn.net)}</b></div></div>`;
+    }
+
+    /* ==========================================================
+       Rendering: monthly report
+       ========================================================== */
+    function renderMonth() {
+      if (state.role !== 'admin') return;
+      const mk = state.month;
+      const { agg, manualExpenses, recurring, expenses, net } = monthNet(mk);
+      const t = agg.total;
+
+      const dayList = Object.values(agg.days).sort((a, b) => a.date.localeCompare(b.date));
+      const best = dayList.slice().sort((a, b) => b.profit - a.profit)[0];
+      const worst = dayList.slice().sort((a, b) => a.profit - b.profit)[0];
+      const avg = dayList.length ? t.profit / dayList.length : 0;
+
+      $('monthStats').innerHTML = `
+        <div class="stat"><small>Total Income</small><b>${money(t.income)}</b></div>
+        <div class="stat"><small>Total Cost</small><b>${money(t.cost)}</b></div>
+        <div class="stat"><small>Discounts Given</small><b>${money(t.discount)}</b></div>
+        <div class="stat profit"><small>Gross Profit</small><b class="${clsOf(t.profit)}">${money(t.profit)}</b></div>
+        <div class="stat"><small>Expenses</small><b>${money(expenses)}</b></div>
+        <div class="stat profit"><small>Net Profit</small><b class="${clsOf(net)}">${money(net)}</b></div>
+        <div class="stat"><small>Avg profit / day</small><b>${money(Math.round(avg))}</b></div>`;
+      $('monthBreakdown').innerHTML =
+        `Entries ${t.count} · Cash ${money(t.Cash)} · UPI ${money(t.UPI)} · Credit ${money(t.Credit)}` +
+        (rechargeOn() ? ` · Recharge (auto) ${money(t.Auto)}` : '') +
+        (best ? `<br>Best day: ${fmtDate(best.date)} (${money(best.profit)}) · Weakest day: ${fmtDate(worst.date)} (${money(worst.profit)})` : '');
+
+      $('dailyChart').innerHTML = dailyChartSvg(mk, agg.days);
+      $('serviceChart').innerHTML = serviceChartHtml(agg.services);
+
+      if (!dayList.length) {
+        $('dailyTable').innerHTML = '<p class="empty">No entries in this month.</p>';
+      } else {
+        const target = num(state.settings.dailyTarget);
+        const rows = dayList.map((d) => `<tr>
+          <td>${fmtDate(d.date)}</td><td class="num">${d.count}</td>
+          <td class="num">${money(d.income)}</td><td class="num">${money(d.cost)}</td>
+          <td class="num ${clsOf(d.profit)}">${money(d.profit)}${target > 0 && d.profit >= target ? ' ✓' : ''}</td>
+          <td class="num">${money(d.Cash)}</td><td class="num">${money(d.UPI)}</td><td class="num">${money(d.Credit)}</td>
+        </tr>`).join('');
+        const foot = `<tr><td>Total</td><td class="num">${t.count}</td><td class="num">${money(t.income)}</td><td class="num">${money(t.cost)}</td>
+          <td class="num ${clsOf(t.profit)}">${money(t.profit)}</td><td class="num">${money(t.Cash)}</td><td class="num">${money(t.UPI)}</td><td class="num">${money(t.Credit)}</td></tr>`;
+        $('dailyTable').innerHTML = buildTable(
+          ['Date', { label: 'Entries', num: true }, { label: 'Income', num: true }, { label: 'Cost', num: true }, { label: 'Profit', num: true }, { label: 'Cash', num: true }, { label: 'UPI', num: true }, { label: 'Credit', num: true }],
+          rows, foot);
+      }
+    }
+
+    /** All Entries page: one month, with search and a payment-mode filter. */
+    function renderEntriesPage() {
+      if (state.role !== 'admin') return;
+      const mk = state.month;
+      const q = $('entrySearch').value.trim().toLowerCase();
+      const mode = $('entryModeFilter').value;
+
+      let list = entriesOf(mk).concat(rechargeRows(mk));
+      if (mode) list = list.filter((e) => normMode(e.mode) === mode);
+      if (q) {
+        list = list.filter((e) => [e.service, e.customer, e.mobile, e.note, e.amount, fmtDate(e.date)].join(' ').toLowerCase().includes(q));
+      }
+      list.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+
+      const profit = list.reduce((sum, e) => sum + num(e.profit), 0);
+      $('entriesSummary').textContent = `${list.length} entries · profit ${money(profit)}`;
+      $('monthEntries').innerHTML = entriesTable(list, { showDate: true });
+    }
+    $('entrySearch').addEventListener('input', renderEntriesPage);
+    $('entryModeFilter').addEventListener('change', renderEntriesPage);
+
+    function dailyChartSvg(mk, days) {
+      const [y, m] = mk.split('-').map(Number);
+      const count = new Date(y, m, 0).getDate();
+      const values = [];
+      for (let d = 1; d <= count; d++) values.push({ day: d, v: (days[`${mk}-${pad(d)}`] || {}).profit || 0 });
+      const max = Math.max(1, ...values.map((x) => x.v));
+      const min = Math.min(0, ...values.map((x) => x.v));
+      const W = 720, H = 220, padL = 6, padB = 24, padT = 16;
+      const innerH = H - padB - padT, slot = (W - padL * 2) / count;
+      const range = max - min || 1;
+      const zeroY = padT + (max / range) * innerH;
+      const bars = values.map((x, i) => {
+        const h = Math.abs(x.v) / range * innerH;
+        const yy = x.v >= 0 ? zeroY - h : zeroY;
+        const fill = x.v >= 0 ? '#ff8a00' : '#be123c';
+        return `<rect x="${padL + i * slot + 2}" y="${yy.toFixed(1)}" width="${Math.max(2, slot - 4).toFixed(1)}" height="${Math.max(h, x.v ? 1.5 : 0).toFixed(1)}" rx="3" fill="${fill}"><title>${fmtDate(`${mk}-${pad(x.day)}`)}: ${money(x.v)}</title></rect>
+          <text x="${(padL + i * slot + slot / 2).toFixed(1)}" y="${H - 7}" text-anchor="middle" font-size="9" fill="#6b6f7b">${x.day}</text>`;
+      }).join('');
+      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily profit chart">
+        <line x1="${padL}" x2="${W - padL}" y1="${zeroY.toFixed(1)}" y2="${zeroY.toFixed(1)}" stroke="#e9e1d3"/>
+        <text x="${padL}" y="11" font-size="10" fill="#6b6f7b">Highest day: ${money(max)}</text>${bars}</svg>`;
+    }
+
+    function serviceChartHtml(services) {
+      const list = Object.values(services).sort((a, b) => b.profit - a.profit);
+      if (!list.length) return '<p class="empty">No data yet.</p>';
+      const max = Math.max(1, ...list.map((s) => Math.abs(s.profit)));
+      return `<div class="teal">${list.map((s) => `<div class="hbar">
+        <span>${esc(s.name)}</span>
+        <div class="track"><i style="width:${Math.max(2, Math.abs(s.profit) / max * 100).toFixed(1)}%"></i></div>
+        <span class="${clsOf(s.profit)}">${money(s.profit)}</span></div>`).join('')}</div>`;
+    }
+
+    document.querySelectorAll('.month-picker').forEach((picker) => {
+      picker.addEventListener('change', () => {
+        if (!picker.value) return;
+        state.month = picker.value;
+        document.querySelectorAll('.month-picker').forEach((i) => { i.value = state.month; });
+        watchMonth(state.month);
+        renderAll();
+      });
+    });
+
+    /* CSV download of the selected month */
+    function csvCell(v) { return '"' + String(v ?? '').replace(/"/g, '""') + '"'; }
+    $('exportBtn').addEventListener('click', () => {
+      const mk = state.month;
+      const header = ['Date', 'Service', 'Amount', 'Discount', 'Income', 'Cost', 'Profit', 'Mode', 'Customer', 'Mobile', 'Note', 'Entered by'];
+      const rows = entriesOf(mk).sort((a, b) => a.date.localeCompare(b.date))
+        .map((e) => [e.date, e.service, e.amount, e.discount || 0, e.income, e.cost, e.profit, e.mode, e.customer, e.mobile, e.note, e.byName]);
+      rechargeOf(mk).forEach((r) => rows.push([r.date, 'Recharge (auto)', r.txn, 0, r.profit, 0, r.profit, 'Auto', r.vendor, r.mobile, r.operator, '']));
+      expensesOf(mk).forEach((x) => rows.push([x.date, 'EXPENSE: ' + x.category, -num(x.amount), '', '', '', -num(x.amount), '', '', '', x.note, '']));
+      Object.values(state.recurring).forEach((r) => rows.push([mk + '-01', 'RECURRING EXPENSE: ' + r.category, -num(r.amount), '', '', '', -num(r.amount), '', '', '', r.note, '']));
+      const csv = [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n');
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `laxman-telecom-ledger-${mk}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    });
+
+    /* ==========================================================
+       Expenses
+       ========================================================== */
+    function renderExpenses() {
+      if (state.role !== 'admin') return;
+      const mk = state.month;
+      $('expenseMonthLabel').textContent = 'Month: ' + mk.split('-').reverse().join('-');
+      const list = expensesOf(mk).sort((a, b) => b.date.localeCompare(a.date));
+      const total = list.reduce((s, x) => s + num(x.amount), 0);
+
+      $('expenseList').innerHTML = list.length
+        ? buildTable(['Date', 'Category', 'Note', { label: 'Amount', num: true }, 'Action'],
+          list.map((x) => `<tr><td>${fmtDate(x.date)}</td><td>${esc(x.category)}</td><td>${esc(x.note) || '-'}</td>
+            <td class="num">${money(x.amount)}</td>
+            <td class="actions"><button class="btn btn-small btn-danger" data-act="exp-del" data-mk="${esc(mk)}" data-id="${esc(x.id)}">Delete</button></td></tr>`).join(''),
+          `<tr><td colspan="3">One-time expenses total</td><td class="num">${money(total)}</td><td></td></tr>`)
+        : '<p class="empty">No one-time expenses in this month.</p>';
+
+      const rec = Object.entries(state.recurring);
+      $('recurringList').innerHTML = rec.length
+        ? buildTable(['Category', 'Note', { label: 'Monthly amount', num: true }, 'Action'],
+          rec.map(([id, r]) => `<tr><td>${esc(r.category)}</td><td>${esc(r.note) || '-'}</td><td class="num">${money(r.amount)}</td>
+            <td class="actions"><button class="btn btn-small btn-danger" data-act="rec-del" data-id="${esc(id)}">Remove</button></td></tr>`).join(''),
+          `<tr><td colspan="2">Recurring total / month</td><td class="num">${money(recurringTotal())}</td><td></td></tr>`)
+        : '<p class="empty">No recurring expenses yet.</p>';
+    }
+
+    $('expenseForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const date = $('xDate').value, amount = num($('xAmount').value);
+      if (!date || amount <= 0) { toast('Enter a date and an amount above 0'); return; }
+      try {
+        await db.ref(ROOT + '/expenses/' + monthOf(date)).push({
+          date, category: $('xCategory').value, amount, note: $('xNote').value.trim(), createdAt: Date.now()
+        });
+        watchMonth(monthOf(date));
+        $('xAmount').value = ''; $('xNote').value = '';
+        toast('Expense added');
+      } catch (err) { toast('Could not save: ' + err.message); }
+    });
+
+    async function deleteExpense(mk, id) {
+      if (!confirm('Delete this expense?')) return;
+      try { await db.ref(ROOT + '/expenses/' + mk + '/' + id).remove(); } catch (err) { toast(err.message); }
+    }
+
+    $('recurringForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = num($('rAmount').value);
+      if (amount <= 0) { toast('Enter an amount above 0'); return; }
+      try {
+        await db.ref(ROOT + '/recurring').push({ category: $('rCategory').value, amount, note: $('rNote').value.trim() });
+        $('recurringForm').reset();
+        toast('Recurring expense added');
+      } catch (err) { toast('Could not save: ' + err.message); }
+    });
+
+    async function deleteRecurring(id) {
+      if (!confirm('Remove this recurring expense? It will no longer be counted in any month.')) return;
+      try { await db.ref(ROOT + '/recurring/' + id).remove(); } catch (err) { toast(err.message); }
+    }
+
+    /* ==========================================================
+       Credit
+       ========================================================== */
+    function renderUdhaar() {
+      if (state.role !== 'admin') return;
+      const list = Object.entries(state.udhaar).map(([id, u]) => ({ id, ...u }));
+      const pending = list.filter((u) => u.status !== 'Received').sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      const received = list.filter((u) => u.status === 'Received').sort((a, b) => (b.receivedAt || 0) - (a.receivedAt || 0)).slice(0, 15);
+      const totalPending = pending.reduce((s, u) => s + num(u.amount), 0);
+      $('udhaarTotal').textContent = 'Pending: ' + money(totalPending);
+      $('homeCredit').textContent = pending.length ? money(totalPending) + ' pending' : 'All clear';
+
+      const row = (u, done) => `<tr>
+        <td>${esc(u.customer)}</td><td>${esc(u.mobile) || '-'}</td><td>${esc(u.service) || '-'}</td>
+        <td>${fmtDate(u.date)}</td><td class="num">${money(u.amount)}</td>
+        <td class="actions">${done
+          ? `<span class="tag received">Received ${u.receivedAt ? fmtDate(dateStr(new Date(u.receivedAt))) : ''}</span> <button class="btn btn-small btn-ghost" data-act="udhaar-undo" data-id="${esc(u.id)}">Undo</button>`
+          : `<button class="btn btn-small btn-good" data-act="udhaar-paid" data-id="${esc(u.id)}">Mark Received</button>
+             <button class="btn btn-small btn-danger" data-act="udhaar-del" data-id="${esc(u.id)}">Delete</button>`}</td></tr>`;
+      const heads = ['Customer', 'Mobile', 'Service', 'Date', { label: 'Amount', num: true }, 'Action'];
+
+      $('udhaarList').innerHTML =
+        (pending.length ? buildTable(heads, pending.map((u) => row(u, false)).join('')) : '<p class="empty">No pending credit. 🎉</p>') +
+        (received.length ? `<h3 class="section-heading">Recently Received</h3>${buildTable(heads, received.map((u) => row(u, true)).join(''))}` : '');
+    }
+
+    async function markUdhaar(id, received) {
+      try {
+        await db.ref(ROOT + '/udhaar/' + id).update({ status: received ? 'Received' : 'Pending', receivedAt: received ? Date.now() : null });
+        toast(received ? 'Marked as received' : 'Moved back to pending');
+      } catch (err) { toast(err.message); }
+    }
+
+    async function deleteUdhaar(id) {
+      if (!confirm('Delete this credit record? (The ledger entry itself is not deleted.)')) return;
+      try { await db.ref(ROOT + '/udhaar/' + id).remove(); } catch (err) { toast(err.message); }
+    }
+
+    /* ==========================================================
+       Settings: general, services, staff
+       ========================================================== */
+    function fillSettingsForm() {
+      if (document.activeElement && document.activeElement.closest('#generalForm')) return;
+      $('sTarget').value = state.settings.dailyTarget ?? '';
+      $('sRechargeRate').value = state.settings.rechargeRate ?? DEFAULT_RATE;
+      $('sRechargeSync').value = state.settings.rechargeSync === false ? '0' : '1';
+    }
+
+    $('generalForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await db.ref(ROOT + '/settings').update({
+          dailyTarget: num($('sTarget').value),
+          rechargeRate: num($('sRechargeRate').value),
+          rechargeSync: $('sRechargeSync').value === '1'
+        });
+        showMsg('settings', 'success', 'Settings saved.');
+      } catch (err) { showMsg('settings', 'error', err.message); }
+    });
+
+    function renderServices() {
+      if (state.role !== 'admin') return;
+      const list = sortedServices();
+      $('serviceList').innerHTML = list.length
+        ? buildTable(['Service', 'Type', { label: 'Default price', num: true }, { label: 'Default cost', num: true }, 'Action'],
+          list.map((s) => `<tr><td>${esc(s.name)}</td>
+            <td>${s.type === 'commission' ? `Commission ${num(s.rate)}%` : 'Fixed price'}</td>
+            <td class="num">${s.type === 'commission' ? '-' : money(s.price)}</td>
+            <td class="num">${s.type === 'commission' ? '-' : money(s.cost)}</td>
+            <td class="actions">
+              <button class="btn btn-small btn-ghost" data-act="svc-edit" data-id="${esc(s.id)}">Edit</button>
+              <button class="btn btn-small btn-danger" data-act="svc-del" data-id="${esc(s.id)}">Delete</button>
+            </td></tr>`).join(''))
+        : '<p class="empty">No services yet.</p>';
+    }
+
+    function syncServiceFormType() {
+      const comm = $('vType').value === 'commission';
+      $('vRateGroup').style.display = comm ? '' : 'none';
+      $('vPriceGroup').style.display = comm ? 'none' : '';
+      $('vCostGroup').style.display = comm ? 'none' : '';
+    }
+    $('vType').addEventListener('change', syncServiceFormType);
+
+    function resetServiceForm() {
+      state.editingService = null;
+      $('serviceForm').reset();
+      $('vRate').value = 3;
+      $('serviceSaveBtn').textContent = 'Add Service';
+      $('serviceCancelBtn').style.display = 'none';
+      syncServiceFormType();
+    }
+    $('serviceCancelBtn').addEventListener('click', resetServiceForm);
+
+    function startServiceEdit(id) {
+      const s = state.services[id];
+      if (!s) return;
+      state.editingService = id;
+      $('vName').value = s.name; $('vType').value = s.type || 'fixed';
+      $('vRate').value = num(s.rate); $('vPrice').value = num(s.price); $('vCost').value = num(s.cost);
+      $('serviceSaveBtn').textContent = 'Update Service';
+      $('serviceCancelBtn').style.display = '';
+      syncServiceFormType();
+      $('serviceForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    $('serviceForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = $('vName').value.trim();
+      if (!name) return;
+      const comm = $('vType').value === 'commission';
+      const id = state.editingService || db.ref().push().key;
+      const prev = state.services[id] || {};
+      const doc = {
+        name, type: $('vType').value,
+        rate: comm ? num($('vRate').value) : 0,
+        price: comm ? 0 : num($('vPrice').value),
+        cost: comm ? 0 : num($('vCost').value),
+        order: prev.order ?? (sortedServices().length + 1)
+      };
+      try {
+        await db.ref(ROOT + '/services/' + id).set(doc);
+        showMsg('services', 'success', state.editingService ? 'Service updated.' : 'Service added.');
+        resetServiceForm();
+      } catch (err) { showMsg('services', 'error', err.message); }
+    });
+
+    async function deleteService(id) {
+      const s = state.services[id];
+      if (!s || !confirm(`Delete "${s.name}"? Old entries keep their data; only the quick-select button is removed.`)) return;
+      try { await db.ref(ROOT + '/services/' + id).remove(); } catch (err) { showMsg('services', 'error', err.message); }
+    }
+
+    /* Staff */
+    function renderStaff() {
+      const list = Object.entries(state.staff);
+      $('staffList').innerHTML = list.length
+        ? buildTable(['Name', 'Email', 'Action'],
+          list.map(([uid, s]) => `<tr><td>${esc(s.name)}</td><td>${esc(s.email)}</td>
+            <td class="actions"><button class="btn btn-small btn-danger" data-act="staff-del" data-id="${esc(uid)}">Remove Access</button></td></tr>`).join(''))
+        : '<p class="empty">No staff accounts yet.</p>';
+    }
+
+    async function removeStaff(uid) {
+      if (!confirm("Remove this staff member's access? Their login itself is not deleted, only their access to the ledger.")) return;
+      try { await db.ref(ROOT + '/staff/' + uid).remove(); showMsg('settings', 'success', 'Staff access removed.'); }
+      catch (err) { showMsg('settings', 'error', err.message); }
+    }
+
+    $('staffForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = $('stName').value.trim(), email = $('stEmail').value.trim(), password = $('stPassword').value;
+      const btn = $('staffBtn');
+      btn.disabled = true;
+
+      // A second Firebase app keeps the admin signed in while the staff login is created.
+      const secondary = firebase.apps.find((a) => a.name === 'Secondary') || firebase.initializeApp(firebaseConfig, 'Secondary');
+      const sAuth = secondary.auth();
+      const grant = (uid) => db.ref(ROOT + '/staff/' + uid).set({ name, email }).then(() => sAuth.signOut());
+
+      sAuth.createUserWithEmailAndPassword(email, password)
+        .then((cred) => grant(cred.user.uid))
+        .then(() => { showMsg('settings', 'success', 'Staff login created for ' + name + '.'); $('staffForm').reset(); })
+        .catch((err) => {
+          if (err.code !== 'auth/email-already-in-use') { showMsg('settings', 'error', err.message); return; }
+          return sAuth.signInWithEmailAndPassword(email, password)
+            .then((cred) => grant(cred.user.uid))
+            .then(() => { showMsg('settings', 'success', 'Access restored for ' + name + '.'); $('staffForm').reset(); })
+            .catch((e2) => showMsg('settings', 'error', 'This email already has a login. Enter its original password to give it ledger access, or use a different email. (' + e2.message + ')'));
+        })
+        .finally(() => { btn.disabled = false; });
+    });
+
+    /* ==========================================================
+       Render everything
+       ========================================================== */
+    function renderAll() {
+      if (!state.role) return;
+      renderChips();
+      applyServiceUI();
+      renderToday();
+      renderMonth();
+      renderEntriesPage();
+      renderExpenses();
+      renderUdhaar();
+      renderServices();
+    }
+    syncServiceFormType();
+  </script>
+
+</body>
+</html>

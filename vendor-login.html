@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Login | LAXMAN TELECOM</title>
+<meta name="theme-color" content="#111318">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111318;--acc:#ff8a00;--acc2:#ffb347;--cream:#fbf7f0;--line:#e9e1d3;--text:#2c2f38;--mute:#6b6f7b}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:330px;background:radial-gradient(circle at 12% 10%,rgba(255,138,0,.32),transparent 38%),radial-gradient(circle at 92% 90%,rgba(124,58,237,.28),transparent 40%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,var(--ink)}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.15}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+@keyframes up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+
+/* header */
+.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:70px;padding:0 max(20px,calc((100% - 1140px)/2));background:rgba(251,247,240,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo img{border-radius:50%;height:40px!important;width:40px!important}
+.logo{gap:10px!important}
+.logo h1{font-size:1.15rem}
+.logo p{font-size:.68rem;color:var(--mute);margin-top:2px}
+nav{display:flex;align-items:center;gap:2px;font-weight:500;font-size:.9rem}
+nav a{padding:8px 12px;border-radius:999px;transition:background .2s}
+nav a:hover{background:rgba(255,138,0,.13)}
+nav a.menu-logout-link{background:#be123c;color:#fff;margin-left:6px}
+nav a.menu-logout-link:hover{background:#9f1239}
+.nav-toggle{display:none;place-items:center;background:none;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;color:var(--ink);cursor:pointer}
+.nav-backdrop{display:none;position:fixed;inset:0;background:rgba(17,19,24,.45);z-index:40}
+.nav-backdrop.nav-open{display:block}
+@media(max-width:1100px){
+  .nav-toggle{display:grid}
+  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(17,19,24,.12)}
+  nav.nav-open{display:flex}
+  nav a{border-radius:0;border-bottom:1px solid var(--line);padding:13px 8px}
+  nav a.menu-logout-link{margin:14px 0 0;text-align:center;border-radius:999px;border:0}
+}
+
+/* login card */
+.auth-wrapper{width:92%;max-width:440px;margin:56px auto 70px;padding:34px 30px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px -16px rgba(17,19,24,.35);animation:up .8s cubic-bezier(.2,.8,.2,1) both}
+#vendorLoginWrapper h2{text-align:center;font-size:1.8rem;margin-bottom:20px}
+#vendorLoginWrapper h2::before{content:'🤝';display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:50%;font-size:1.8rem;background:linear-gradient(135deg,#0f766e,#14b8a6);box-shadow:0 14px 26px -6px #0f766e}
+.auth-link{text-align:center;font-size:.84rem;color:var(--mute);margin-top:16px}
+
+/* forms */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
+input[type=text],input[type=email],input[type=password],input[type=date]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s}
+input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,138,0,.15)}
+.error-msg,.success-msg{display:none;border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:.9rem}
+.error-msg{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
+.success-msg{background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
+.auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.35);transition:transform .2s}
+.auth-btn:hover{transform:translateY(-3px)}
+.auth-btn::after{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s}
+.auth-btn:hover::after{left:150%}
+.logout-btn{padding:9px 20px;font:inherit;font-weight:700;font-size:.9rem;color:#fff;background:linear-gradient(135deg,#be123c,#f43f5e);border:0;border-radius:999px;cursor:pointer;transition:transform .2s}
+.logout-btn:hover{transform:translateY(-2px)}
+
+/* dashboard */
+.dash-wrapper{max-width:1100px;margin:40px auto 70px;padding:0 16px;display:grid;gap:22px}
+.dash-wrapper>*{min-width:0}
+.dash-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:0 24px 50px -20px rgba(17,19,24,.3);animation:up .8s cubic-bezier(.2,.8,.2,1) both}
+.dash-card+.dash-card{animation-delay:.15s}
+.dash-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dash-card h2{font-size:1.6rem}
+.dash-card h3{font-size:1.05rem}
+.dash-card form{max-width:420px}
+.vendor-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:22px 0}
+.vendor-summary-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;transition:transform .3s,box-shadow .3s}
+.vendor-summary-card:nth-child(1){--c1:#7c3aed;--c2:#c026d3}
+.vendor-summary-card:nth-child(2){--c1:#0f766e;--c2:#14b8a6}
+.vendor-summary-card:nth-child(3){--c1:#ea580c;--c2:#fb923c}
+.vendor-summary-card:nth-child(4){--c1:#15803d;--c2:#4ade80}
+.vendor-summary-card:nth-child(5){--c1:#be123c;--c2:#f43f5e}
+.vendor-summary-card::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--c1),var(--c2));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.vendor-summary-card::after{content:'';position:absolute;right:-34px;top:-34px;width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.12}
+.vendor-summary-card:hover{transform:translateY(-4px);box-shadow:0 16px 30px -10px rgba(17,19,24,.2)}
+.vendor-summary-card:hover::before{transform:scaleX(1)}
+.vendor-summary-card .label{position:relative;z-index:1;font-size:.74rem;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
+.vendor-summary-card .value{position:relative;z-index:1;font-family:'Bricolage Grotesque';font-size:1.5rem;font-weight:800;color:var(--ink);margin-top:4px}
+.bulk{background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:20px;scroll-margin-top:100px}
+.bulk-t{font-family:'Bricolage Grotesque';font-weight:700;font-size:1.05rem;color:var(--ink);margin-bottom:12px}
+.bulk label{display:block;font-size:.82rem;font-weight:600;margin-bottom:4px}
+.pay-btn{font:inherit;font-weight:700;color:#fff;background:#166534;border:0;border-radius:999px;cursor:pointer}
+.vendor-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:16px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.vendor-table{width:100%;border-collapse:collapse;min-width:900px}
+.vendor-table th,.vendor-table td{padding:12px;font-size:.9rem;text-align:left;border-bottom:1px solid var(--line)}
+.vendor-table th{background:var(--ink);color:#fff;font-size:.74rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:3px solid var(--acc)}
+.vendor-table tbody tr:nth-child(even) td{background:#fdfaf4}
+.vendor-table tbody tr:hover td{background:rgba(255,138,0,.08)}
+.vendor-table td.action-cell{min-width:150px}
+.vendor-empty{padding:30px;text-align:center;color:var(--mute)}
+
+  .hidden{display:none!important}
+.forgot-row{margin:-4px 0 16px;text-align:right}
+.forgot-row a,.back-row a{font-size:.88rem;font-weight:600;color:#b35f00}
+.forgot-row a:hover,.back-row a:hover{text-decoration:underline}
+.back-row{margin-top:16px;text-align:center}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0 16px;font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 14px;font:inherit;font-weight:700;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:999px;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.google-btn:hover{transform:translateY(-2px);border-color:var(--acc);box-shadow:0 10px 22px -12px rgba(17,19,24,.3)}
+.google-btn svg{display:block;width:18px;height:18px}
+.reset-title{margin-bottom:4px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.25rem;color:var(--ink)}
+.reset-text{margin-bottom:16px;font-size:.9rem;color:var(--mute)}
+
+/* MPIN lock */
+#mpinLockOverlay{position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 15% 15%,rgba(255,138,0,.3),transparent 40%),radial-gradient(circle at 90% 90%,rgba(124,58,237,.3),transparent 40%),var(--ink)}
+.mp-card{background:#fff;border-radius:24px;padding:36px 30px;width:100%;max-width:350px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.45);animation:up .6s both}
+.mp-title{font-family:'Bricolage Grotesque';font-size:1.45rem;font-weight:800;color:var(--ink);margin-bottom:4px}
+.mp-sub{font-size:.85rem;color:var(--mute);margin-bottom:20px}
+#mpinInput{text-align:center;font-size:1.3rem;letter-spacing:8px;margin-bottom:12px}
+#mpinUnlockBtn{width:100%;padding:13px;border:0;border-radius:999px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--ink);font:inherit;font-weight:700;font-size:1rem;cursor:pointer}
+#mpinError{color:#be123c;font-size:.85rem;margin-top:10px;min-height:18px}
+#mpinForgotLink{font-size:.82rem;color:var(--mute)}
+#mpinForgotLink:hover{color:var(--acc)}
+
+/* Birthday wish pop-up */
+.birthday-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:center;z-index:99999;backdrop-filter:blur(8px)}
+.birthday-card{background:#fff;padding:35px 25px;border-radius:20px;text-align:center;box-shadow:0 15px 35px rgba(0,0,0,.5);max-width:420px;width:90%;border:3px solid #ff4757;animation:popUpEffect .6s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popUpEffect{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
+.birthday-card h2{color:#ff4757;font-size:26px;margin-bottom:12px;font-family:sans-serif}
+.birthday-card p{color:#2f3542;font-size:16px;line-height:1.6;margin-bottom:20px}
+.birthday-btn{background:#ff4757;color:#fff;border:0;padding:12px 30px;border-radius:25px;font-size:16px;cursor:pointer;font-weight:bold;box-shadow:0 5px 15px rgba(255,71,87,.4);transition:.3s}
+.birthday-btn:hover{background:#e84118;transform:scale(1.05)}
+
+/* Diwali greeting pop-up */
+.diwali-overlay{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;padding:16px;background:radial-gradient(circle at 50% 20%,rgba(255,138,0,.35),transparent 55%),rgba(10,8,20,.88);backdrop-filter:blur(8px);overflow:hidden}
+.diwali-card{position:relative;max-width:440px;width:100%;padding:34px 26px 28px;text-align:center;border-radius:24px;background:linear-gradient(180deg,#fffaf0,#fff1d6);border:3px solid #ffb347;box-shadow:0 0 60px rgba(255,138,0,.55),0 20px 50px rgba(0,0,0,.5);animation:diwaliPop .7s cubic-bezier(.175,.885,.32,1.275) both}
+@keyframes diwaliPop{0%{transform:scale(.3) translateY(60px);opacity:0}100%{transform:none;opacity:1}}
+.diwali-diyas{font-size:2rem;letter-spacing:6px;margin-bottom:6px}
+.diwali-diyas span{display:inline-block;animation:diyaFlicker 1.4s ease-in-out infinite}
+.diwali-diyas span:nth-child(2n){animation-delay:.35s}
+.diwali-diyas span:nth-child(3n){animation-delay:.7s}
+@keyframes diyaFlicker{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #ffb347)}50%{transform:scale(1.15) translateY(-2px);filter:drop-shadow(0 0 14px #ff8a00)}}
+.diwali-card h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.7rem;line-height:1.25;color:#b23a00;margin-bottom:6px}
+.diwali-name{font-weight:700;color:#7c3aed;font-size:1.1rem;margin-bottom:12px}
+.diwali-card p{color:#4a3b2a;font-size:1rem;line-height:1.7;margin-bottom:18px}
+.diwali-sign{font-weight:700;color:#b23a00;margin-bottom:20px}
+.diwali-btn{background:linear-gradient(135deg,#ff8a00,#ffb347);color:#111318;border:0;padding:13px 30px;border-radius:999px;font:inherit;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.45);transition:transform .2s}
+.diwali-btn:hover{transform:translateY(-3px) scale(1.04)}
+.diwali-lamp-row{position:absolute;top:-18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 22px;font-size:1.6rem;pointer-events:none}
+
+/* ===== App shell (after login): sidebar on desktop, bottom tabs on phone ===== */
+.sidebar,.topbar,.tabbar{display:none}
+body.logged-in{background:var(--cream)}
+body.logged-in::before{display:none}
+body.logged-in .header{display:none}
+body.logged-in .sidebar{display:flex}
+.sidebar{position:fixed;top:0;bottom:0;left:0;z-index:30;flex-direction:column;width:252px;padding:20px 14px;overflow-x:hidden;overflow-y:auto;color:#fff;transition:width .2s ease,padding .2s ease;background:radial-gradient(circle at 10% 0%,rgba(255,138,0,.28),transparent 45%),var(--ink)}
+.side-head{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 0 14px}
+.side-brand{display:flex;align-items:center;gap:10px;min-width:0;padding:2px 8px}
+.side-brand img{width:42px;height:42px;border-radius:50%}
+.side-brand h1{margin:0;font-size:1.02rem;color:#fff}
+.side-brand p{font-size:.72rem;color:rgba(255,255,255,.55)}
+.side-toggle{flex:none;display:grid;place-items:center;width:34px;height:34px;font:inherit;font-size:1.15rem;font-weight:700;line-height:1;color:#fff;background:rgba(255,255,255,.1);border:0;border-radius:10px;cursor:pointer;transition:background .15s}
+.side-toggle:hover{background:rgba(255,255,255,.22)}
+.side-label{margin:16px 12px 6px;font-size:.68rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:rgba(255,255,255,.42)}
+.side-nav a,.side-link{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:12px;font:inherit;font-size:.94rem;font-weight:600;color:rgba(255,255,255,.78);background:none;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.side-nav a:hover,.side-link:hover{background:rgba(255,255,255,.09);color:#fff}
+.side-nav a.active{color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2))}
+.ni{flex:none;width:24px;text-align:center;font-size:1.12rem}
+.ico{display:inline-block;vertical-align:-.14em}
+.side-foot{display:grid;gap:4px;margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.12)}
+.side-link.logout{color:#fda4af}
+.main{min-width:0}
+body.logged-in .main{margin-left:252px;transition:margin-left .2s ease}
+body.side-collapsed .sidebar{width:76px;padding:20px 10px}
+body.side-collapsed.logged-in .main{margin-left:76px}
+body.side-collapsed .side-head{flex-direction:column;gap:10px}
+body.side-collapsed .side-brand{padding:2px 0}
+body.side-collapsed .side-brand div,body.side-collapsed .side-label,body.side-collapsed .side-text{display:none}
+body.side-collapsed .side-nav a,body.side-collapsed .side-link{justify-content:center;padding:12px 0}
+body.side-collapsed .side-nav{padding-top:10px;border-top:1px solid rgba(255,255,255,.12)}
+.page{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;max-width:1020px;margin:0 auto;padding:30px 26px 90px}
+.view{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
+.vcard,.hero,.stats{min-width:0}
+.view[hidden]{display:none!important}
+.page-head h2{margin:0;font-size:1.9rem}
+.page-head p{margin-top:2px;color:var(--mute);font-size:.95rem}
+.vcard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 18px 40px -26px rgba(17,19,24,.35)}
+.vcard h3{margin-bottom:12px}
+.vcard form{max-width:420px}
+
+/* Overview */
+.hero{position:relative;overflow:hidden;color:#fff;border-radius:24px;padding:28px;background:radial-gradient(circle at 10% 0%,rgba(255,138,0,.4),transparent 50%),radial-gradient(circle at 100% 100%,rgba(124,58,237,.4),transparent 45%),var(--ink)}
+.hero h2{margin:0;color:#fff;font-size:1.4rem}
+.hero .hint{margin-top:2px;font-size:.88rem;color:rgba(255,255,255,.6)}
+.hero .due-l{margin-top:22px;font-size:.74rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.hero .due-v{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:2.8rem;font-weight:800;line-height:1.1}
+.hero .bar{height:8px;margin-top:16px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden}
+.hero .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .5s}
+.hero .bar-t{margin-top:6px;font-size:.8rem;color:rgba(255,255,255,.65)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.stat{padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:18px}
+.stat small{display:block;font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;color:var(--mute)}
+.stat b{display:block;margin-top:2px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.45rem;color:var(--ink)}
+.stat:nth-child(1){border-top:4px solid #7c3aed}.stat:nth-child(2){border-top:4px solid #14b8a6}.stat:nth-child(3){border-top:4px solid #fb923c}.stat:nth-child(4){border-top:4px solid #22c55e}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-top h3{margin:0}
+.link-more{font-weight:700;font-size:.9rem;color:#b35f00}
+.recent-table{min-width:0}
+.recent-table th,.recent-table td{white-space:nowrap}
+.vendor-table td:first-child,.vendor-table td:nth-child(2){white-space:nowrap}
+.vendor-table-wrap{margin-top:0}
+
+.topbar{position:sticky;top:0;z-index:30;align-items:center;gap:10px;height:56px;padding:0 12px 0 16px;color:#fff;background:var(--ink)}
+.topbar img{width:32px;height:32px;border-radius:50%}
+.topbar b{flex:1;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.02rem}
+.topbar button{display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:12px;color:#fda4af;background:rgba(255,255,255,.1);cursor:pointer}
+@media(max-width:900px){
+  body.logged-in .sidebar{display:none}
+  body.logged-in .main,body.side-collapsed.logged-in .main{margin-left:0}
+  body.logged-in .topbar{display:flex}
+  .page{gap:16px;padding:16px 14px 110px}
+  .page-head h2{font-size:1.5rem}
+  .hero{padding:22px 20px}
+  .hero .due-v{font-size:2.2rem}
+  .vcard{padding:18px 16px}
+  body.logged-in .tabbar{display:flex;gap:2px;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -10px 26px rgba(17,19,24,.1)}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border-radius:12px;font-size:.7rem;font-weight:700;color:var(--mute)}
+  .tabbar .ni{width:auto;font-size:1.3rem}
+  .tabbar a.active{color:var(--ink);background:rgba(255,138,0,.18)}
+}
+@media(max-width:520px){.logo p{display:none}.auth-wrapper{padding:28px 20px}.dash-card{padding:20px 16px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="mpinLockOverlay" style="display:none;">
+  <div class="mp-card">
+    <div class="mp-title">Enter MPIN</div>
+    <div class="mp-sub">Quick unlock for LAXMAN TELECOM</div>
+    <input type="password" inputmode="numeric" maxlength="6" id="mpinInput" placeholder="Enter MPIN">
+    <button id="mpinUnlockBtn">Unlock</button>
+    <div id="mpinError"></div>
+    <div style="margin-top:14px;"><a href="#" id="mpinForgotLink">Forgot MPIN? Logout and login again</a></div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="logo" style="display:flex; align-items:center; gap:14px;">
+    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo" style="height:56px; width:56px;">
+    <div>
+      <h1>LAXMAN TELECOM</h1>
+      <p>Supplier Portal</p>
+    </div>
+  </div>
+
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+  <nav>
+    <a href="index.html#home" onclick="closeNav()">Home</a>
+    <a href="index.html#contact" onclick="closeNav()">Contact</a>
+    <a href="#vendorAccountSection" class="vendor-only" style="display:none;" onclick="closeNav()">My Account</a>
+    <a href="#vendorRecordsSection" class="vendor-only" style="display:none;" onclick="closeNav()">Payment Records</a>
+    <a href="#bulkPaidSection" class="vendor-only" style="display:none;" onclick="closeNav()">Mark All as Paid</a>
+    <a href="#changePasswordSection" class="vendor-only" style="display:none;" onclick="closeNav()">Change Password</a>
+    <a href="#mpinSection" class="vendor-only" style="display:none;" onclick="closeNav()">App MPIN</a>
+    <a href="#" id="menuLogoutLink" class="menu-logout-link vendor-only" style="display:none;" onclick="closeNav(); doLogout(); return false;">Logout</a>
+  </nav>
+</header>
+
+<!-- LOGIN FORM (shown before supplier logs in) -->
+<div class="auth-wrapper" id="vendorLoginWrapper">
+  <h2>Supplier Login</h2>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"></div>
+
+  <form id="vendorLoginForm">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="vendorEmail" required placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div style="position:relative;">
+        <input type="password" id="vendorPassword" required placeholder="Your password" style="width:100%; box-sizing:border-box; padding-right:44px;">
+        <span id="toggleVendorPassword" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; user-select:none;">👁️</span>
+      </div>
+    </div>
+    <div class="forgot-row"><a href="#" id="forgotLink">Forgot password?</a></div>
+    <button type="submit" class="auth-btn">Login</button>
+
+    <div class="divider"><span>or</span></div>
+
+    <button type="button" class="google-btn" id="googleLoginBtn" aria-label="Continue with Google">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.7 1.22 9.2 3.6l6.8-6.8C35.9 2.5 30.5 0 24 0 14.6 0 6.4 5.4 2.5 13.3l7.9 6.1C12.2 14.4 17.5 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.8-2.1 5.1-4.5 6.7l7.3 5.7c4.3-3.9 6.9-9.8 6.9-16.4z"/>
+        <path fill="#FBBC05" d="M32.2 35.7c-1.9 1.3-4.4 2.1-8.2 2.1-6.5 0-11.9-4.3-13.8-10.1l-7.9 6.1C5.9 42 14.1 48 24 48c6.7 0 12.3-2.2 16.4-6.1l-8.2-6.2z"/>
+        <path fill="#34A853" d="M10.2 27.7A14.8 14.8 0 0 1 9.5 24c0-1.7.3-3.3.8-4.8L2.5 13.3A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.5 10.7l7.7-6.9z"/>
+      </svg>
+      Continue with Google
+    </button>
+  </form>
+
+  <form id="resetForm" class="hidden">
+    <h3 class="reset-title">Reset password</h3>
+    <p class="reset-text">We'll email you a reset link.</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="resetEmail" required placeholder="you@example.com">
+    </div>
+    <button type="submit" class="auth-btn" id="resetBtn">Send Reset Link</button>
+    <p class="back-row"><a href="#" id="backToLogin">&larr; Back to login</a></p>
+  </form>
+  <p class="auth-link">This login is only for approved suppliers. Contact Laxman Telecom if you need access.</p>
+</div>
+
+<!-- VENDOR DASHBOARD (shown after login) -->
+<aside class="sidebar">
+  <div class="side-head">
+    <a class="side-brand" href="#/account" title="Overview">
+      <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+      <div><h1>LAXMAN TELECOM</h1><p>Supplier Portal</p></div>
+    </a>
+    <button type="button" class="side-toggle" id="sideToggle" aria-label="Collapse menu" title="Collapse menu">«</button>
+  </div>
+  <div class="side-nav" role="navigation" aria-label="Main menu">
+    <p class="side-label">Payments</p>
+    <a href="#/account" data-route="account" title="Overview"><span class="ni">🏠</span><span class="side-text">Overview</span></a><a href="#/records" data-route="records" title="Payment Records"><span class="ni">📋</span><span class="side-text">Payment Records</span></a><a href="#/bulk" data-route="bulk" title="Mark All as Paid"><span class="ni">✅</span><span class="side-text">Mark All as Paid</span></a>
+    <p class="side-label">Account</p>
+    <a href="#/password" data-route="password" title="Change Password"><span class="ni">🔑</span><span class="side-text">Change Password</span></a><a href="#/mpin" data-route="mpin" title="App MPIN"><span class="ni">🔒</span><span class="side-text">App MPIN</span></a>
+  </div>
+  <div class="side-foot">
+    <a href="index.html#home" class="side-link" title="Website Home"><span class="ni">🌐</span><span class="side-text">Website Home</span></a>
+    <a href="index.html#contact" class="side-link" title="Contact"><span class="ni">☎️</span><span class="side-text">Contact</span></a>
+    <button type="button" class="side-link logout" data-logout title="Logout"><span class="ni"><svg class="ico" viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span><span class="side-text">Logout</span></button>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <img src="laxman-telecom-icon-round.png" alt=""><b>LAXMAN TELECOM</b>
+    <button type="button" data-logout aria-label="Logout" title="Logout"><svg class="ico" viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></button>
+  </div>
+
+  <div id="vendorDashWrapper" style="display:none;">
+    <div class="page">
+      <div class="error-msg" id="settingsErrorMsg"></div>
+      <div class="success-msg" id="settingsSuccessMsg"></div>
+
+      <!-- PAGE: Overview -->
+      <section class="view" id="vendorAccountSection" data-view="account">
+        <div class="hero">
+          <h2 id="vendorNameHeading">My Account</h2>
+          <div class="hint">Here is your payment summary.</div>
+          <div class="due-l">Due Amount</div>
+          <div class="due-v" id="vDue">₹0.00</div>
+          <div class="bar"><i id="paidBar"></i></div>
+          <div class="bar-t" id="paidBarText"></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><small>Total Recharge Value</small><b id="vGross">₹0.00</b></div>
+          <div class="stat"><small>Commission Earned</small><b id="vCommission">₹0.00</b></div>
+          <div class="stat"><small>Amount Payable</small><b id="vPayable">₹0.00</b></div>
+          <div class="stat"><small>Paid Amount</small><b id="vPaid">₹0.00</b></div>
+        </div>
+        <div class="vcard">
+          <div class="card-top"><h3>Recent entries</h3><a class="link-more" href="#/records">View all →</a></div>
+          <div class="vendor-table-wrap" style="margin-top:0;">
+            <table class="vendor-table recent-table">
+              <thead><tr><th>Date</th><th>Mobile</th><th>Operator</th><th>Amount</th><th>Due</th><th>Status</th></tr></thead>
+              <tbody id="recentBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: Payment Records -->
+      <section class="view" data-view="records" hidden>
+        <div class="page-head"><h2>Payment Records</h2><p>All your recharge entries and their payment status.</p></div>
+        <div class="vcard" style="padding:0;overflow:hidden;">
+          <div class="vendor-table-wrap" style="border:0;border-radius:0;" id="vendorRecordsSection" style="scroll-margin-top:100px;">
+      <table class="vendor-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Mobile Number</th>
+            <th>Operator</th>
+            <th>Amount</th>
+            <th>Commission %</th>
+            <th>Commission Earned</th>
+            <th>Payable</th>
+            <th>Paid</th>
+            <th>Due</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="vendorTableBody"></tbody>
+      </table>
+      <div class="vendor-empty" id="vendorEmptyState" style="display:none;">No recharge entries yet.</div>
+    </div>
+        </div>
+      </section>
+
+      <!-- PAGE: Mark All as Paid -->
+      <section class="view" data-view="bulk" hidden>
+        <div class="page-head"><h2>Mark All as Paid</h2><p>Pick a date range to mark every unpaid entry in it as paid.</p></div>
+        <div class="vcard">
+          <div id="bulkPaidSection" class="bulk" style="margin-bottom:0;">
+            <div class="bulk-t">Mark All as Paid (Date Range)</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <label>From Date</label>
+          <input type="date" id="bulkFromDate">
+        </div>
+        <div>
+          <label>To Date</label>
+          <input type="date" id="bulkToDate">
+        </div>
+        <button type="button" class="pay-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
+      </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: Change Password -->
+      <section class="view" data-view="password" hidden>
+        <div class="page-head"><h2>Change Password</h2><p>Update the password you use to log in.</p></div>
+        <div class="vcard">
+          <form id="changePasswordForm" style="margin-top:12px;">
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" id="currentPasswordInput" required>
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="newPasswordInput" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="confirmPasswordInput" required minlength="6">
+      </div>
+      <button type="submit" class="auth-btn">Update Password</button>
+    </form>
+        </div>
+      </section>
+
+      <!-- PAGE: App MPIN -->
+      <section class="view" data-view="mpin" hidden>
+        <div class="page-head"><h2>App MPIN</h2><p>Set a quick-unlock PIN for this device.</p></div>
+        <div class="vcard">
+          <p style="font-size:13px; color:#666; margin:6px 0 12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
+    <form id="setMpinForm">
+      <div class="form-group">
+        <label>New MPIN</label>
+        <input type="password" inputmode="numeric" id="newMpinInput" maxlength="6" minlength="4" required>
+      </div>
+      <div class="form-group">
+        <label>Confirm MPIN</label>
+        <input type="password" inputmode="numeric" id="confirmMpinInput" maxlength="6" minlength="4" required>
+      </div>
+      <button type="submit" class="auth-btn">Save MPIN</button>
+    </form>
+    <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:14px;">Remove MPIN from this device</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar" role="navigation" aria-label="Menu"><a href="#/account" data-route="account"><span class="ni">🏠</span>Home</a><a href="#/records" data-route="records"><span class="ni">📋</span>Records</a><a href="#/bulk" data-route="bulk"><span class="ni">✅</span>Pay All</a><a href="#/password" data-route="password"><span class="ni">🔑</span>Password</a><a href="#/mpin" data-route="mpin"><span class="ni">🔒</span>MPIN</a></div>
+
+<!-- Confetti library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+function toggleNav() {
+  document.querySelector('nav').classList.toggle('nav-open');
+  document.getElementById('navBackdrop').classList.toggle('nav-open');
+}
+function closeNav() {
+  document.querySelector('nav').classList.remove('nav-open');
+  document.getElementById('navBackdrop').classList.remove('nav-open');
+}
+
+// ---- Page-wise navigation (hash router) ----
+const VIEWS = ['account', 'records', 'bulk', 'password', 'mpin'];
+function currentRoute() {
+  const r = (location.hash || '').replace(/^#\/?/, '');
+  return VIEWS.includes(r) ? r : 'account';
+}
+function renderRoute() {
+  const route = currentRoute();
+  document.querySelectorAll('.view').forEach((v) => { v.hidden = v.dataset.view !== route; });
+  document.querySelectorAll('[data-route]').forEach((a) => { a.classList.toggle('active', a.dataset.route === route); });
+  ['settingsErrorMsg', 'settingsSuccessMsg'].forEach((id) => { document.getElementById(id).style.display = 'none'; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', renderRoute);
+
+// Collapse / expand the side menu (remembered on this device)
+(function initSideToggle() {
+  const key = 'vendorSideCollapsed';
+  let saved = null;
+  try { saved = localStorage.getItem(key); } catch (err) { /* storage blocked */ }
+  const btn = document.getElementById('sideToggle');
+  const apply = (collapsed) => {
+    document.body.classList.toggle('side-collapsed', collapsed);
+    btn.textContent = collapsed ? '»' : '«';
+    btn.title = collapsed ? 'Expand menu' : 'Collapse menu';
+    btn.setAttribute('aria-label', btn.title);
+  };
+  apply(saved === null ? false : saved === '1');
+  btn.addEventListener('click', () => {
+    const collapsed = !document.body.classList.contains('side-collapsed');
+    apply(collapsed);
+    try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch (err) { /* ignore */ }
+  });
+})();
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('[data-logout]')) return;
+  e.preventDefault();
+  doLogout();
+});
+
+function escHtml(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Overview page: paid-progress bar and the 5 latest entries
+function renderRecent(records, payable, paid) {
+  const pct = payable > 0 ? Math.min(100, Math.round((paid / payable) * 100)) : 0;
+  document.getElementById('paidBar').style.width = pct + '%';
+  document.getElementById('paidBarText').textContent = records.length
+    ? pct + '% of your payable amount has been paid'
+    : 'No entries yet';
+  const body = document.getElementById('recentBody');
+  const latest = records.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).slice(0, 5);
+  body.innerHTML = latest.length
+    ? latest.map((r) => `<tr><td>${formatDateDDMMYYYY(r.date)}</td><td>${escHtml(r.mobile)}</td><td>${escHtml(r.operator)}</td><td>${formatMoney(r.amount)}</td><td>${formatMoney(r.dueAmount)}</td><td>${getStatusTag(String(r.paymentStatus || 'UNPAID').toUpperCase())}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="vendor-empty">No recharge entries yet.</td></tr>';
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+}
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+document.getElementById('toggleVendorPassword').addEventListener('click', function () {
+  const pwd = document.getElementById('vendorPassword');
+  if (pwd.type === 'password') {
+    pwd.type = 'text';
+    this.textContent = '🙈';
+  } else {
+    pwd.type = 'password';
+    this.textContent = '👁️';
+  }
+});
+
+function doLogout() {
+  auth.signOut().then(() => { location.reload(); });
+}
+
+function formatMoney(value) {
+  return '₹' + Number(value || 0).toFixed(2);
+}
+
+function formatDateDDMMYYYY(isoDate) {
+  if (!isoDate) return '';
+  const [year, month, day] = isoDate.split('-');
+  return `${day}-${month}-${year}`;
+}
+
+function getTodayIso() {
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return d.getFullYear() + '-' + month + '-' + day;
+}
+
+function formatDateTime(ms) {
+  if (!ms) return '';
+  const d = new Date(ms);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${day}-${month}-${year}, ${hours}:${minutes} ${ampm}`;
+}
+
+function shortId(ms) {
+  return 'CN-' + String(ms).slice(-6);
+}
+
+function getStatusTag(status) {
+  const map = { PAID: '#166534', UNPAID: '#b91c1c', PARTIAL: '#9a580a' };
+  const color = map[status] || '#6b7494';
+  return `<span style="font-weight:800; color:${color};">${status || 'UNPAID'}</span>`;
+}
+
+let currentVendorKey = null;
+let currentVendorName = null;
+let disputesByRecordId = {};
+
+function markRangeAsPaid() {
+  const fromDate = document.getElementById('bulkFromDate').value;
+  const toDate = document.getElementById('bulkToDate').value;
+  if (!fromDate || !toDate) {
+    alert('Please select both From Date and To Date.');
+    return;
+  }
+  if (fromDate > toDate) {
+    alert('From Date cannot be after To Date.');
+    return;
+  }
+
+  const records = window.__vendorRecords || [];
+  const toMark = records.filter((r) =>
+    r.paymentStatus !== 'PAID' &&
+    r.date >= fromDate &&
+    r.date <= toDate
+  );
+
+  if (!toMark.length) {
+    alert('No unpaid entries found in this date range.');
+    return;
+  }
+
+  const totalAmount = toMark.reduce((sum, r) => sum + Number(r.payable || 0), 0);
+  const confirmMsg = `Mark ${toMark.length} entr${toMark.length === 1 ? 'y' : 'ies'} as Paid ` +
+    `(₹${totalAmount.toFixed(2)} total) for ${formatDateDDMMYYYY(fromDate)} to ${formatDateDDMMYYYY(toDate)}?`;
+  if (!confirm(confirmMsg)) return;
+
+  const now = Date.now();
+  const today = getTodayIso();
+  const updates = {};
+  toMark.forEach((r) => {
+    const base = 'telecomSettlement/vendorView/' + currentVendorKey + '/' + r.id;
+    updates[base + '/paymentStatus'] = 'PAID';
+    updates[base + '/paidAmount'] = r.payable;
+    updates[base + '/dueAmount'] = 0;
+    updates[base + '/paidDate'] = today;
+    updates[base + '/paidAt'] = now;
+  });
+
+  db.ref().update(updates)
+    .then(() => alert(`${toMark.length} entries marked as Paid.`))
+    .catch((err) => alert('Could not update: ' + err.message));
+}
+
+function markEntryAsPaid(id) {
+  if (!confirm('Confirm that you have received full payment for this entry?')) return;
+  const record = window.__vendorRecords.find(r => r.id === id);
+  if (!record) return;
+  const now = Date.now();
+  db.ref('telecomSettlement/vendorView/' + currentVendorKey + '/' + id).update({
+    paymentStatus: 'PAID',
+    paidAmount: record.payable,
+    dueAmount: 0,
+    paidDate: getTodayIso(),
+    paidAt: now
+  }).catch((err) => alert('Could not update payment status: ' + err.message));
+}
+
+function raiseConcern(id) {
+  const record = window.__vendorRecords.find(r => r.id === id);
+  if (!record) return;
+  const reason = prompt('Briefly describe the issue (e.g. "Marked paid by mistake, payment not received yet"):');
+  if (reason === null) return;
+  if (!reason.trim()) { alert('Please describe the issue before submitting.'); return; }
+
+  const now = Date.now();
+  const disputeId = now.toString();
+  db.ref('telecomSettlement/paymentDisputes/' + currentVendorKey + '/' + disputeId).set({
+    recordId: id,
+    vendorName: currentVendorName,
+    mobile: record.mobile || '',
+    date: record.date || '',
+    amount: record.amount || 0,
+    reason: reason.trim(),
+    status: 'Pending',
+    createdAt: now
+  }).then(() => {
+    alert(`Your concern (${shortId(now)}) has been sent to Laxman Telecom for review.\nRaised on: ${formatDateTime(now)}`);
+  }).catch((err) => alert('Could not submit your concern: ' + err.message));
+}
+
+function renderVendorRecords(records) {
+  window.__vendorRecords = records;
+  const tbody = document.getElementById('vendorTableBody');
+  const emptyState = document.getElementById('vendorEmptyState');
+  tbody.innerHTML = '';
+
+  if (!records.length) {
+    emptyState.style.display = 'block';
+  } else {
+    emptyState.style.display = 'none';
+    records
+      .slice()
+      .sort((a, b) => (b.id > a.id ? 1 : -1))
+      .forEach((r) => {
+        const tr = document.createElement('tr');
+        const pendingDispute = disputesByRecordId[r.id];
+        // A missing or empty paymentStatus is treated as UNPAID
+        const isPaid = String(r.paymentStatus || '').toUpperCase() === 'PAID';
+        let actionCell;
+        if (!isPaid) {
+          actionCell = `<button type="button" class="pay-btn" onclick="markEntryAsPaid('${r.id}')">Mark as Paid</button>`;
+        } else if (pendingDispute) {
+          actionCell = `<span style="color:#9a580a; font-weight:700;">⏳ ${shortId(Number(pendingDispute.createdAt))} pending review</span><br><span style="font-size:11px; color:#888;">Raised: ${formatDateTime(pendingDispute.createdAt)}</span>`;
+        } else {
+          const paidWhen = r.paidAt ? formatDateTime(r.paidAt) : formatDateDDMMYYYY(r.paidDate);
+          actionCell = `<span style="color:#166534; font-weight:700;">✓ Paid</span><br><span style="font-size:11px; color:#888;">${paidWhen}</span><br><button type="button" class="pay-btn concern" style="margin-top:4px;" onclick="raiseConcern('${r.id}')">Raise Concern</button>`;
+        }
+        tr.innerHTML = `
+          <td>${formatDateDDMMYYYY(r.date)}</td>
+          <td>${r.mobile || ''}</td>
+          <td>${r.operator || ''}</td>
+          <td>${formatMoney(r.amount)}</td>
+          <td>${Number(r.commissionPercent || 0).toFixed(2)}%</td>
+          <td>${formatMoney(r.commissionEarned)}</td>
+          <td>${formatMoney(r.payable)}</td>
+          <td>${formatMoney(r.paidAmount)}</td>
+          <td>${formatMoney(r.dueAmount)}</td>
+          <td>${getStatusTag(r.paymentStatus)}</td>
+          <td class="action-cell">${actionCell}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+
+  let gross = 0, commission = 0, payable = 0, paid = 0, due = 0;
+  records.forEach((r) => {
+    gross += Number(r.amount || 0);
+    commission += Number(r.commissionEarned || 0);
+    payable += Number(r.payable || 0);
+    paid += Number(r.paidAmount || 0);
+    due += Number(r.dueAmount || 0);
+  });
+  document.getElementById('vGross').textContent = formatMoney(gross);
+  document.getElementById('vCommission').textContent = formatMoney(commission);
+  document.getElementById('vPayable').textContent = formatMoney(payable);
+  document.getElementById('vPaid').textContent = formatMoney(paid);
+  document.getElementById('vDue').textContent = formatMoney(due);
+  renderRecent(records, payable, paid);
+  forceButtonStyles();
+}
+
+function forceButtonStyles() {
+  document.querySelectorAll('.pay-btn').forEach((b) => {
+    const concern = b.classList.contains('concern');
+    const rules = {
+      'display': 'inline-block',
+      'visibility': 'visible',
+      'opacity': '1',
+      'position': 'static',
+      'width': 'auto',
+      'height': 'auto',
+      'max-height': 'none',
+      'min-width': '110px',
+      'padding': '8px 14px',
+      'font-size': '14px',
+      'font-weight': '700',
+      'background': concern ? '#9a580a' : '#166534',
+      'color': '#ffffff',
+      'border': 'none',
+      'border-radius': '999px',
+      'cursor': 'pointer',
+      'white-space': 'nowrap',
+      'transform': 'none',
+      'clip-path': 'none',
+      'overflow': 'visible'
+    };
+    Object.keys(rules).forEach((k) => b.style.setProperty(k, rules[k], 'important'));
+  });
+}
+
+function getGreeting(vendorName) {
+  const hour = new Date().getHours();
+  let timeGreeting;
+  if (hour < 12) timeGreeting = 'Good Morning';
+  else if (hour < 17) timeGreeting = 'Good Afternoon';
+  else timeGreeting = 'Good Evening';
+  return `${timeGreeting}, ${vendorName}`;
+}
+
+function loadVendorData(vendorKey, vendorName) {
+  currentVendorKey = vendorKey;
+  currentVendorName = vendorName;
+  document.getElementById('vendorNameHeading').textContent = getGreeting(vendorName);
+
+  db.ref('telecomSettlement/paymentDisputes/' + vendorKey).on('value', (snap) => {
+    const val = snap.val() || {};
+    disputesByRecordId = {};
+    Object.values(val).forEach((d) => {
+      if (d.status === 'Pending') disputesByRecordId[d.recordId] = d;
+    });
+    renderVendorRecords(window.__vendorRecords || []);
+  });
+
+  db.ref('telecomSettlement/vendorView/' + vendorKey).on('value', (snap) => {
+    const val = snap.val() || {};
+    const records = Object.keys(val).map((key) => ({ id: key, ...val[key] }));
+    renderVendorRecords(records);
+  });
+}
+
+function revealVendorDashboard(vendorAccount) {
+  document.getElementById('vendorLoginWrapper').style.display = 'none';
+  document.getElementById('vendorDashWrapper').style.display = 'block';
+  document.querySelectorAll('.vendor-only').forEach((el) => { el.style.display = ''; });
+  document.body.classList.add('logged-in');
+  renderRoute();
+  loadVendorData(vendorAccount.vendorKey, vendorAccount.name);
+
+  // Show the birthday wish right away if today qualifies
+  showBirthdayWishIfNeeded(auth.currentUser ? auth.currentUser.email : '', vendorAccount.name);
+
+  // Show the Diwali greeting (only on the festival dates)
+  showDiwaliGreetingIfNeeded(vendorAccount.name);
+}
+
+/** Opens the dashboard when the signed-in account is a registered supplier, otherwise signs out. */
+function handleVendorAccount(snap) {
+  const vendorAccount = snap.val();
+  if (!vendorAccount) {
+    showError('This login is not registered as a supplier account. Please contact Laxman Telecom.');
+    auth.signOut();
+    return;
+  }
+  // The supplier has just signed in, so the MPIN gate is skipped this time.
+  revealVendorDashboard(vendorAccount);
+}
+
+document.getElementById('vendorLoginForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const email = document.getElementById('vendorEmail').value.trim();
+  const password = document.getElementById('vendorPassword').value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((cred) => {
+      return db.ref('vendorAccounts/' + cred.user.uid).once('value');
+    })
+    .then(handleVendorAccount)
+    .catch((err) => showError(err.message));
+});
+
+// --- Continue with Google ----------------------------------------
+document.getElementById('googleLoginBtn').addEventListener('click', () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+
+  auth.signInWithPopup(provider)
+    .then((result) => db.ref('vendorAccounts/' + result.user.uid).once('value'))
+    .then(handleVendorAccount)
+    .catch((err) => {
+      const messages = {
+        'auth/popup-closed-by-user': 'The Google window was closed before login finished.',
+        'auth/cancelled-popup-request': 'Another Google window is already open.',
+        'auth/popup-blocked': 'Your browser blocked the Google window. Please allow pop-ups for this site.',
+        'auth/unauthorized-domain': 'This website is not in the Firebase authorized domains list.',
+        'auth/operation-not-allowed': 'Google sign-in is turned off in Firebase Authentication.'
+      };
+      showError(messages[err.code] || err.message);
+    });
+});
+
+// --- Forgot password ---------------------------------------------
+let resetTimer = null;
+
+function showResetForm(show) {
+  document.getElementById('vendorLoginForm').classList.toggle('hidden', show);
+  document.getElementById('resetForm').classList.toggle('hidden', !show);
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'none';
+
+  if (show) {
+    document.getElementById('resetEmail').value = document.getElementById('vendorEmail').value.trim();
+  }
+}
+
+/** Disables the send button for 60 seconds so reset emails cannot be spammed. */
+function startResetCooldown() {
+  const button = document.getElementById('resetBtn');
+  let secondsLeft = 60;
+
+  clearInterval(resetTimer);
+  button.disabled = true;
+  button.textContent = 'Resend in ' + secondsLeft + 's';
+
+  resetTimer = setInterval(() => {
+    secondsLeft -= 1;
+    if (secondsLeft <= 0) {
+      clearInterval(resetTimer);
+      button.disabled = false;
+      button.textContent = 'Send Reset Link';
+      return;
+    }
+    button.textContent = 'Resend in ' + secondsLeft + 's';
+  }, 1000);
+}
+
+document.getElementById('forgotLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  showResetForm(true);
+});
+
+document.getElementById('backToLogin').addEventListener('click', (e) => {
+  e.preventDefault();
+  showResetForm(false);
+});
+
+document.getElementById('resetForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('resetEmail').value.trim();
+
+  function linkSent() {
+    showSuccess('Reset link sent. Please check your inbox and spam folder.');
+    startResetCooldown();
+  }
+
+  auth.sendPasswordResetEmail(email)
+    .then(linkSent)
+    .catch((err) => {
+      // The same message is shown when no account exists, so emails cannot be probed.
+      if (err.code === 'auth/user-not-found') {
+        linkSent();
+      } else {
+        showError(err.message);
+      }
+    });
+});
+
+// --- MPIN quick-unlock ---------------------------------------------
+async function sha256Hex(text) {
+  const enc = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getMpinKey(uid) {
+  return 'mpinHash_' + uid;
+}
+
+function showMpinLock(uid, onUnlock) {
+  const overlay = document.getElementById('mpinLockOverlay');
+  overlay.style.display = 'flex';
+  const input = document.getElementById('mpinInput');
+  const errorEl = document.getElementById('mpinError');
+  input.value = '';
+  errorEl.textContent = '';
+  setTimeout(() => input.focus(), 100);
+
+  async function attemptUnlock() {
+    const entered = input.value.trim();
+    if (!entered) return;
+    const hash = await sha256Hex(entered);
+    if (hash === localStorage.getItem(getMpinKey(uid))) {
+      overlay.style.display = 'none';
+      onUnlock();
+    } else {
+      errorEl.textContent = 'Incorrect MPIN. Please try again.';
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  document.getElementById('mpinUnlockBtn').onclick = attemptUnlock;
+  input.onkeydown = (e) => { if (e.key === 'Enter') attemptUnlock(); };
+  document.getElementById('mpinForgotLink').onclick = (e) => {
+    e.preventDefault();
+    if (confirm('Logout and login again with your password?')) {
+      auth.signOut().then(() => location.reload());
+    }
+  };
+}
+
+function showSettingsError(msg) {
+  const el = document.getElementById('settingsErrorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('settingsSuccessMsg').style.display = 'none';
+}
+function showSettingsSuccess(msg) {
+  const el = document.getElementById('settingsSuccessMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('settingsErrorMsg').style.display = 'none';
+}
+
+document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const current = document.getElementById('currentPasswordInput').value;
+  const newPass = document.getElementById('newPasswordInput').value;
+  const confirmPass = document.getElementById('confirmPasswordInput').value;
+  if (newPass !== confirmPass) { showSettingsError('New passwords do not match.'); return; }
+
+  const user = auth.currentUser;
+  const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
+  user.reauthenticateWithCredential(cred)
+    .then(() => user.updatePassword(newPass))
+    .then(() => {
+      showSettingsSuccess('Password updated successfully.');
+      document.getElementById('changePasswordForm').reset();
+    })
+    .catch((err) => showSettingsError(err.message));
+});
+
+document.getElementById('setMpinForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const pin = document.getElementById('newMpinInput').value.trim();
+  const confirmPin = document.getElementById('confirmMpinInput').value.trim();
+  if (!/^\d{4,6}$/.test(pin)) { showSettingsError('MPIN must be 4-6 digits.'); return; }
+  if (pin !== confirmPin) { showSettingsError('MPIN entries do not match.'); return; }
+  const hash = await sha256Hex(pin);
+  localStorage.setItem(getMpinKey(auth.currentUser.uid), hash);
+  showSettingsSuccess('MPIN saved. You can use it to unlock the app next time on this device.');
+  document.getElementById('setMpinForm').reset();
+});
+
+document.getElementById('removeMpinBtn').addEventListener('click', function () {
+  if (!localStorage.getItem(getMpinKey(auth.currentUser.uid))) {
+    showSettingsSuccess('No MPIN is set on this device.');
+    return;
+  }
+  if (!confirm('Remove MPIN from this device? You will need your password to login next time.')) return;
+  localStorage.removeItem(getMpinKey(auth.currentUser.uid));
+  showSettingsSuccess('MPIN removed from this device.');
+});
+
+// If a supplier is already logged in (returning visit), gate behind MPIN if set.
+auth.onAuthStateChanged((user) => {
+  if (!user) return;
+  db.ref('vendorAccounts/' + user.uid).once('value').then((snap) => {
+    const vendorAccount = snap.val();
+    if (!vendorAccount) return;
+    const mpinHash = localStorage.getItem(getMpinKey(user.uid));
+    if (mpinHash) {
+      showMpinLock(user.uid, () => revealVendorDashboard(vendorAccount));
+    } else {
+      revealVendorDashboard(vendorAccount);
+    }
+  });
+});
+
+// Keep the buttons visible, even when the table or page changes
+forceButtonStyles();
+new MutationObserver(forceButtonStyles).observe(document.body, { childList: true, subtree: true });
+
+// ======================= BIRTHDAY WISH =======================
+const BDAY_VENDOR_EMAIL = "laxmantelecom@gmail.com";
+const BDAY_DAY = 12;     // day of month
+const BDAY_MONTH = 10;   // month (10 = October)
+
+function showBirthdayWishIfNeeded(email, name) {
+  const today = new Date();
+
+  // Not the birthday today: do nothing
+  if (today.getDate() !== BDAY_DAY || (today.getMonth() + 1) !== BDAY_MONTH) return;
+  // Not this vendor: do nothing
+  if ((email || '').toLowerCase() !== BDAY_VENDOR_EMAIL.toLowerCase()) return;
+  // Already open: do not create it twice
+  if (document.querySelector('.birthday-overlay')) return;
+
+  const displayName = name || 'लक्ष्मण जी';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'birthday-overlay';
+
+  const card = document.createElement('div');
+  card.className = 'birthday-card';
+
+  const h2 = document.createElement('h2');
+  h2.textContent = '🎂 जन्मदिन मुबारक हो, ' + displayName + '! 🎉';
+
+  const p = document.createElement('p');
+  p.innerHTML = '<strong>लक्ष्मण टेलीकॉम</strong> परिवार की तरफ से आपको जन्मदिन की ढेरों शुभकामनाएं। हमारे साथ जुड़े रहने और बेहतरीन काम करने के लिए आपका धन्यवाद। आपका आज का दिन और यह पूरा साल शानदार रहे!';
+
+  const btn = document.createElement('button');
+  btn.className = 'birthday-btn';
+  btn.textContent = 'शुक्रिया (डैशबोर्ड पर जाएं)';
+  btn.onclick = closeBirthdayWish;
+
+  card.appendChild(h2);
+  card.appendChild(p);
+  card.appendChild(btn);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  startLiveCelebration();
+}
+
+function startLiveCelebration() {
+  if (typeof confetti === 'undefined') return; // If the confetti library fails to load, the wish still shows
+
+  const Z = 100001;
+  const colors = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#ffd700', '#ff6b81', '#a55eea'];
+  const base = { zIndex: Z, colors: colors, disableForReducedMotion: false, scalar: 1.2 };
+
+  // 1) Big burst from the centre at the start
+  confetti({ ...base, particleCount: 160, spread: 100, startVelocity: 55, origin: { x: 0.5, y: 0.6 } });
+  confetti({ ...base, particleCount: 90, spread: 140, startVelocity: 35, decay: 0.92, origin: { x: 0.5, y: 0.5 } });
+
+  // 2) Continuous fountains from both corners (6 seconds)
+  const end = Date.now() + 6000;
+  (function frame() {
+    confetti({ ...base, particleCount: 6, angle: 60, spread: 70, startVelocity: 60, origin: { x: 0, y: 0.9 } });
+    confetti({ ...base, particleCount: 6, angle: 120, spread: 70, startVelocity: 60, origin: { x: 1, y: 0.9 } });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+
+  // 3) Fireworks-style bursts in the upper part of the screen
+  const fireworks = setInterval(() => {
+    if (Date.now() > end) { clearInterval(fireworks); return; }
+    confetti({
+      ...base,
+      particleCount: 60,
+      spread: 360,
+      startVelocity: 30,
+      ticks: 70,
+      gravity: 0.6,
+      origin: { x: 0.1 + Math.random() * 0.8, y: 0.1 + Math.random() * 0.35 }
+    });
+  }, 450);
+
+  // 4) Golden rain at the end
+  setTimeout(() => {
+    confetti({ ...base, particleCount: 120, spread: 160, startVelocity: 25, gravity: 0.7,
+               colors: ['#ffd700', '#ffec99', '#ffa502'], origin: { x: 0.5, y: 0 } });
+  }, 3000);
+}
+
+function closeBirthdayWish() {
+  const overlay = document.querySelector('.birthday-overlay');
+  if (overlay) overlay.remove();
+}
+
+// ======================= DIWALI GREETING =======================
+// Shown to every supplier on every page load/refresh, only between these dates (inclusive).
+// Diwali 2026 = 8 November.
+const DIWALI_START = '2026-11-07';
+const DIWALI_END = '2026-11-12';
+
+function showDiwaliGreetingIfNeeded(name) {
+  const todayIso = getTodayIso();
+
+  // Outside the festival dates: do nothing
+  if (todayIso < DIWALI_START || todayIso > DIWALI_END) return;
+  // Already open: do not create it twice
+  if (document.querySelector('.diwali-overlay')) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'diwali-overlay';
+
+  const card = document.createElement('div');
+  card.className = 'diwali-card';
+
+  const lamps = document.createElement('div');
+  lamps.className = 'diwali-lamp-row';
+  lamps.textContent = '🏮🏮🏮';
+  card.appendChild(lamps);
+
+  const diyas = document.createElement('div');
+  diyas.className = 'diwali-diyas';
+  for (let i = 0; i < 5; i++) {
+    const sp = document.createElement('span');
+    sp.textContent = '🪔';
+    diyas.appendChild(sp);
+  }
+  card.appendChild(diyas);
+
+  const h2 = document.createElement('h2');
+  h2.textContent = '✨ शुभ दीपावली! ✨';
+  card.appendChild(h2);
+
+  const nm = document.createElement('div');
+  nm.className = 'diwali-name';
+  nm.textContent = name ? name + ' जी' : 'आदरणीय सप्लायर साथी';
+  card.appendChild(nm);
+
+  const p = document.createElement('p');
+  p.innerHTML = '<strong>लक्ष्मण टेलीकॉम</strong> परिवार की तरफ से आपको और आपके परिवार को दीपावली की हार्दिक शुभकामनाएं। ' +
+    'आपके भरोसे और साथ के लिए दिल से धन्यवाद। माँ लक्ष्मी की कृपा से आपके घर और व्यापार में सुख, समृद्धि और ढेर सारी तरक्की आए। 🙏';
+  card.appendChild(p);
+
+  const sign = document.createElement('div');
+  sign.className = 'diwali-sign';
+  sign.textContent = '— लक्ष्मण टेलीकॉम परिवार';
+  card.appendChild(sign);
+
+  const btn = document.createElement('button');
+  btn.className = 'diwali-btn';
+  btn.textContent = '🪔 धन्यवाद, आपको भी शुभ दीपावली';
+  btn.onclick = function () {
+    overlay.remove();
+  };
+  card.appendChild(btn);
+
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  startDiwaliCelebration();
+}
+
+function startDiwaliCelebration() {
+  if (typeof confetti === 'undefined') return; // If the confetti library fails to load, the greeting still shows
+
+  const base = {
+    zIndex: 100001,
+    scalar: 1.2,
+    colors: ['#ff8a00', '#ffb347', '#ffd700', '#ff4757', '#a55eea', '#2ed573']
+  };
+
+  // Big burst at the start
+  confetti({ ...base, particleCount: 140, spread: 100, startVelocity: 50, origin: { x: 0.5, y: 0.65 } });
+
+  // Fireworks-style bursts for 5 seconds
+  const end = Date.now() + 5000;
+  const timer = setInterval(() => {
+    if (Date.now() > end || !document.querySelector('.diwali-overlay')) { clearInterval(timer); return; }
+    confetti({
+      ...base,
+      particleCount: 55,
+      spread: 360,
+      startVelocity: 28,
+      ticks: 70,
+      gravity: 0.6,
+      origin: { x: 0.1 + Math.random() * 0.8, y: 0.1 + Math.random() * 0.4 }
+    });
+  }, 500);
+
+  // Golden rain
+  setTimeout(() => {
+    confetti({ ...base, particleCount: 110, spread: 160, startVelocity: 22, gravity: 0.7,
+               colors: ['#ffd700', '#ffec99', '#ffa502'], origin: { x: 0.5, y: 0 } });
+  }, 2500);
+}
+</script>
+
+</body>
+</html>
