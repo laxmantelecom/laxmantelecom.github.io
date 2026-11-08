@@ -151,26 +151,86 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 .diwali-btn:hover{transform:translateY(-3px) scale(1.04)}
 .diwali-lamp-row{position:absolute;top:-18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 22px;font-size:1.6rem;pointer-events:none}
 
-/* page-wise navigation */
-.vendor-table td:first-child,.vendor-table td:nth-child(2){white-space:nowrap}
+/* ===== App shell (after login): sidebar on desktop, bottom tabs on phone ===== */
+.sidebar,.topbar,.tabbar{display:none}
+body.logged-in{background:var(--cream)}
+body.logged-in::before{display:none}
+body.logged-in .header{display:none}
+body.logged-in .sidebar{display:flex}
+.sidebar{position:fixed;top:0;bottom:0;left:0;z-index:30;flex-direction:column;width:252px;padding:20px 14px;overflow-x:hidden;overflow-y:auto;color:#fff;transition:width .2s ease,padding .2s ease;background:radial-gradient(circle at 10% 0%,rgba(255,138,0,.28),transparent 45%),var(--ink)}
+.side-head{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 0 14px}
+.side-brand{display:flex;align-items:center;gap:10px;min-width:0;padding:2px 8px}
+.side-brand img{width:42px;height:42px;border-radius:50%}
+.side-brand h1{margin:0;font-size:1.02rem;color:#fff}
+.side-brand p{font-size:.72rem;color:rgba(255,255,255,.55)}
+.side-toggle{flex:none;display:grid;place-items:center;width:34px;height:34px;font:inherit;font-size:1.15rem;font-weight:700;line-height:1;color:#fff;background:rgba(255,255,255,.1);border:0;border-radius:10px;cursor:pointer;transition:background .15s}
+.side-toggle:hover{background:rgba(255,255,255,.22)}
+.side-label{margin:16px 12px 6px;font-size:.68rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:rgba(255,255,255,.42)}
+.side-nav a,.side-link{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:12px;font:inherit;font-size:.94rem;font-weight:600;color:rgba(255,255,255,.78);background:none;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+.side-nav a:hover,.side-link:hover{background:rgba(255,255,255,.09);color:#fff}
+.side-nav a.active{color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2))}
+.ni{flex:none;width:24px;text-align:center;font-size:1.12rem}
+.ico{display:inline-block;vertical-align:-.14em}
+.side-foot{display:grid;gap:4px;margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.12)}
+.side-link.logout{color:#fda4af}
+.main{min-width:0}
+body.logged-in .main{margin-left:252px;transition:margin-left .2s ease}
+body.side-collapsed .sidebar{width:76px;padding:20px 10px}
+body.side-collapsed.logged-in .main{margin-left:76px}
+body.side-collapsed .side-head{flex-direction:column;gap:10px}
+body.side-collapsed .side-brand{padding:2px 0}
+body.side-collapsed .side-brand div,body.side-collapsed .side-label,body.side-collapsed .side-text{display:none}
+body.side-collapsed .side-nav a,body.side-collapsed .side-link{justify-content:center;padding:12px 0}
+body.side-collapsed .side-nav{padding-top:10px;border-top:1px solid rgba(255,255,255,.12)}
+.page{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;max-width:1020px;margin:0 auto;padding:30px 26px 90px}
+.view{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
+.vcard,.hero,.stats{min-width:0}
 .view[hidden]{display:none!important}
-.page-head{margin-bottom:18px}
-.page-head h2{font-size:1.5rem}
-.page-head p{color:var(--mute);font-size:.9rem;margin-top:4px}
-nav a.active{background:var(--ink);color:#fff}
-nav a.active:hover{background:var(--ink)}
-.quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:6px}
-.quick-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--cream);border:1px solid var(--line);border-radius:16px;font-weight:600;color:var(--ink);transition:transform .2s,border-color .2s}
-.quick-btn:hover{transform:translateY(-2px);border-color:var(--acc)}
-.quick-btn span.ic{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:rgba(255,138,0,.16);font-size:1.15rem}
-.tabbar{display:none}
-@media(max-width:700px){
-  body.logged-in{padding-bottom:76px}
-  body.logged-in .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-  .tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;font-size:.68rem;font-weight:600;color:var(--mute)}
-  .tabbar a svg{width:22px;height:22px}
+.page-head h2{margin:0;font-size:1.9rem}
+.page-head p{margin-top:2px;color:var(--mute);font-size:.95rem}
+.vcard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 18px 40px -26px rgba(17,19,24,.35)}
+.vcard h3{margin-bottom:12px}
+.vcard form{max-width:420px}
+
+/* Overview */
+.hero{position:relative;overflow:hidden;color:#fff;border-radius:24px;padding:28px;background:radial-gradient(circle at 10% 0%,rgba(255,138,0,.4),transparent 50%),radial-gradient(circle at 100% 100%,rgba(124,58,237,.4),transparent 45%),var(--ink)}
+.hero h2{margin:0;color:#fff;font-size:1.4rem}
+.hero .hint{margin-top:2px;font-size:.88rem;color:rgba(255,255,255,.6)}
+.hero .due-l{margin-top:22px;font-size:.74rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.hero .due-v{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:2.8rem;font-weight:800;line-height:1.1}
+.hero .bar{height:8px;margin-top:16px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden}
+.hero .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .5s}
+.hero .bar-t{margin-top:6px;font-size:.8rem;color:rgba(255,255,255,.65)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.stat{padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:18px}
+.stat small{display:block;font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;color:var(--mute)}
+.stat b{display:block;margin-top:2px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.45rem;color:var(--ink)}
+.stat:nth-child(1){border-top:4px solid #7c3aed}.stat:nth-child(2){border-top:4px solid #14b8a6}.stat:nth-child(3){border-top:4px solid #fb923c}.stat:nth-child(4){border-top:4px solid #22c55e}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-top h3{margin:0}
+.link-more{font-weight:700;font-size:.9rem;color:#b35f00}
+.recent-table{min-width:0}
+.recent-table th,.recent-table td{white-space:nowrap}
+.vendor-table td:first-child,.vendor-table td:nth-child(2){white-space:nowrap}
+.vendor-table-wrap{margin-top:0}
+
+.topbar{position:sticky;top:0;z-index:30;align-items:center;gap:10px;height:56px;padding:0 12px 0 16px;color:#fff;background:var(--ink)}
+.topbar img{width:32px;height:32px;border-radius:50%}
+.topbar b{flex:1;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.02rem}
+.topbar button{display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:12px;color:#fda4af;background:rgba(255,255,255,.1);cursor:pointer}
+@media(max-width:900px){
+  body.logged-in .sidebar{display:none}
+  body.logged-in .main,body.side-collapsed.logged-in .main{margin-left:0}
+  body.logged-in .topbar{display:flex}
+  .page{gap:16px;padding:16px 14px 110px}
+  .page-head h2{font-size:1.5rem}
+  .hero{padding:22px 20px}
+  .hero .due-v{font-size:2.2rem}
+  .vcard{padding:18px 16px}
+  body.logged-in .tabbar{display:flex;gap:2px;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -10px 26px rgba(17,19,24,.1)}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border-radius:12px;font-size:.7rem;font-weight:700;color:var(--mute)}
+  .tabbar .ni{width:auto;font-size:1.3rem}
   .tabbar a.active{color:var(--ink);background:rgba(255,138,0,.18)}
-  .dash-wrapper{margin-top:24px}
 }
 @media(max-width:520px){.logo p{display:none}.auth-wrapper{padding:28px 20px}.dash-card{padding:20px 16px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -208,11 +268,11 @@ nav a.active:hover{background:var(--ink)}
   <nav>
     <a href="index.html#home" onclick="closeNav()">Home</a>
     <a href="index.html#contact" onclick="closeNav()">Contact</a>
-    <a href="#/account" data-route="account" class="vendor-only" style="display:none;" onclick="closeNav()">My Account</a>
-    <a href="#/records" data-route="records" class="vendor-only" style="display:none;" onclick="closeNav()">Payment Records</a>
-    <a href="#/bulk" data-route="bulk" class="vendor-only" style="display:none;" onclick="closeNav()">Mark All as Paid</a>
-    <a href="#/password" data-route="password" class="vendor-only" style="display:none;" onclick="closeNav()">Change Password</a>
-    <a href="#/mpin" data-route="mpin" class="vendor-only" style="display:none;" onclick="closeNav()">App MPIN</a>
+    <a href="#vendorAccountSection" class="vendor-only" style="display:none;" onclick="closeNav()">My Account</a>
+    <a href="#vendorRecordsSection" class="vendor-only" style="display:none;" onclick="closeNav()">Payment Records</a>
+    <a href="#bulkPaidSection" class="vendor-only" style="display:none;" onclick="closeNav()">Mark All as Paid</a>
+    <a href="#changePasswordSection" class="vendor-only" style="display:none;" onclick="closeNav()">Change Password</a>
+    <a href="#mpinSection" class="vendor-only" style="display:none;" onclick="closeNav()">App MPIN</a>
     <a href="#" id="menuLogoutLink" class="menu-logout-link vendor-only" style="display:none;" onclick="closeNav(); doLogout(); return false;">Logout</a>
   </nav>
 </header>
@@ -266,52 +326,70 @@ nav a.active:hover{background:var(--ink)}
 </div>
 
 <!-- VENDOR DASHBOARD (shown after login) -->
-<div class="dash-wrapper" id="vendorDashWrapper" style="display:none;">
-  <div class="error-msg" id="settingsErrorMsg"></div>
-  <div class="success-msg" id="settingsSuccessMsg"></div>
+<aside class="sidebar">
+  <div class="side-head">
+    <a class="side-brand" href="#/account" title="Overview">
+      <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+      <div><h1>LAXMAN TELECOM</h1><p>Vendor Portal</p></div>
+    </a>
+    <button type="button" class="side-toggle" id="sideToggle" aria-label="Collapse menu" title="Collapse menu">«</button>
+  </div>
+  <div class="side-nav" role="navigation" aria-label="Main menu">
+    <p class="side-label">Payments</p>
+    <a href="#/account" data-route="account" title="Overview"><span class="ni">🏠</span><span class="side-text">Overview</span></a><a href="#/records" data-route="records" title="Payment Records"><span class="ni">📋</span><span class="side-text">Payment Records</span></a><a href="#/bulk" data-route="bulk" title="Mark All as Paid"><span class="ni">✅</span><span class="side-text">Mark All as Paid</span></a>
+    <p class="side-label">Account</p>
+    <a href="#/password" data-route="password" title="Change Password"><span class="ni">🔑</span><span class="side-text">Change Password</span></a><a href="#/mpin" data-route="mpin" title="App MPIN"><span class="ni">🔒</span><span class="side-text">App MPIN</span></a>
+  </div>
+  <div class="side-foot">
+    <a href="index.html#home" class="side-link" title="Website Home"><span class="ni">🌐</span><span class="side-text">Website Home</span></a>
+    <a href="index.html#contact" class="side-link" title="Contact"><span class="ni">☎️</span><span class="side-text">Contact</span></a>
+    <button type="button" class="side-link logout" data-logout title="Logout"><span class="ni"><svg class="ico" viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></span><span class="side-text">Logout</span></button>
+  </div>
+</aside>
 
-  <!-- PAGE: My Account -->
-  <section class="dash-card view" id="vendorAccountSection" data-view="account">
-    <div class="dash-top">
-      <h2 id="vendorNameHeading">My Account</h2>
-    </div>
-<div class="vendor-summary">
-      <div class="vendor-summary-card">
-        <div class="label">Total Recharge Value</div>
-        <div class="value" id="vGross">₹0.00</div>
-      </div>
-      <div class="vendor-summary-card">
-        <div class="label">Commission Earned</div>
-        <div class="value" id="vCommission">₹0.00</div>
-      </div>
-      <div class="vendor-summary-card">
-        <div class="label">Amount Payable</div>
-        <div class="value" id="vPayable">₹0.00</div>
-      </div>
-      <div class="vendor-summary-card">
-        <div class="label">Paid Amount</div>
-        <div class="value" id="vPaid">₹0.00</div>
-      </div>
-      <div class="vendor-summary-card">
-        <div class="label">Due Amount</div>
-        <div class="value" id="vDue">₹0.00</div>
-      </div>
-    </div>
+<div class="main">
+  <div class="topbar">
+    <img src="laxman-telecom-icon-round.png" alt=""><b>LAXMAN TELECOM</b>
+    <button type="button" data-logout aria-label="Logout" title="Logout"><svg class="ico" viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg></button>
+  </div>
 
-    
-    <h3>Quick actions</h3>
-    <div class="quick-grid" style="margin-top:12px;">
-      <a class="quick-btn" href="#/records"><span class="ic">📋</span>Payment Records</a>
-      <a class="quick-btn" href="#/bulk"><span class="ic">✅</span>Mark All as Paid</a>
-      <a class="quick-btn" href="#/password"><span class="ic">🔑</span>Change Password</a>
-      <a class="quick-btn" href="#/mpin"><span class="ic">🔒</span>App MPIN</a>
-    </div>
-  </section>
+  <div id="vendorDashWrapper" style="display:none;">
+    <div class="page">
+      <div class="error-msg" id="settingsErrorMsg"></div>
+      <div class="success-msg" id="settingsSuccessMsg"></div>
 
-  <!-- PAGE: Payment Records -->
-  <section class="dash-card view" data-view="records" hidden>
-    <div class="page-head"><h2>Payment Records</h2><p>All your recharge entries and their payment status.</p></div>
-    <div class="vendor-table-wrap" id="vendorRecordsSection" style="scroll-margin-top:100px;">
+      <!-- PAGE: Overview -->
+      <section class="view" id="vendorAccountSection" data-view="account">
+        <div class="hero">
+          <h2 id="vendorNameHeading">My Account</h2>
+          <div class="hint">Here is your payment summary.</div>
+          <div class="due-l">Due Amount</div>
+          <div class="due-v" id="vDue">₹0.00</div>
+          <div class="bar"><i id="paidBar"></i></div>
+          <div class="bar-t" id="paidBarText"></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><small>Total Recharge Value</small><b id="vGross">₹0.00</b></div>
+          <div class="stat"><small>Commission Earned</small><b id="vCommission">₹0.00</b></div>
+          <div class="stat"><small>Amount Payable</small><b id="vPayable">₹0.00</b></div>
+          <div class="stat"><small>Paid Amount</small><b id="vPaid">₹0.00</b></div>
+        </div>
+        <div class="vcard">
+          <div class="card-top"><h3>Recent entries</h3><a class="link-more" href="#/records">View all →</a></div>
+          <div class="vendor-table-wrap" style="margin-top:0;">
+            <table class="vendor-table recent-table">
+              <thead><tr><th>Date</th><th>Mobile</th><th>Operator</th><th>Amount</th><th>Due</th><th>Status</th></tr></thead>
+              <tbody id="recentBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: Payment Records -->
+      <section class="view" data-view="records" hidden>
+        <div class="page-head"><h2>Payment Records</h2><p>All your recharge entries and their payment status.</p></div>
+        <div class="vcard" style="padding:0;overflow:hidden;">
+          <div class="vendor-table-wrap" style="border:0;border-radius:0;" id="vendorRecordsSection" style="scroll-margin-top:100px;">
       <table class="vendor-table">
         <thead>
           <tr>
@@ -332,13 +410,15 @@ nav a.active:hover{background:var(--ink)}
       </table>
       <div class="vendor-empty" id="vendorEmptyState" style="display:none;">No recharge entries yet.</div>
     </div>
-  </section>
+        </div>
+      </section>
 
-  <!-- PAGE: Mark All as Paid -->
-  <section class="dash-card view" data-view="bulk" hidden>
-    <div class="page-head"><h2>Mark All as Paid</h2><p>Pick a date range to mark every unpaid entry in it as paid.</p></div>
-    <div id="bulkPaidSection" class="bulk" style="margin-bottom:0;">
-      <div class="bulk-t">Mark All as Paid (Date Range)</div>
+      <!-- PAGE: Mark All as Paid -->
+      <section class="view" data-view="bulk" hidden>
+        <div class="page-head"><h2>Mark All as Paid</h2><p>Pick a date range to mark every unpaid entry in it as paid.</p></div>
+        <div class="vcard">
+          <div id="bulkPaidSection" class="bulk" style="margin-bottom:0;">
+            <div class="bulk-t">Mark All as Paid (Date Range)</div>
       <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
         <div>
           <label>From Date</label>
@@ -350,13 +430,15 @@ nav a.active:hover{background:var(--ink)}
         </div>
         <button type="button" class="pay-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
       </div>
-    </div>
-  </section>
+          </div>
+        </div>
+      </section>
 
-  <!-- PAGE: Change Password -->
-  <section class="dash-card view" data-view="password" hidden>
-    <div class="page-head"><h2>Change Password</h2><p>Update the password you use to log in.</p></div>
-    <form id="changePasswordForm" style="margin-top:12px;">
+      <!-- PAGE: Change Password -->
+      <section class="view" data-view="password" hidden>
+        <div class="page-head"><h2>Change Password</h2><p>Update the password you use to log in.</p></div>
+        <div class="vcard">
+          <form id="changePasswordForm" style="margin-top:12px;">
       <div class="form-group">
         <label>Current Password</label>
         <input type="password" id="currentPasswordInput" required>
@@ -371,12 +453,14 @@ nav a.active:hover{background:var(--ink)}
       </div>
       <button type="submit" class="auth-btn">Update Password</button>
     </form>
-  </section>
+        </div>
+      </section>
 
-  <!-- PAGE: App MPIN -->
-  <section class="dash-card view" data-view="mpin" hidden>
-    <div class="page-head"><h2>App MPIN</h2><p>Quick unlock for this device.</p></div>
-    <p style="font-size:13px; color:#666; margin:6px 0 12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
+      <!-- PAGE: App MPIN -->
+      <section class="view" data-view="mpin" hidden>
+        <div class="page-head"><h2>App MPIN</h2><p>Set a quick-unlock PIN for this device.</p></div>
+        <div class="vcard">
+          <p style="font-size:13px; color:#666; margin:6px 0 12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
     <form id="setMpinForm">
       <div class="form-group">
         <label>New MPIN</label>
@@ -389,17 +473,13 @@ nav a.active:hover{background:var(--ink)}
       <button type="submit" class="auth-btn">Save MPIN</button>
     </form>
     <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:14px;">Remove MPIN from this device</button>
-  </section>
+        </div>
+      </section>
+    </div>
+  </div>
 </div>
 
-<!-- Phone bottom tabs -->
-<div class="tabbar" id="tabbar">
-  <a href="#/account" data-route="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>Account</a>
-  <a href="#/records" data-route="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Records</a>
-  <a href="#/bulk" data-route="bulk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>Pay All</a>
-  <a href="#/password" data-route="password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></svg>Password</a>
-  <a href="#/mpin" data-route="mpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>MPIN</a>
-</div>
+<div class="tabbar" role="navigation" aria-label="Menu"><a href="#/account" data-route="account"><span class="ni">🏠</span>Home</a><a href="#/records" data-route="records"><span class="ni">📋</span>Records</a><a href="#/bulk" data-route="bulk"><span class="ni">✅</span>Pay All</a><a href="#/password" data-route="password"><span class="ni">🔑</span>Password</a><a href="#/mpin" data-route="mpin"><span class="ni">🔒</span>MPIN</a></div>
 
 <!-- Confetti library -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -432,6 +512,50 @@ function renderRoute() {
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', renderRoute);
+
+// Collapse / expand the side menu (remembered on this device)
+(function initSideToggle() {
+  const key = 'vendorSideCollapsed';
+  let saved = null;
+  try { saved = localStorage.getItem(key); } catch (err) { /* storage blocked */ }
+  const btn = document.getElementById('sideToggle');
+  const apply = (collapsed) => {
+    document.body.classList.toggle('side-collapsed', collapsed);
+    btn.textContent = collapsed ? '»' : '«';
+    btn.title = collapsed ? 'Expand menu' : 'Collapse menu';
+    btn.setAttribute('aria-label', btn.title);
+  };
+  apply(saved === null ? false : saved === '1');
+  btn.addEventListener('click', () => {
+    const collapsed = !document.body.classList.contains('side-collapsed');
+    apply(collapsed);
+    try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch (err) { /* ignore */ }
+  });
+})();
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('[data-logout]')) return;
+  e.preventDefault();
+  doLogout();
+});
+
+function escHtml(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Overview page: paid-progress bar and the 5 latest entries
+function renderRecent(records, payable, paid) {
+  const pct = payable > 0 ? Math.min(100, Math.round((paid / payable) * 100)) : 0;
+  document.getElementById('paidBar').style.width = pct + '%';
+  document.getElementById('paidBarText').textContent = records.length
+    ? pct + '% of your payable amount has been paid'
+    : 'No entries yet';
+  const body = document.getElementById('recentBody');
+  const latest = records.slice().sort((a, b) => (b.id > a.id ? 1 : -1)).slice(0, 5);
+  body.innerHTML = latest.length
+    ? latest.map((r) => `<tr><td>${formatDateDDMMYYYY(r.date)}</td><td>${escHtml(r.mobile)}</td><td>${escHtml(r.operator)}</td><td>${formatMoney(r.amount)}</td><td>${formatMoney(r.dueAmount)}</td><td>${getStatusTag(String(r.paymentStatus || 'UNPAID').toUpperCase())}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="vendor-empty">No recharge entries yet.</td></tr>';
+}
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
@@ -645,6 +769,7 @@ function renderVendorRecords(records) {
   document.getElementById('vPayable').textContent = formatMoney(payable);
   document.getElementById('vPaid').textContent = formatMoney(paid);
   document.getElementById('vDue').textContent = formatMoney(due);
+  renderRecent(records, payable, paid);
   forceButtonStyles();
 }
 
