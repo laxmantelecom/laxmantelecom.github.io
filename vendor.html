@@ -151,6 +151,27 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 .diwali-btn:hover{transform:translateY(-3px) scale(1.04)}
 .diwali-lamp-row{position:absolute;top:-18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 22px;font-size:1.6rem;pointer-events:none}
 
+/* page-wise navigation */
+.vendor-table td:first-child,.vendor-table td:nth-child(2){white-space:nowrap}
+.view[hidden]{display:none!important}
+.page-head{margin-bottom:18px}
+.page-head h2{font-size:1.5rem}
+.page-head p{color:var(--mute);font-size:.9rem;margin-top:4px}
+nav a.active{background:var(--ink);color:#fff}
+nav a.active:hover{background:var(--ink)}
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:6px}
+.quick-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--cream);border:1px solid var(--line);border-radius:16px;font-weight:600;color:var(--ink);transition:transform .2s,border-color .2s}
+.quick-btn:hover{transform:translateY(-2px);border-color:var(--acc)}
+.quick-btn span.ic{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:rgba(255,138,0,.16);font-size:1.15rem}
+.tabbar{display:none}
+@media(max-width:700px){
+  body.logged-in{padding-bottom:76px}
+  body.logged-in .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;font-size:.68rem;font-weight:600;color:var(--mute)}
+  .tabbar a svg{width:22px;height:22px}
+  .tabbar a.active{color:var(--ink);background:rgba(255,138,0,.18)}
+  .dash-wrapper{margin-top:24px}
+}
 @media(max-width:520px){.logo p{display:none}.auth-wrapper{padding:28px 20px}.dash-card{padding:20px 16px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -187,11 +208,11 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
   <nav>
     <a href="index.html#home" onclick="closeNav()">Home</a>
     <a href="index.html#contact" onclick="closeNav()">Contact</a>
-    <a href="#vendorAccountSection" class="vendor-only" style="display:none;" onclick="closeNav()">My Account</a>
-    <a href="#vendorRecordsSection" class="vendor-only" style="display:none;" onclick="closeNav()">Payment Records</a>
-    <a href="#bulkPaidSection" class="vendor-only" style="display:none;" onclick="closeNav()">Mark All as Paid</a>
-    <a href="#changePasswordSection" class="vendor-only" style="display:none;" onclick="closeNav()">Change Password</a>
-    <a href="#mpinSection" class="vendor-only" style="display:none;" onclick="closeNav()">App MPIN</a>
+    <a href="#/account" data-route="account" class="vendor-only" style="display:none;" onclick="closeNav()">My Account</a>
+    <a href="#/records" data-route="records" class="vendor-only" style="display:none;" onclick="closeNav()">Payment Records</a>
+    <a href="#/bulk" data-route="bulk" class="vendor-only" style="display:none;" onclick="closeNav()">Mark All as Paid</a>
+    <a href="#/password" data-route="password" class="vendor-only" style="display:none;" onclick="closeNav()">Change Password</a>
+    <a href="#/mpin" data-route="mpin" class="vendor-only" style="display:none;" onclick="closeNav()">App MPIN</a>
     <a href="#" id="menuLogoutLink" class="menu-logout-link vendor-only" style="display:none;" onclick="closeNav(); doLogout(); return false;">Logout</a>
   </nav>
 </header>
@@ -246,12 +267,15 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
 
 <!-- VENDOR DASHBOARD (shown after login) -->
 <div class="dash-wrapper" id="vendorDashWrapper" style="display:none;">
-  <div class="dash-card" id="vendorAccountSection" style="scroll-margin-top:100px;">
+  <div class="error-msg" id="settingsErrorMsg"></div>
+  <div class="success-msg" id="settingsSuccessMsg"></div>
+
+  <!-- PAGE: My Account -->
+  <section class="dash-card view" id="vendorAccountSection" data-view="account">
     <div class="dash-top">
       <h2 id="vendorNameHeading">My Account</h2>
     </div>
-
-    <div class="vendor-summary">
+<div class="vendor-summary">
       <div class="vendor-summary-card">
         <div class="label">Total Recharge Value</div>
         <div class="value" id="vGross">₹0.00</div>
@@ -274,21 +298,19 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
       </div>
     </div>
 
-    <div id="bulkPaidSection" class="bulk">
-      <div class="bulk-t">Mark All as Paid (Date Range)</div>
-      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
-        <div>
-          <label>From Date</label>
-          <input type="date" id="bulkFromDate">
-        </div>
-        <div>
-          <label>To Date</label>
-          <input type="date" id="bulkToDate">
-        </div>
-        <button type="button" class="pay-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
-      </div>
+    
+    <h3>Quick actions</h3>
+    <div class="quick-grid" style="margin-top:12px;">
+      <a class="quick-btn" href="#/records"><span class="ic">📋</span>Payment Records</a>
+      <a class="quick-btn" href="#/bulk"><span class="ic">✅</span>Mark All as Paid</a>
+      <a class="quick-btn" href="#/password"><span class="ic">🔑</span>Change Password</a>
+      <a class="quick-btn" href="#/mpin"><span class="ic">🔒</span>App MPIN</a>
     </div>
+  </section>
 
+  <!-- PAGE: Payment Records -->
+  <section class="dash-card view" data-view="records" hidden>
+    <div class="page-head"><h2>Payment Records</h2><p>All your recharge entries and their payment status.</p></div>
     <div class="vendor-table-wrap" id="vendorRecordsSection" style="scroll-margin-top:100px;">
       <table class="vendor-table">
         <thead>
@@ -310,14 +332,30 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
       </table>
       <div class="vendor-empty" id="vendorEmptyState" style="display:none;">No recharge entries yet.</div>
     </div>
-  </div>
+  </section>
 
-  <div class="dash-card">
-    <h2>Account Settings</h2>
-    <div class="error-msg" id="settingsErrorMsg"></div>
-    <div class="success-msg" id="settingsSuccessMsg"></div>
+  <!-- PAGE: Mark All as Paid -->
+  <section class="dash-card view" data-view="bulk" hidden>
+    <div class="page-head"><h2>Mark All as Paid</h2><p>Pick a date range to mark every unpaid entry in it as paid.</p></div>
+    <div id="bulkPaidSection" class="bulk" style="margin-bottom:0;">
+      <div class="bulk-t">Mark All as Paid (Date Range)</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <label>From Date</label>
+          <input type="date" id="bulkFromDate">
+        </div>
+        <div>
+          <label>To Date</label>
+          <input type="date" id="bulkToDate">
+        </div>
+        <button type="button" class="pay-btn" onclick="markRangeAsPaid()">Mark All as Paid in Range</button>
+      </div>
+    </div>
+  </section>
 
-    <h3 id="changePasswordSection" style="margin-top:6px; scroll-margin-top:100px;">Change Password</h3>
+  <!-- PAGE: Change Password -->
+  <section class="dash-card view" data-view="password" hidden>
+    <div class="page-head"><h2>Change Password</h2><p>Update the password you use to log in.</p></div>
     <form id="changePasswordForm" style="margin-top:12px;">
       <div class="form-group">
         <label>Current Password</label>
@@ -333,8 +371,11 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
       </div>
       <button type="submit" class="auth-btn">Update Password</button>
     </form>
+  </section>
 
-    <h3 id="mpinSection" style="margin-top:30px; scroll-margin-top:100px;">App MPIN (Quick Unlock)</h3>
+  <!-- PAGE: App MPIN -->
+  <section class="dash-card view" data-view="mpin" hidden>
+    <div class="page-head"><h2>App MPIN</h2><p>Quick unlock for this device.</p></div>
     <p style="font-size:13px; color:#666; margin:6px 0 12px;">Set a 4-6 digit MPIN so you don't have to type your password every time you open the app on this device.</p>
     <form id="setMpinForm">
       <div class="form-group">
@@ -348,7 +389,16 @@ input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,1
       <button type="submit" class="auth-btn">Save MPIN</button>
     </form>
     <button type="button" class="logout-btn" id="removeMpinBtn" style="margin-top:14px;">Remove MPIN from this device</button>
-  </div>
+  </section>
+</div>
+
+<!-- Phone bottom tabs -->
+<div class="tabbar" id="tabbar">
+  <a href="#/account" data-route="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>Account</a>
+  <a href="#/records" data-route="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Records</a>
+  <a href="#/bulk" data-route="bulk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>Pay All</a>
+  <a href="#/password" data-route="password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></svg>Password</a>
+  <a href="#/mpin" data-route="mpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>MPIN</a>
 </div>
 
 <!-- Confetti library -->
@@ -367,6 +417,21 @@ function closeNav() {
   document.querySelector('nav').classList.remove('nav-open');
   document.getElementById('navBackdrop').classList.remove('nav-open');
 }
+
+// ---- Page-wise navigation (hash router) ----
+const VIEWS = ['account', 'records', 'bulk', 'password', 'mpin'];
+function currentRoute() {
+  const r = (location.hash || '').replace(/^#\/?/, '');
+  return VIEWS.includes(r) ? r : 'account';
+}
+function renderRoute() {
+  const route = currentRoute();
+  document.querySelectorAll('.view').forEach((v) => { v.hidden = v.dataset.view !== route; });
+  document.querySelectorAll('[data-route]').forEach((a) => { a.classList.toggle('active', a.dataset.route === route); });
+  ['settingsErrorMsg', 'settingsSuccessMsg'].forEach((id) => { document.getElementById(id).style.display = 'none'; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', renderRoute);
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
@@ -646,6 +711,8 @@ function revealVendorDashboard(vendorAccount) {
   document.getElementById('vendorLoginWrapper').style.display = 'none';
   document.getElementById('vendorDashWrapper').style.display = 'block';
   document.querySelectorAll('.vendor-only').forEach((el) => { el.style.display = ''; });
+  document.body.classList.add('logged-in');
+  renderRoute();
   loadVendorData(vendorAccount.vendorKey, vendorAccount.name);
 
   // Show the birthday wish right away if today qualifies
