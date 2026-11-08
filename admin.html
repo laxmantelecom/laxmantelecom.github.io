@@ -443,7 +443,7 @@
         <a href="#/home" data-route="home" title="Home"><span class="ni">🏠</span><span class="side-text">Home</span></a>
         <p class="side-label">Manage</p>
         <a href="#/requests" data-route="requests" title="Service Requests"><span class="ni">📋</span><span class="side-text">Service Requests</span><span class="badge" data-count="req" hidden>0</span></a>
-        <a href="#/vendors" data-route="vendors" title="Vendor Accounts"><span class="ni">🤝</span><span class="side-text">Vendor Accounts</span></a>
+        <a href="#/vendors" data-route="vendors" title="Supplier Accounts"><span class="ni">🤝</span><span class="side-text">Supplier Accounts</span></a>
         <a href="#/concerns" data-route="concerns" title="Payment Concerns"><span class="ni">⚠️</span><span class="side-text">Payment Concerns</span><span class="badge" data-count="conc" hidden>0</span></a>
         <p class="side-label">Other dashboards</p>
         <a href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" target="_blank" rel="noopener" title="Recharge Settlement"><span class="ni">🧾</span><span class="side-text">Recharge Settlement</span><span class="ext">↗</span></a>
@@ -470,19 +470,19 @@
           <div class="hero"><h2>Welcome back</h2><p>Everything for LAXMAN TELECOM in one place.</p></div>
           <div class="stats">
             <a class="stat s1" href="#/requests"><small>Open service requests</small><b data-count="req">–</b></a>
-            <a class="stat s2" href="#/vendors"><small>Vendor accounts</small><b data-count="vend">–</b></a>
+            <a class="stat s2" href="#/vendors"><small>Supplier accounts</small><b data-count="vend">–</b></a>
             <a class="stat s3" href="#/concerns"><small>Pending payment concerns</small><b data-count="conc">–</b></a>
           </div>
           <h3 class="h-sub">Other dashboards</h3>
           <div class="quick">
-            <a class="dark" href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" target="_blank" rel="noopener"><span class="ic">🧾</span><span>Recharge Settlement<small>Vendor invoices ↗</small></span></a>
+            <a class="dark" href="telecom_settlement_invoice_dashboard_print_enhanced_31.html" target="_blank" rel="noopener"><span class="ic">🧾</span><span>Recharge Settlement<small>Supplier invoices ↗</small></span></a>
             <a class="dark" href="shop-ledger.html" target="_blank" rel="noopener"><span class="ic">📒</span><span>Daily Ledger<small>Daily work &amp; profit ↗</small></span></a>
           </div>
           <h3 class="h-sub">Manage</h3>
           <div class="quick">
             <a href="#/requests"><span class="ic">📋</span><span>Service Requests<small>Customer requests</small></span></a>
-            <a href="#/vendors"><span class="ic">🤝</span><span>Vendor Accounts<small>Create or remove logins</small></span></a>
-            <a href="#/concerns"><span class="ic">⚠️</span><span>Payment Concerns<small>Review vendor concerns</small></span></a>
+            <a href="#/vendors"><span class="ic">🤝</span><span>Supplier Accounts<small>Create or remove logins</small></span></a>
+            <a href="#/concerns"><span class="ic">⚠️</span><span>Payment Concerns<small>Review supplier concerns</small></span></a>
             <a href="#/settings"><span class="ic">⚙️</span><span>Account Settings<small>Password &amp; MPIN</small></span></a>
           </div>
         </section>
@@ -495,40 +495,40 @@
           </div>
         </section>
 
-        <!-- PAGE: Vendor accounts -->
+        <!-- PAGE: Supplier accounts -->
         <section class="view" data-view="vendors" hidden>
-          <div class="page-head"><h2>Vendor Accounts</h2><p>Create logins for vendors and manage their access.</p></div>
+          <div class="page-head"><h2>Supplier Accounts</h2><p>Create logins for suppliers and manage their access.</p></div>
           <div class="dash-card teal" id="vendorSection">
             <p class="card-note">
-          Create a login for a vendor (for example Ankit Gupta) so they can view their own recharge settlement statement at <code>vendor.html</code>.
-          The Vendor Name must exactly match the vendor name used in the Recharge Settlement Dashboard.
+          Create a login for a supplier (for example Ankit Gupta) so they can view their own recharge settlement statement at <code>vendor.html</code>.
+          The Supplier Name must exactly match the supplier name used in the Recharge Settlement Dashboard.
         </p>
         <div class="error-msg" id="vendorErrorMsg"></div>
         <div class="success-msg" id="vendorSuccessMsg"></div>
         <form id="addVendorForm">
           <div class="form-group">
-            <label>Vendor Name (must match exactly)</label>
+            <label>Supplier Name (must match exactly)</label>
             <input type="text" id="newVendorName" required placeholder="Example: Ankit Gupta">
           </div>
           <div class="form-group">
-            <label>Vendor Email (their login)</label>
+            <label>Supplier Email (their login)</label>
             <input type="email" id="newVendorEmail" required placeholder="vendor@example.com">
           </div>
           <div class="form-group">
-            <label>Vendor Password</label>
+            <label>Supplier Password</label>
             <input type="text" id="newVendorPassword" required minlength="6" placeholder="At least 6 characters">
           </div>
-          <button type="submit" class="auth-btn" id="addVendorBtn">Create Vendor Login</button>
+          <button type="submit" class="auth-btn" id="addVendorBtn">Create Supplier Login</button>
         </form>
-        <div id="vendorAccountsList" style="margin-top: 24px;"><p class="empty">Loading vendor accounts...</p></div>
+        <div id="vendorAccountsList" style="margin-top: 24px;"><p class="empty">Loading supplier accounts...</p></div>
           </div>
         </section>
 
         <!-- PAGE: Payment concerns -->
         <section class="view" data-view="concerns" hidden>
-          <div class="page-head"><h2>Payment Concerns</h2><p>Concerns raised by vendors about entries marked Paid.</p></div>
+          <div class="page-head"><h2>Payment Concerns</h2><p>Concerns raised by suppliers about entries marked Paid.</p></div>
           <div class="dash-card orange" id="concernsSection">
-            <p class="card-note">When a vendor raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
+            <p class="card-note">When a supplier raises a concern about an entry they marked Paid by mistake, it appears here for your review.</p>
         <div id="paymentConcernsList"><p class="empty">Loading...</p></div>
           </div>
         </section>
@@ -580,7 +580,7 @@
     </div>
 
     <div class="tabbar" role="navigation" aria-label="Menu">
-      <a href="#/home" data-route="home"><span class="ni">🏠</span>Home</a><a href="#/requests" data-route="requests"><span class="ni">📋</span>Requests<span class="badge" data-count="req" hidden>0</span></a><a href="#/vendors" data-route="vendors"><span class="ni">🤝</span>Vendors</a><a href="#/concerns" data-route="concerns"><span class="ni">⚠️</span>Concerns<span class="badge" data-count="conc" hidden>0</span></a><a href="#/settings" data-route="settings"><span class="ni">⚙️</span>Settings</a>
+      <a href="#/home" data-route="home"><span class="ni">🏠</span>Home</a><a href="#/requests" data-route="requests"><span class="ni">📋</span>Requests<span class="badge" data-count="req" hidden>0</span></a><a href="#/vendors" data-route="vendors"><span class="ni">🤝</span>Suppliers</a><a href="#/concerns" data-route="concerns"><span class="ni">⚠️</span>Concerns<span class="badge" data-count="conc" hidden>0</span></a><a href="#/settings" data-route="settings"><span class="ni">⚙️</span>Settings</a>
     </div>
   </div>
 
@@ -872,7 +872,7 @@
     }
 
     /* ==========================================================
-       Payment concerns raised by vendors
+       Payment concerns raised by suppliers
        ========================================================== */
     function loadPaymentConcerns() {
       db.ref('telecomSettlement/paymentDisputes').on('value', (snap) => {
@@ -934,7 +934,7 @@
         return;
       }
 
-      if (!confirm("Mark this entry as Unpaid? This will update the vendor's account.")) return;
+      if (!confirm("Mark this entry as Unpaid? This will update the supplier's account.")) return;
 
       db.ref(recordPath).once('value').then((snap) => {
         const record = snap.val();
@@ -957,7 +957,7 @@
     }
 
     /* ==========================================================
-       Vendor accounts
+       Supplier accounts
        ========================================================== */
 
     /** Turns "Ankit Gupta" into "ankit-gupta" for use as a database key. */
@@ -975,7 +975,7 @@
 
         setCount('vend', entries.length);
         if (!entries.length) {
-          $('vendorAccountsList').innerHTML = '<p class="empty">No vendor accounts yet.</p>';
+          $('vendorAccountsList').innerHTML = '<p class="empty">No supplier accounts yet.</p>';
           return;
         }
 
@@ -985,17 +985,17 @@
           <td><button class="btn btn-small btn-danger" onclick="removeVendorAccount('${uid}')">Remove Access</button></td>
         </tr>`).join('');
 
-        $('vendorAccountsList').innerHTML = buildTable(['Vendor Name', 'Email', 'Action'], body);
+        $('vendorAccountsList').innerHTML = buildTable(['Supplier Name', 'Email', 'Action'], body);
       });
     }
 
     function removeVendorAccount(uid) {
-      const message = "Remove this vendor's access? They will no longer be able to log in to view their statement " +
+      const message = "Remove this supplier's access? They will no longer be able to log in to view their statement " +
         '(their login itself is not deleted, only their access).';
       if (!confirm(message)) return;
 
       db.ref('vendorAccounts/' + uid).remove()
-        .then(() => showMessage('vendor', 'success', 'Vendor access removed.'))
+        .then(() => showMessage('vendor', 'success', 'Supplier access removed.'))
         .catch((err) => showMessage('vendor', 'error', err.message));
     }
 
@@ -1007,7 +1007,7 @@
       const addBtn = $('addVendorBtn');
       addBtn.disabled = true;
 
-      // A second Firebase app is used so that creating the vendor login does not
+      // A second Firebase app is used so that creating the supplier login does not
       // sign the admin out of their own session.
       const secondaryApp = firebase.apps.find((a) => a.name === 'Secondary')
         || firebase.initializeApp(firebaseConfig, 'Secondary');
@@ -1022,7 +1022,7 @@
       secondaryAuth.createUserWithEmailAndPassword(email, password)
         .then((cred) => grantAccess(cred.user.uid))
         .then(() => {
-          showMessage('vendor', 'success', 'Vendor login created for ' + name + '. Share this email and password with them along with the vendor.html link.');
+          showMessage('vendor', 'success', 'Supplier login created for ' + name + '. Share this email and password with them along with the vendor.html link.');
           $('addVendorForm').reset();
           addBtn.disabled = false;
         })
