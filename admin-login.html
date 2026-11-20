@@ -177,7 +177,7 @@ document.getElementById('adminLoginForm').addEventListener('submit', function (e
       if (!isAdmin(cred.user)) {
         // Signed in, but not the admin: sign out right away
         return auth.signOut().then(() => {
-          showError('This account does not have admin access. Customers should use the Customer Login.');
+          showError('Incorrect email or password.');
           btn.disabled = false;
         });
       }
