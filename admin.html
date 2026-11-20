@@ -595,10 +595,23 @@
        ========================================================== */
     const $ = (id) => document.getElementById(id);
 
-    /** Escapes text before it is placed inside an HTML string. */
+    /** Page that handles admin sign-in (used for every "not allowed" redirect). */
+    const ADMIN_LOGIN_PAGE = 'admin-login.html';
+
+    /**
+     * Escapes text before it is placed inside an HTML string.
+     * SECURITY: every value that comes from the database MUST go through this
+     * before it is added to innerHTML. Never put database values inside inline
+     * onclick/onchange handlers; use data-* attributes instead (see below).
+     */
     function esc(value) {
       const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
       return String(value ?? '').replace(/[&<>"']/g, (ch) => map[ch]);
+    }
+
+    /** True only for the admin account (case-insensitive email match). */
+    function isAdmin(user) {
+      return !!user && (user.email || '').toLowerCase() === String(ADMIN_EMAIL).toLowerCase();
     }
 
     /** Shows a success or error box. prefix is 'settings' or 'vendor'. */
@@ -620,6 +633,7 @@
     function formatDateTime(ms) {
       if (!ms) return '';
       const d = new Date(ms);
+      if (isNaN(d.getTime())) return '';
       const day = String(d.getDate()).padStart(2, '0');
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const hours = d.getHours();
@@ -681,12 +695,13 @@
     });
 
     function doLogout() {
-      auth.signOut().then(() => { window.location.href = 'login.html'; });
+      auth.signOut().then(() => { window.location.href = ADMIN_LOGIN_PAGE; });
     }
 
     /* ==========================================================
        MPIN quick unlock
        The MPIN is stored only as a SHA-256 hash in this browser.
+       Note: this is a convenience lock, not real security.
        ========================================================== */
     async function sha256Hex(text) {
       const bytes = new TextEncoder().encode(text);
@@ -735,7 +750,13 @@
     /* ==========================================================
        Start-up: only the admin account may open this page
        ========================================================== */
+    let panelStarted = false;
+
     function startAdminPanel() {
+      // Guard: auth state can fire more than once; load the data only once
+      if (panelStarted) return;
+      panelStarted = true;
+
       $('adminAppRoot').style.display = 'block';
       renderRoute();
       loadAllRequests();
@@ -744,8 +765,8 @@
     }
 
     auth.onAuthStateChanged((user) => {
-      if (!user || user.email !== ADMIN_EMAIL) {
-        window.location.href = 'login.html';
+      if (!isAdmin(user)) {
+        window.location.href = ADMIN_LOGIN_PAGE;
         return;
       }
 
@@ -848,13 +869,16 @@
               .map((s) => `<option ${r.status === s ? 'selected' : ''}>${s}</option>`)
               .join('');
 
+            // SECURITY: uid and reqId come from the database, so they are passed
+            // through escaped data-* attributes and never placed inside onchange code.
             return `<tr>
               <td>${esc(r.profile.name) || '(no name)'}</td>
               <td>${contact}</td>
               <td>${esc(r.service)}</td>
               <td>${esc(r.message)}</td>
               <td>${esc(date)}</td>
-              <td><select onchange="updateStatus('${r.uid}','${r.reqId}',this.value)">${options}</select></td>
+              <td><select data-uid="${esc(r.uid)}" data-req="${esc(r.reqId)}"
+                    onchange="updateStatus(this.dataset.uid, this.dataset.req, this.value)">${options}</select></td>
             </tr>`;
           }).join('');
 
@@ -868,6 +892,8 @@
     }
 
     function updateStatus(uid, reqId, status) {
+      // Only allow the known status values
+      if (!REQUEST_STATUSES.includes(status)) return;
       db.ref('requests/' + uid + '/' + reqId).update({ status });
     }
 
@@ -896,21 +922,25 @@
         rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         const body = rows.map((r) => {
-          const entryDate = r.date ? r.date.split('-').reverse().join('-') : '';
+          const entryDate = r.date ? String(r.date).split('-').reverse().join('-') : '';
           const concernId = 'CN-' + String(r.disputeId).slice(-6);
-          const args = `'${r.vendorKey}','${r.disputeId}','${r.recordId}'`;
+
+          // SECURITY: all three keys go into escaped data-* attributes on each button
+          const attrs = `data-vendor="${esc(r.vendorKey)}" data-dispute="${esc(r.disputeId)}" data-record="${esc(r.recordId)}"`;
 
           return `<tr>
-            <td>${concernId}</td>
+            <td>${esc(concernId)}</td>
             <td>${esc(r.vendorName)}</td>
             <td>${esc(r.mobile)}</td>
-            <td>${entryDate}</td>
+            <td>${esc(entryDate)}</td>
             <td>₹${Number(r.amount || 0).toFixed(2)}</td>
             <td>${esc(r.reason)}</td>
-            <td>${formatDateTime(r.createdAt)}</td>
+            <td>${esc(formatDateTime(r.createdAt))}</td>
             <td class="actions">
-              <button class="btn btn-small btn-warn" onclick="resolveConcern(${args},true)">Mark Unpaid</button>
-              <button class="btn btn-small btn-ghost" onclick="resolveConcern(${args},false)">Reject</button>
+              <button class="btn btn-small btn-warn" ${attrs}
+                onclick="resolveConcern(this.dataset.vendor, this.dataset.dispute, this.dataset.record, true)">Mark Unpaid</button>
+              <button class="btn btn-small btn-ghost" ${attrs}
+                onclick="resolveConcern(this.dataset.vendor, this.dataset.dispute, this.dataset.record, false)">Reject</button>
             </td>
           </tr>`;
         }).join('');
@@ -982,7 +1012,8 @@
         const body = entries.map(([uid, vendor]) => `<tr>
           <td>${esc(vendor.name)}</td>
           <td>${esc(vendor.email)}</td>
-          <td><button class="btn btn-small btn-danger" onclick="removeVendorAccount('${uid}')">Remove Access</button></td>
+          <td><button class="btn btn-small btn-danger" data-uid="${esc(uid)}"
+                onclick="removeVendorAccount(this.dataset.uid)">Remove Access</button></td>
         </tr>`).join('');
 
         $('vendorAccountsList').innerHTML = buildTable(['Supplier Name', 'Email', 'Action'], body);
