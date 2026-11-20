@@ -247,7 +247,7 @@ function showSuccess(msg) {
 function redirectAfterLogin(user) {
   if ((user.email || '').toLowerCase() === String(ADMIN_EMAIL).toLowerCase()) {
     auth.signOut().then(() => {
-      showError('Admin ke liye alag login page hai. Please Admin Login use karein.');
+      showError('Incorrect email or password.');
     });
   } else {
     window.location.href = 'dashboard.html';
