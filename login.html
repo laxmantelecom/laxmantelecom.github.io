@@ -240,9 +240,15 @@ function showSuccess(msg) {
   document.getElementById('errorMsg').style.display = 'none';
 }
 
+/**
+ * This page is for customers only.
+ * The admin must use admin-login.html, so an admin who logs in here is signed out again.
+ */
 function redirectAfterLogin(user) {
-  if (user.email === ADMIN_EMAIL) {
-    window.location.href = 'admin.html';
+  if ((user.email || '').toLowerCase() === String(ADMIN_EMAIL).toLowerCase()) {
+    auth.signOut().then(() => {
+      showError('Admin ke liye alag login page hai. Please Admin Login use karein.');
+    });
   } else {
     window.location.href = 'dashboard.html';
   }
@@ -256,6 +262,10 @@ document.getElementById('emailLoginForm').addEventListener('submit', function (e
 
   auth.signInWithEmailAndPassword(email, password)
     .then((cred) => {
+      if ((cred.user.email || '').toLowerCase() === String(ADMIN_EMAIL).toLowerCase()) {
+        redirectAfterLogin(cred.user);
+        return;
+      }
       showSuccess('Login successful! Redirecting...');
       setTimeout(() => redirectAfterLogin(cred.user), 500);
     })
@@ -272,6 +282,9 @@ document.getElementById('googleLoginBtn').addEventListener('click', function () 
       const user = result.user;
 
       // The first time a Google account signs in, a basic profile is created for it
+      // (never for the admin account, which must use admin-login.html)
+      if ((user.email || '').toLowerCase() === String(ADMIN_EMAIL).toLowerCase()) return user;
+
       return db.ref('users/' + user.uid).once('value').then(function (snap) {
         if (!snap.exists()) {
           return db.ref('users/' + user.uid).set({
@@ -284,6 +297,10 @@ document.getElementById('googleLoginBtn').addEventListener('click', function () 
       }).then(function () { return user; });
     })
     .then(function (user) {
+      if ((user.email || '').toLowerCase() === String(ADMIN_EMAIL).toLowerCase()) {
+        redirectAfterLogin(user);
+        return;
+      }
       showSuccess('Login successful! Redirecting...');
       setTimeout(() => redirectAfterLogin(user), 500);
     })
