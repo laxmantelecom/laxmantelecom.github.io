@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | LAXMAN TELECOM</title>
+<meta name="theme-color" content="#111318">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111318;--acc:#ff8a00;--acc2:#ffb347;--cream:#fbf7f0;--line:#e9e1d3;--text:#2c2f38;--mute:#6b6f7b}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Figtree,system-ui,sans-serif;color:var(--text);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:330px;background:radial-gradient(circle at 12% 10%,rgba(255,138,0,.32),transparent 38%),radial-gradient(circle at 92% 90%,rgba(124,58,237,.28),transparent 40%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,var(--ink)}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);line-height:1.15}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.hidden{display:none!important}
+@keyframes up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+@keyframes float{50%{transform:translateY(-8px)}}
+
+.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:70px;padding:0 max(20px,calc((100% - 1140px)/2));background:rgba(251,247,240,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo img{border-radius:50%;height:40px;width:40px}
+.logo h1{font-size:1.15rem}
+.logo p{font-size:.68rem;color:var(--mute);margin-top:2px}
+nav{display:flex;align-items:center;gap:6px;font-weight:500;font-size:.95rem}
+nav a{padding:8px 14px;border-radius:999px;transition:background .2s}
+nav a:hover{background:rgba(255,138,0,.13)}
+.nav-toggle{display:none;background:none;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;font-size:1.3rem;color:var(--ink);cursor:pointer}
+.nav-backdrop{display:none;position:fixed;inset:0;background:rgba(17,19,24,.45);z-index:40}
+.nav-backdrop.nav-open{display:block}
+@media(max-width:900px){
+  .nav-toggle{display:block}
+  nav{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--cream);border-bottom:1px solid var(--line);padding:8px 20px 18px;box-shadow:0 14px 24px rgba(17,19,24,.12)}
+  nav.nav-open{display:flex}
+  nav a{border-radius:0;border-bottom:1px solid var(--line);padding:13px 8px}
+}
+
+.auth-wrapper{width:92%;max-width:440px;margin:56px auto 70px;padding:34px 30px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 50px -16px rgba(17,19,24,.35);animation:up .8s cubic-bezier(.2,.8,.2,1) both}
+.auth-wrapper h2{text-align:center;font-size:1.8rem}
+.auth-wrapper h2::before{content:'🔑';display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:50%;font-size:1.8rem;background:linear-gradient(135deg,#ea580c,#fb923c);box-shadow:0 14px 26px -6px #ea580c;animation:float 6s ease-in-out 1s infinite}
+.sub{text-align:center;color:var(--mute);margin:6px 0 22px}
+
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
+input[type=email],input[type=password],input[type=text]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s}
+input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px rgba(255,138,0,.15)}
+.error-msg,.success-msg{display:none;border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:.9rem}
+.error-msg{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
+.success-msg{background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
+.auth-btn{position:relative;overflow:hidden;width:100%;padding:14px;font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border:0;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(255,138,0,.35);transition:transform .2s}
+.auth-btn:hover{transform:translateY(-3px)}
+.auth-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.forgot-row{margin:-4px 0 16px;text-align:right}
+.forgot-row a,.back-row a{font-size:.88rem;font-weight:600;color:#b35f00}
+.forgot-row a:hover,.back-row a:hover{text-decoration:underline}
+.back-row{margin-top:16px;text-align:center}
+.reset-title{margin-bottom:4px;font-size:1.25rem}
+.reset-text{margin-bottom:16px;font-size:.9rem;color:var(--mute)}
+.auth-link{text-align:center;font-size:.84rem;color:var(--mute);margin-top:18px}
+
+@media(max-width:520px){.logo p{display:none}.auth-wrapper{padding:28px 20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="logo" href="index.html#home">
+    <img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo">
+    <div>
+      <h1>LAXMAN TELECOM</h1>
+      <p>Admin Portal</p>
+    </div>
+  </a>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">☰</button>
+  <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+  <nav>
+    <a href="index.html#home">Home</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="login-select.html">All Logins</a>
+  </nav>
+</header>
+
+<div class="auth-wrapper">
+  <h2>Admin Login</h2>
+  <p class="sub">Authorised staff only</p>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg"></div>
+
+  <form id="adminLoginForm">
+    <div class="form-group">
+      <label for="adminEmail">Email</label>
+      <input type="email" id="adminEmail" required placeholder="admin@example.com" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label for="adminPassword">Password</label>
+      <div style="position:relative;">
+        <input type="password" id="adminPassword" required placeholder="Your password" autocomplete="current-password" style="padding-right:44px;">
+        <span id="toggleAdminPassword" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:20px;user-select:none;">👁️</span>
+      </div>
+    </div>
+    <div class="forgot-row"><a href="#" id="forgotLink">Forgot password?</a></div>
+    <button type="submit" class="auth-btn" id="loginBtn">Login</button>
+  </form>
+
+  <form id="resetForm" class="hidden">
+    <h3 class="reset-title">Reset password</h3>
+    <p class="reset-text">We'll email you a reset link.</p>
+    <div class="form-group">
+      <label for="resetEmail">Email</label>
+      <input type="email" id="resetEmail" required placeholder="admin@example.com">
+    </div>
+    <button type="submit" class="auth-btn" id="resetBtn">Send Reset Link</button>
+    <p class="back-row"><a href="#" id="backToLogin">&larr; Back to login</a></p>
+  </form>
+
+  <p class="auth-link">This login is only for the Laxman Telecom admin. Customers: <a href="login.html" style="color:#b35f00;font-weight:600;">login here</a>.</p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+function toggleNav() {
+  document.querySelector('nav').classList.toggle('nav-open');
+  document.getElementById('navBackdrop').classList.toggle('nav-open');
+}
+function closeNav() {
+  document.querySelector('nav').classList.remove('nav-open');
+  document.getElementById('navBackdrop').classList.remove('nav-open');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+}
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+function isAdmin(user) {
+  return !!user && (user.email || '').toLowerCase() === String(ADMIN_EMAIL).toLowerCase();
+}
+
+document.getElementById('toggleAdminPassword').addEventListener('click', function () {
+  const pwd = document.getElementById('adminPassword');
+  const show = pwd.type === 'password';
+  pwd.type = show ? 'text' : 'password';
+  this.textContent = show ? '🙈' : '👁️';
+});
+
+// ---- ADMIN LOGIN ----
+document.getElementById('adminLoginForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  const email = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value;
+  btn.disabled = true;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((cred) => {
+      if (!isAdmin(cred.user)) {
+        // Signed in, but not the admin: sign out right away
+        return auth.signOut().then(() => {
+          showError('This account does not have admin access. Customers should use the Customer Login.');
+          btn.disabled = false;
+        });
+      }
+      showSuccess('Login successful! Redirecting...');
+      setTimeout(() => { window.location.href = 'admin.html'; }, 500);
+    })
+    .catch((err) => {
+      btn.disabled = false;
+      const bad = ['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found', 'auth/invalid-email'];
+      showError(bad.includes(err.code) ? 'Incorrect email or password.' : err.message);
+    });
+});
+
+// Already signed in as admin: go straight to the dashboard
+auth.onAuthStateChanged((user) => {
+  if (isAdmin(user)) window.location.href = 'admin.html';
+});
+
+// ---- FORGOT PASSWORD ----
+let resetTimer = null;
+
+function showResetForm(show) {
+  document.getElementById('adminLoginForm').classList.toggle('hidden', show);
+  document.getElementById('resetForm').classList.toggle('hidden', !show);
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'none';
+  if (show) document.getElementById('resetEmail').value = document.getElementById('adminEmail').value.trim();
+}
+
+function startResetCooldown() {
+  const button = document.getElementById('resetBtn');
+  let secondsLeft = 60;
+  clearInterval(resetTimer);
+  button.disabled = true;
+  button.textContent = 'Resend in ' + secondsLeft + 's';
+  resetTimer = setInterval(() => {
+    secondsLeft -= 1;
+    if (secondsLeft <= 0) {
+      clearInterval(resetTimer);
+      button.disabled = false;
+      button.textContent = 'Send Reset Link';
+      return;
+    }
+    button.textContent = 'Resend in ' + secondsLeft + 's';
+  }, 1000);
+}
+
+document.getElementById('forgotLink').addEventListener('click', (e) => { e.preventDefault(); showResetForm(true); });
+document.getElementById('backToLogin').addEventListener('click', (e) => { e.preventDefault(); showResetForm(false); });
+
+document.getElementById('resetForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('resetEmail').value.trim();
+  function linkSent() {
+    showSuccess('Reset link sent. Please check your inbox and spam folder.');
+    startResetCooldown();
+  }
+  auth.sendPasswordResetEmail(email)
+    .then(linkSent)
+    .catch((err) => { if (err.code === 'auth/user-not-found') linkSent(); else showError(err.message); });
+});
+</script>
+
+</body>
+</html>
