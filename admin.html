@@ -363,6 +363,11 @@
       cursor: pointer;
     }
 
+    /* Document link shown in the Service Requests table */
+    .doc-link { display: inline-block; font-weight: 600; word-break: break-word; color: #b35f00; }
+    .doc-link:hover { text-decoration: underline; }
+    .doc-none { color: var(--muted); }
+
     /* ==========================================================
        MPIN lock screen
        ========================================================== */
@@ -869,6 +874,11 @@
               .map((s) => `<option ${r.status === s ? 'selected' : ''}>${s}</option>`)
               .join('');
 
+            // Document uploaded by the customer (only secure https links are shown)
+            const documentCell = r.documentUrl && String(r.documentUrl).startsWith('https://')
+              ? `<a class="doc-link" href="${esc(r.documentUrl)}" target="_blank" rel="noopener">📎 ${esc(r.documentName || 'View document')}</a>`
+              : '<span class="doc-none">No document</span>';
+
             // SECURITY: uid and reqId come from the database, so they are passed
             // through escaped data-* attributes and never placed inside onchange code.
             return `<tr>
@@ -876,6 +886,7 @@
               <td>${contact}</td>
               <td>${esc(r.service)}</td>
               <td>${esc(r.message)}</td>
+              <td>${documentCell}</td>
               <td>${esc(date)}</td>
               <td><select data-uid="${esc(r.uid)}" data-req="${esc(r.reqId)}"
                     onchange="updateStatus(this.dataset.uid, this.dataset.req, this.value)">${options}</select></td>
@@ -883,7 +894,7 @@
           }).join('');
 
           $('adminContent').innerHTML = buildTable(
-            ['Customer', 'Contact', 'Service', 'Details', 'Date', 'Status'], body
+            ['Customer', 'Contact', 'Service', 'Details', 'Document', 'Date', 'Status'], body
           );
         })
         .catch((err) => {
