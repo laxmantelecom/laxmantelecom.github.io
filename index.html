@@ -6,8 +6,8 @@
 <script>document.documentElement.className="js"</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LAXMAN TELECOM | Digital Service Center</title>
-<meta name="description" content="LAXMAN TELECOM is a digital service center in Ludhiana providing mobile repair, recharge, electricity bill payment, Aadhaar, PAN card, passport, birth, caste and residence certificates, ration card, online forms, printing and other digital services.">
-<meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Electricity Bill, Aadhaar Service, PAN Card, PAN Aadhaar Link, Passport, Birth Certificate, Caste Certificate, Residence Certificate, Ration Card, Resume Building, Redeem Code, Google Play Redeem Code, Gift Card, Ludhiana">
+<meta name="description" content="LAXMAN TELECOM is a digital service center in Ludhiana providing mobile repair, recharge, electricity bill payment, Aadhaar, PAN card, passport, birth, caste and residence certificates, ration card, online forms, printing and other digital services. Create a free online account to send requests, upload documents and track status.">
+<meta name="keywords" content="LAXMAN TELECOM, Mobile Repair, Recharge, Electricity Bill, Aadhaar Service, PAN Card, PAN Aadhaar Link, Passport, Birth Certificate, Caste Certificate, Residence Certificate, Ration Card, Resume Building, Redeem Code, Google Play Redeem Code, Gift Card, Ludhiana, Online Service Request">
 <meta name="google-site-verification" content="EYWQr52o6yABIfyxjNi2FscWFNsEl9q9DkJrLQV-NUA">
 <meta name="theme-color" content="#111318">
 <link rel="canonical" href="https://laxmantelecom.github.io/">
@@ -40,31 +40,9 @@
     "addressCountry": "IN"
   },
   "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ],
-      "opens": "15:00",
-      "closes": "22:00"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": "Sunday",
-      "opens": "08:00",
-      "closes": "13:00"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": "Sunday",
-      "opens": "15:00",
-      "closes": "22:00"
-    }
+    {"@type": "OpeningHoursSpecification","dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens": "15:00","closes": "22:00"},
+    {"@type": "OpeningHoursSpecification","dayOfWeek": "Sunday","opens": "08:00","closes": "13:00"},
+    {"@type": "OpeningHoursSpecification","dayOfWeek": "Sunday","opens": "15:00","closes": "22:00"}
   ],
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
@@ -178,6 +156,9 @@ nav .login:hover{background:var(--acc);color:var(--ink)}
 .chips button{font:inherit;font-size:.85rem;color:#c5cad6;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:6px 14px;cursor:pointer;transition:all .2s}
 .chips button:hover{background:var(--acc);border-color:var(--acc);color:var(--ink);transform:translateY(-2px)}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.promo{display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:8px 16px;border-radius:999px;background:rgba(255,138,0,.14);border:1px solid rgba(255,138,0,.4);color:#ffd9a0;font-size:.86rem;transition:background .2s,transform .2s}
+.promo b{color:#fff}
+.promo:hover{background:rgba(255,138,0,.26);transform:translateY(-2px)}
 .stage{position:relative;text-align:center}
 .stage::before{content:'';position:absolute;inset:-12%;background:radial-gradient(circle,rgba(59,189,250,.28),transparent 62%);animation:breathe 4s ease-in-out infinite}
 @keyframes breathe{50%{transform:scale(1.18);opacity:.65}}
@@ -238,6 +219,56 @@ h2::after{content:'';display:block;width:0;height:4px;border-radius:4px;backgrou
 .empty{display:none;padding:30px 0}
 .note{margin-top:30px;font-size:.84rem;color:var(--mute);border-left:3px solid var(--acc);padding-left:14px;max-width:700px}
 
+/* online account */
+.acct{background:var(--ink);color:#aab0bf;position:relative;overflow:hidden;isolation:isolate}
+.acct::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 8% 10%,rgba(255,138,0,.24),transparent 40%),radial-gradient(circle at 96% 90%,rgba(124,58,237,.28),transparent 42%),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/56px 56px}
+.acct h2{color:#fff}
+.acct .sub{color:#aab0bf}
+.acct-top{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center;margin-top:48px}
+.mock{position:relative;max-width:460px;margin:0 auto;width:100%;background:#fff;border-radius:22px;color:var(--text);box-shadow:0 40px 80px -24px rgba(0,0,0,.75);animation:tilt 7s ease-in-out infinite}
+@keyframes tilt{50%{transform:translateY(-10px) rotate(.6deg)}}
+.mock-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;background:#f3ede2;border-bottom:1px solid var(--line);border-radius:22px 22px 0 0}
+.mock-bar i{width:10px;height:10px;border-radius:50%;background:#e0d6c4}
+.mock-bar span{margin-left:10px;font-size:.74rem;color:var(--mute)}
+.mock-body{padding:20px}
+.mock-body h4{font-size:1.05rem;margin-bottom:12px}
+.m-req{position:relative;margin-bottom:10px;padding:12px 14px 12px 20px;background:var(--cream);border:1px solid var(--line);border-radius:14px}
+.m-req::before{content:'';position:absolute;left:7px;top:12px;bottom:12px;width:4px;border-radius:4px;background:var(--st);transition:background .5s}
+.m-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.92rem;font-weight:700;color:var(--ink)}
+.m-req small{display:block;font-size:.78rem;color:var(--mute)}
+.pill{padding:3px 11px;border-radius:999px;font-size:.72rem;font-weight:700;transition:background .4s,color .4s}
+.m-req[data-s="0"]{--st:#f59e0b}.m-req[data-s="0"] .pill{background:#fff3dc;color:#9a580a}
+.m-req[data-s="1"]{--st:#7c3aed}.m-req[data-s="1"] .pill{background:#f1e8ff;color:#6d28d9}
+.m-req[data-s="2"]{--st:#16a34a}.m-req[data-s="2"] .pill{background:#e6f8ec;color:#166534}
+.m-files{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s ease}
+.m-files>div{overflow:hidden}
+.m-req[data-s="2"] .m-files{grid-template-rows:1fr}
+.m-res{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding:8px 12px;background:#ecfdf3;border:1px solid #bbf7d0;border-radius:10px;font-size:.8rem;font-weight:600;color:#166534}
+.m-res u{padding:3px 12px;text-decoration:none;color:#166534;background:#fff;border:1.5px solid #86efac;border-radius:999px;font-size:.74rem}
+.m-up{margin-top:14px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:14px;font-size:.8rem;color:var(--mute)}
+.m-up b{display:block;margin-bottom:6px;color:var(--ink)}
+.m-up span{display:inline-block;margin:0 6px 6px 0;padding:4px 10px;background:var(--cream);border:1px solid var(--line);border-radius:999px}
+.m-up em{display:block;font-style:normal;font-weight:600;color:#166534}
+.float{position:absolute;padding:10px 14px;background:#fff;border-radius:14px;font-size:.8rem;font-weight:700;color:var(--ink);box-shadow:0 18px 36px -10px rgba(0,0,0,.5);animation:bob 5s ease-in-out infinite}
+.float.f1{top:-18px;right:-22px}
+.float.f2{bottom:-16px;left:-26px;animation-delay:-2.5s}
+@keyframes bob{50%{transform:translateY(-9px)}}
+.af-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.af{position:relative;padding:22px 20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11);border-radius:20px;transition:transform .3s,background .3s,border-color .3s}
+.af:hover{transform:translateY(-6px);background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.26)}
+.af .ic{display:grid;place-items:center;width:46px;height:46px;margin-bottom:12px;font-size:1.3rem;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 12px 22px -6px var(--c1)}
+.af h3{margin-bottom:4px;font-size:1.02rem;color:#fff}
+.af p{font-size:.86rem;line-height:1.5}
+.steps{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:70px}
+.steps::before{content:'';position:absolute;top:27px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,var(--acc),var(--logo));opacity:.5}
+.step{position:relative;text-align:center}
+.step b{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 14px;font-family:'Bricolage Grotesque';font-size:1.3rem;color:#fff;background:var(--ink);border:2px solid var(--acc);border-radius:50%;box-shadow:0 0 0 6px var(--ink)}
+.step h3{margin-bottom:4px;font-size:1.05rem;color:#fff}
+.step p{font-size:.88rem}
+.acct-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;margin-top:60px;padding:28px 32px;background:linear-gradient(135deg,rgba(255,138,0,.2),rgba(124,58,237,.2));border:1px solid rgba(255,255,255,.16);border-radius:24px}
+.acct-cta h3{margin-bottom:2px;font-size:1.4rem;color:#fff}
+.acct-cta .cta{margin-top:0}
+
 /* about */
 .about{background:#fff}
 .about .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:56px}
@@ -281,16 +312,18 @@ footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;paddin
   nav a{padding:13px 8px;border-radius:0;border-bottom:1px solid var(--line)}
   nav .login{margin:14px 0 0;text-align:center;border-radius:999px;border:0}
   .topbar .r{display:none}
-  .hero .wrap,.about .wrap,.contact .wrap{grid-template-columns:1fr;gap:36px}
+  .hero .wrap,.about .wrap,.contact .wrap,.acct-top{grid-template-columns:1fr;gap:36px}
   .hero .wrap{padding-top:48px;padding-bottom:60px}
   .logo-anim{width:min(48%,190px)}
   .facts .wrap{grid-template-columns:1fr 1fr}
   .facts div:nth-child(2){border-right:0}.facts div:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .grid{grid-template-columns:1fr 1fr}.why{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr;row-gap:36px}.steps::before{display:none}
+  .float.f1{right:-6px}.float.f2{left:-6px}
   footer .cols{grid-template-columns:1fr;gap:26px}
   section{padding:64px 0}
 }
-@media(max-width:600px){.grid{grid-template-columns:1fr}.brand small{display:none}}
+@media(max-width:600px){.grid,.af-grid{grid-template-columns:1fr}.brand small{display:none}.acct-cta{padding:24px 20px}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .js .rv{opacity:1;transform:none}.hero h1 span{opacity:1;transform:none}
@@ -308,7 +341,7 @@ footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;paddin
   <div class="wrap">
     <a class="brand" href="#home"><img src="laxman-telecom-icon-round.png" alt="Laxman Telecom logo"><span><b>LAXMAN TELECOM</b><small>Your Trusted Digital Service Center</small></span></a>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">☰</button>
-    <nav id="nav"><a class="on" href="#home">Home</a><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a><a class="login" href="login-select.html">Login</a></nav>
+    <nav id="nav"><a class="on" href="#home">Home</a><a href="#services">Services</a><a href="#account">Online Account</a><a href="#about">About</a><a href="#contact">Contact</a><a class="login" href="login-select.html">Login</a></nav>
   </div>
 </header>
 
@@ -331,6 +364,7 @@ footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;paddin
           <a class="btn wa" href="https://wa.me/919041880370" target="_blank" rel="noopener">💬 WhatsApp</a>
           <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=Laxman+Telecom+7+Street+No+1+Puneet+Nagar+Ludhiana+141008" target="_blank" rel="noopener">📍 Get Directions</a>
         </div>
+        <a class="promo" href="#account">✨ New: send requests &amp; track status online <b>See how →</b></a>
       </div>
       <div class="stage" aria-hidden="true">
         <svg class="logo-anim" viewBox="380 340 270 320" xmlns="http://www.w3.org/2000/svg">
@@ -396,6 +430,65 @@ footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;paddin
     </div>
   </section>
 
+  <!-- Online account: shows customers what they can do after logging in -->
+  <section class="acct" id="account">
+    <div class="wrap">
+      <span class="eye rv" style="color:var(--acc2)">Online account</span>
+      <h2 class="rv">Skip the queue. Do it from your phone.</h2>
+      <p class="sub rv">Create a free account on our website and manage your work with LAXMAN TELECOM anytime, from home.</p>
+
+      <div class="acct-top">
+        <!-- Animated preview of the customer dashboard (demo data only) -->
+        <div class="mock rv" aria-hidden="true">
+          <div class="float f1">🔒 Documents auto-deleted</div>
+          <div class="float f2">✅ Request completed</div>
+          <div class="mock-bar"><i></i><i></i><i></i><span>My Account · My Requests</span></div>
+          <div class="mock-body">
+            <h4>My Requests</h4>
+            <div class="m-req live" data-s="0">
+              <div class="m-top">Aadhaar &amp; PAN Services <span class="pill">Pending</span></div>
+              <small>New PAN card application</small>
+              <div class="m-files"><div><div class="m-res"><span>📄 PAN_Card.pdf</span><u>Download</u></div></div></div>
+            </div>
+            <div class="m-req" data-s="1">
+              <div class="m-top">Mobile Repair <span class="pill">In Progress</span></div>
+              <small>Display replacement</small>
+            </div>
+            <div class="m-up">
+              <b>📎 Upload documents</b>
+              <span>aadhaar_front.jpg</span><span>aadhaar_back.jpg</span>
+              <em>✔ Terms accepted &amp; consent given</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="af-grid">
+          <div class="af rv" style="--c1:#7c3aed;--c2:#c026d3"><div class="ic">📝</div><h3>Request online</h3><p>Choose a service, describe what you need and send it in a minute. No waiting at the counter.</p></div>
+          <div class="af rv" style="--d:.08s;--c1:#ea580c;--c2:#fb923c"><div class="ic">📎</div><h3>Upload documents</h3><p>Add up to 5 photos or PDFs, like Aadhaar front and back, once you give your consent.</p></div>
+          <div class="af rv" style="--d:.16s;--c1:#2563eb;--c2:#6366f1"><div class="ic">📊</div><h3>Track live status</h3><p>See Pending, In Progress or Completed on your phone, any time of the day.</p></div>
+          <div class="af rv" style="--d:.24s;--c1:#15803d;--c2:#4ade80"><div class="ic">📥</div><h3>Download your files</h3><p>Certificates, receipts and forms we prepare appear in your account to view and download.</p></div>
+          <div class="af rv" style="--d:.32s;--c1:#be123c;--c2:#f43f5e"><div class="ic">🔒</div><h3>Privacy first</h3><p>Your uploaded documents are deleted automatically once your service is completed.</p></div>
+          <div class="af rv" style="--d:.4s;--c1:#0f766e;--c2:#14b8a6"><div class="ic">⚙️</div><h3>You stay in control</h3><p>Update your name, phone and address, and unlock the app quickly with a private MPIN.</p></div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step rv"><b>1</b><h3>Login or sign up</h3><p>Free and quick, with email or mobile OTP.</p></div>
+        <div class="step rv" style="--d:.1s"><b>2</b><h3>Send your request</h3><p>Pick a service and add your documents.</p></div>
+        <div class="step rv" style="--d:.2s"><b>3</b><h3>Track progress</h3><p>We update the status as the work moves ahead.</p></div>
+        <div class="step rv" style="--d:.3s"><b>4</b><h3>Download &amp; done</h3><p>Get your certificate or receipt right in your account.</p></div>
+      </div>
+
+      <div class="acct-cta rv">
+        <div><h3>Ready to try it?</h3><p>It takes less than a minute to get started.</p></div>
+        <div class="cta">
+          <a class="btn pri" href="login-select.html">🔐 Login / Sign Up</a>
+          <a class="btn wa" href="https://wa.me/919041880370?text=Hello%2C%20I%20need%20help%20with%20my%20online%20account" target="_blank" rel="noopener">💬 Need help?</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="about" id="about">
     <div class="wrap">
       <div><span class="eye rv">Who we are</span><h2 class="rv">About LAXMAN TELECOM</h2></div>
@@ -443,7 +536,7 @@ footer .copy{border-top:1px solid rgba(255,255,255,.08);text-align:center;paddin
 <footer>
   <div class="wrap cols">
     <div><h4>LAXMAN TELECOM</h4><p>Your Trusted Digital Service Center, 7, Street No. 1, Puneet Nagar, Ludhiana, Punjab - 141008</p></div>
-    <div><h4>Quick Links</h4><a href="#home">Home</a><a href="#services">Services</a><a href="#about">About Us</a><a href="#contact">Contact</a><a href="login-select.html">Login</a></div>
+    <div><h4>Quick Links</h4><a href="#home">Home</a><a href="#services">Services</a><a href="#account">Online Account</a><a href="#about">About Us</a><a href="#contact">Contact</a><a href="login-select.html">Login</a></div>
     <div><h4>Get in touch</h4><a href="tel:+919041880370">📞 +91 90418-80370</a><a href="mailto:laxmantelecom.help@gmail.com">📧 laxmantelecom.help@gmail.com</a><a href="https://wa.me/919041880370" target="_blank" rel="noopener">💬 WhatsApp</a>
     <!-- Google review link -->
     <a href="https://g.page/r/CUDFigFy5i0HEBM/review" target="_blank" rel="noopener">⭐ Review us on Google</a></div>
@@ -506,7 +599,7 @@ const S=[
 ["🌐","New WiFi Connection","Get high-speed internet with a new WiFi broadband connection setup at your home or shop.",1],
 ["📺","WiFi + TV Connection","Enjoy smart entertainment packages with combined High-Speed WiFi and Digital Smart TV connection.",1],
 ["📲","Mobile Accessories","Chargers, Data Cables, Earbuds, Neckbands, Bluetooth Speakers & More.",1],
-["💳","Banking & ATM Services","Aadhar card cash withdrawal (AEPS), ATM card cash withdrawal, Balance Enquiry, Mini Statement, and Instant Money Transfer to any bank.",2],
+["💳","Banking & ATM Services","Aadhaar card cash withdrawal (AEPS), ATM card cash withdrawal, Balance Enquiry, Mini Statement, and Instant Money Transfer to any bank.",2],
 ["💡","Electricity Bill","Pay your electricity bill online and download the bill copy or payment receipt.",2],
 ["🏦","Bank Account Opening","Open new bank accounts instantly for Airtel Payments Bank, Kotak Mahindra Bank, Indian Overseas Bank, and more. Get instant Bank Passbook and ATM Card with Indian Overseas Bank accounts.",2],
 ["🆔","Aadhaar & PAN Services","Aadhaar Update, New PAN Card Apply, Reprint / Duplicate PAN, Correction & Download.",3],
@@ -556,6 +649,14 @@ $("mq").innerHTML=[...names,...names].map(n=>`<span>${esc(n)}</span>`).join("");
 const W=["Recharge","Mobile Repair","PAN Card","Passport","Aadhaar Update","Electricity Bill","Ration Card"];let wi=0;
 setInterval(()=>{const b=$("rot");b.classList.add("out");setTimeout(()=>{wi=(wi+1)%W.length;b.textContent=W[wi];b.classList.remove("out")},350)},2200);
 
+/* online account preview: the demo request moves through Pending, In Progress and Done */
+(function(){
+  const el=document.querySelector(".m-req.live");if(!el)return;
+  const label=["Pending","In Progress","Done"];let s=0;
+  const step=()=>{el.dataset.s=s;el.querySelector(".pill").textContent=label[s];s=(s+1)%3};
+  step();setInterval(step,2600);
+})();
+
 /* open / closed (India time). Timings in minutes: 480 = 8:00 AM, 900 = 3:00 PM */
 const HRS={Sun:[[480,780],[900,1320]],wk:[[900,1320]]};
 const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -592,7 +693,7 @@ bg.onclick=()=>{const o=nav.classList.toggle("open");bg.setAttribute("aria-expan
 const links=[...nav.querySelectorAll("a:not(.login)")];
 nav.onclick=e=>{if(e.target.tagName==="A"){nav.classList.remove("open");bg.textContent="☰"}};
 const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const id=e.target.classList.contains("hero")?"#home":"#"+e.target.id;links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")===id))}}),{rootMargin:"-45% 0px -50% 0px"});
-["home","services","about","contact"].forEach(id=>{const el=$(id);if(el)spy.observe(id==="home"?document.querySelector(".hero"):el)});
+["home","services","account","about","contact"].forEach(id=>{const el=$(id);if(el)spy.observe(id==="home"?document.querySelector(".hero"):el)});
 render();watch();
 </script>
 
