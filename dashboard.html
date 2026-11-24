@@ -274,6 +274,24 @@
       cursor: pointer;
     }
 
+    /* Terms and consent box (shown only after a document is selected) */
+    .consent-box { display: none; margin-bottom: 14px; padding: 16px; font-size: .86rem; background: #fff8ec; border: 1px solid #ffd9a0; border-radius: 14px; }
+    .consent-box > strong { display: block; margin-bottom: 6px; font-size: .95rem; color: var(--ink); }
+    .consent-box details { margin: 8px 0 12px; }
+    .consent-box summary { font-weight: 600; color: #b35f00; cursor: pointer; }
+    .consent-box ol { margin: 8px 0 0 18px; color: var(--text); }
+    .consent-box ol li { margin-bottom: 6px; }
+    .consent-check { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; font-weight: 600; line-height: 1.45; cursor: pointer; }
+    .consent-check input[type=checkbox] { flex: none; width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+
+    /* List of files chosen for upload, each with a remove button */
+    #fileList { margin-top: 8px; }
+    .file-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; padding: 8px 12px; font-size: .86rem; background: var(--cream); border: 1px solid var(--line); border-radius: 10px; }
+    .file-item span { min-width: 0; word-break: break-word; }
+    .file-item small { color: var(--muted); }
+    .file-remove { flex: none; width: 28px; height: 28px; font-size: .9rem; font-weight: 700; color: #be123c; background: #fff; border: 1.5px solid #fecdd3; border-radius: 50%; cursor: pointer; }
+    .file-remove:hover { background: #fff1f2; }
+
     .upload-progress { display: none; margin-bottom: 10px; font-size: .86rem; color: var(--muted); }
 
     .error-msg, .success-msg { display: none; margin-bottom: 14px; padding: 11px 14px; font-size: .9rem; border-radius: 12px; }
@@ -357,7 +375,7 @@
     .request-top strong { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.05rem; color: var(--ink); }
     .request-message { margin-top: 6px; font-size: .92rem; color: var(--text); word-break: break-word; }
     .request-meta { margin-top: 6px; font-size: .8rem; color: var(--muted); }
-    .request-doc { display: inline-block; margin-top: 6px; font-size: .86rem; font-weight: 600; color: #b35f00; }
+    .request-doc { display: block; width: fit-content; margin-top: 6px; font-size: .86rem; font-weight: 600; color: #b35f00; }
     .request-doc:hover { text-decoration: underline; }
 
     .status-pill { padding: 4px 12px; font-size: .78rem; font-weight: 700; border-radius: 999px; }
@@ -535,20 +553,48 @@
         <form id="requestForm">
           <div class="form-group">
             <label>Service Needed</label>
+            <!-- Services list matches the Our Services section on index.html -->
             <select id="reqService" required>
               <option value="">-- Select a service --</option>
-              <option>Mobile Repair</option>
-              <option>Aadhaar & PAN Services</option>
-              <option>Punjab Smart Ration Card</option>
-              <option>Voter ID Services</option>
-              <option>Ayushman Bharat</option>
-              <option>PM-KISAN</option>
-              <option>e-Shram & Labour</option>
-              <option>MSME (Udyam)</option>
-              <option>Banking Services</option>
-              <option>Travel Booking</option>
-              <option>Printing Services</option>
-              <option>Other</option>
+              <optgroup label="Mobile &amp; Telecom">
+                <option>Mobile Repair</option>
+                <option>Mobile &amp; WiFi Recharge</option>
+                <option>New SIM Activation</option>
+                <option>SIM Porting (MNP)</option>
+                <option>Lost SIM Swap</option>
+                <option>New WiFi Connection</option>
+                <option>WiFi + TV Connection</option>
+                <option>Mobile Accessories</option>
+              </optgroup>
+              <optgroup label="Banking &amp; Bills">
+                <option>Banking &amp; ATM Services</option>
+                <option>Electricity Bill</option>
+                <option>Bank Account Opening</option>
+              </optgroup>
+              <optgroup label="Documents &amp; Certificates">
+                <option>Aadhaar &amp; PAN Services</option>
+                <option>PAN-Aadhaar Link</option>
+                <option>Passport Services</option>
+                <option>Voter ID Services</option>
+                <option>Punjab Smart Ration Card</option>
+                <option>Birth Certificate</option>
+                <option>Residence Certificate</option>
+                <option>Caste Certificate</option>
+              </optgroup>
+              <optgroup label="Govt Schemes">
+                <option>Ayushman Bharat</option>
+                <option>PM-KISAN</option>
+                <option>e-Shram &amp; Labour</option>
+                <option>MSME (Udyam)</option>
+              </optgroup>
+              <optgroup label="Other Services">
+                <option>Printing Services</option>
+                <option>Travel Booking</option>
+                <option>Gmail &amp; Account Services</option>
+                <option>Resume Building</option>
+                <option>Redeem Code</option>
+                <option>Other</option>
+              </optgroup>
             </select>
           </div>
           <div class="form-group">
@@ -556,9 +602,41 @@
             <textarea id="reqMessage" rows="3" placeholder="Describe what you need..."></textarea>
           </div>
           <div class="form-group">
-            <label>Upload Document (optional, max 5MB: photo, PDF, Aadhaar, etc.)</label>
-            <input type="file" id="reqFile" accept="image/*,.pdf">
+            <label>Upload Documents (optional, up to 5 files, max 5MB each: photo, PDF, Aadhaar, etc.)</label>
+            <input type="file" id="reqFile" accept="image/*,.pdf" multiple>
+            <p class="note" style="margin-top: 6px;">Add files one by one or select several together (for example Aadhaar front and back).</p>
+            <div id="fileList"></div>
           </div>
+
+          <!-- Terms and consent: shown only after a document is selected, both boxes are then required -->
+          <div class="consent-box" id="consentBox">
+            <strong>Terms &amp; Consent for Documents</strong>
+            <p class="note">You are about to share personal documents. Please read and accept before submitting.</p>
+
+            <details>
+              <summary>Read full Terms &amp; Conditions</summary>
+              <ol>
+                <li><b>Purpose:</b> My documents will be used only to process the service I have requested.</li>
+                <li><b>Ownership:</b> The documents are mine, or I have the owner's permission to share them. They are genuine and not forged or altered.</li>
+                <li><b>Sharing:</b> LAXMAN TELECOM may share them only with the government office, portal, bank or operator needed to complete my service. They are not sold or used for any other purpose.</li>
+                <li><b>Storage:</b> Documents are stored with a secure third-party file service and are viewed only by the shop admin.</li>
+                <li><b>Only what is needed:</b> I will upload only the documents the service needs (up to 5 files, maximum 5MB per file, photo or PDF).</li>
+                <li><b>Not a government office:</b> LAXMAN TELECOM is a private digital service center. Government services are applied for on the official portals on my behalf, and approval and timelines depend on the concerned department.</li>
+                <li><b>Charges:</b> Service charges are as told by the shop before the work starts.</li>
+                <li><b>Removal:</b> I can ask the shop on WhatsApp (+91 90418-80370) to remove my uploaded documents after my service is completed.</li>
+              </ol>
+            </details>
+
+            <label class="consent-check">
+              <input type="checkbox" id="termsAgree">
+              <span>I have read and agree to the Terms &amp; Conditions.</span>
+            </label>
+            <label class="consent-check">
+              <input type="checkbox" id="docConsent">
+              <span>I give my consent to LAXMAN TELECOM to collect, store and use the documents I upload for this service request.</span>
+            </label>
+          </div>
+
           <div class="upload-progress" id="uploadProgress">Uploading...</div>
           <button type="submit" class="auth-btn" id="submitReqBtn">Submit Request</button>
         </form>
@@ -838,6 +916,10 @@
     const CLOUDINARY_CLOUD_NAME = 'xugjl6tk';
     const CLOUDINARY_UPLOAD_PRESET = 'wlfm48rw';
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    const MAX_FILES = 5;
+
+    // Change this label whenever the Terms & Conditions text above is updated
+    const TERMS_VERSION = '2026-11';
 
     function uploadToCloudinary(file) {
       const formData = new FormData();
@@ -855,22 +937,96 @@
         });
     }
 
-    function saveRequest(service, message, documentUrl, documentName) {
+    /**
+     * Saves the request. documents is a list of { url, name } (empty when nothing was uploaded).
+     * The first document is also saved in the old documentUrl / documentName fields
+     * so that older pages keep working.
+     */
+    function saveRequest(service, message, documents) {
+      const hasDocs = documents.length > 0;
+
       return db.ref('requests/' + currentUser.uid).push({
         service,
         message,
         status: 'Pending',
-        documentUrl: documentUrl || null,
-        documentName: documentName || null,
+        documents: hasDocs ? documents : null,
+        documentUrl: hasDocs ? documents[0].url : null,
+        documentName: hasDocs ? documents[0].name : null,
+        // Record that the customer accepted the terms and gave consent for the documents
+        termsAccepted: hasDocs ? true : null,
+        termsVersion: hasDocs ? TERMS_VERSION : null,
+        documentConsent: hasDocs ? true : null,
+        consentAt: hasDocs ? firebase.database.ServerValue.TIMESTAMP : null,
         createdAt: firebase.database.ServerValue.TIMESTAMP
       });
     }
+
+    /** Uploads the files one after another and returns a list of { url, name }. */
+    async function uploadAll(files, progressEl) {
+      const documents = [];
+      for (let i = 0; i < files.length; i++) {
+        progressEl.textContent = `Uploading ${i + 1} of ${files.length}...`;
+        const url = await uploadToCloudinary(files[i]);
+        documents.push({ url, name: files[i].name });
+      }
+      return documents;
+    }
+
+    /* ----- Selected files (customer can add several, one by one or together) ----- */
+    let selectedFiles = [];
+
+    function renderFileList() {
+      $('fileList').innerHTML = selectedFiles.map((file, index) => `<div class="file-item">
+        <span>📎 ${esc(file.name)} <small>(${(file.size / 1024 / 1024).toFixed(2)} MB)</small></span>
+        <button type="button" class="file-remove" data-index="${index}" aria-label="Remove file">✕</button>
+      </div>`).join('');
+
+      // The terms and consent box is needed only while at least one file is selected
+      const hasFiles = selectedFiles.length > 0;
+      $('consentBox').style.display = hasFiles ? 'block' : 'none';
+      if (!hasFiles) {
+        $('termsAgree').checked = false;
+        $('docConsent').checked = false;
+      }
+    }
+
+    $('reqFile').addEventListener('change', () => {
+      const tooBig = [];
+      let tooMany = false;
+
+      Array.from($('reqFile').files).forEach((file) => {
+        const duplicate = selectedFiles.some((f) => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified);
+        if (duplicate) return;
+        if (file.size > MAX_FILE_SIZE) { tooBig.push(file.name); return; }
+        if (selectedFiles.length >= MAX_FILES) { tooMany = true; return; }
+        selectedFiles.push(file);
+      });
+
+      // Clear the input so the same file can be picked again after removing it
+      $('reqFile').value = '';
+      renderFileList();
+
+      if (tooBig.length) {
+        showMessage('', 'error', 'Too large (max 5MB each): ' + tooBig.join(', '));
+      } else if (tooMany) {
+        showMessage('', 'error', 'You can upload up to ' + MAX_FILES + ' documents per request.');
+      } else {
+        $('errorMsg').style.display = 'none';
+      }
+    });
+
+    $('fileList').addEventListener('click', (e) => {
+      const button = e.target.closest('.file-remove');
+      if (!button) return;
+      selectedFiles.splice(Number(button.dataset.index), 1);
+      renderFileList();
+    });
 
     $('requestForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const service = $('reqService').value;
       const message = $('reqMessage').value.trim();
-      const file = $('reqFile').files[0];
+      const files = selectedFiles.slice();
       const submitBtn = $('submitReqBtn');
       const progress = $('uploadProgress');
 
@@ -878,22 +1034,32 @@
         showMessage('', 'error', 'Please select a service.');
         return;
       }
-      if (file && file.size > MAX_FILE_SIZE) {
-        showMessage('', 'error', 'File is too large. Max size is 5MB.');
+      // Documents can only be uploaded after the customer accepts the terms and gives consent
+      if (files.length && (!$('termsAgree').checked || !$('docConsent').checked)) {
+        showMessage('', 'error', 'Please accept the Terms & Conditions and give your consent to upload the documents.');
+        $('consentBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
 
       submitBtn.disabled = true;
-      if (file) progress.style.display = 'block';
+      if (files.length) {
+        progress.textContent = 'Uploading...';
+        progress.style.display = 'block';
+      }
 
-      // With a file: upload it first and store its link. Without a file: save straight away.
-      const upload = file ? uploadToCloudinary(file) : Promise.resolve(null);
+      // With files: upload them first and store their links. Without files: save straight away.
+      const upload = files.length ? uploadAll(files, progress) : Promise.resolve([]);
 
       upload
-        .then((url) => saveRequest(service, message, url, file ? file.name : null))
+        .then((documents) => saveRequest(service, message, documents))
         .then(() => {
-          showMessage('', 'success', file ? 'Request submitted with document!' : 'Request submitted!', 3000);
+          const text = files.length
+            ? 'Request submitted with ' + files.length + (files.length === 1 ? ' document!' : ' documents!')
+            : 'Request submitted!';
+          showMessage('', 'success', text, 3000);
           $('requestForm').reset();
+          selectedFiles = [];
+          renderFileList();
         })
         .catch((err) => showMessage('', 'error', err.message))
         .finally(() => {
@@ -905,6 +1071,15 @@
     /* ==========================================================
        Request history and statistics
        ========================================================== */
+    /** Returns every document of a request (new list format, or the old single-document fields). */
+    function getDocuments(request) {
+      let docs = [];
+      if (request.documents) docs = Object.values(request.documents);
+      else if (request.documentUrl) docs = [{ url: request.documentUrl, name: request.documentName }];
+      // Only secure links are shown as document links
+      return docs.filter((d) => d && d.url && String(d.url).startsWith('https://'));
+    }
+
     const STATUS_CLASS = { 'Pending': 'st-pending', 'In Progress': 'st-progress', 'Done': 'st-done' };
 
     function renderStats(requests) {
@@ -932,10 +1107,9 @@
         container.innerHTML = entries.map((r, index) => {
           const status = r.status || 'Pending';
           const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '';
-          // Only secure links are shown as document links
-          const doc = r.documentUrl && String(r.documentUrl).startsWith('https://')
-            ? `<a class="request-doc" href="${esc(r.documentUrl)}" target="_blank" rel="noopener">📎 ${esc(r.documentName || 'View document')}</a>`
-            : '';
+          const doc = getDocuments(r)
+            .map((d) => `<a class="request-doc" href="${esc(d.url)}" target="_blank" rel="noopener">📎 ${esc(d.name || 'View document')}</a>`)
+            .join('');
 
           return `<div class="request-item ${STATUS_CLASS[status] || 'st-pending'}" style="--i:${index}">
             <div class="request-top">
