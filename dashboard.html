@@ -284,6 +284,20 @@
     .consent-check { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; font-weight: 600; line-height: 1.45; cursor: pointer; }
     .consent-check input[type=checkbox] { flex: none; width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
 
+    /* Light button (Edit Profile, Cancel) and button rows inside forms */
+    .btn-light { font: inherit; font-size: .9rem; font-weight: 700; padding: 9px 20px; color: var(--ink); background: #fff; border: 1.5px solid var(--line); border-radius: 999px; cursor: pointer; transition: transform .2s, border-color .2s; }
+    .btn-light:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .form-actions .auth-btn { flex: 1; width: auto; min-width: 150px; }
+
+    /* Files sent to the customer by LAXMAN TELECOM (certificate, receipt, etc.) */
+    .result-box { margin-top: 10px; padding: 12px 14px; background: #ecfdf3; border: 1px solid #bbf7d0; border-radius: 12px; }
+    .result-box > strong { display: block; font-size: .86rem; color: #166534; }
+    .result-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; font-size: .88rem; }
+    .result-row span { flex: 1; min-width: 150px; word-break: break-word; }
+    .result-btn { padding: 5px 14px; font-size: .8rem; font-weight: 700; color: #166534; background: #fff; border: 1.5px solid #86efac; border-radius: 999px; transition: background .2s, color .2s; }
+    .result-btn:hover { color: #fff; background: #166534; }
+
     /* List of files chosen for upload, each with a remove button */
     #fileList { margin-top: 8px; }
     .file-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; padding: 8px 12px; font-size: .86rem; background: var(--cream); border: 1px solid var(--line); border-radius: 10px; }
@@ -534,12 +548,45 @@
     <div class="layout">
 
       <!-- Profile -->
-      <section class="card violet">
+      <section class="card violet" id="profileCard">
         <div class="avatar" id="pAvatar">?</div>
         <h2 style="font-size: 1.4rem; margin-bottom: 14px;">My Profile</h2>
-        <div class="profile-row"><span>Name</span><strong id="pName">-</strong></div>
-        <div class="profile-row"><span>Email</span><strong id="pEmail">-</strong></div>
-        <div class="profile-row"><span>Phone</span><strong id="pPhone">-</strong></div>
+        <div class="error-msg" id="profileErrorMsg"></div>
+        <div class="success-msg" id="profileSuccessMsg"></div>
+
+        <!-- Read-only view -->
+        <div id="profileView">
+          <div class="profile-row"><span>Name</span><strong id="pName">-</strong></div>
+          <div class="profile-row"><span>Email</span><strong id="pEmail">-</strong></div>
+          <div class="profile-row"><span>Phone</span><strong id="pPhone">-</strong></div>
+          <div class="profile-row"><span>Address</span><strong id="pAddress">-</strong></div>
+          <button type="button" class="btn-light" id="editProfileBtn" style="margin-top: 14px;">✏️ Edit Profile</button>
+        </div>
+
+        <!-- Edit form -->
+        <form id="profileForm" style="display: none;">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="editName" required maxlength="60">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="editPhone" inputmode="tel" maxlength="16">
+            <p class="note" id="phoneNote" style="display: none; margin-top: 4px;">This is your login number, so it cannot be changed here.</p>
+          </div>
+          <div class="form-group" id="editEmailGroup">
+            <label>Contact Email (optional)</label>
+            <input type="email" id="editEmail" maxlength="100">
+          </div>
+          <div class="form-group">
+            <label>Address (optional)</label>
+            <textarea id="editAddress" rows="2" maxlength="200"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="auth-btn">Save Changes</button>
+            <button type="button" class="btn-light" id="cancelProfileBtn">Cancel</button>
+          </div>
+        </form>
       </section>
 
       <!-- New service request -->
@@ -623,7 +670,7 @@
                 <li><b>Only what is needed:</b> I will upload only the documents the service needs (up to 5 files, maximum 5MB per file, photo or PDF).</li>
                 <li><b>Not a government office:</b> LAXMAN TELECOM is a private digital service center. Government services are applied for on the official portals on my behalf, and approval and timelines depend on the concerned department.</li>
                 <li><b>Charges:</b> Service charges are as told by the shop before the work starts.</li>
-                <li><b>Removal:</b> I can ask the shop on WhatsApp (+91 90418-80370) to remove my uploaded documents after my service is completed.</li>
+                <li><b>Automatic removal:</b> My uploaded documents are deleted automatically once my service is marked Completed. The files LAXMAN TELECOM sends me (certificate, receipt, etc.) stay in my account so I can view and download them. If I want my documents removed earlier, I can ask the shop on WhatsApp (+91 90418-80370).</li>
               </ol>
             </details>
 
@@ -678,6 +725,23 @@
           <button type="submit" class="auth-btn">Update Password</button>
         </form>
         <p class="note" id="noPasswordNote" style="display: none;">You signed up with mobile OTP, so there is no password to change here.</p>
+
+        <!-- Change login email (hidden for mobile OTP accounts) -->
+        <div id="changeEmailBlock">
+          <h3 class="section-heading" style="margin-top: 32px;">Change Login Email</h3>
+          <p class="note" style="margin-bottom: 12px;">We send a verification link to the new email. Your login email changes after you click that link.</p>
+          <form id="changeEmailForm">
+            <div class="form-group">
+              <label>New Email</label>
+              <input type="email" id="newEmailInput" required>
+            </div>
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" id="emailPasswordInput" required>
+            </div>
+            <button type="submit" class="auth-btn">Send Verification Link</button>
+          </form>
+        </div>
 
         <h3 class="section-heading" style="margin-top: 32px;">App MPIN (Quick Unlock)</h3>
         <p class="note" style="margin-bottom: 12px;">Set a 4-6 digit MPIN so you do not have to type your password every time you open the app on this device.</p>
@@ -818,6 +882,7 @@
       if (!user.email) {
         $('changePasswordForm').style.display = 'none';
         $('noPasswordNote').style.display = 'block';
+        $('changeEmailBlock').style.display = 'none';
       }
     }
 
@@ -841,16 +906,82 @@
     /* ==========================================================
        Profile
        ========================================================== */
+    let profileData = {};
+
     function loadProfile(uid) {
       db.ref('users/' + uid).once('value').then((snap) => {
         const data = snap.val() || {};
+
+        // After a verified email change, keep the saved profile email in sync with the login email
+        if (currentUser.email && data.email !== currentUser.email) {
+          data.email = currentUser.email;
+          db.ref('users/' + uid).update({ email: currentUser.email }).catch(() => {});
+        }
+
+        profileData = data;
         $('pName').textContent = data.name || '-';
         $('pEmail').textContent = data.email || '-';
-        $('pPhone').textContent = data.phone || '-';
+        $('pPhone').textContent = data.phone || currentUser.phoneNumber || '-';
+        $('pAddress').textContent = data.address || '-';
         $('pAvatar').textContent = (data.name || data.email || '?').trim().charAt(0).toUpperCase();
         $('greeting').textContent = getGreeting(data.name);
       });
     }
+
+    function openProfileForm() {
+      $('profileErrorMsg').style.display = 'none';
+      $('profileSuccessMsg').style.display = 'none';
+
+      $('editName').value = profileData.name || '';
+      $('editPhone').value = profileData.phone || currentUser.phoneNumber || '';
+      $('editEmail').value = profileData.email || '';
+      $('editAddress').value = profileData.address || '';
+
+      // The login phone number (OTP accounts) and the login email (email accounts) are not edited here
+      $('editPhone').disabled = !!currentUser.phoneNumber;
+      $('phoneNote').style.display = currentUser.phoneNumber ? 'block' : 'none';
+      $('editEmailGroup').style.display = currentUser.email ? 'none' : 'block';
+
+      $('profileView').style.display = 'none';
+      $('profileForm').style.display = 'block';
+    }
+
+    function closeProfileForm() {
+      $('profileForm').style.display = 'none';
+      $('profileView').style.display = 'block';
+    }
+
+    $('editProfileBtn').addEventListener('click', openProfileForm);
+    $('cancelProfileBtn').addEventListener('click', closeProfileForm);
+
+    $('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = $('editName').value.trim();
+      const phone = $('editPhone').value.trim();
+      const email = $('editEmail').value.trim();
+      const address = $('editAddress').value.trim();
+
+      if (name.length < 2) {
+        showMessage('profile', 'error', 'Please enter your name.');
+        return;
+      }
+      if (!currentUser.phoneNumber && phone && !/^\+?[0-9][0-9\s-]{8,14}$/.test(phone)) {
+        showMessage('profile', 'error', 'Please enter a valid phone number.');
+        return;
+      }
+
+      const updates = { name, address };
+      if (!currentUser.phoneNumber) updates.phone = phone;   // OTP login number stays unchanged
+      if (!currentUser.email) updates.email = email;         // contact email for OTP accounts only
+
+      db.ref('users/' + currentUser.uid).update(updates)
+        .then(() => {
+          showMessage('profile', 'success', 'Profile updated.', 3000);
+          closeProfileForm();
+          loadProfile(currentUser.uid);
+        })
+        .catch((err) => showMessage('profile', 'error', err.message));
+    });
 
     /* ==========================================================
        Account settings: password and MPIN
@@ -874,6 +1005,28 @@
         .then(() => {
           showMessage('settings', 'success', 'Password updated successfully.');
           $('changePasswordForm').reset();
+        })
+        .catch((err) => showMessage('settings', 'error', err.message));
+    });
+
+    $('changeEmailForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      const newEmail = $('newEmailInput').value.trim();
+      const password = $('emailPasswordInput').value;
+
+      if (newEmail.toLowerCase() === (user.email || '').toLowerCase()) {
+        showMessage('settings', 'error', 'This is already your login email.');
+        return;
+      }
+
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+
+      user.reauthenticateWithCredential(credential)
+        .then(() => user.verifyBeforeUpdateEmail(newEmail))
+        .then(() => {
+          showMessage('settings', 'success', 'Verification link sent to ' + newEmail + '. Click it to finish changing your login email.');
+          $('changeEmailForm').reset();
         })
         .catch((err) => showMessage('settings', 'error', err.message));
     });
@@ -932,13 +1085,13 @@
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.secure_url) return data.secure_url;
+          if (data.secure_url) return { url: data.secure_url, publicId: data.public_id, resourceType: data.resource_type };
           throw new Error(data.error ? data.error.message : 'Upload failed');
         });
     }
 
     /**
-     * Saves the request. documents is a list of { url, name } (empty when nothing was uploaded).
+     * Saves the request. documents is a list of { url, publicId, resourceType, name } (empty when nothing was uploaded).
      * The first document is also saved in the old documentUrl / documentName fields
      * so that older pages keep working.
      */
@@ -961,13 +1114,13 @@
       });
     }
 
-    /** Uploads the files one after another and returns a list of { url, name }. */
+    /** Uploads the files one after another and returns a list of { url, publicId, resourceType, name }. */
     async function uploadAll(files, progressEl) {
       const documents = [];
       for (let i = 0; i < files.length; i++) {
         progressEl.textContent = `Uploading ${i + 1} of ${files.length}...`;
-        const url = await uploadToCloudinary(files[i]);
-        documents.push({ url, name: files[i].name });
+        const uploaded = await uploadToCloudinary(files[i]);
+        documents.push({ ...uploaded, name: files[i].name });
       }
       return documents;
     }
@@ -1080,6 +1233,17 @@
       return docs.filter((d) => d && d.url && String(d.url).startsWith('https://'));
     }
 
+    /** Files that LAXMAN TELECOM attached for the customer (certificate, receipt, etc.). */
+    function getResults(request) {
+      return Object.values(request.results || {})
+        .filter((f) => f && f.url && String(f.url).startsWith('https://'));
+    }
+
+    /** Link that makes the browser download the file instead of opening it. */
+    function downloadUrl(url) {
+      return String(url).replace('/upload/', '/upload/fl_attachment/');
+    }
+
     const STATUS_CLASS = { 'Pending': 'st-pending', 'In Progress': 'st-progress', 'Done': 'st-done' };
 
     function renderStats(requests) {
@@ -1111,13 +1275,29 @@
             .map((d) => `<a class="request-doc" href="${esc(d.url)}" target="_blank" rel="noopener">📎 ${esc(d.name || 'View document')}</a>`)
             .join('');
 
+          // Shown after the customer's documents were deleted automatically on completion
+          const deletedNote = r.documentsDeletedAt
+            ? '<p class="request-meta">🗑️ Your uploaded documents were deleted after your request was completed.</p>'
+            : '';
+
+          // Certificate, receipt, etc. sent by the shop, with View and Download buttons
+          const results = getResults(r);
+          const resultsHtml = results.length
+            ? `<div class="result-box"><strong>📥 Files from LAXMAN TELECOM</strong>${results.map((f) => `
+                <div class="result-row">
+                  <span>📄 ${esc(f.name || 'Document')}</span>
+                  <a class="result-btn" href="${esc(f.url)}" target="_blank" rel="noopener">View</a>
+                  <a class="result-btn" href="${esc(downloadUrl(f.url))}" download>Download</a>
+                </div>`).join('')}</div>`
+            : '';
+
           return `<div class="request-item ${STATUS_CLASS[status] || 'st-pending'}" style="--i:${index}">
             <div class="request-top">
               <strong>${esc(r.service)}</strong>
               <span class="status-pill">${esc(status)}</span>
             </div>
             ${r.message ? `<p class="request-message">${esc(r.message)}</p>` : ''}
-            ${doc}
+            ${doc}${deletedNote}${resultsHtml}
             <p class="request-meta">${esc(date)}</p>
           </div>`;
         }).join('');
