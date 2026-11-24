@@ -845,6 +845,14 @@
        ========================================================== */
     const REQUEST_STATUSES = ['Pending', 'In Progress', 'Done'];
 
+    /** Returns every document of a request (new list format, or the old single-document fields). */
+    function getDocuments(request) {
+      let docs = [];
+      if (request.documents) docs = Object.values(request.documents);
+      else if (request.documentUrl) docs = [{ url: request.documentUrl, name: request.documentName }];
+      return docs.filter((d) => d && d.url && String(d.url).startsWith('https://'));
+    }
+
     function loadAllRequests() {
       Promise.all([db.ref('requests').once('value'), db.ref('users').once('value')])
         .then(([requestsSnap, usersSnap]) => {
@@ -874,9 +882,10 @@
               .map((s) => `<option ${r.status === s ? 'selected' : ''}>${s}</option>`)
               .join('');
 
-            // Document uploaded by the customer (only secure https links are shown)
-            const documentCell = r.documentUrl && String(r.documentUrl).startsWith('https://')
-              ? `<a class="doc-link" href="${esc(r.documentUrl)}" target="_blank" rel="noopener">📎 ${esc(r.documentName || 'View document')}</a>`
+            // Documents uploaded by the customer (only secure https links are shown)
+            const docs = getDocuments(r);
+            const documentCell = docs.length
+              ? docs.map((d) => `<a class="doc-link" href="${esc(d.url)}" target="_blank" rel="noopener">📎 ${esc(d.name || 'View document')}</a>`).join('<br>')
               : '<span class="doc-none">No document</span>';
 
             // SECURITY: uid and reqId come from the database, so they are passed
@@ -894,7 +903,7 @@
           }).join('');
 
           $('adminContent').innerHTML = buildTable(
-            ['Customer', 'Contact', 'Service', 'Details', 'Document', 'Date', 'Status'], body
+            ['Customer', 'Contact', 'Service', 'Details', 'Documents', 'Date', 'Status'], body
           );
         })
         .catch((err) => {
