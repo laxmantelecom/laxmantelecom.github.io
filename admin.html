@@ -328,7 +328,7 @@
       border-radius: 16px;
     }
 
-    .admin-table { width: 100%; min-width: 720px; border-collapse: collapse; }
+    .admin-table { width: 100%; min-width: 980px; border-collapse: collapse; }
 
     .admin-table th,
     .admin-table td {
@@ -367,6 +367,12 @@
     .doc-link { display: inline-block; font-weight: 600; word-break: break-word; color: #b35f00; }
     .doc-link:hover { text-decoration: underline; }
     .doc-none { color: var(--muted); }
+    .doc-warn { margin: 6px 0; font-size: .8rem; font-weight: 700; color: #be123c; }
+
+    /* Files the admin attaches for the customer (certificate, receipt, etc.) */
+    .result-item { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .result-remove { flex: none; width: 24px; height: 24px; font-size: .75rem; font-weight: 700; color: #be123c; background: #fff; border: 1.5px solid #fecdd3; border-radius: 50%; cursor: pointer; }
+    .result-remove:hover { background: #fff1f2; }
 
     /* ==========================================================
        MPIN lock screen
@@ -845,13 +851,97 @@
        ========================================================== */
     const REQUEST_STATUSES = ['Pending', 'In Progress', 'Done'];
 
-    /** Returns every document of a request (new list format, or the old single-document fields). */
+    /* ----- Cloudinary settings (same account the customer upload uses) ----- */
+    const CLOUDINARY_CLOUD_NAME = 'xugjl6tk';
+    const CLOUDINARY_UPLOAD_PRESET = 'wlfm48rw';
+    const MAX_RESULT_FILE_SIZE = 10 * 1024 * 1024;
+
+    /**
+     * Address of the Cloudflare Worker that deletes files from Cloudinary.
+     * Paste it here after deploying cloudinary-delete-worker.js, for example:
+     * 'https://laxman-delete.your-name.workers.dev'
+     * While this is empty, customer documents cannot be deleted automatically.
+     */
+    const DELETE_WORKER_URL = '';
+
+    /* ----- Reading the files stored on a request ----- */
+
+    /** Documents uploaded by the customer (new list format, or the old single-document fields). */
     function getDocuments(request) {
       let docs = [];
       if (request.documents) docs = Object.values(request.documents);
       else if (request.documentUrl) docs = [{ url: request.documentUrl, name: request.documentName }];
       return docs.filter((d) => d && d.url && String(d.url).startsWith('https://'));
     }
+
+    /** Files the admin attached for the customer, each with its database key. */
+    function getResultFiles(request) {
+      return Object.entries(request.results || {})
+        .map(([key, file]) => ({ key, ...file }))
+        .filter((f) => f.url && String(f.url).startsWith('https://'));
+    }
+
+    /** Cloudinary type and public id of a file (older uploads are worked out from the link). */
+    function getCloudinaryRef(file) {
+      if (file.publicId && file.resourceType) return { resourceType: file.resourceType, publicId: file.publicId };
+
+      const match = String(file.url || '').match(/\/(image|video|raw)\/upload\/(?:v\d+\/)?([^?#]+)/);
+      if (!match) return null;
+
+      let publicId = decodeURIComponent(match[2]);
+      if (match[1] !== 'raw') publicId = publicId.replace(/\.[^/.]+$/, '');   // images and PDFs: no extension
+      return { resourceType: match[1], publicId };
+    }
+
+    /* ----- Cloudinary upload and delete ----- */
+
+    function uploadToCloudinary(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, { method: 'POST', body: formData })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.secure_url) return { url: data.secure_url, publicId: data.public_id, resourceType: data.resource_type };
+          throw new Error(data.error ? data.error.message : 'Upload failed');
+        });
+    }
+
+    /**
+     * Deletes files from Cloudinary through the Worker, which holds the secret key.
+     * The Worker only accepts requests from the signed-in admin.
+     */
+    async function deleteFromCloudinary(files) {
+      if (!files.length) return;
+      if (!DELETE_WORKER_URL) throw new Error('Auto-delete is not set up yet (DELETE_WORKER_URL is empty).');
+
+      const refs = files.map(getCloudinaryRef);
+      if (refs.some((ref) => !ref)) throw new Error('One of the file links is not a Cloudinary link.');
+
+      const token = await auth.currentUser.getIdToken();
+      const response = await fetch(DELETE_WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ files: refs })
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Delete failed (' + response.status + ')');
+    }
+
+    /** Removes the customer's document fields after the files were deleted. */
+    function clearDocumentFields(requestRef) {
+      return requestRef.update({
+        documents: null,
+        documentUrl: null,
+        documentName: null,
+        documentsDeletePending: null,
+        documentsDeletedAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+
+    /* ----- Request table ----- */
 
     function loadAllRequests() {
       Promise.all([db.ref('requests').once('value'), db.ref('users').once('value')])
@@ -882,28 +972,51 @@
               .map((s) => `<option ${r.status === s ? 'selected' : ''}>${s}</option>`)
               .join('');
 
-            // Documents uploaded by the customer (only secure https links are shown)
-            const docs = getDocuments(r);
-            const documentCell = docs.length
-              ? docs.map((d) => `<a class="doc-link" href="${esc(d.url)}" target="_blank" rel="noopener">📎 ${esc(d.name || 'View document')}</a>`).join('<br>')
-              : '<span class="doc-none">No document</span>';
+            // SECURITY: uid, reqId and keys come from the database, so they are passed
+            // through escaped data-* attributes and never placed inside inline code.
+            const ids = `data-uid="${esc(r.uid)}" data-req="${esc(r.reqId)}"`;
 
-            // SECURITY: uid and reqId come from the database, so they are passed
-            // through escaped data-* attributes and never placed inside onchange code.
+            // Documents uploaded by the customer (deleted automatically when the request is Done)
+            const docs = getDocuments(r);
+            let documentCell;
+            if (docs.length) {
+              documentCell = docs
+                .map((d) => `<a class="doc-link" href="${esc(d.url)}" target="_blank" rel="noopener">📎 ${esc(d.name || 'View document')}</a>`)
+                .join('<br>');
+              if (r.documentsDeletePending) {
+                documentCell += `<div class="doc-warn">⚠ Delete pending</div>
+                  <button type="button" class="btn btn-small btn-danger retry-delete-btn" ${ids}>Delete now</button>`;
+              }
+            } else if (r.documentsDeletedAt) {
+              documentCell = '<span class="doc-none">Deleted after completion</span>';
+            } else {
+              documentCell = '<span class="doc-none">No document</span>';
+            }
+
+            // Files the admin sends back to the customer (certificate, receipt, etc.)
+            const resultCell = getResultFiles(r).map((f) => `<div class="result-item">
+                <a class="doc-link" href="${esc(f.url)}" target="_blank" rel="noopener">📄 ${esc(f.name || 'File')}</a>
+                <button type="button" class="result-remove" ${ids} data-key="${esc(f.key)}" title="Remove file" aria-label="Remove file">✕</button>
+              </div>`).join('') + `<div>
+                <button type="button" class="btn btn-small btn-ghost add-result-btn">＋ Add file</button>
+                <input type="file" class="result-input" ${ids} accept="image/*,.pdf" multiple hidden>
+              </div>`;
+
             return `<tr>
               <td>${esc(r.profile.name) || '(no name)'}</td>
               <td>${contact}</td>
               <td>${esc(r.service)}</td>
               <td>${esc(r.message)}</td>
               <td>${documentCell}</td>
+              <td>${resultCell}</td>
               <td>${esc(date)}</td>
-              <td><select data-uid="${esc(r.uid)}" data-req="${esc(r.reqId)}"
-                    onchange="updateStatus(this.dataset.uid, this.dataset.req, this.value)">${options}</select></td>
+              <td><select ${ids}
+                    onchange="updateStatus(this.dataset.uid, this.dataset.req, this.value, this)">${options}</select></td>
             </tr>`;
           }).join('');
 
           $('adminContent').innerHTML = buildTable(
-            ['Customer', 'Contact', 'Service', 'Details', 'Documents', 'Date', 'Status'], body
+            ['Customer', 'Contact', 'Service', 'Details', 'Customer Documents', 'Files for Customer', 'Date', 'Status'], body
           );
         })
         .catch((err) => {
@@ -911,11 +1024,151 @@
         });
     }
 
-    function updateStatus(uid, reqId, status) {
+    /**
+     * Changes the status of a request.
+     * When it becomes Done, the customer's uploaded documents are deleted for good
+     * (files attached for the customer are kept).
+     */
+    async function updateStatus(uid, reqId, status, selectEl) {
       // Only allow the known status values
       if (!REQUEST_STATUSES.includes(status)) return;
-      db.ref('requests/' + uid + '/' + reqId).update({ status });
+
+      const requestRef = db.ref('requests/' + uid + '/' + reqId);
+      if (selectEl) selectEl.disabled = true;
+
+      try {
+        if (status !== 'Done') {
+          await requestRef.update({ status });
+          loadAllRequests();
+          return;
+        }
+
+        const snap = await requestRef.once('value');
+        const docs = getDocuments(snap.val() || {});
+
+        if (!docs.length) {
+          await requestRef.update({ status });
+          loadAllRequests();
+          return;
+        }
+
+        if (!confirm('Mark this request as Done?\n\nThe ' + docs.length + ' document(s) uploaded by the customer will be deleted permanently. Files you attached for the customer will stay.')) {
+          loadAllRequests();   // puts the old status back in the dropdown
+          return;
+        }
+
+        try {
+          await deleteFromCloudinary(docs);
+        } catch (err) {
+          if (!confirm('The documents could not be deleted: ' + err.message + '\n\nMark as Done anyway and delete the documents later? (Use the Delete now button.)')) {
+            loadAllRequests();
+            return;
+          }
+          await requestRef.update({ status, documentsDeletePending: true });
+          loadAllRequests();
+          return;
+        }
+
+        await requestRef.update({ status });
+        await clearDocumentFields(requestRef);
+        loadAllRequests();
+      } catch (err) {
+        alert('Could not update: ' + err.message);
+        loadAllRequests();
+      }
     }
+
+    /** Second try for a Done request whose documents could not be deleted earlier. */
+    async function retryDocumentDelete(uid, reqId, button) {
+      const requestRef = db.ref('requests/' + uid + '/' + reqId);
+      button.disabled = true;
+
+      try {
+        const snap = await requestRef.once('value');
+        await deleteFromCloudinary(getDocuments(snap.val() || {}));
+        await clearDocumentFields(requestRef);
+      } catch (err) {
+        alert('Could not delete the documents: ' + err.message);
+      }
+      loadAllRequests();
+    }
+
+    /* ----- Files for the customer: upload and remove ----- */
+
+    async function uploadResultFiles(input) {
+      const files = Array.from(input.files);
+      const uid = input.dataset.uid;
+      const reqId = input.dataset.req;
+      const button = input.parentElement.querySelector('.add-result-btn');
+      input.value = '';
+
+      if (!files.length) return;
+
+      const tooBig = files.filter((f) => f.size > MAX_RESULT_FILE_SIZE).map((f) => f.name);
+      if (tooBig.length) {
+        alert('These files are larger than 10MB: ' + tooBig.join(', '));
+        return;
+      }
+
+      button.disabled = true;
+      try {
+        for (let i = 0; i < files.length; i++) {
+          button.textContent = 'Uploading ' + (i + 1) + '/' + files.length + '...';
+          const uploaded = await uploadToCloudinary(files[i]);
+          await db.ref('requests/' + uid + '/' + reqId + '/results').push({
+            ...uploaded,
+            name: files[i].name,
+            uploadedAt: firebase.database.ServerValue.TIMESTAMP
+          });
+        }
+      } catch (err) {
+        alert('Upload failed: ' + err.message);
+      }
+      loadAllRequests();
+    }
+
+    async function removeResultFile(uid, reqId, key) {
+      if (!confirm('Remove this file? The customer will no longer see it.')) return;
+
+      const fileRef = db.ref('requests/' + uid + '/' + reqId + '/results/' + key);
+      try {
+        const file = (await fileRef.once('value')).val();
+        if (file) {
+          try {
+            await deleteFromCloudinary([file]);
+          } catch (err) {
+            if (!confirm('The file could not be deleted from storage: ' + err.message + '\n\nRemove it from the list anyway?')) return;
+          }
+        }
+        await fileRef.remove();
+      } catch (err) {
+        alert('Could not remove: ' + err.message);
+      }
+      loadAllRequests();
+    }
+
+    // Buttons inside the requests table (set up once, the table itself is redrawn often)
+    document.addEventListener('click', (e) => {
+      const addButton = e.target.closest('.add-result-btn');
+      if (addButton) {
+        addButton.parentElement.querySelector('.result-input').click();
+        return;
+      }
+
+      const removeButton = e.target.closest('.result-remove');
+      if (removeButton) {
+        removeResultFile(removeButton.dataset.uid, removeButton.dataset.req, removeButton.dataset.key);
+        return;
+      }
+
+      const retryButton = e.target.closest('.retry-delete-btn');
+      if (retryButton) retryDocumentDelete(retryButton.dataset.uid, retryButton.dataset.req, retryButton);
+    });
+
+    document.addEventListener('change', (e) => {
+      const input = e.target.closest('.result-input');
+      if (input) uploadResultFiles(input);
+    });
 
     /* ==========================================================
        Payment concerns raised by suppliers
