@@ -873,10 +873,28 @@
        ========================================================== */
     let currentUser = null;
 
+    /* Service chosen with the Apply Online button on the home page: select it in the request form */
+    function applyPreselectedService() {
+      let service = null;
+      try {
+        service = localStorage.getItem('applyService');
+        localStorage.removeItem('applyService');
+      } catch (err) { return; }
+      if (!service) return;
+
+      const select = $('reqService');
+      if (!Array.from(select.options).some((o) => o.value === service)) return;
+
+      select.value = service;
+      showMessage('', 'success', 'Service selected: ' + service + '. Add your details and submit the request.', 6000);
+      setTimeout(() => $('newRequest').scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
+    }
+
     function startDashboard(user) {
       currentUser = user;
       loadProfile(user.uid);
       loadRequests(user.uid);
+      applyPreselectedService();
 
       // Accounts created with mobile OTP have no email, so no password to change
       if (!user.email) {
